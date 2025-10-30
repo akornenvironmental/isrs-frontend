@@ -1,0 +1,16 @@
+{
+  "version": 2,
+  "rewrites": [
+    { "source": "/css/(.*)", "destination": "/public/css/$1" },
+    { "source": "/js/(.*)", "destination": "/public/js/$1" },
+    { "source": "/images/(.*)", "destination": "/public/images/$1" },
+    { "source": "/admin/css/(.*)", "destination": "/admin/css/$1" },
+    { "source": "/admin/js/(.*)", "destination": "/admin/js/$1" },
+    { "source": "/admin", "destination": "/admin/index.html" },
+    { "source": "/admin/(.*)", "destination": "/admin/$1" },
+    { "source": "/about.html", "destination": "/public/about.html" },
+    { "source": "/icsr.html", "destination": "/public/icsr.html" },
+    { "source": "/icsr2026.html", "destination": "/public/icsr2026.html" },
+    { "source": "/", "destination": "/public/index.html" }
+  ]
+}
