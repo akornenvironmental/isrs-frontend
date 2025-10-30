@@ -54,6 +54,8 @@ header {
   height: 60px;
   width: auto;
   display: block;
+  image-rendering: -webkit-optimize-contrast;
+  image-rendering: high-quality;
 }
 
 .nav-links {
@@ -150,11 +152,14 @@ header {
   height: 600px;
   background-size: cover;
   background-position: center;
+  background-repeat: no-repeat;
   display: flex;
   align-items: center;
   justify-content: center;
   text-align: center;
   color: var(--white);
+  image-rendering: -webkit-optimize-contrast;
+  image-rendering: crisp-edges;
 }
 
 .hero-content {
@@ -240,6 +245,8 @@ header {
   object-fit: cover;
   border-radius: 4px;
   margin-bottom: 1.5rem;
+  image-rendering: -webkit-optimize-contrast;
+  image-rendering: high-quality;
 }
 
 .card h3, .news-card h3 {
@@ -382,6 +389,8 @@ header {
   border-radius: 8px;
   margin-top: 3rem;
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+  image-rendering: -webkit-optimize-contrast;
+  image-rendering: high-quality;
 }
 
 /* Contact Form */
