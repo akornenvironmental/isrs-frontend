@@ -4,12 +4,12 @@
  */
 
 // Google Analytics 4 Configuration
-const GA4_MEASUREMENT_ID = 'G-XXXXXXXXXX'; // Replace with your actual GA4 Measurement ID
+const GA4_MEASUREMENT_ID = ''; // Set to empty string to disable, or add your GA4 Measurement ID like 'G-XXXXXXXXXX'
 
 // Initialize Google Analytics 4
 function initGoogleAnalytics() {
-  if (GA4_MEASUREMENT_ID === 'G-XXXXXXXXXX') {
-    console.log('⚠️ Google Analytics not configured. Please set GA4_MEASUREMENT_ID in /public/js/analytics.js');
+  if (!GA4_MEASUREMENT_ID || GA4_MEASUREMENT_ID === 'G-XXXXXXXXXX') {
+    // Analytics disabled - no warning in production
     return;
   }
 
