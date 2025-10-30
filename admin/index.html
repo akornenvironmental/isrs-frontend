@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ISRS Admin Dashboard</title>
+  <link rel="stylesheet" href="/css/styles.css">
+  <link rel="stylesheet" href="/admin/css/admin.css">
+</head>
+<body>
+  <!-- Header & Navigation -->
+  <header>
+    <nav>
+      <a href="/" class="logo">ISRS Admin</a>
+      <button class="mobile-menu-toggle" onclick="toggleMobileMenu()">☰</button>
+      <ul class="nav-links" id="navLinks">
+        <li><a href="/">Public Site</a></li>
+        <li><a href="/admin/">Dashboard</a></li>
+        <li><span id="userEmail" style="color: #16a085; font-weight: 600;"></span></li>
+        <li><a href="#" onclick="logout()">Logout</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <!-- Login Screen -->
+  <div id="loginScreen" class="login-container">
+    <h2>ISRS Admin Access</h2>
+    <form onsubmit="handleLogin(event)">
+      <div class="form-group">
+        <label for="emailInput">Email Address</label>
+        <input type="email" id="emailInput" required placeholder="your.email@example.com">
+      </div>
+      <button type="submit" class="btn btn-primary" style="width: 100%;">Access Dashboard</button>
+    </form>
+    <p style="margin-top: 1.5rem; text-align: center; color: #7f8c8d; font-size: 0.9rem;">
+      Only authorized users can access the admin dashboard.
+    </p>
+  </div>
+
+  <!-- Main Dashboard -->
+  <div id="mainDashboard" style="display: none;">
+    <div class="admin-container">
+      <!-- Dashboard Header -->
+      <div class="dashboard-header">
+        <h1>ISRS Database Dashboard</h1>
+        <p>Manage board votes, contacts, conferences, and organizational data</p>
+        <p style="font-size: 0.9rem; opacity: 0.8; margin-top: 0.5rem;">
+          Last updated: <span id="lastUpdated">Loading...</span>
+        </p>
+      </div>
+
+      <!-- Statistics Grid -->
+      <div id="statsGrid" class="stats-grid">
+        <div class="stat-card">
+          <h3>Total Contacts</h3>
+          <div class="stat-value" id="statContacts">-</div>
+          <div class="stat-label">Database entries</div>
+        </div>
+        <div class="stat-card">
+          <h3>Organizations</h3>
+          <div class="stat-value" id="statOrgs">-</div>
+          <div class="stat-label">Active organizations</div>
+        </div>
+        <div class="stat-card">
+          <h3>Board Votes</h3>
+          <div class="stat-value" id="statVotes">-</div>
+          <div class="stat-label">Total recorded</div>
+        </div>
+        <div class="stat-card">
+          <h3>ICSR2026</h3>
+          <div class="stat-value" id="statRegistrations">-</div>
+          <div class="stat-label">Registrations</div>
+        </div>
+        <div class="stat-card">
+          <h3>Data Quality</h3>
+          <div class="stat-value" id="statQuality">-</div>
+          <div class="stat-label">Completeness score</div>
+        </div>
+        <div class="stat-card">
+          <h3>System Status</h3>
+          <div class="stat-value" style="font-size: 1.5rem;" id="statStatus">-</div>
+          <div class="stat-label">Database connection</div>
+        </div>
+      </div>
+
+      <!-- Tabs -->
+      <div class="tabs">
+        <button class="tab active" onclick="switchTab('overview')">Overview</button>
+        <button class="tab" onclick="switchTab('votes')">Board Votes</button>
+        <button class="tab" onclick="switchTab('board')">Board Members</button>
+        <button class="tab" onclick="switchTab('conference')">Conference</button>
+        <button class="tab" onclick="switchTab('database')">Database</button>
+      </div>
+
+      <!-- Tab: Overview -->
+      <div id="tab-overview" class="tab-content active">
+        <div class="admin-card">
+          <h2>System Overview</h2>
+          <div id="systemOverview">Loading...</div>
+        </div>
+
+        <div class="admin-card">
+          <h2>Quick Actions</h2>
+          <div class="action-buttons">
+            <button class="btn-admin primary" onclick="switchTab('votes')">Process Board Vote</button>
+            <button class="btn-admin primary" onclick="testDatabase()">Test Database</button>
+            <button class="btn-admin secondary" onclick="refreshStats()">Refresh Statistics</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tab: Board Votes -->
+      <div id="tab-votes" class="tab-content">
+        <div class="admin-card">
+          <h2>Process Board Vote</h2>
+          <form onsubmit="processVote(event)">
+            <div class="form-group">
+              <label for="voteEmail">Email Content</label>
+              <textarea id="voteEmail" placeholder="Paste the full email content containing the board vote..." required></textarea>
+            </div>
+            <div class="action-buttons">
+              <button type="submit" class="btn-admin primary">Process Vote with AI</button>
+              <button type="button" class="btn-admin secondary" onclick="clearVoteForm()">Clear</button>
+            </div>
+          </form>
+          <div id="voteResult" style="margin-top: 2rem;"></div>
+        </div>
+
+        <div class="admin-card">
+          <h2>Vote History</h2>
+          <div id="voteHistory">Loading...</div>
+        </div>
+      </div>
+
+      <!-- Tab: Board Members -->
+      <div id="tab-board" class="tab-content">
+        <div class="admin-card">
+          <h2>Board Members</h2>
+          <div id="boardMembersList">Loading...</div>
+        </div>
+      </div>
+
+      <!-- Tab: Conference -->
+      <div id="tab-conference" class="tab-content">
+        <div class="admin-card">
+          <h2>ICSR Conference Data</h2>
+          <div id="conferenceData">Loading...</div>
+        </div>
+      </div>
+
+      <!-- Tab: Database -->
+      <div id="tab-database" class="tab-content">
+        <div class="admin-card">
+          <h2>Database Management</h2>
+          <div class="action-buttons">
+            <button class="btn-admin primary" onclick="testDatabase()">Test Connection</button>
+            <button class="btn-admin secondary" onclick="viewTables()">View Tables</button>
+          </div>
+          <div id="databaseInfo" style="margin-top: 2rem;"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer>
+    <div class="footer-content">
+      <div class="footer-section">
+        <h4>ISRS Admin Dashboard</h4>
+        <p>Database management system for the International Shellfish Restoration Society.</p>
+      </div>
+      <div class="footer-section">
+        <h4>Quick Links</h4>
+        <p><a href="/">Public Site</a></p>
+        <p><a href="/admin/">Dashboard</a></p>
+      </div>
+      <div class="footer-section">
+        <h4>Support</h4>
+        <p>Email: <a href="mailto:info@shellfish-society.org">info@shellfish-society.org</a></p>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>&copy; 2024-2025 International Shellfish Restoration Society. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <!-- Scripts -->
+  <script src="/js/api.js"></script>
+  <script src="/admin/js/admin.js"></script>
+</body>
+</html>

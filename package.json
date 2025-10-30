@@ -1,0 +1,12 @@
+{
+  "name": "isrs-frontend",
+  "version": "1.0.0",
+  "description": "International Shellfish Restoration Society - Frontend",
+  "scripts": {
+    "start": "npx serve public -l 8080",
+    "dev": "npx serve . -l 8080"
+  },
+  "keywords": ["isrs", "shellfish", "restoration"],
+  "author": "ISRS",
+  "license": "MIT"
+}
