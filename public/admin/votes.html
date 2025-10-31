@@ -25,13 +25,30 @@
     tr:hover { background: var(--light-gray); }
     .loading { text-align: center; padding: 3rem; color: var(--text-light); }
     .error { background: #f8d7da; color: #721c24; padding: 1rem; border-radius: 4px; margin: 1rem; }
-    .btn { padding: 0.5rem 1rem; background: var(--primary-blue); color: white; border: none; border-radius: 4px; cursor: pointer; }
+    .success { background: #d4edda; color: #155724; padding: 1rem; border-radius: 4px; margin: 1rem; }
+    .btn { padding: 0.5rem 1rem; background: var(--primary-blue); color: white; border: none; border-radius: 4px; cursor: pointer; margin-right: 0.5rem; }
     .btn-success { background: #28a745; }
     .btn-danger { background: #dc3545; }
+    .btn:disabled { opacity: 0.6; cursor: not-allowed; }
     .status-badge { padding: 0.25rem 0.75rem; border-radius: 12px; font-size: 0.85rem; font-weight: 600; }
     .status-passed { background: #d4edda; color: #155724; }
     .status-failed { background: #f8d7da; color: #721c24; }
     .status-pending { background: #fff3cd; color: #856404; }
+
+    /* Modal Styles */
+    .modal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); }
+    .modal.show { display: flex; align-items: center; justify-content: center; }
+    .modal-content { background: white; padding: 2rem; border-radius: 8px; max-width: 600px; width: 90%; max-height: 90vh; overflow-y: auto; }
+    .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; }
+    .modal-header h2 { margin: 0; font-family: 'Marcellus', Georgia, serif; color: var(--primary-blue); }
+    .close-btn { font-size: 1.5rem; cursor: pointer; border: none; background: none; color: var(--text-light); }
+    .form-group { margin-bottom: 1rem; }
+    .form-group label { display: block; margin-bottom: 0.5rem; font-weight: 600; }
+    .form-group input, .form-group select, .form-group textarea { width: 100%; padding: 0.5rem; border: 1px solid var(--border-color); border-radius: 4px; font-family: inherit; }
+    .form-group textarea { min-height: 100px; resize: vertical; }
+    .form-actions { display: flex; justify-content: flex-end; gap: 0.5rem; margin-top: 1.5rem; }
+    .checkbox-group { display: flex; align-items: center; gap: 0.5rem; }
+    .checkbox-group input[type="checkbox"] { width: auto; }
   </style>
 </head>
 <body>
@@ -59,8 +76,66 @@
     </div>
   </div>
 
+  <!-- Modal for Add/Edit -->
+  <div id="voteModal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2 id="modalTitle">Add Board Vote</h2>
+        <button class="close-btn" onclick="closeModal()">&times;</button>
+      </div>
+      <form id="voteForm" onsubmit="handleSubmit(event)">
+        <input type="hidden" id="voteId" name="id">
+
+        <div class="form-group">
+          <label for="motion">Motion *</label>
+          <textarea id="motion" name="motion" required></textarea>
+        </div>
+
+        <div class="form-group">
+          <label for="vote_date">Vote Date *</label>
+          <input type="date" id="vote_date" name="vote_date" required>
+        </div>
+
+        <div class="form-group">
+          <label for="yes_count">Yes Votes *</label>
+          <input type="number" id="yes_count" name="yes_count" min="0" required>
+        </div>
+
+        <div class="form-group">
+          <label for="no_count">No Votes *</label>
+          <input type="number" id="no_count" name="no_count" min="0" required>
+        </div>
+
+        <div class="form-group">
+          <label for="abstain_count">Abstain Votes *</label>
+          <input type="number" id="abstain_count" name="abstain_count" min="0" required>
+        </div>
+
+        <div class="form-group checkbox-group">
+          <input type="checkbox" id="quorum_met" name="quorum_met">
+          <label for="quorum_met">Quorum Met</label>
+        </div>
+
+        <div class="form-group">
+          <label for="status">Status *</label>
+          <select id="status" name="status" required>
+            <option value="pending">Pending</option>
+            <option value="passed">Passed</option>
+            <option value="failed">Failed</option>
+          </select>
+        </div>
+
+        <div class="form-actions">
+          <button type="button" class="btn" onclick="closeModal()">Cancel</button>
+          <button type="submit" class="btn btn-success" id="submitBtn">Save</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
   <script>
     const API_BASE_URL = 'https://isrs-database-backend.onrender.com';
+    let allVotes = [];
 
     window.addEventListener('DOMContentLoaded', () => {
       const sessionToken = localStorage.getItem('isrs_session');
@@ -79,7 +154,8 @@
         });
         const data = await response.json();
         if (response.ok && data.success) {
-          displayVotes(data.data);
+          allVotes = data.data;
+          displayVotes(allVotes);
         } else {
           document.getElementById('tableContent').innerHTML = `<div class="error">Failed to load votes: ${data.error || 'Unknown error'}</div>`;
         }
@@ -114,7 +190,7 @@
                 <td>${vote.abstain_count || 0}</td>
                 <td>${vote.quorum_met ? 'Yes' : 'No'}</td>
                 <td>
-                  <button class="btn" onclick="editVote('${vote.id}')">Edit</button>
+                  <button class="btn" onclick='editVote(${JSON.stringify(vote)})'>Edit</button>
                   <button class="btn btn-danger" onclick="deleteVote('${vote.id}')">Delete</button>
                 </td>
               </tr>
@@ -129,21 +205,127 @@
     }
 
     function showAddForm() {
-      alert('Add functionality coming soon!');
+      document.getElementById('modalTitle').textContent = 'Add Board Vote';
+      document.getElementById('voteForm').reset();
+      document.getElementById('voteId').value = '';
+      document.getElementById('voteModal').classList.add('show');
     }
 
-    function editVote(id) {
-      alert('Edit functionality coming soon! Vote ID: ' + id);
+    function editVote(vote) {
+      document.getElementById('modalTitle').textContent = 'Edit Board Vote';
+      document.getElementById('voteId').value = vote.id;
+      document.getElementById('motion').value = vote.motion || '';
+      document.getElementById('vote_date').value = vote.vote_date ? vote.vote_date.split('T')[0] : '';
+      document.getElementById('yes_count').value = vote.yes_count || 0;
+      document.getElementById('no_count').value = vote.no_count || 0;
+      document.getElementById('abstain_count').value = vote.abstain_count || 0;
+      document.getElementById('quorum_met').checked = vote.quorum_met || false;
+      document.getElementById('status').value = vote.status || 'pending';
+      document.getElementById('voteModal').classList.add('show');
+    }
+
+    function closeModal() {
+      document.getElementById('voteModal').classList.remove('show');
+    }
+
+    async function handleSubmit(event) {
+      event.preventDefault();
+      const sessionToken = localStorage.getItem('isrs_session');
+      const submitBtn = document.getElementById('submitBtn');
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'Saving...';
+
+      const formData = {
+        motion: document.getElementById('motion').value,
+        vote_date: document.getElementById('vote_date').value,
+        yes_count: parseInt(document.getElementById('yes_count').value),
+        no_count: parseInt(document.getElementById('no_count').value),
+        abstain_count: parseInt(document.getElementById('abstain_count').value),
+        quorum_met: document.getElementById('quorum_met').checked,
+        status: document.getElementById('status').value
+      };
+
+      const voteId = document.getElementById('voteId').value;
+      const isEdit = voteId !== '';
+      const url = isEdit
+        ? `${API_BASE_URL}/api/admin/votes/${voteId}`
+        : `${API_BASE_URL}/api/admin/votes`;
+      const method = isEdit ? 'PUT' : 'POST';
+
+      try {
+        const response = await fetch(url, {
+          method,
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${sessionToken}`
+          },
+          body: JSON.stringify(formData)
+        });
+
+        const data = await response.json();
+
+        if (response.ok && data.success) {
+          closeModal();
+          await loadVotes();
+          showMessage(`Vote ${isEdit ? 'updated' : 'created'} successfully!`, 'success');
+        } else {
+          showMessage(`Error: ${data.error || 'Failed to save vote'}`, 'error');
+        }
+      } catch (error) {
+        showMessage(`Error: ${error.message}`, 'error');
+      } finally {
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Save';
+      }
     }
 
     async function deleteVote(id) {
       if (!confirm('Are you sure you want to delete this vote?')) return;
-      alert('Delete functionality coming soon! Vote ID: ' + id);
+
+      const sessionToken = localStorage.getItem('isrs_session');
+      try {
+        const response = await fetch(`${API_BASE_URL}/api/admin/votes/${id}`, {
+          method: 'DELETE',
+          headers: { 'Authorization': `Bearer ${sessionToken}` }
+        });
+
+        const data = await response.json();
+
+        if (response.ok && data.success) {
+          await loadVotes();
+          showMessage('Vote deleted successfully!', 'success');
+        } else {
+          showMessage(`Error: ${data.error || 'Failed to delete vote'}`, 'error');
+        }
+      } catch (error) {
+        showMessage(`Error: ${error.message}`, 'error');
+      }
+    }
+
+    function showMessage(message, type) {
+      const messageDiv = document.createElement('div');
+      messageDiv.className = type;
+      messageDiv.textContent = message;
+      messageDiv.style.position = 'fixed';
+      messageDiv.style.top = '20px';
+      messageDiv.style.right = '20px';
+      messageDiv.style.zIndex = '2000';
+      messageDiv.style.minWidth = '300px';
+      document.body.appendChild(messageDiv);
+      setTimeout(() => messageDiv.remove(), 5000);
     }
 
     function logout() {
       localStorage.clear();
       window.location.href = '/admin/';
+    }
+
+    // Close modal when clicking outside
+    window.onclick = function(event) {
+      const modal = document.getElementById('voteModal');
+      if (event.target === modal) {
+        closeModal();
+      }
     }
   </script>
 </body>
