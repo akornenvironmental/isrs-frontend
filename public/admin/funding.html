@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Funding Prospects - ISRS Admin</title>
+  <link rel="icon" type="image/png" href="/images/favicon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Marcellus&family=PT+Serif:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/styles.css">
+  <style>
+    body { background: var(--light-gray); }
+    .admin-nav { background: var(--white); border-bottom: 1px solid var(--border-color); padding: 1rem 2rem; margin-bottom: 2rem; display: flex; justify-content: space-between; align-items: center; }
+    .admin-nav a { color: var(--primary-blue); text-decoration: none; margin-right: 2rem; font-weight: 600; }
+    .admin-nav a:hover { color: var(--secondary-blue); }
+    .container { max-width: 1400px; margin: 0 auto; padding: 2rem; }
+    .data-table { background: var(--white); border-radius: 8px; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05); overflow: hidden; }
+    .table-header { padding: 1.5rem; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; }
+    .table-header h1 { font-family: 'Marcellus', Georgia, serif; font-size: 2rem; margin: 0; color: var(--primary-blue); }
+    table { width: 100%; border-collapse: collapse; }
+    thead { background: var(--light-gray); }
+    th { padding: 1rem; text-align: left; font-weight: 600; color: var(--text-dark); border-bottom: 2px solid var(--border-color); }
+    td { padding: 1rem; border-bottom: 1px solid var(--border-color); }
+    tr:hover { background: var(--light-gray); }
+    .loading { text-align: center; padding: 3rem; color: var(--text-light); }
+    .error { background: #f8d7da; color: #721c24; padding: 1rem; border-radius: 4px; margin: 1rem; }
+    .btn { padding: 0.5rem 1rem; background: var(--primary-blue); color: white; border: none; border-radius: 4px; cursor: pointer; margin-right: 0.5rem; }
+    .btn-success { background: #28a745; }
+    .btn-danger { background: #dc3545; }
+    .status-badge { padding: 0.25rem 0.75rem; border-radius: 12px; font-size: 0.85rem; font-weight: 600; }
+    .status-pending { background: #fff3cd; color: #856404; }
+    .status-contacted { background: #d1ecf1; color: #0c5460; }
+    .status-committed { background: #d4edda; color: #155724; }
+    .status-declined { background: #f8d7da; color: #721c24; }
+  </style>
+</head>
+<body>
+  <div class="admin-nav">
+    <div>
+      <a href="/admin/dashboard.html">Dashboard</a>
+      <a href="/admin/contacts.html">Contacts</a>
+      <a href="/admin/organizations.html">Organizations</a>
+      <a href="/admin/votes.html">Board Votes</a>
+      <a href="/admin/conferences.html">Conferences</a>
+      <a href="/admin/funding.html">Funding</a>
+    </div>
+    <button class="btn" onclick="logout()">Logout</button>
+  </div>
+
+  <div class="container">
+    <div class="data-table">
+      <div class="table-header">
+        <h1>Funding Prospects</h1>
+        <button class="btn btn-success" onclick="showAddForm()">+ Add New Prospect</button>
+      </div>
+      <div id="tableContent">
+        <div class="loading">Loading funding prospects...</div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const API_BASE_URL = 'https://isrs-database-backend.onrender.com';
+
+    window.addEventListener('DOMContentLoaded', () => {
+      const sessionToken = localStorage.getItem('isrs_session');
+      if (!sessionToken) {
+        window.location.href = '/admin/';
+        return;
+      }
+      loadFunding();
+    });
+
+    async function loadFunding() {
+      const sessionToken = localStorage.getItem('isrs_session');
+      try {
+        const response = await fetch(`${API_BASE_URL}/api/admin/funding`, {
+          headers: { 'Authorization': `Bearer ${sessionToken}` }
+        });
+        const data = await response.json();
+        if (response.ok && data.success) {
+          displayFunding(data.data);
+        } else {
+          document.getElementById('tableContent').innerHTML = `<div class="error">Failed to load funding prospects: ${data.error || 'Unknown error'}</div>`;
+        }
+      } catch (error) {
+        document.getElementById('tableContent').innerHTML = `<div class="error">Error: ${error.message}</div>`;
+      }
+    }
+
+    function displayFunding(prospects) {
+      const html = `
+        <table>
+          <thead>
+            <tr>
+              <th>Organization</th>
+              <th>Contact Person</th>
+              <th>Amount</th>
+              <th>Status</th>
+              <th>Date Contacted</th>
+              <th>Notes</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${prospects.map(prospect => `
+              <tr>
+                <td>${prospect.organization_name || '-'}</td>
+                <td>${prospect.contact_person || '-'}</td>
+                <td>${prospect.amount ? '$' + prospect.amount.toLocaleString() : '-'}</td>
+                <td><span class="status-badge status-${prospect.status || 'pending'}">${prospect.status || 'pending'}</span></td>
+                <td>${prospect.date_contacted ? new Date(prospect.date_contacted).toLocaleDateString() : '-'}</td>
+                <td>${prospect.notes ? prospect.notes.substring(0, 50) + (prospect.notes.length > 50 ? '...' : '') : '-'}</td>
+                <td>
+                  <button class="btn" onclick="editProspect('${prospect.id}')">Edit</button>
+                  <button class="btn btn-danger" onclick="deleteProspect('${prospect.id}')">Delete</button>
+                </td>
+              </tr>
+            `).join('')}
+          </tbody>
+        </table>
+        <div style="padding: 1.5rem; text-align: center;">
+          <p>Total Funding Prospects: ${prospects.length}</p>
+        </div>
+      `;
+      document.getElementById('tableContent').innerHTML = html;
+    }
+
+    function showAddForm() {
+      alert('Add functionality coming soon!');
+    }
+
+    function editProspect(id) {
+      alert('Edit functionality coming soon! Prospect ID: ' + id);
+    }
+
+    async function deleteProspect(id) {
+      if (!confirm('Are you sure you want to delete this funding prospect?')) return;
+      alert('Delete functionality coming soon! Prospect ID: ' + id);
+    }
+
+    function logout() {
+      localStorage.clear();
+      window.location.href = '/admin/';
+    }
+  </script>
+</body>
+</html>
