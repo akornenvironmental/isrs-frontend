@@ -150,7 +150,7 @@ header {
 /* Hero Section */
 .hero {
   position: relative;
-  height: 600px;
+  height: 500px;
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
@@ -173,7 +173,7 @@ header {
   font-family: 'Marcellus', Georgia, serif;
   font-size: 3rem;
   font-weight: 400;
-  margin-bottom: 1.5rem;
+  margin-bottom: 1rem;
   line-height: 1.2;
   text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.3);
 }
@@ -187,14 +187,14 @@ header {
 
 /* Sections */
 .section {
-  padding: 5rem 0;
+  padding: 3.5rem 0;
 }
 
 .section h2 {
   font-family: 'Marcellus', Georgia, serif;
   font-size: 2.5rem;
   font-weight: 400;
-  margin-bottom: 1rem;
+  margin-bottom: 0.75rem;
   color: var(--text-dark);
   text-align: center;
 }
@@ -203,7 +203,7 @@ header {
   text-align: center;
   font-size: 1.15rem;
   color: var(--text-light);
-  margin-bottom: 3rem;
+  margin-bottom: 2rem;
   max-width: 800px;
   margin-left: auto;
   margin-right: auto;
@@ -213,7 +213,7 @@ header {
   text-align: center;
   font-size: 1.15rem;
   color: var(--text-dark);
-  margin: 2rem auto;
+  margin: 1.5rem auto;
   max-width: 800px;
   font-weight: 500;
 }
@@ -221,7 +221,7 @@ header {
 /* Grid Layouts */
 .grid {
   display: grid;
-  gap: 2rem;
+  gap: 1.5rem;
 }
 
 .grid-3 {
@@ -233,7 +233,7 @@ header {
   background: var(--white);
   border: 1px solid var(--border-color);
   border-radius: 8px;
-  padding: 2rem;
+  padding: 1.5rem;
   transition: all 0.3s;
 }
 
@@ -247,7 +247,7 @@ header {
   height: 250px;
   object-fit: cover;
   border-radius: 4px;
-  margin-bottom: 1.5rem;
+  margin-bottom: 1rem;
   image-rendering: -webkit-optimize-contrast;
   image-rendering: high-quality;
 }
@@ -256,13 +256,13 @@ header {
   font-family: 'Marcellus', Georgia, serif;
   font-size: 1.5rem;
   font-weight: 400;
-  margin-bottom: 1rem;
+  margin-bottom: 0.75rem;
   color: var(--text-dark);
 }
 
 .card p, .news-card p {
   color: var(--text-light);
-  margin-bottom: 1.5rem;
+  margin-bottom: 1rem;
   line-height: 1.7;
 }
 
@@ -325,13 +325,13 @@ header {
 .benefits-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  gap: 2rem;
-  margin: 3rem 0;
+  gap: 1.5rem;
+  margin: 2rem 0;
 }
 
 .benefit-item {
   background: var(--white);
-  padding: 2rem;
+  padding: 1.5rem;
   border-radius: 8px;
   text-align: center;
   border: 1px solid var(--border-color);
@@ -345,7 +345,7 @@ header {
 
 .benefit-item h4 {
   font-size: 1.25rem;
-  margin-bottom: 0.75rem;
+  margin-bottom: 0.5rem;
   color: var(--primary-blue);
 }
 
@@ -364,7 +364,7 @@ header {
   font-size: 1.5rem;
   color: var(--primary-blue);
   font-weight: 600;
-  margin-bottom: 2rem;
+  margin-bottom: 1.5rem;
 }
 
 .partners-list ul {
@@ -372,14 +372,14 @@ header {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
   gap: 1rem;
-  margin: 2rem 0;
+  margin: 1.5rem 0;
   max-width: 900px;
   margin-left: auto;
   margin-right: auto;
 }
 
 .partners-list li {
-  padding: 1rem;
+  padding: 0.75rem;
   background: var(--white);
   border-radius: 4px;
   border: 1px solid var(--border-color);
@@ -391,7 +391,7 @@ header {
   max-width: 1000px;
   height: auto;
   border-radius: 8px;
-  margin-top: 3rem;
+  margin-top: 2rem;
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
   image-rendering: -webkit-optimize-contrast;
   image-rendering: high-quality;
@@ -404,9 +404,9 @@ header {
 
 .contact-form {
   max-width: 600px;
-  margin: 2rem auto;
+  margin: 1.5rem auto;
   background: var(--light-gray);
-  padding: 2.5rem;
+  padding: 2rem;
   border-radius: 8px;
   border: 1px solid var(--border-color);
 }
@@ -418,7 +418,7 @@ header {
 }
 
 .form-group {
-  margin-bottom: 1.5rem;
+  margin-bottom: 1.25rem;
 }
 
 .form-group label {
@@ -453,19 +453,19 @@ header {
 footer {
   background: var(--dark-gray);
   color: var(--white);
-  padding: 3rem 0 1.5rem;
+  padding: 2rem 0 1rem;
 }
 
 .footer-content {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  gap: 3rem;
-  margin-bottom: 2rem;
+  gap: 2rem;
+  margin-bottom: 1.5rem;
 }
 
 .footer-section h4 {
   font-size: 1.25rem;
-  margin-bottom: 1rem;
+  margin-bottom: 0.75rem;
   color: var(--white);
 }
 
@@ -541,7 +541,7 @@ footer {
   }
 
   .hero {
-    height: 500px;
+    height: 400px;
   }
 
   .hero h1 {
@@ -553,7 +553,7 @@ footer {
   }
 
   .section {
-    padding: 3rem 0;
+    padding: 2.5rem 0;
   }
 
   .section h2 {
@@ -561,7 +561,7 @@ footer {
   }
 
   .grid {
-    gap: 1.5rem;
+    gap: 1.25rem;
   }
 
   .form-row {
