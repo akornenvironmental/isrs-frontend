@@ -4,7 +4,7 @@
  */
 
 // Google Analytics 4 Configuration
-const GA4_MEASUREMENT_ID = ''; // Set to empty string to disable, or add your GA4 Measurement ID like 'G-XXXXXXXXXX'
+const GA4_MEASUREMENT_ID = 'G-87NFJGXVT1'; // ISRS Website Analytics
 
 // Initialize Google Analytics 4
 function initGoogleAnalytics() {
