@@ -10,241 +10,531 @@
   <link href="https://fonts.googleapis.com/css2?family=Marcellus&family=PT+Serif:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/css/styles.css">
   <style>
-    body {
-      background: var(--light-gray);
-    }
+    body { background: var(--light-gray); }
+    .admin-nav { background: var(--white); border-bottom: 1px solid var(--border-color); padding: 1rem 2rem; margin-bottom: 2rem; display: flex; justify-content: space-between; align-items: center; }
+    .admin-nav a { color: var(--primary-blue); text-decoration: none; margin-right: 2rem; font-weight: 600; }
+    .admin-nav a:hover { color: var(--secondary-blue); }
+    .container { max-width: 1600px; margin: 0 auto; padding: 2rem; }
+    .data-table { background: var(--white); border-radius: 8px; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05); overflow: hidden; }
 
-    .admin-nav {
-      background: var(--white);
-      border-bottom: 1px solid var(--border-color);
-      padding: 1rem 2rem;
-      margin-bottom: 2rem;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
+    /* Header */
+    .table-header { padding: 1.5rem; border-bottom: 1px solid var(--border-color); }
+    .table-header h1 { font-family: 'Marcellus', Georgia, serif; font-size: 2rem; margin: 0 0 1rem 0; color: var(--primary-blue); }
 
-    .admin-nav a {
-      color: var(--primary-blue);
-      text-decoration: none;
-      margin-right: 2rem;
-      font-weight: 600;
-    }
+    /* Toolbar */
+    .toolbar { display: flex; gap: 1rem; flex-wrap: wrap; align-items: center; justify-content: space-between; margin-bottom: 1rem; }
+    .toolbar-left, .toolbar-right { display: flex; gap: 0.5rem; align-items: center; flex-wrap: wrap; }
+    .search-box { padding: 0.75rem; border: 1px solid var(--border-color); border-radius: 4px; width: 300px; font-family: inherit; }
 
-    .admin-nav a:hover {
-      color: var(--secondary-blue);
-    }
+    /* Buttons */
+    .btn { padding: 0.5rem 1rem; background: var(--primary-blue); color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 0.9rem; transition: all 0.2s; }
+    .btn:hover { opacity: 0.9; }
+    .btn:disabled { opacity: 0.5; cursor: not-allowed; }
+    .btn-secondary { background: #6c757d; }
+    .btn-success { background: #28a745; }
+    .btn-danger { background: #dc3545; }
+    .btn-sm { padding: 0.25rem 0.5rem; font-size: 0.8rem; }
 
-    .container {
-      max-width: 1400px;
-      margin: 0 auto;
-      padding: 2rem;
-    }
+    /* Bulk Actions Bar */
+    .bulk-actions { background: #e3f2fd; padding: 1rem; border-bottom: 1px solid var(--border-color); display: none; align-items: center; gap: 1rem; }
+    .bulk-actions.show { display: flex; }
+    .bulk-actions-count { font-weight: 600; }
 
-    .data-table {
-      background: var(--white);
-      border-radius: 8px;
-      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-      overflow: hidden;
-    }
+    /* Table */
+    .table-wrapper { overflow-x: auto; }
+    table { width: 100%; border-collapse: collapse; min-width: 1200px; }
+    thead { background: var(--light-gray); position: sticky; top: 0; z-index: 10; }
+    th { padding: 0.75rem; text-align: left; font-weight: 600; color: var(--text-dark); border-bottom: 2px solid var(--border-color); white-space: nowrap; cursor: pointer; user-select: none; }
+    th:hover { background: #e8e8e8; }
+    th.sortable::after { content: ' ⇅'; opacity: 0.3; }
+    th.sort-asc::after { content: ' ▲'; opacity: 1; }
+    th.sort-desc::after { content: ' ▼'; opacity: 1; }
+    td { padding: 0.75rem; border-bottom: 1px solid var(--border-color); }
+    tr:hover { background: var(--light-gray); }
+    .checkbox-cell { width: 40px; text-align: center; }
 
-    .table-header {
-      padding: 1.5rem;
-      border-bottom: 1px solid var(--border-color);
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
+    /* Column Visibility */
+    .column-toggle { position: relative; display: inline-block; }
+    .column-toggle-menu { display: none; position: absolute; right: 0; top: 100%; background: white; border: 1px solid var(--border-color); border-radius: 4px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); padding: 0.5rem; min-width: 200px; z-index: 100; }
+    .column-toggle-menu.show { display: block; }
+    .column-toggle-item { padding: 0.5rem; display: flex; align-items: center; gap: 0.5rem; }
+    .column-toggle-item:hover { background: var(--light-gray); }
+    .column-toggle-item input { cursor: pointer; }
 
-    .table-header h1 {
-      font-family: 'Marcellus', Georgia, serif;
-      font-size: 2rem;
-      margin: 0;
-      color: var(--primary-blue);
-    }
+    /* Modal */
+    .modal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); overflow-y: auto; }
+    .modal.show { display: flex; align-items: center; justify-content: center; }
+    .modal-content { background: white; padding: 2rem; border-radius: 8px; max-width: 800px; width: 90%; max-height: 90vh; overflow-y: auto; }
+    .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; }
+    .modal-header h2 { margin: 0; font-family: 'Marcellus', Georgia, serif; color: var(--primary-blue); }
+    .close-btn { font-size: 1.5rem; cursor: pointer; border: none; background: none; color: var(--text-light); }
+    .form-group { margin-bottom: 1rem; }
+    .form-group label { display: block; margin-bottom: 0.5rem; font-weight: 600; }
+    .form-group input, .form-group select, .form-group textarea { width: 100%; padding: 0.75rem; border: 1px solid var(--border-color); border-radius: 4px; font-family: inherit; }
+    .form-group textarea { min-height: 150px; resize: vertical; }
+    .form-actions { display: flex; justify-content: flex-end; gap: 0.5rem; margin-top: 1.5rem; }
 
-    .search-box {
-      padding: 0.75rem;
-      border: 1px solid var(--border-color);
-      border-radius: 4px;
-      width: 300px;
-      font-family: inherit;
-    }
+    /* Stats */
+    .stats-bar { padding: 1rem 1.5rem; background: #f8f9fa; display: flex; justify-content: space-between; align-items: center; font-size: 0.9rem; }
 
-    table {
-      width: 100%;
-      border-collapse: collapse;
-    }
-
-    thead {
-      background: var(--light-gray);
-    }
-
-    th {
-      padding: 1rem;
-      text-align: left;
-      font-weight: 600;
-      color: var(--text-dark);
-      border-bottom: 2px solid var(--border-color);
-    }
-
-    td {
-      padding: 1rem;
-      border-bottom: 1px solid var(--border-color);
-    }
-
-    tr:hover {
-      background: var(--light-gray);
-    }
-
-    .loading {
-      text-align: center;
-      padding: 3rem;
-      color: var(--text-light);
-    }
-
-    .error {
-      background: #f8d7da;
-      color: #721c24;
-      padding: 1rem;
-      border-radius: 4px;
-      margin: 1rem;
-    }
-
-    .pagination {
-      padding: 1.5rem;
-      display: flex;
-      justify-content: center;
-      gap: 1rem;
-    }
-
-    .btn {
-      padding: 0.5rem 1rem;
-      background: var(--primary-blue);
-      color: white;
-      border: none;
-      border-radius: 4px;
-      cursor: pointer;
-    }
-
-    .btn:disabled {
-      opacity: 0.5;
-      cursor: not-allowed;
-    }
+    /* Loading & Messages */
+    .loading { text-align: center; padding: 3rem; color: var(--text-light); }
+    .error { background: #f8d7da; color: #721c24; padding: 1rem; border-radius: 4px; margin: 1rem; }
+    .success { background: #d4edda; color: #155724; padding: 1rem; border-radius: 4px; margin: 1rem; }
+    .message-toast { position: fixed; top: 20px; right: 20px; min-width: 300px; padding: 1rem; border-radius: 4px; box-shadow: 0 4px 6px rgba(0,0,0,0.2); z-index: 2000; animation: slideIn 0.3s; }
+    @keyframes slideIn { from { transform: translateX(400px); } to { transform: translateX(0); } }
   </style>
 </head>
 <body>
   <div class="admin-nav">
     <div>
       <a href="/admin/dashboard.html">Dashboard</a>
-      <a href="/admin/contacts.html">Contacts</a>
+      <a href="/admin/contacts-enhanced.html">Contacts</a>
       <a href="/admin/organizations.html">Organizations</a>
       <a href="/admin/votes.html">Board Votes</a>
       <a href="/admin/conferences.html">Conferences</a>
       <a href="/admin/funding.html">Funding</a>
     </div>
-    <button class="btn" onclick="logout()">Logout</button>
+    <div>
+      <span id="userRole" style="margin-right: 1rem; color: #666;"></span>
+      <button class="btn" onclick="logout()">Logout</button>
+    </div>
   </div>
 
   <div class="container">
     <div class="data-table">
       <div class="table-header">
-        <h1>Contacts</h1>
-        <input type="text" class="search-box" id="searchBox" placeholder="Search contacts...">
+        <h1>Contacts Management</h1>
+
+        <div class="toolbar">
+          <div class="toolbar-left">
+            <input type="text" class="search-box" id="searchBox" placeholder="Search contacts...">
+            <select id="countryFilter" class="search-box" style="width: 200px;">
+              <option value="">All Countries</option>
+            </select>
+          </div>
+
+          <div class="toolbar-right">
+            <button class="btn btn-secondary" onclick="toggleColumnMenu()">Columns ▼</button>
+            <button class="btn btn-success" onclick="exportToCSV()" id="exportBtn">Export CSV</button>
+            <button class="btn btn-success" onclick="showEmailModal()" id="emailBtn" disabled>Send Email</button>
+            <div class="column-toggle">
+              <div class="column-toggle-menu" id="columnMenu">
+                <div class="column-toggle-item">
+                  <input type="checkbox" id="col-email" checked onchange="toggleColumn('email')">
+                  <label for="col-email">Email</label>
+                </div>
+                <div class="column-toggle-item">
+                  <input type="checkbox" id="col-organization" checked onchange="toggleColumn('organization')">
+                  <label for="col-organization">Organization</label>
+                </div>
+                <div class="column-toggle-item">
+                  <input type="checkbox" id="col-role" checked onchange="toggleColumn('role')">
+                  <label for="col-role">Role</label>
+                </div>
+                <div class="column-toggle-item">
+                  <input type="checkbox" id="col-country" checked onchange="toggleColumn('country')">
+                  <label for="col-country">Country</label>
+                </div>
+                <div class="column-toggle-item">
+                  <input type="checkbox" id="col-city" checked onchange="toggleColumn('city')">
+                  <label for="col-city">City</label>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
 
-      <div id="tableContent">
-        <div class="loading">Loading contacts...</div>
+      <div class="bulk-actions" id="bulkActions">
+        <span class="bulk-actions-count"><span id="selectedCount">0</span> selected</span>
+        <button class="btn btn-sm btn-success" onclick="showEmailModal()">Send Email</button>
+        <button class="btn btn-sm btn-secondary" onclick="exportSelected()">Export Selected</button>
+        <button class="btn btn-sm btn-secondary" onclick="clearSelection()">Clear</button>
       </div>
+
+      <div class="table-wrapper">
+        <div id="tableContent">
+          <div class="loading">Loading contacts...</div>
+        </div>
+      </div>
+
+      <div class="stats-bar">
+        <span>Total: <strong id="totalCount">0</strong> contacts</span>
+        <span>Showing: <strong id="filteredCount">0</strong> contacts</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Email Modal -->
+  <div id="emailModal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2>Send Email</h2>
+        <button class="close-btn" onclick="closeEmailModal()">&times;</button>
+      </div>
+      <form id="emailForm" onsubmit="sendEmail(event)">
+        <div class="form-group">
+          <label for="emailSubject">Subject *</label>
+          <input type="text" id="emailSubject" required>
+        </div>
+
+        <div class="form-group">
+          <label for="emailBody">Message *</label>
+          <textarea id="emailBody" required></textarea>
+        </div>
+
+        <div class="form-group">
+          <label>Recipients: <span id="recipientCount">0</span> contacts</label>
+        </div>
+
+        <div class="form-actions">
+          <button type="button" class="btn btn-secondary" onclick="closeEmailModal()">Cancel</button>
+          <button type="submit" class="btn btn-success" id="sendEmailBtn">Send Email</button>
+        </div>
+      </form>
     </div>
   </div>
 
   <script>
     const API_BASE_URL = 'https://isrs-database-backend.onrender.com';
+    let allContacts = [];
+    let filteredContacts = [];
+    let selectedContacts = new Set();
+    let currentSort = { column: null, direction: 'asc' };
+    let userPermissions = null;
 
-    // Check auth
-    window.addEventListener('DOMContentLoaded', () => {
+    // Initialize
+    window.addEventListener('DOMContentLoaded', async () => {
       const sessionToken = localStorage.getItem('isrs_session');
       if (!sessionToken) {
         window.location.href = '/admin/';
         return;
       }
-      loadContacts();
+
+      await loadUserPermissions();
+      await loadContacts();
+      setupEventListeners();
     });
+
+    async function loadUserPermissions() {
+      const sessionToken = localStorage.getItem('isrs_session');
+      try {
+        const response = await fetch(`${API_BASE_URL}/api/auth/session`, {
+          headers: { 'Authorization': `Bearer ${sessionToken}` }
+        });
+        const data = await response.json();
+        if (data.success) {
+          userPermissions = data.permissions;
+          const role = data.role || 'viewer';
+          document.getElementById('userRole').textContent = `Role: ${role.toUpperCase()}`;
+
+          // Show/hide features based on permissions
+          if (!userPermissions.canSendEmails) {
+            document.getElementById('emailBtn').style.display = 'none';
+          }
+        }
+      } catch (error) {
+        console.error('Failed to load permissions:', error);
+      }
+    }
 
     async function loadContacts() {
       const sessionToken = localStorage.getItem('isrs_session');
-
       try {
         const response = await fetch(`${API_BASE_URL}/api/admin/contacts`, {
-          headers: {
-            'Authorization': `Bearer ${sessionToken}`
+          headers: { 'Authorization': `Bearer ${sessionToken}` }
+        });
+        const data = await response.json();
+
+        if (response.ok && data.success) {
+          allContacts = data.data;
+          filteredContacts = [...allContacts];
+          populateCountryFilter();
+          displayContacts();
+          updateStats();
+        } else {
+          showError('Failed to load contacts: ' + (data.error || 'Unknown error'));
+        }
+      } catch (error) {
+        showError('Error connecting to server: ' + error.message);
+      }
+    }
+
+    function displayContacts() {
+      const html = `
+        <table>
+          <thead>
+            <tr>
+              <th class="checkbox-cell">
+                <input type="checkbox" id="selectAll" onchange="toggleSelectAll()">
+              </th>
+              <th class="sortable" onclick="sortBy('full_name')">Name</th>
+              <th class="sortable col-email" onclick="sortBy('email')">Email</th>
+              <th class="sortable col-organization" onclick="sortBy('organization_name')">Organization</th>
+              <th class="col-role">Role</th>
+              <th class="sortable col-country" onclick="sortBy('country')">Country</th>
+              <th class="col-city">City</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${filteredContacts.map(contact => `
+              <tr>
+                <td class="checkbox-cell">
+                  <input type="checkbox" class="contact-checkbox" value="${contact.email}"
+                         ${selectedContacts.has(contact.email) ? 'checked' : ''}
+                         onchange="toggleContact('${contact.email.replace(/'/g, "\\'")}')">
+                </td>
+                <td>${contact.full_name || contact.first_name + ' ' + contact.last_name || '-'}</td>
+                <td class="col-email">${contact.email || '-'}</td>
+                <td class="col-organization">${contact.organization_name || '-'}</td>
+                <td class="col-role">${contact.role || '-'}</td>
+                <td class="col-country">${contact.country || '-'}</td>
+                <td class="col-city">${contact.city || '-'}</td>
+              </tr>
+            `).join('')}
+          </tbody>
+        </table>
+      `;
+      document.getElementById('tableContent').innerHTML = html;
+      updateBulkActionsBar();
+    }
+
+    function setupEventListeners() {
+      // Search
+      document.getElementById('searchBox').addEventListener('input', (e) => {
+        const term = e.target.value.toLowerCase();
+        filteredContacts = allContacts.filter(c =>
+          JSON.stringify(c).toLowerCase().includes(term)
+        );
+        displayContacts();
+        updateStats();
+      });
+
+      // Country filter
+      document.getElementById('countryFilter').addEventListener('change', (e) => {
+        const country = e.target.value;
+        if (country) {
+          filteredContacts = allContacts.filter(c => c.country === country);
+        } else {
+          filteredContacts = [...allContacts];
+        }
+        displayContacts();
+        updateStats();
+      });
+
+      // Close column menu when clicking outside
+      document.addEventListener('click', (e) => {
+        if (!e.target.closest('.column-toggle') && !e.target.closest('.toolbar-right button')) {
+          document.getElementById('columnMenu').classList.remove('show');
+        }
+      });
+    }
+
+    function populateCountryFilter() {
+      const countries = [...new Set(allContacts.map(c => c.country).filter(Boolean))].sort();
+      const select = document.getElementById('countryFilter');
+      select.innerHTML = '<option value="">All Countries</option>' +
+        countries.map(c => `<option value="${c}">${c}</option>`).join('');
+    }
+
+    function sortBy(column) {
+      if (currentSort.column === column) {
+        currentSort.direction = currentSort.direction === 'asc' ? 'desc' : 'asc';
+      } else {
+        currentSort.column = column;
+        currentSort.direction = 'asc';
+      }
+
+      filteredContacts.sort((a, b) => {
+        let aVal = a[column] || '';
+        let bVal = b[column] || '';
+        if (typeof aVal === 'string') {
+          aVal = aVal.toLowerCase();
+          bVal = bVal.toLowerCase();
+        }
+
+        if (currentSort.direction === 'asc') {
+          return aVal > bVal ? 1 : -1;
+        } else {
+          return aVal < bVal ? 1 : -1;
+        }
+      });
+
+      displayContacts();
+      updateSortIndicators();
+    }
+
+    function updateSortIndicators() {
+      document.querySelectorAll('th.sortable').forEach(th => {
+        th.classList.remove('sort-asc', 'sort-desc');
+      });
+      if (currentSort.column) {
+        const ths = document.querySelectorAll('th.sortable');
+        ths.forEach(th => {
+          if (th.textContent.toLowerCase().includes(currentSort.column.split('_')[0])) {
+            th.classList.add(`sort-${currentSort.direction}`);
           }
+        });
+      }
+    }
+
+    function toggleSelectAll() {
+      const checked = document.getElementById('selectAll').checked;
+      if (checked) {
+        filteredContacts.forEach(c => selectedContacts.add(c.email));
+      } else {
+        selectedContacts.clear();
+      }
+      displayContacts();
+    }
+
+    function toggleContact(email) {
+      if (selectedContacts.has(email)) {
+        selectedContacts.delete(email);
+      } else {
+        selectedContacts.add(email);
+      }
+      updateBulkActionsBar();
+    }
+
+    function updateBulkActionsBar() {
+      document.getElementById('selectedCount').textContent = selectedContacts.size;
+      document.getElementById('bulkActions').classList.toggle('show', selectedContacts.size > 0);
+      document.getElementById('emailBtn').disabled = selectedContacts.size === 0;
+    }
+
+    function clearSelection() {
+      selectedContacts.clear();
+      document.getElementById('selectAll').checked = false;
+      displayContacts();
+    }
+
+    function toggleColumnMenu() {
+      document.getElementById('columnMenu').classList.toggle('show');
+    }
+
+    function toggleColumn(column) {
+      const cells = document.querySelectorAll(`.col-${column}`);
+      const checkbox = document.getElementById(`col-${column}`);
+      cells.forEach(cell => {
+        cell.style.display = checkbox.checked ? '' : 'none';
+      });
+    }
+
+    function updateStats() {
+      document.getElementById('totalCount').textContent = allContacts.length;
+      document.getElementById('filteredCount').textContent = filteredContacts.length;
+    }
+
+    function exportToCSV() {
+      const contacts = filteredContacts.length > 0 ? filteredContacts : allContacts;
+      const csv = generateCSV(contacts);
+      downloadCSV(csv, 'isrs_contacts_' + new Date().toISOString().split('T')[0] + '.csv');
+      showToast('Exported ' + contacts.length + ' contacts', 'success');
+    }
+
+    function exportSelected() {
+      const contacts = allContacts.filter(c => selectedContacts.has(c.email));
+      const csv = generateCSV(contacts);
+      downloadCSV(csv, 'isrs_contacts_selected_' + new Date().toISOString().split('T')[0] + '.csv');
+      showToast('Exported ' + contacts.length + ' contacts', 'success');
+    }
+
+    function generateCSV(contacts) {
+      const headers = ['Full Name', 'Email', 'Organization', 'Role', 'Country', 'City', 'Phone'];
+      const rows = contacts.map(c => [
+        c.full_name || '',
+        c.email || '',
+        c.organization_name || '',
+        c.role || '',
+        c.country || '',
+        c.city || '',
+        c.phone || ''
+      ]);
+
+      return [headers, ...rows]
+        .map(row => row.map(cell => `"${(cell || '').toString().replace(/"/g, '""')}"`).join(','))
+        .join('\n');
+    }
+
+    function downloadCSV(csv, filename) {
+      const blob = new Blob([csv], { type: 'text/csv' });
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = filename;
+      a.click();
+      window.URL.revokeObjectURL(url);
+    }
+
+    function showEmailModal() {
+      if (selectedContacts.size === 0) {
+        showToast('Please select contacts first', 'error');
+        return;
+      }
+      document.getElementById('recipientCount').textContent = selectedContacts.size;
+      document.getElementById('emailModal').classList.add('show');
+    }
+
+    function closeEmailModal() {
+      document.getElementById('emailModal').classList.remove('show');
+      document.getElementById('emailForm').reset();
+    }
+
+    async function sendEmail(event) {
+      event.preventDefault();
+      const subject = document.getElementById('emailSubject').value;
+      const body = document.getElementById('emailBody').value;
+      const recipients = Array.from(selectedContacts);
+
+      const btn = document.getElementById('sendEmailBtn');
+      btn.disabled = true;
+      btn.textContent = 'Sending...';
+
+      try {
+        const sessionToken = localStorage.getItem('isrs_session');
+        const response = await fetch(`${API_BASE_URL}/api/admin/send-email`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${sessionToken}`
+          },
+          body: JSON.stringify({ recipients, subject, body })
         });
 
         const data = await response.json();
 
         if (response.ok && data.success) {
-          displayContacts(data.data);
+          showToast('Email sent successfully to ' + recipients.length + ' contacts', 'success');
+          closeEmailModal();
         } else {
-          document.getElementById('tableContent').innerHTML = `
-            <div class="error">Failed to load contacts: ${data.error || 'Unknown error'}</div>
-          `;
+          showToast('Failed to send email: ' + (data.error || 'Unknown error'), 'error');
         }
       } catch (error) {
-        document.getElementById('tableContent').innerHTML = `
-          <div class="error">Error connecting to server: ${error.message}</div>
-        `;
+        showToast('Error: ' + error.message, 'error');
+      } finally {
+        btn.disabled = false;
+        btn.textContent = 'Send Email';
       }
     }
 
-    function displayContacts(contacts) {
-      const html = `
-        <table>
-          <thead>
-            <tr>
-              <th>Name</th>
-              <th>Email</th>
-              <th>Organization</th>
-              <th>Country</th>
-              <th>Member Type</th>
-            </tr>
-          </thead>
-          <tbody>
-            ${contacts.map(contact => `
-              <tr>
-                <td>${contact.first_name || ''} ${contact.last_name || ''}</td>
-                <td>${contact.email || '-'}</td>
-                <td>${contact.organization_name || '-'}</td>
-                <td>${contact.country || '-'}</td>
-                <td>${contact.member_type || '-'}</td>
-              </tr>
-            `).join('')}
-          </tbody>
-        </table>
-        <div class="pagination">
-          <p>Total Contacts: ${contacts.length}</p>
-        </div>
-      `;
+    function showToast(message, type) {
+      const toast = document.createElement('div');
+      toast.className = `message-toast ${type}`;
+      toast.textContent = message;
+      document.body.appendChild(toast);
+      setTimeout(() => toast.remove(), 5000);
+    }
 
-      document.getElementById('tableContent').innerHTML = html;
+    function showError(message) {
+      document.getElementById('tableContent').innerHTML = `<div class="error">${message}</div>`;
     }
 
     function logout() {
       localStorage.clear();
       window.location.href = '/admin/';
     }
-
-    // Search functionality
-    document.getElementById('searchBox').addEventListener('input', (e) => {
-      const searchTerm = e.target.value.toLowerCase();
-      const rows = document.querySelectorAll('tbody tr');
-
-      rows.forEach(row => {
-        const text = row.textContent.toLowerCase();
-        row.style.display = text.includes(searchTerm) ? '' : 'none';
-      });
-    });
   </script>
 </body>
 </html>
