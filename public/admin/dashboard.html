@@ -137,7 +137,7 @@
 
     <div class="welcome-section">
       <h1>Welcome to the ISRS Admin Dashboard</h1>
-      <p>Manage your organization's data and content</p>
+      <p>Manage all ISRS and ICSR data and content</p>
     </div>
 
     <div class="dashboard-grid">
@@ -240,6 +240,462 @@
       localStorage.clear();
       window.location.href = '/admin/';
     }
+  </script>
+
+  <!-- AI Assistant Sidebar -->
+  <div id="aiAssistant" class="ai-assistant-container">
+    <!-- Expanded Panel -->
+    <div id="aiPanel" class="ai-panel" style="display: none;">
+      <div class="ai-panel-content">
+        <!-- Header -->
+        <div class="ai-header">
+          <div class="ai-header-left">
+            <div class="ai-icon">🤖</div>
+            <div>
+              <h3>AI Query Assistant</h3>
+              <p class="ai-subtitle">Ask questions about your ISRS and ICSR data</p>
+            </div>
+          </div>
+          <button class="ai-close-btn" onclick="toggleAIPanel()">&times;</button>
+        </div>
+
+        <!-- Content Area -->
+        <div class="ai-content" id="aiContent">
+          <div id="aiExamples">
+            <p class="ai-prompt-text">Try asking questions like:</p>
+            <div class="ai-examples-list">
+              <button class="ai-example-btn" onclick="setAIQuery(this.textContent)">
+                <span>→</span> How many board members do we have?
+              </button>
+              <button class="ai-example-btn" onclick="setAIQuery(this.textContent)">
+                <span>→</span> Show me all contacts from universities
+              </button>
+              <button class="ai-example-btn" onclick="setAIQuery(this.textContent)">
+                <span>→</span> List upcoming conferences
+              </button>
+              <button class="ai-example-btn" onclick="setAIQuery(this.textContent)">
+                <span>→</span> What funding prospects are in the pipeline?
+              </button>
+              <button class="ai-example-btn" onclick="setAIQuery(this.textContent)">
+                <span>→</span> Show organizations by country
+              </button>
+              <button class="ai-example-btn" onclick="setAIQuery(this.textContent)">
+                <span>→</span> Recent board votes and their outcomes
+              </button>
+            </div>
+          </div>
+
+          <div id="aiLoading" class="ai-loading-state" style="display: none;">
+            <div class="ai-spinner"></div>
+            <p>Analyzing your data...</p>
+          </div>
+
+          <div id="aiResponse" class="ai-response-area" style="display: none;">
+            <!-- Response content will be inserted here -->
+          </div>
+        </div>
+
+        <!-- Input Area -->
+        <div class="ai-input-area">
+          <form onsubmit="handleAISubmit(event)">
+            <input
+              type="text"
+              id="aiQueryInput"
+              placeholder="Ask a question about your contacts, votes, conferences, or funding..."
+              class="ai-input"
+            />
+            <button type="submit" id="aiSubmitBtn" class="ai-submit-btn">Ask</button>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <!-- Collapsed Tab -->
+    <button id="aiTab" class="ai-tab" onclick="toggleAIPanel()">
+      <span class="ai-tab-icon">🤖</span>
+      <span class="ai-tab-text">AI Assistant</span>
+      <span class="ai-tab-arrow">←</span>
+    </button>
+  </div>
+
+  <style>
+    /* AI Assistant Styles */
+    .ai-assistant-container {
+      position: fixed;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      z-index: 1000;
+    }
+
+    .ai-panel {
+      background: white;
+      border-left: 2px solid #3b82f6;
+      box-shadow: -4px 0 20px rgba(0, 0, 0, 0.15);
+      height: 100%;
+      width: 450px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .ai-panel-content {
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+    }
+
+    .ai-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 1.5rem;
+      border-bottom: 1px solid #e5e7eb;
+    }
+
+    .ai-header-left {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .ai-icon {
+      width: 40px;
+      height: 40px;
+      background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.25rem;
+    }
+
+    .ai-header h3 {
+      font-family: 'Marcellus', Georgia, serif;
+      font-size: 1.125rem;
+      font-weight: bold;
+      color: #111827;
+      margin: 0;
+    }
+
+    .ai-subtitle {
+      font-size: 0.75rem;
+      color: #6b7280;
+      margin: 0;
+    }
+
+    .ai-close-btn {
+      color: #9ca3af;
+      font-size: 2rem;
+      line-height: 1;
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 0;
+      transition: color 0.2s;
+    }
+
+    .ai-close-btn:hover {
+      color: #4b5563;
+    }
+
+    .ai-content {
+      flex: 1;
+      overflow-y: auto;
+      padding: 1.5rem;
+    }
+
+    .ai-prompt-text {
+      font-size: 0.875rem;
+      color: #4b5563;
+      margin-bottom: 1rem;
+    }
+
+    .ai-examples-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    .ai-example-btn {
+      width: 100%;
+      text-align: left;
+      padding: 0.75rem 1rem;
+      background: #f9fafb;
+      border: 1px solid #e5e7eb;
+      border-radius: 8px;
+      font-size: 0.875rem;
+      color: #374151;
+      cursor: pointer;
+      transition: all 0.2s;
+      font-family: 'PT Serif', Georgia, serif;
+    }
+
+    .ai-example-btn:hover {
+      background: #eff6ff;
+      border-color: #3b82f6;
+      color: #1e40af;
+    }
+
+    .ai-example-btn span {
+      color: #3b82f6;
+      margin-right: 0.5rem;
+    }
+
+    .ai-loading-state {
+      text-align: center;
+      padding: 3rem 0;
+    }
+
+    .ai-spinner {
+      display: inline-block;
+      width: 48px;
+      height: 48px;
+      border: 3px solid #f3f4f6;
+      border-top-color: #3b82f6;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      margin-bottom: 1rem;
+    }
+
+    .ai-loading-state p {
+      color: #6b7280;
+    }
+
+    .ai-response-area {
+      /* Response styles will be added dynamically */
+    }
+
+    .ai-input-area {
+      border-top: 1px solid #e5e7eb;
+      padding: 1rem;
+    }
+
+    .ai-input-area form {
+      display: flex;
+      gap: 0.5rem;
+    }
+
+    .ai-input {
+      flex: 1;
+      padding: 0.75rem 1rem;
+      border: 1px solid #d1d5db;
+      border-radius: 8px;
+      font-size: 0.875rem;
+      font-family: 'PT Serif', Georgia, serif;
+      transition: border-color 0.2s;
+    }
+
+    .ai-input:focus {
+      outline: none;
+      border-color: #3b82f6;
+      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+    }
+
+    .ai-submit-btn {
+      padding: 0.75rem 1.5rem;
+      background: #3b82f6;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-family: 'PT Serif', Georgia, serif;
+      font-size: 0.875rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    .ai-submit-btn:hover {
+      background: #2563eb;
+    }
+
+    .ai-submit-btn:disabled {
+      background: #d1d5db;
+      cursor: not-allowed;
+    }
+
+    .ai-tab {
+      position: absolute;
+      top: 50%;
+      right: 0;
+      transform: translateY(-50%);
+      background: linear-gradient(to bottom, #3b82f6, #8b5cf6);
+      color: white;
+      border: none;
+      padding: 20px 12px;
+      border-top-left-radius: 8px;
+      border-bottom-left-radius: 8px;
+      cursor: pointer;
+      box-shadow: -2px 2px 8px rgba(0, 0, 0, 0.2);
+      writing-mode: vertical-rl;
+      text-orientation: mixed;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      transition: all 0.3s;
+    }
+
+    .ai-tab:hover {
+      background: linear-gradient(to bottom, #2563eb, #7c3aed);
+      box-shadow: -4px 4px 12px rgba(0, 0, 0, 0.3);
+    }
+
+    .ai-tab-icon {
+      font-size: 1.25rem;
+    }
+
+    .ai-tab-text {
+      font-weight: 500;
+      white-space: nowrap;
+    }
+
+    .ai-tab-arrow {
+      margin-top: 0.5rem;
+    }
+
+    @keyframes spin {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+  </style>
+
+  <script>
+    function toggleAIPanel() {
+      const panel = document.getElementById('aiPanel');
+      const tab = document.getElementById('aiTab');
+
+      if (panel.style.display === 'none') {
+        panel.style.display = 'flex';
+        tab.style.display = 'none';
+        document.getElementById('aiQueryInput').focus();
+      } else {
+        panel.style.display = 'none';
+        tab.style.display = 'flex';
+      }
+    }
+
+    function setAIQuery(text) {
+      document.getElementById('aiQueryInput').value = text;
+      document.getElementById('aiQueryInput').focus();
+    }
+
+    async function handleAISubmit(event) {
+      event.preventDefault();
+      const input = document.getElementById('aiQueryInput');
+      const query = input.value.trim();
+
+      if (!query) return;
+
+      const submitBtn = document.getElementById('aiSubmitBtn');
+      const examples = document.getElementById('aiExamples');
+      const loading = document.getElementById('aiLoading');
+      const response = document.getElementById('aiResponse');
+
+      // Hide examples, show loading
+      examples.style.display = 'none';
+      loading.style.display = 'block';
+      response.style.display = 'none';
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'Analyzing...';
+
+      try {
+        const sessionToken = localStorage.getItem('isrs_session');
+        const res = await fetch('https://isrs-database-backend.onrender.com/api/admin/ai-query', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${sessionToken}`
+          },
+          body: JSON.stringify({ question: query, includeInsights: true })
+        });
+
+        const data = await res.json();
+
+        loading.style.display = 'none';
+
+        if (data.success) {
+          // Display response
+          response.innerHTML = `
+            <div class="ai-response-content">
+              <div class="ai-response-header">
+                <h4 style="font-family: 'Marcellus', Georgia, serif; color: #111827; margin: 0 0 1rem 0;">Results</h4>
+                <button onclick="clearAIResponse()" style="color: #3b82f6; font-size: 0.875rem; background: none; border: none; cursor: pointer;">New Query</button>
+              </div>
+
+              ${data.insights ? `
+                <div style="padding: 1rem; background: #eff6ff; border: 1px solid #bfdbfe; border-radius: 8px; margin-bottom: 1rem;">
+                  <p style="margin: 0; font-size: 0.875rem; color: #1e40af;">${data.insights}</p>
+                </div>
+              ` : ''}
+
+              <div style="background: #1a202c; color: #e2e8f0; padding: 1rem; border-radius: 6px; font-family: monospace; font-size: 0.8125rem; overflow-x: auto; margin-bottom: 1rem;">
+                ${data.sql}
+              </div>
+
+              <p style="font-size: 0.875rem; color: #6b7280; margin-bottom: 0.5rem;"><strong>Results (${data.rowCount} rows):</strong></p>
+
+              ${data.rows && data.rows.length > 0 ? `
+                <div style="border: 1px solid #e5e7eb; border-radius: 8px; overflow: hidden;">
+                  <table style="width: 100%; border-collapse: collapse; font-size: 0.8125rem;">
+                    <thead style="background: #f9fafb;">
+                      <tr>
+                        ${Object.keys(data.rows[0]).map(col => `
+                          <th style="padding: 0.75rem; text-align: left; font-weight: 600; color: #374151; border-bottom: 1px solid #e5e7eb;">${col}</th>
+                        `).join('')}
+                      </tr>
+                    </thead>
+                    <tbody>
+                      ${data.rows.map(row => `
+                        <tr style="border-bottom: 1px solid #e5e7eb;">
+                          ${Object.values(row).map(val => `
+                            <td style="padding: 0.75rem; color: #4b5563;">${val !== null && val !== undefined ? val : '-'}</td>
+                          `).join('')}
+                        </tr>
+                      `).join('')}
+                    </tbody>
+                  </table>
+                </div>
+              ` : '<p style="text-align: center; color: #6b7280; padding: 2rem;">No results found</p>'}
+            </div>
+          `;
+          response.style.display = 'block';
+        } else {
+          response.innerHTML = `
+            <div style="padding: 1rem; background: #fef2f2; border: 1px solid #fecaca; border-radius: 8px;">
+              <p style="margin: 0; font-size: 0.875rem; color: #991b1b;">${data.error || 'Query failed'}</p>
+            </div>
+          `;
+          response.style.display = 'block';
+        }
+      } catch (error) {
+        loading.style.display = 'none';
+        response.innerHTML = `
+          <div style="padding: 1rem; background: #fef2f2; border: 1px solid #fecaca; border-radius: 8px;">
+            <p style="margin: 0; font-size: 0.875rem; color: #991b1b;">Error: ${error.message}</p>
+          </div>
+        `;
+        response.style.display = 'block';
+      } finally {
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Ask';
+      }
+    }
+
+    function clearAIResponse() {
+      document.getElementById('aiResponse').style.display = 'none';
+      document.getElementById('aiExamples').style.display = 'block';
+      document.getElementById('aiQueryInput').value = '';
+      document.getElementById('aiQueryInput').focus();
+    }
+
+    // ESC key to close AI panel
+    document.addEventListener('keydown', function(event) {
+      if (event.key === 'Escape' || event.key === 'Esc') {
+        const panel = document.getElementById('aiPanel');
+        if (panel.style.display !== 'none') {
+          toggleAIPanel();
+        }
+      }
+    });
   </script>
 </body>
 </html>
