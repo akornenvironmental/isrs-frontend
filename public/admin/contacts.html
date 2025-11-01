@@ -9,6 +9,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Marcellus&family=PT+Serif:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/css/styles.css">
+  <link rel="stylesheet" href="/css/admin-styles.css">
   <style>
     body { background: var(--light-gray); }
     .admin-nav { background: var(--white); border-bottom: 1px solid var(--border-color); padding: 1rem 2rem; margin-bottom: 2rem; display: flex; justify-content: space-between; align-items: center; }
@@ -118,6 +119,7 @@
             <button class="btn btn-secondary" onclick="toggleColumnMenu()">Columns ▼</button>
             <button class="btn btn-success" onclick="exportToCSV()" id="exportBtn">Export CSV</button>
             <button class="btn btn-success" onclick="showEmailModal()" id="emailBtn" disabled>Send Email</button>
+            <button class="ai-query-btn" onclick="showAIModal()" id="aiQueryBtn" style="display:none;">🤖 AI Query</button>
             <div class="column-toggle">
               <div class="column-toggle-menu" id="columnMenu">
                 <div class="column-toggle-item">
@@ -196,6 +198,44 @@
     </div>
   </div>
 
+  <!-- AI Query Modal -->
+  <div id="aiModal" class="ai-modal">
+    <div class="ai-modal-content">
+      <div class="ai-modal-header">
+        <h2>🤖 AI Database Query</h2>
+        <span class="ai-close" onclick="closeAIModal()">&times;</span>
+      </div>
+
+      <textarea id="aiQueryInput" class="ai-query-input" placeholder="Ask a question in plain English..." rows="3"></textarea>
+
+      <div class="ai-examples">
+        <strong>Example questions:</strong>
+        <code onclick="setAIQuery(this.textContent)">Show all contacts from universities in the United States</code>
+        <code onclick="setAIQuery(this.textContent)">How many board members are there?</code>
+        <code onclick="setAIQuery(this.textContent)">List all contacts with expertise in oyster restoration</code>
+      </div>
+
+      <button class="ai-query-btn" onclick="executeAIQuery()">Execute Query</button>
+
+      <div class="ai-loading" id="aiLoading">⏳ Processing your query...</div>
+
+      <div class="ai-error" id="aiError"></div>
+
+      <div class="ai-results" id="aiResults">
+        <h3>SQL Query:</h3>
+        <div class="ai-sql-query" id="aiSqlQuery"></div>
+
+        <div id="aiInsights" class="ai-insights" style="display:none;"></div>
+
+        <h3>Results (<span id="aiRowCount">0</span> rows):</h3>
+        <table class="ai-results-table" id="aiResultsTable">
+          <thead id="aiResultsHead"></thead>
+          <tbody id="aiResultsBody"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
   <script>
     const API_BASE_URL = 'https://isrs-database-backend.onrender.com';
     let allContacts = [];
@@ -232,6 +272,9 @@
           // Show/hide features based on permissions
           if (!userPermissions.canSendEmails) {
             document.getElementById('emailBtn').style.display = 'none';
+          }
+          if (userPermissions.canUseAI) {
+            document.getElementById('aiQueryBtn').style.display = 'inline-flex';
           }
         }
       } catch (error) {
@@ -534,6 +577,116 @@
     function logout() {
       localStorage.clear();
       window.location.href = '/admin/';
+    }
+
+    // AI Query Functions
+    function showAIModal() {
+      document.getElementById('aiModal').style.display = 'block';
+      document.getElementById('aiQueryInput').focus();
+    }
+
+    function closeAIModal() {
+      document.getElementById('aiModal').style.display = 'none';
+      document.getElementById('aiResults').style.display = 'none';
+      document.getElementById('aiError').style.display = 'none';
+      document.getElementById('aiQueryInput').value = '';
+    }
+
+    function setAIQuery(text) {
+      document.getElementById('aiQueryInput').value = text;
+    }
+
+    async function executeAIQuery() {
+      const question = document.getElementById('aiQueryInput').value.trim();
+      if (!question) {
+        alert('Please enter a question');
+        return;
+      }
+
+      const loading = document.getElementById('aiLoading');
+      const error = document.getElementById('aiError');
+      const results = document.getElementById('aiResults');
+
+      loading.style.display = 'block';
+      error.style.display = 'none';
+      results.style.display = 'none';
+
+      try {
+        const sessionToken = localStorage.getItem('isrs_session');
+        const response = await fetch(`${API_BASE_URL}/api/admin/ai-query`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${sessionToken}`
+          },
+          body: JSON.stringify({ question, includeInsights: true })
+        });
+
+        const data = await response.json();
+        loading.style.display = 'none';
+
+        if (data.success) {
+          // Show SQL query
+          document.getElementById('aiSqlQuery').textContent = data.sql;
+
+          // Show insights if available
+          if (data.insights) {
+            document.getElementById('aiInsights').textContent = data.insights;
+            document.getElementById('aiInsights').style.display = 'block';
+          } else {
+            document.getElementById('aiInsights').style.display = 'none';
+          }
+
+          // Show row count
+          document.getElementById('aiRowCount').textContent = data.rowCount;
+
+          // Build results table
+          const thead = document.getElementById('aiResultsHead');
+          const tbody = document.getElementById('aiResultsBody');
+          thead.innerHTML = '';
+          tbody.innerHTML = '';
+
+          if (data.rows && data.rows.length > 0) {
+            // Create table headers
+            const headerRow = document.createElement('tr');
+            const columns = Object.keys(data.rows[0]);
+            columns.forEach(col => {
+              const th = document.createElement('th');
+              th.textContent = col;
+              headerRow.appendChild(th);
+            });
+            thead.appendChild(headerRow);
+
+            // Create table rows
+            data.rows.forEach(row => {
+              const tr = document.createElement('tr');
+              columns.forEach(col => {
+                const td = document.createElement('td');
+                td.textContent = row[col] || '';
+                tr.appendChild(td);
+              });
+              tbody.appendChild(tr);
+            });
+          }
+
+          results.style.display = 'block';
+        } else {
+          error.textContent = data.error || 'Query failed';
+          error.style.display = 'block';
+        }
+      } catch (err) {
+        loading.style.display = 'none';
+        error.textContent = 'Error: ' + err.message;
+        error.style.display = 'block';
+      }
+    }
+
+    // Close modal when clicking outside
+    window.onclick = function(event) {
+      const modal = document.getElementById('aiModal');
+      if (event.target == modal) {
+        closeAIModal();
+      }
     }
   </script>
 </body>
