@@ -9,6 +9,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Marcellus&family=PT+Serif:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/css/styles.css">
+  <link rel="stylesheet" href="/admin/admin-styles.css">
   <style>
     body { background: var(--light-gray); }
     .admin-nav { background: var(--white); border-bottom: 1px solid var(--border-color); padding: 1rem 2rem; margin-bottom: 2rem; display: flex; justify-content: space-between; align-items: center; }
@@ -21,10 +22,10 @@
 
     /* Compact Table Styling */
     .table-wrapper { overflow-x: auto; }
-    table { width: 100%; border-collapse: collapse; font-size: 0.875rem; }
+    table { width: 100%; border-collapse: collapse; }
     thead { background: var(--light-gray); position: sticky; top: 0; z-index: 10; }
-    th { padding: 0.5rem; text-align: left; font-weight: 600; color: var(--text-dark); border-bottom: 2px solid var(--border-color); white-space: nowrap; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.5px; }
-    td { padding: 0.5rem; border-bottom: 1px solid var(--border-color); }
+    th { text-align: left; border-bottom: 2px solid var(--border-color); white-space: nowrap; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.5px; }
+    td { border-bottom: 1px solid var(--border-color); }
     tbody tr:nth-child(even) { background: #fafafa; }
     tbody tr:hover { background: #f0f0f0; }
 
@@ -256,8 +257,10 @@
                 <td><span class="vote-count"><span>Y:${vote.yes_count || 0}</span><span>N:${vote.no_count || 0}</span><span>A:${vote.abstain_count || 0}</span></span></td>
                 <td>${vote.quorum_met ? '<span style="color: #28a745;">✓</span>' : '<span style="color: #dc3545;">✗</span>'}</td>
                 <td>
-                  <button class="btn" onclick='editVote(${JSON.stringify(vote).replace(/'/g, "&#39;")})'>Edit</button>
-                  <button class="btn btn-danger" onclick="deleteVote('${vote.id}')">Delete</button>
+                  <div class="action-buttons">
+                    <button class="btn btn-edit" onclick='editVote(${JSON.stringify(vote).replace(/'/g, "&#39;")})'>Edit</button>
+                    <button class="btn btn-delete" onclick="deleteVote('${vote.id}')">Delete</button>
+                  </div>
                 </td>
               </tr>
             `}).join('')}

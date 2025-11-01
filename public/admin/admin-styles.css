@@ -49,8 +49,52 @@ h3 {
 /* Button styles */
 button, .btn {
   font-family: 'PT Serif', Georgia, serif;
-  font-size: 14px;
+  font-size: 13px;
   font-weight: 600;
+  padding: 0.35rem 0.75rem;
+  border-radius: 4px;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-primary {
+  background: var(--primary-blue);
+  color: white;
+}
+
+.btn-primary:hover {
+  background: var(--secondary-blue);
+}
+
+.btn-edit {
+  background: #3b82f6;
+  color: white;
+}
+
+.btn-edit:hover {
+  background: #2563eb;
+}
+
+.btn-delete {
+  background: #dc3545;
+  color: white;
+}
+
+.btn-delete:hover {
+  background: #c82333;
+}
+
+.btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Action buttons container */
+.action-buttons {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
 }
 
 /* Input and form styles */
@@ -63,11 +107,18 @@ input, textarea, select {
 table {
   font-family: 'PT Serif', Georgia, serif;
   font-size: 14px;
+  line-height: 1.5;
 }
 
 th {
   font-weight: 600;
   font-family: 'Marcellus', Georgia, serif;
+  padding: 0.75rem 0.75rem;
+}
+
+td {
+  padding: 0.75rem 0.75rem;
+  vertical-align: middle;
 }
 
 /* AI Query Button */
