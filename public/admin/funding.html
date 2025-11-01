@@ -18,23 +18,49 @@
     .data-table { background: var(--white); border-radius: 8px; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05); overflow: hidden; }
     .table-header { padding: 1.5rem; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; }
     .table-header h1 { font-family: 'Marcellus', Georgia, serif; font-size: 2rem; margin: 0; color: var(--primary-blue); }
-    table { width: 100%; border-collapse: collapse; }
-    thead { background: var(--light-gray); }
-    th { padding: 1rem; text-align: left; font-weight: 600; color: var(--text-dark); border-bottom: 2px solid var(--border-color); }
-    td { padding: 1rem; border-bottom: 1px solid var(--border-color); }
-    tr:hover { background: var(--light-gray); }
+
+    /* Compact Table Styling */
+    .table-wrapper { overflow-x: auto; }
+    table { width: 100%; border-collapse: collapse; font-size: 0.875rem; }
+    thead { background: var(--light-gray); position: sticky; top: 0; z-index: 10; }
+    th { padding: 0.5rem; text-align: left; font-weight: 600; color: var(--text-dark); border-bottom: 2px solid var(--border-color); white-space: nowrap; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.5px; }
+    td { padding: 0.5rem; border-bottom: 1px solid var(--border-color); }
+    tbody tr:nth-child(even) { background: #fafafa; }
+    tbody tr:hover { background: #f0f0f0; }
+
+    /* Sortable Headers */
+    th.sortable { cursor: pointer; user-select: none; transition: background 0.2s; }
+    th.sortable:hover { background: #e0e0e0; }
+    th.sortable .sort-indicator { display: inline-block; margin-left: 0.25rem; opacity: 0.3; font-size: 0.7rem; }
+    th.sortable.sort-asc .sort-indicator { opacity: 1; color: #2563eb; }
+    th.sortable.sort-desc .sort-indicator { opacity: 1; color: #2563eb; }
+
+    /* Loading States */
     .loading { text-align: center; padding: 3rem; color: var(--text-light); }
+    .loading::before { content: ''; display: block; width: 40px; height: 40px; margin: 0 auto 1rem; border: 3px solid #f3f4f6; border-top-color: #3b82f6; border-radius: 50%; animation: spin 1s linear infinite; }
+    @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+    .empty-state { text-align: center; padding: 3rem; color: var(--text-light); }
+
     .error { background: #f8d7da; color: #721c24; padding: 1rem; border-radius: 4px; margin: 1rem; }
     .success { background: #d4edda; color: #155724; padding: 1rem; border-radius: 4px; margin: 1rem; }
-    .btn { padding: 0.5rem 1rem; background: var(--primary-blue); color: white; border: none; border-radius: 4px; cursor: pointer; margin-right: 0.5rem; }
+    .btn { padding: 0.5rem 1rem; background: var(--primary-blue); color: white; border: none; border-radius: 4px; cursor: pointer; margin-right: 0.5rem; font-size: 0.875rem; }
     .btn-success { background: #28a745; }
     .btn-danger { background: #dc3545; }
     .btn:disabled { opacity: 0.6; cursor: not-allowed; }
-    .status-badge { padding: 0.25rem 0.75rem; border-radius: 12px; font-size: 0.85rem; font-weight: 600; }
-    .status-pending { background: #fff3cd; color: #856404; }
-    .status-contacted { background: #d1ecf1; color: #0c5460; }
-    .status-committed { background: #d4edda; color: #155724; }
-    .status-declined { background: #f8d7da; color: #721c24; }
+
+    /* Status Badges - Updated for Funding */
+    .status-badge { display: inline-flex; padding: 0.25rem 0.5rem; border-radius: 9999px; font-size: 0.75rem; font-weight: 600; }
+    .status-pending, .status-pipeline { background: #e0e7ff; color: #3730a3; }
+    .status-contacted { background: #dbeafe; color: #1e40af; }
+    .status-committed { background: #d1fae5; color: #065f46; }
+    .status-received { background: #e9d5ff; color: #6b21a8; }
+    .status-declined, .status-rejected { background: #fee2e2; color: #991b1b; }
+
+    /* Amount formatting */
+    .amount { font-weight: 600; color: #065f46; white-space: nowrap; }
+
+    /* Stats Bar */
+    .stats-bar { padding: 1rem 1.5rem; background: #f8f9fa; display: flex; justify-content: space-between; align-items: center; font-size: 0.875rem; border-top: 1px solid var(--border-color); }
 
     /* Modal Styles */
     .modal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); }
@@ -69,8 +95,14 @@
         <h1>Funding Prospects</h1>
         <button class="btn btn-success" onclick="showAddForm()">+ Add New Prospect</button>
       </div>
-      <div id="tableContent">
-        <div class="loading">Loading funding prospects...</div>
+      <div class="table-wrapper">
+        <div id="tableContent">
+          <div class="loading">Loading funding prospects...</div>
+        </div>
+      </div>
+      <div class="stats-bar" id="statsBar" style="display: none;">
+        <span>Total Prospects: <strong id="totalCount">0</strong></span>
+        <span>Total Amount: <strong id="totalAmount">$0</strong></span>
       </div>
     </div>
   </div>
@@ -133,6 +165,9 @@
   <script>
     const API_BASE_URL = 'https://isrs-database-backend.onrender.com';
     let allOrganizations = [];
+    let allProspects = [];
+    let sortField = 'date_contacted';
+    let sortDirection = 'desc';
 
     window.addEventListener('DOMContentLoaded', () => {
       const sessionToken = localStorage.getItem('isrs_session');
@@ -167,7 +202,8 @@
         });
         const data = await response.json();
         if (response.ok && data.success) {
-          displayFunding(data.data);
+          allProspects = data.data;
+          displayFunding(allProspects);
         } else {
           document.getElementById('tableContent').innerHTML = `<div class="error">Failed to load funding prospects: ${data.error || 'Unknown error'}</div>`;
         }
@@ -177,41 +213,100 @@
     }
 
     function displayFunding(prospects) {
+      if (prospects.length === 0) {
+        document.getElementById('tableContent').innerHTML = '<div class="empty-state">No funding prospects found</div>';
+        document.getElementById('statsBar').style.display = 'none';
+        return;
+      }
+
+      // Sort prospects
+      const sortedProspects = [...prospects].sort((a, b) => {
+        let aVal = a[sortField] || '';
+        let bVal = b[sortField] || '';
+
+        // Handle dates
+        if (sortField === 'date_contacted') {
+          aVal = new Date(aVal).getTime() || 0;
+          bVal = new Date(bVal).getTime() || 0;
+        } else if (sortField === 'amount') {
+          aVal = parseFloat(aVal) || 0;
+          bVal = parseFloat(bVal) || 0;
+        } else if (typeof aVal === 'string') {
+          aVal = aVal.toLowerCase();
+          bVal = bVal.toLowerCase();
+        }
+
+        if (sortDirection === 'asc') {
+          return aVal > bVal ? 1 : -1;
+        } else {
+          return aVal < bVal ? 1 : -1;
+        }
+      });
+
+      // Calculate total amount
+      const totalAmount = prospects.reduce((sum, p) => sum + (parseFloat(p.amount) || 0), 0);
+
       const html = `
         <table>
           <thead>
             <tr>
-              <th>Organization</th>
+              <th class="sortable ${sortField === 'organization_name' ? 'sort-' + sortDirection : ''}" onclick="handleSort('organization_name')">
+                Organization <span class="sort-indicator">${getSortIcon('organization_name')}</span>
+              </th>
               <th>Contact Person</th>
-              <th>Amount</th>
-              <th>Status</th>
-              <th>Date Contacted</th>
+              <th class="sortable ${sortField === 'amount' ? 'sort-' + sortDirection : ''}" onclick="handleSort('amount')">
+                Amount <span class="sort-indicator">${getSortIcon('amount')}</span>
+              </th>
+              <th class="sortable ${sortField === 'status' ? 'sort-' + sortDirection : ''}" onclick="handleSort('status')">
+                Status <span class="sort-indicator">${getSortIcon('status')}</span>
+              </th>
+              <th class="sortable ${sortField === 'date_contacted' ? 'sort-' + sortDirection : ''}" onclick="handleSort('date_contacted')">
+                Date Contacted <span class="sort-indicator">${getSortIcon('date_contacted')}</span>
+              </th>
               <th>Notes</th>
               <th>Actions</th>
             </tr>
           </thead>
           <tbody>
-            ${prospects.map(prospect => `
+            ${sortedProspects.map(prospect => {
+              const statusDisplay = (prospect.status || 'pending').charAt(0).toUpperCase() + (prospect.status || 'pending').slice(1);
+
+              return `
               <tr>
                 <td>${prospect.organization_name || '-'}</td>
                 <td>${prospect.contact_person || '-'}</td>
-                <td>${prospect.amount ? '$' + parseFloat(prospect.amount).toLocaleString() : '-'}</td>
-                <td><span class="status-badge status-${prospect.status || 'pending'}">${prospect.status || 'pending'}</span></td>
-                <td>${prospect.date_contacted ? new Date(prospect.date_contacted).toLocaleDateString() : '-'}</td>
-                <td>${prospect.notes ? prospect.notes.substring(0, 50) + (prospect.notes.length > 50 ? '...' : '') : '-'}</td>
+                <td><span class="amount">${prospect.amount ? '$' + parseFloat(prospect.amount).toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 }) : '-'}</span></td>
+                <td><span class="status-badge status-${prospect.status || 'pending'}">${statusDisplay}</span></td>
+                <td>${prospect.date_contacted ? new Date(prospect.date_contacted).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' }) : '-'}</td>
+                <td style="max-width: 200px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;" title="${prospect.notes || ''}">${prospect.notes ? prospect.notes.substring(0, 50) + (prospect.notes.length > 50 ? '...' : '') : '-'}</td>
                 <td>
-                  <button class="btn" onclick='editProspect(${JSON.stringify(prospect)})'>Edit</button>
+                  <button class="btn" onclick='editProspect(${JSON.stringify(prospect).replace(/'/g, "&#39;")})'>Edit</button>
                   <button class="btn btn-danger" onclick="deleteProspect('${prospect.id}')">Delete</button>
                 </td>
               </tr>
-            `).join('')}
+            `}).join('')}
           </tbody>
         </table>
-        <div style="padding: 1.5rem; text-align: center;">
-          <p>Total Funding Prospects: ${prospects.length}</p>
-        </div>
       `;
       document.getElementById('tableContent').innerHTML = html;
+      document.getElementById('totalCount').textContent = prospects.length;
+      document.getElementById('totalAmount').textContent = '$' + totalAmount.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 });
+      document.getElementById('statsBar').style.display = 'flex';
+    }
+
+    function handleSort(field) {
+      if (sortField === field) {
+        sortDirection = sortDirection === 'asc' ? 'desc' : 'asc';
+      } else {
+        sortField = field;
+        sortDirection = 'asc';
+      }
+      displayFunding(allProspects);
+    }
+
+    function getSortIcon(field) {
+      if (sortField !== field) return '↕';
+      return sortDirection === 'asc' ? '↑' : '↓';
     }
 
     function showAddForm() {

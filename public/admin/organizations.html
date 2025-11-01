@@ -84,37 +84,27 @@
       font-family: inherit;
     }
 
-    table {
-      width: 100%;
-      border-collapse: collapse;
-    }
+    /* Compact Table Styling */
+    .table-wrapper { overflow-x: auto; }
+    table { width: 100%; border-collapse: collapse; font-size: 0.875rem; }
+    thead { background: var(--light-gray); position: sticky; top: 0; z-index: 10; }
+    th { padding: 0.5rem; text-align: left; font-weight: 600; color: var(--text-dark); border-bottom: 2px solid var(--border-color); white-space: nowrap; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.5px; }
+    td { padding: 0.5rem; border-bottom: 1px solid var(--border-color); }
+    tbody tr:nth-child(even) { background: #fafafa; }
+    tbody tr:hover { background: #f0f0f0; }
 
-    thead {
-      background: var(--light-gray);
-    }
+    /* Sortable Headers */
+    th.sortable { cursor: pointer; user-select: none; transition: background 0.2s; }
+    th.sortable:hover { background: #e0e0e0; }
+    th.sortable .sort-indicator { display: inline-block; margin-left: 0.25rem; opacity: 0.3; font-size: 0.7rem; }
+    th.sortable.sort-asc .sort-indicator { opacity: 1; color: #2563eb; }
+    th.sortable.sort-desc .sort-indicator { opacity: 1; color: #2563eb; }
 
-    th {
-      padding: 1rem;
-      text-align: left;
-      font-weight: 600;
-      color: var(--text-dark);
-      border-bottom: 2px solid var(--border-color);
-    }
-
-    td {
-      padding: 1rem;
-      border-bottom: 1px solid var(--border-color);
-    }
-
-    tr:hover {
-      background: var(--light-gray);
-    }
-
-    .loading {
-      text-align: center;
-      padding: 3rem;
-      color: var(--text-light);
-    }
+    /* Loading States */
+    .loading { text-align: center; padding: 3rem; color: var(--text-light); }
+    .loading::before { content: ''; display: block; width: 40px; height: 40px; margin: 0 auto 1rem; border: 3px solid #f3f4f6; border-top-color: #3b82f6; border-radius: 50%; animation: spin 1s linear infinite; }
+    @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+    .empty-state { text-align: center; padding: 3rem; color: var(--text-light); }
 
     .error {
       background: #f8d7da;
@@ -124,12 +114,8 @@
       margin: 1rem;
     }
 
-    .pagination {
-      padding: 1.5rem;
-      display: flex;
-      justify-content: center;
-      gap: 1rem;
-    }
+    /* Stats Bar */
+    .stats-bar { padding: 1rem 1.5rem; background: #f8f9fa; display: flex; justify-content: space-between; align-items: center; font-size: 0.875rem; border-top: 1px solid var(--border-color); }
 
     .btn {
       padding: 0.5rem 1rem;
@@ -175,8 +161,13 @@
         </div>
       </div>
 
-      <div id="tableContent">
-        <div class="loading">Loading organizations...</div>
+      <div class="table-wrapper">
+        <div id="tableContent">
+          <div class="loading">Loading organizations...</div>
+        </div>
+      </div>
+      <div class="stats-bar" id="statsBar" style="display: none;">
+        <span>Total Organizations: <strong id="totalCount">0</strong></span>
       </div>
     </div>
   </div>
@@ -222,6 +213,9 @@
   <script>
     const API_BASE_URL = 'https://isrs-database-backend.onrender.com';
     let userPermissions = null;
+    let allOrganizations = [];
+    let sortField = 'name';
+    let sortDirection = 'asc';
 
     // Check auth
     window.addEventListener('DOMContentLoaded', async () => {
@@ -266,7 +260,8 @@
         const data = await response.json();
 
         if (response.ok && data.success) {
-          displayOrganizations(data.data);
+          allOrganizations = data.data;
+          displayOrganizations(allOrganizations);
         } else {
           document.getElementById('tableContent').innerHTML = `
             <div class="error">Failed to load organizations: ${data.error || 'Unknown error'}</div>
@@ -280,35 +275,78 @@
     }
 
     function displayOrganizations(organizations) {
+      if (organizations.length === 0) {
+        document.getElementById('tableContent').innerHTML = '<div class="empty-state">No organizations found</div>';
+        document.getElementById('statsBar').style.display = 'none';
+        return;
+      }
+
+      // Sort organizations
+      const sortedOrganizations = [...organizations].sort((a, b) => {
+        let aVal = a[sortField] || '';
+        let bVal = b[sortField] || '';
+
+        if (typeof aVal === 'string') {
+          aVal = aVal.toLowerCase();
+          bVal = bVal.toLowerCase();
+        }
+
+        if (sortDirection === 'asc') {
+          return aVal > bVal ? 1 : -1;
+        } else {
+          return aVal < bVal ? 1 : -1;
+        }
+      });
+
       const html = `
         <table>
           <thead>
             <tr>
-              <th>Name</th>
-              <th>Type</th>
-              <th>Country</th>
+              <th class="sortable ${sortField === 'name' ? 'sort-' + sortDirection : ''}" onclick="handleSort('name')">
+                Name <span class="sort-indicator">${getSortIcon('name')}</span>
+              </th>
+              <th class="sortable ${sortField === 'type' ? 'sort-' + sortDirection : ''}" onclick="handleSort('type')">
+                Type <span class="sort-indicator">${getSortIcon('type')}</span>
+              </th>
+              <th class="sortable ${sortField === 'country' ? 'sort-' + sortDirection : ''}" onclick="handleSort('country')">
+                Country <span class="sort-indicator">${getSortIcon('country')}</span>
+              </th>
               <th>Website</th>
               <th>Notes</th>
             </tr>
           </thead>
           <tbody>
-            ${organizations.map(org => `
+            ${sortedOrganizations.map(org => `
               <tr>
                 <td>${org.name || '-'}</td>
                 <td>${org.type || '-'}</td>
                 <td>${org.country || '-'}</td>
-                <td>${org.website ? `<a href="${org.website}" target="_blank">${org.website}</a>` : '-'}</td>
-                <td>${org.notes ? org.notes.substring(0, 100) + (org.notes.length > 100 ? '...' : '') : '-'}</td>
+                <td>${org.website ? `<a href="${org.website}" target="_blank" style="color: #2563eb; text-decoration: none;">🔗 Link</a>` : '-'}</td>
+                <td style="max-width: 300px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;" title="${org.notes || ''}">${org.notes ? org.notes.substring(0, 100) + (org.notes.length > 100 ? '...' : '') : '-'}</td>
               </tr>
             `).join('')}
           </tbody>
         </table>
-        <div class="pagination">
-          <p>Total Organizations: ${organizations.length}</p>
-        </div>
       `;
 
       document.getElementById('tableContent').innerHTML = html;
+      document.getElementById('totalCount').textContent = organizations.length;
+      document.getElementById('statsBar').style.display = 'flex';
+    }
+
+    function handleSort(field) {
+      if (sortField === field) {
+        sortDirection = sortDirection === 'asc' ? 'desc' : 'asc';
+      } else {
+        sortField = field;
+        sortDirection = 'asc';
+      }
+      displayOrganizations(allOrganizations);
+    }
+
+    function getSortIcon(field) {
+      if (sortField !== field) return '↕';
+      return sortDirection === 'asc' ? '↑' : '↓';
     }
 
     function logout() {
@@ -317,15 +355,19 @@
     }
 
     // Search functionality
-    document.getElementById('searchBox').addEventListener('input', (e) => {
-      const searchTerm = e.target.value.toLowerCase();
-      const rows = document.querySelectorAll('tbody tr');
-
-      rows.forEach(row => {
-        const text = row.textContent.toLowerCase();
-        row.style.display = text.includes(searchTerm) ? '' : 'none';
-      });
-    });
+    let searchBox;
+    setTimeout(() => {
+      searchBox = document.getElementById('searchBox');
+      if (searchBox) {
+        searchBox.addEventListener('input', (e) => {
+          const searchTerm = e.target.value.toLowerCase();
+          const filteredOrgs = allOrganizations.filter(org =>
+            JSON.stringify(org).toLowerCase().includes(searchTerm)
+          );
+          displayOrganizations(filteredOrgs);
+        });
+      }
+    }, 100);
 
     // AI Query Functions
     function showAIModal() {

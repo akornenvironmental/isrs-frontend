@@ -18,22 +18,48 @@
     .data-table { background: var(--white); border-radius: 8px; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05); overflow: hidden; }
     .table-header { padding: 1.5rem; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; }
     .table-header h1 { font-family: 'Marcellus', Georgia, serif; font-size: 2rem; margin: 0; color: var(--primary-blue); }
-    table { width: 100%; border-collapse: collapse; }
-    thead { background: var(--light-gray); }
-    th { padding: 1rem; text-align: left; font-weight: 600; color: var(--text-dark); border-bottom: 2px solid var(--border-color); }
-    td { padding: 1rem; border-bottom: 1px solid var(--border-color); }
-    tr:hover { background: var(--light-gray); }
+
+    /* Compact Table Styling */
+    .table-wrapper { overflow-x: auto; }
+    table { width: 100%; border-collapse: collapse; font-size: 0.875rem; }
+    thead { background: var(--light-gray); position: sticky; top: 0; z-index: 10; }
+    th { padding: 0.5rem; text-align: left; font-weight: 600; color: var(--text-dark); border-bottom: 2px solid var(--border-color); white-space: nowrap; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.5px; }
+    td { padding: 0.5rem; border-bottom: 1px solid var(--border-color); }
+    tbody tr:nth-child(even) { background: #fafafa; }
+    tbody tr:hover { background: #f0f0f0; }
+
+    /* Sortable Headers */
+    th.sortable { cursor: pointer; user-select: none; transition: background 0.2s; }
+    th.sortable:hover { background: #e0e0e0; }
+    th.sortable .sort-indicator { display: inline-block; margin-left: 0.25rem; opacity: 0.3; font-size: 0.7rem; }
+    th.sortable.sort-asc .sort-indicator { opacity: 1; color: #2563eb; }
+    th.sortable.sort-desc .sort-indicator { opacity: 1; color: #2563eb; }
+
+    /* Loading States */
     .loading { text-align: center; padding: 3rem; color: var(--text-light); }
+    .loading::before { content: ''; display: block; width: 40px; height: 40px; margin: 0 auto 1rem; border: 3px solid #f3f4f6; border-top-color: #3b82f6; border-radius: 50%; animation: spin 1s linear infinite; }
+    @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+    .empty-state { text-align: center; padding: 3rem; color: var(--text-light); }
+
     .error { background: #f8d7da; color: #721c24; padding: 1rem; border-radius: 4px; margin: 1rem; }
     .success { background: #d4edda; color: #155724; padding: 1rem; border-radius: 4px; margin: 1rem; }
-    .btn { padding: 0.5rem 1rem; background: var(--primary-blue); color: white; border: none; border-radius: 4px; cursor: pointer; margin-right: 0.5rem; }
+    .btn { padding: 0.5rem 1rem; background: var(--primary-blue); color: white; border: none; border-radius: 4px; cursor: pointer; margin-right: 0.5rem; font-size: 0.875rem; }
     .btn-success { background: #28a745; }
     .btn-danger { background: #dc3545; }
     .btn:disabled { opacity: 0.6; cursor: not-allowed; }
-    .status-badge { padding: 0.25rem 0.75rem; border-radius: 12px; font-size: 0.85rem; font-weight: 600; }
-    .status-passed { background: #d4edda; color: #155724; }
-    .status-failed { background: #f8d7da; color: #721c24; }
-    .status-pending { background: #fff3cd; color: #856404; }
+
+    /* Status Badges - Updated for Board Votes */
+    .status-badge { display: inline-flex; padding: 0.25rem 0.5rem; border-radius: 9999px; font-size: 0.75rem; font-weight: 600; }
+    .status-passed, .status-carried { background: #d4edda; color: #155724; }
+    .status-failed { background: #fee2e2; color: #991b1b; }
+    .status-pending, .status-no-decision { background: #fef3c7; color: #92400e; }
+
+    /* Vote Count Badge */
+    .vote-count { font-size: 0.75rem; color: #666; white-space: nowrap; }
+    .vote-count span { margin-right: 0.5rem; }
+
+    /* Stats Bar */
+    .stats-bar { padding: 1rem 1.5rem; background: #f8f9fa; display: flex; justify-content: space-between; align-items: center; font-size: 0.875rem; border-top: 1px solid var(--border-color); }
 
     /* Modal Styles */
     .modal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); }
@@ -70,8 +96,13 @@
         <h1>Board Votes</h1>
         <button class="btn btn-success" onclick="showAddForm()">+ Add New Vote</button>
       </div>
-      <div id="tableContent">
-        <div class="loading">Loading board votes...</div>
+      <div class="table-wrapper">
+        <div id="tableContent">
+          <div class="loading">Loading board votes...</div>
+        </div>
+      </div>
+      <div class="stats-bar" id="statsBar" style="display: none;">
+        <span>Total Votes: <strong id="totalCount">0</strong></span>
       </div>
     </div>
   </div>
@@ -136,6 +167,8 @@
   <script>
     const API_BASE_URL = 'https://isrs-database-backend.onrender.com';
     let allVotes = [];
+    let sortField = 'vote_date';
+    let sortDirection = 'desc';
 
     window.addEventListener('DOMContentLoaded', () => {
       const sessionToken = localStorage.getItem('isrs_session');
@@ -165,43 +198,90 @@
     }
 
     function displayVotes(votes) {
+      if (votes.length === 0) {
+        document.getElementById('tableContent').innerHTML = '<div class="empty-state">No board votes found</div>';
+        document.getElementById('statsBar').style.display = 'none';
+        return;
+      }
+
+      // Sort votes
+      const sortedVotes = [...votes].sort((a, b) => {
+        let aVal = a[sortField] || '';
+        let bVal = b[sortField] || '';
+
+        // Handle dates
+        if (sortField === 'vote_date') {
+          aVal = new Date(aVal).getTime() || 0;
+          bVal = new Date(bVal).getTime() || 0;
+        } else if (typeof aVal === 'string') {
+          aVal = aVal.toLowerCase();
+          bVal = bVal.toLowerCase();
+        }
+
+        if (sortDirection === 'asc') {
+          return aVal > bVal ? 1 : -1;
+        } else {
+          return aVal < bVal ? 1 : -1;
+        }
+      });
+
       const html = `
         <table>
           <thead>
             <tr>
-              <th>Motion</th>
-              <th>Date</th>
-              <th>Status</th>
-              <th>Yes</th>
-              <th>No</th>
-              <th>Abstain</th>
+              <th class="sortable ${sortField === 'motion' ? 'sort-' + sortDirection : ''}" onclick="handleSort('motion')">
+                Motion <span class="sort-indicator">${getSortIcon('motion')}</span>
+              </th>
+              <th class="sortable ${sortField === 'vote_date' ? 'sort-' + sortDirection : ''}" onclick="handleSort('vote_date')">
+                Date <span class="sort-indicator">${getSortIcon('vote_date')}</span>
+              </th>
+              <th class="sortable ${sortField === 'status' ? 'sort-' + sortDirection : ''}" onclick="handleSort('status')">
+                Result <span class="sort-indicator">${getSortIcon('status')}</span>
+              </th>
+              <th>Votes</th>
               <th>Quorum</th>
               <th>Actions</th>
             </tr>
           </thead>
           <tbody>
-            ${votes.map(vote => `
+            ${sortedVotes.map(vote => {
+              const statusDisplay = vote.status === 'passed' ? 'Carried' : vote.status === 'failed' ? 'Failed' : 'No Decision';
+              const statusClass = vote.status === 'passed' ? 'status-carried' : vote.status === 'failed' ? 'status-failed' : 'status-no-decision';
+
+              return `
               <tr>
-                <td>${vote.motion || '-'}</td>
-                <td>${vote.vote_date ? new Date(vote.vote_date).toLocaleDateString() : '-'}</td>
-                <td><span class="status-badge status-${vote.status || 'pending'}">${vote.status || 'pending'}</span></td>
-                <td>${vote.yes_count || 0}</td>
-                <td>${vote.no_count || 0}</td>
-                <td>${vote.abstain_count || 0}</td>
-                <td>${vote.quorum_met ? 'Yes' : 'No'}</td>
+                <td style="max-width: 400px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;" title="${vote.motion || '-'}">${vote.motion || '-'}</td>
+                <td>${vote.vote_date ? new Date(vote.vote_date).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' }) : '-'}</td>
+                <td><span class="status-badge ${statusClass}">${statusDisplay}</span></td>
+                <td><span class="vote-count"><span>Y:${vote.yes_count || 0}</span><span>N:${vote.no_count || 0}</span><span>A:${vote.abstain_count || 0}</span></span></td>
+                <td>${vote.quorum_met ? '<span style="color: #28a745;">✓</span>' : '<span style="color: #dc3545;">✗</span>'}</td>
                 <td>
-                  <button class="btn" onclick='editVote(${JSON.stringify(vote)})'>Edit</button>
+                  <button class="btn" onclick='editVote(${JSON.stringify(vote).replace(/'/g, "&#39;")})'>Edit</button>
                   <button class="btn btn-danger" onclick="deleteVote('${vote.id}')">Delete</button>
                 </td>
               </tr>
-            `).join('')}
+            `}).join('')}
           </tbody>
         </table>
-        <div style="padding: 1.5rem; text-align: center;">
-          <p>Total Votes: ${votes.length}</p>
-        </div>
       `;
       document.getElementById('tableContent').innerHTML = html;
+      document.getElementById('totalCount').textContent = votes.length;
+      document.getElementById('statsBar').style.display = 'flex';
+    }
+
+    function handleSort(field) {
+      if (sortField === field) {
+        sortDirection = sortDirection === 'asc' ? 'desc' : 'asc';
+      } else {
+        sortField = field;
+        sortDirection = 'asc';
+      }
+      displayVotes(allVotes);
+    }
+
+    function getSortIcon(field) {
+      if (sortField !== field) return '↕';
+      return sortDirection === 'asc' ? '↑' : '↓';
     }
 
     function showAddForm() {
