@@ -237,10 +237,8 @@
         const data = await response.json();
         if (data.success) {
           userPermissions = data.permissions || {};
-          // Show AI button if user has permission
-          if (userPermissions.canUseAI) {
-            document.getElementById('aiQueryBtn').style.display = 'inline-flex';
-          }
+          // AI Query is now available to all users
+          document.getElementById('aiQueryBtn').style.display = 'inline-flex';
         }
       } catch (error) {
         console.error('Failed to load permissions:', error);
@@ -318,7 +316,7 @@
           <tbody>
             ${sortedOrganizations.map(org => `
               <tr>
-                <td>${org.name || '-'}</td>
+                <td>${org.website ? `<a href="${org.website}" target="_blank" rel="noopener noreferrer" style="color: #2563eb; text-decoration: none;">${org.name}</a>` : (org.name || '-')}</td>
                 <td>${org.type || '-'}</td>
                 <td>${org.country || '-'}</td>
                 <td>${org.website ? `<a href="${org.website}" target="_blank" style="color: #2563eb; text-decoration: none;">🔗 Link</a>` : '-'}</td>

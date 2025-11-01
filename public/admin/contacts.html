@@ -443,9 +443,8 @@
           if (!userPermissions.canSendEmails) {
             document.getElementById('emailBtn').style.display = 'none';
           }
-          if (userPermissions.canUseAI) {
-            document.getElementById('aiQueryBtn').style.display = 'inline-flex';
-          }
+          // AI Query is now available to all users
+          document.getElementById('aiQueryBtn').style.display = 'inline-flex';
         }
       } catch (error) {
         console.error('Failed to load permissions:', error);
