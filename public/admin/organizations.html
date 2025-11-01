@@ -322,7 +322,7 @@
                 <td>${org.type || '-'}</td>
                 <td>${org.country || '-'}</td>
                 <td>${org.website ? `<a href="${org.website}" target="_blank" style="color: #2563eb; text-decoration: none;">🔗 Link</a>` : '-'}</td>
-                <td style="max-width: 300px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;" title="${org.notes || ''}">${org.notes ? org.notes.substring(0, 100) + (org.notes.length > 100 ? '...' : '') : '-'}</td>
+                <td style="max-width: 300px; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical;" title="${org.notes || ''}">${org.notes || '-'}</td>
               </tr>
             `).join('')}
           </tbody>
@@ -478,6 +478,13 @@
         closeAIModal();
       }
     }
+
+    // ESC key to close modal
+    document.addEventListener('keydown', function(event) {
+      if (event.key === 'Escape' || event.key === 'Esc') {
+        closeAIModal();
+      }
+    });
   </script>
 </body>
 </html>

@@ -410,6 +410,13 @@
         closeModal();
       }
     }
+
+    // ESC key to close modal
+    document.addEventListener('keydown', function(event) {
+      if (event.key === 'Escape' || event.key === 'Esc') {
+        closeModal();
+      }
+    });
   </script>
 </body>
 </html>

@@ -688,6 +688,21 @@
         closeAIModal();
       }
     }
+
+    // ESC key to close modals
+    document.addEventListener('keydown', function(event) {
+      if (event.key === 'Escape' || event.key === 'Esc') {
+        // Check which modal is visible and close it
+        const emailModal = document.getElementById('emailModal');
+        const aiModal = document.getElementById('aiModal');
+        if (emailModal && emailModal.classList.contains('show')) {
+          closeEmailModal();
+        }
+        if (aiModal && aiModal.style.display === 'block') {
+          closeAIModal();
+        }
+      }
+    });
   </script>
 </body>
 </html>

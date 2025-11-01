@@ -279,7 +279,7 @@
                 <td><span class="amount">${prospect.amount ? '$' + parseFloat(prospect.amount).toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 }) : '-'}</span></td>
                 <td><span class="status-badge status-${prospect.status || 'pending'}">${statusDisplay}</span></td>
                 <td>${prospect.date_contacted ? new Date(prospect.date_contacted).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' }) : '-'}</td>
-                <td style="max-width: 200px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;" title="${prospect.notes || ''}">${prospect.notes ? prospect.notes.substring(0, 50) + (prospect.notes.length > 50 ? '...' : '') : '-'}</td>
+                <td style="max-width: 300px; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical;" title="${prospect.notes || ''}">${prospect.notes || '-'}</td>
                 <td>
                   <div class="action-buttons">
                     <button class="btn btn-edit" onclick='editProspect(${JSON.stringify(prospect).replace(/'/g, "&#39;")})'>Edit</button>
@@ -445,6 +445,13 @@
         closeModal();
       }
     }
+
+    // ESC key to close modal
+    document.addEventListener('keydown', function(event) {
+      if (event.key === 'Escape' || event.key === 'Esc') {
+        closeModal();
+      }
+    });
   </script>
 </body>
 </html>
