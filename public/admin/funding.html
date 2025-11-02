@@ -155,6 +155,50 @@
           <textarea id="notes" name="notes"></textarea>
         </div>
 
+        <hr style="margin: 1.5rem 0; border: none; border-top: 1px solid var(--border-color);">
+
+        <h3 style="margin-bottom: 1rem; font-size: 1.1rem; color: var(--primary-blue);">ICSR Funding History</h3>
+
+        <div class="form-group">
+          <label style="display: flex; align-items: center; cursor: pointer;">
+            <input type="checkbox" id="has_funded_icsr" name="has_funded_icsr" style="width: auto; margin-right: 0.5rem;">
+            Has funded ICSR conferences in the past
+          </label>
+        </div>
+
+        <div id="icsrDetails" style="display: none;">
+          <div class="form-group">
+            <label for="icsr_funding_years">Years Funded (comma-separated, e.g., 2020, 2022, 2024)</label>
+            <input type="text" id="icsr_funding_years" name="icsr_funding_years" placeholder="2020, 2022, 2024">
+          </div>
+
+          <div class="form-group">
+            <label for="icsr_funding_notes">Funding Details/Notes</label>
+            <textarea id="icsr_funding_notes" name="icsr_funding_notes" placeholder="Details about past ICSR funding..."></textarea>
+          </div>
+        </div>
+
+        <hr style="margin: 1.5rem 0; border: none; border-top: 1px solid var(--border-color);">
+
+        <h3 style="margin-bottom: 1rem; font-size: 1.1rem; color: var(--primary-blue);">Lead Assignment</h3>
+
+        <div class="form-group">
+          <label for="lead_contact_ids">Assigned Leads (Board Members/Advisors)</label>
+          <select id="lead_contact_ids" name="lead_contact_ids" multiple style="height: 150px;">
+            <option value="">Loading available leads...</option>
+          </select>
+          <small style="color: var(--text-light); margin-top: 0.25rem; display: block;">Hold Ctrl (Cmd on Mac) to select multiple leads</small>
+        </div>
+
+        <div id="assignedLeadsDisplay" style="margin-top: 0.5rem; display: none;">
+          <strong>Currently assigned:</strong>
+          <div id="currentLeadsList" style="margin-top: 0.5rem;"></div>
+        </div>
+
+        <div id="notifySection" style="margin-top: 1rem; display: none;">
+          <button type="button" class="btn" onclick="notifyLeads()" id="notifyBtn">📧 Send Email to Assigned Leads</button>
+        </div>
+
         <div class="form-actions">
           <button type="button" class="btn" onclick="closeModal()">Cancel</button>
           <button type="submit" class="btn btn-success" id="submitBtn">Save</button>
@@ -167,6 +211,8 @@
     const API_BASE_URL = 'https://isrs-database-backend.onrender.com';
     let allOrganizations = [];
     let allProspects = [];
+    let availableLeads = [];
+    let currentProspectId = null;
     let sortField = 'date_contacted';
     let sortDirection = 'desc';
 
@@ -178,6 +224,8 @@
       }
       loadOrganizations();
       loadFunding();
+      loadAvailableLeads();
+      setupICSRToggle();
     });
 
     async function loadOrganizations() {
@@ -193,6 +241,29 @@
       } catch (error) {
         console.error('Failed to load organizations:', error);
       }
+    }
+
+    async function loadAvailableLeads() {
+      const sessionToken = localStorage.getItem('isrs_session');
+      try {
+        const response = await fetch(`${API_BASE_URL}/api/admin/funding/available-leads`, {
+          headers: { 'Authorization': `Bearer ${sessionToken}` }
+        });
+        const data = await response.json();
+        if (response.ok && data.success) {
+          availableLeads = data.data;
+        }
+      } catch (error) {
+        console.error('Failed to load available leads:', error);
+      }
+    }
+
+    function setupICSRToggle() {
+      const checkbox = document.getElementById('has_funded_icsr');
+      const details = document.getElementById('icsrDetails');
+      checkbox.addEventListener('change', (e) => {
+        details.style.display = e.target.checked ? 'block' : 'none';
+      });
     }
 
     async function loadFunding() {
@@ -264,6 +335,8 @@
               <th class="sortable ${sortField === 'date_contacted' ? 'sort-' + sortDirection : ''}" onclick="handleSort('date_contacted')">
                 Date Contacted <span class="sort-indicator">${getSortIcon('date_contacted')}</span>
               </th>
+              <th>ICSR Funder</th>
+              <th>Assigned Leads</th>
               <th>Notes</th>
               <th>Actions</th>
             </tr>
@@ -272,6 +345,16 @@
             ${sortedProspects.map(prospect => {
               const statusDisplay = (prospect.status || 'pending').charAt(0).toUpperCase() + (prospect.status || 'pending').slice(1);
 
+              // ICSR funding display
+              const icsrDisplay = prospect.has_funded_icsr
+                ? `<span style="color: #065f46; font-weight: 600;">✓ Yes</span>${prospect.icsr_funding_years && prospect.icsr_funding_years.length > 0 ? `<br><small style="color: var(--text-light);">${prospect.icsr_funding_years.join(', ')}</small>` : ''}`
+                : '-';
+
+              // Assigned leads display
+              const leadsDisplay = prospect.assigned_leads && prospect.assigned_leads.length > 0
+                ? prospect.assigned_leads.map(lead => `<div style="font-size: 0.8rem; padding: 0.1rem 0;">${lead.name}</div>`).join('')
+                : '-';
+
               return `
               <tr>
                 <td>${prospect.organization_name || '-'}</td>
@@ -279,7 +362,9 @@
                 <td><span class="amount">${prospect.amount ? '$' + parseFloat(prospect.amount).toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 }) : '-'}</span></td>
                 <td><span class="status-badge status-${prospect.status || 'pending'}">${statusDisplay}</span></td>
                 <td>${prospect.date_contacted ? new Date(prospect.date_contacted).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' }) : '-'}</td>
-                <td style="max-width: 300px; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical;" title="${prospect.notes || ''}">${prospect.notes || '-'}</td>
+                <td>${icsrDisplay}</td>
+                <td style="max-width: 200px;">${leadsDisplay}</td>
+                <td style="max-width: 250px; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; font-size: 0.85rem;" title="${prospect.notes || ''}">${prospect.notes || '-'}</td>
                 <td>
                   <div class="action-buttons">
                     <button class="btn btn-edit" onclick='editProspect(${JSON.stringify(prospect).replace(/'/g, "&#39;")})'>Edit</button>
@@ -316,19 +401,49 @@
       document.getElementById('modalTitle').textContent = 'Add Funding Prospect';
       document.getElementById('fundingForm').reset();
       document.getElementById('fundingId').value = '';
+      currentProspectId = null;
       populateOrganizationDropdown();
+      populateLeadsDropdown();
+      document.getElementById('icsrDetails').style.display = 'none';
+      document.getElementById('assignedLeadsDisplay').style.display = 'none';
+      document.getElementById('notifySection').style.display = 'none';
       document.getElementById('fundingModal').classList.add('show');
     }
 
     function editProspect(prospect) {
       document.getElementById('modalTitle').textContent = 'Edit Funding Prospect';
       document.getElementById('fundingId').value = prospect.id;
+      currentProspectId = prospect.id;
       populateOrganizationDropdown(prospect.organization_id);
       document.getElementById('contact_person').value = prospect.contact_person || '';
       document.getElementById('amount').value = prospect.amount || '';
       document.getElementById('status').value = prospect.status || 'pending';
       document.getElementById('date_contacted').value = prospect.date_contacted ? prospect.date_contacted.split('T')[0] : '';
       document.getElementById('notes').value = prospect.notes || '';
+
+      // ICSR fields
+      const hasICSR = prospect.has_funded_icsr || false;
+      document.getElementById('has_funded_icsr').checked = hasICSR;
+      document.getElementById('icsrDetails').style.display = hasICSR ? 'block' : 'none';
+      document.getElementById('icsr_funding_years').value = prospect.icsr_funding_years ? prospect.icsr_funding_years.join(', ') : '';
+      document.getElementById('icsr_funding_notes').value = prospect.icsr_funding_notes || '';
+
+      // Lead assignment
+      populateLeadsDropdown(prospect.lead_contact_ids);
+
+      // Show assigned leads display
+      if (prospect.assigned_leads && prospect.assigned_leads.length > 0) {
+        document.getElementById('assignedLeadsDisplay').style.display = 'block';
+        document.getElementById('notifySection').style.display = 'block';
+        const leadsList = prospect.assigned_leads.map(lead =>
+          `<div style="padding: 0.25rem 0;">• ${lead.name} (${lead.email})</div>`
+        ).join('');
+        document.getElementById('currentLeadsList').innerHTML = leadsList;
+      } else {
+        document.getElementById('assignedLeadsDisplay').style.display = 'none';
+        document.getElementById('notifySection').style.display = 'none';
+      }
+
       document.getElementById('fundingModal').classList.add('show');
     }
 
@@ -344,6 +459,26 @@
       });
     }
 
+    function populateLeadsDropdown(selectedLeadIds = []) {
+      const select = document.getElementById('lead_contact_ids');
+      select.innerHTML = '';
+
+      if (availableLeads.length === 0) {
+        select.innerHTML = '<option value="">No leads available</option>';
+        return;
+      }
+
+      availableLeads.forEach(lead => {
+        const option = document.createElement('option');
+        option.value = lead.id;
+        option.textContent = `${lead.display_name}${lead.position ? ' - ' + lead.position : ''}`;
+        if (selectedLeadIds && selectedLeadIds.includes(lead.id)) {
+          option.selected = true;
+        }
+        select.appendChild(option);
+      });
+    }
+
     function closeModal() {
       document.getElementById('fundingModal').classList.remove('show');
     }
@@ -355,13 +490,27 @@
       submitBtn.disabled = true;
       submitBtn.textContent = 'Saving...';
 
+      // Get ICSR data
+      const hasICSR = document.getElementById('has_funded_icsr').checked;
+      const yearsValue = document.getElementById('icsr_funding_years').value;
+      const yearsArray = hasICSR && yearsValue
+        ? yearsValue.split(',').map(y => y.trim()).filter(y => y)
+        : null;
+
+      // Get selected lead IDs
+      const leadSelect = document.getElementById('lead_contact_ids');
+      const selectedLeads = Array.from(leadSelect.selectedOptions).map(opt => opt.value);
+
       const formData = {
         organization_id: document.getElementById('organization_id').value,
         contact_person: document.getElementById('contact_person').value || null,
         amount: document.getElementById('amount').value ? parseFloat(document.getElementById('amount').value) : null,
         status: document.getElementById('status').value,
         date_contacted: document.getElementById('date_contacted').value || null,
-        notes: document.getElementById('notes').value || null
+        notes: document.getElementById('notes').value || null,
+        has_funded_icsr: hasICSR,
+        icsr_funding_years: yearsArray,
+        icsr_funding_notes: hasICSR ? (document.getElementById('icsr_funding_notes').value || null) : null
       };
 
       const prospectId = document.getElementById('fundingId').value;
@@ -384,6 +533,29 @@
         const data = await response.json();
 
         if (response.ok && data.success) {
+          const savedProspectId = data.data.id;
+
+          // If leads were selected, assign them
+          if (selectedLeads.length > 0) {
+            try {
+              const leadsResponse = await fetch(`${API_BASE_URL}/api/admin/funding/${savedProspectId}/assign-leads`, {
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/json',
+                  'Authorization': `Bearer ${sessionToken}`
+                },
+                body: JSON.stringify({ lead_contact_ids: selectedLeads })
+              });
+
+              if (!leadsResponse.ok) {
+                showMessage('Prospect saved, but failed to assign leads', 'error');
+              }
+            } catch (error) {
+              console.error('Failed to assign leads:', error);
+              showMessage('Prospect saved, but failed to assign leads', 'error');
+            }
+          }
+
           closeModal();
           await loadFunding();
           showMessage(`Funding prospect ${isEdit ? 'updated' : 'created'} successfully!`, 'success');
@@ -418,6 +590,40 @@
         }
       } catch (error) {
         showMessage(`Error: ${error.message}`, 'error');
+      }
+    }
+
+    async function notifyLeads() {
+      if (!currentProspectId) {
+        showMessage('Error: No prospect selected', 'error');
+        return;
+      }
+
+      const notifyBtn = document.getElementById('notifyBtn');
+      if (!confirm('Send email notification to all assigned leads?')) return;
+
+      notifyBtn.disabled = true;
+      notifyBtn.textContent = 'Sending...';
+
+      const sessionToken = localStorage.getItem('isrs_session');
+      try {
+        const response = await fetch(`${API_BASE_URL}/api/admin/funding/${currentProspectId}/notify-leads`, {
+          method: 'POST',
+          headers: { 'Authorization': `Bearer ${sessionToken}` }
+        });
+
+        const data = await response.json();
+
+        if (response.ok && data.success) {
+          showMessage(`Email sent to ${data.recipients.length} lead(s)!`, 'success');
+        } else {
+          showMessage(`Error: ${data.error || 'Failed to send notifications'}`, 'error');
+        }
+      } catch (error) {
+        showMessage(`Error: ${error.message}`, 'error');
+      } finally {
+        notifyBtn.disabled = false;
+        notifyBtn.textContent = '📧 Send Email to Assigned Leads';
       }
     }
 
