@@ -1,0 +1,1081 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Conference Registration - ISRS 2026</title>
+  <link rel="icon" type="image/png" href="/images/favicon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Marcellus&family=PT+Serif:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/styles.css">
+  <style>
+    body {
+      background: var(--light-gray);
+    }
+
+    .registration-container {
+      max-width: 900px;
+      margin: 3rem auto;
+      padding: 0 2rem;
+    }
+
+    .registration-header {
+      background: var(--white);
+      padding: 2rem;
+      border-radius: 8px 8px 0 0;
+      border-bottom: 3px solid var(--primary-blue);
+    }
+
+    .registration-header h1 {
+      font-family: 'Marcellus', Georgia, serif;
+      color: var(--primary-blue);
+      margin-bottom: 0.5rem;
+      font-size: 2.5rem;
+    }
+
+    .registration-header p {
+      color: var(--text-light);
+      font-size: 1.1rem;
+    }
+
+    .progress-bar {
+      background: var(--white);
+      padding: 1.5rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .progress-step {
+      flex: 1;
+      text-align: center;
+      position: relative;
+      padding: 0 1rem;
+    }
+
+    .progress-step::after {
+      content: '';
+      position: absolute;
+      top: 20px;
+      left: 50%;
+      width: 100%;
+      height: 2px;
+      background: var(--border-color);
+      z-index: 0;
+    }
+
+    .progress-step:last-child::after {
+      display: none;
+    }
+
+    .step-number {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: var(--light-gray);
+      color: var(--text-light);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+      position: relative;
+      z-index: 1;
+    }
+
+    .progress-step.active .step-number {
+      background: var(--primary-blue);
+      color: white;
+    }
+
+    .progress-step.completed .step-number {
+      background: var(--accent-teal);
+      color: white;
+    }
+
+    .step-label {
+      font-size: 0.875rem;
+      color: var(--text-light);
+    }
+
+    .progress-step.active .step-label {
+      color: var(--primary-blue);
+      font-weight: 600;
+    }
+
+    .registration-form {
+      background: var(--white);
+      padding: 3rem 2rem;
+      border-radius: 0 0 8px 8px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    .form-section {
+      display: none;
+    }
+
+    .form-section.active {
+      display: block;
+      animation: fadeIn 0.3s ease-in;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .section-title {
+      font-family: 'Marcellus', Georgia, serif;
+      color: var(--primary-blue);
+      font-size: 1.75rem;
+      margin-bottom: 1.5rem;
+      padding-bottom: 0.75rem;
+      border-bottom: 2px solid var(--accent-teal);
+    }
+
+    .form-group {
+      margin-bottom: 1.5rem;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 0.5rem;
+      font-weight: 600;
+      color: var(--text-dark);
+    }
+
+    .form-group label .required {
+      color: #dc3545;
+      margin-left: 0.25rem;
+    }
+
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+      width: 100%;
+      padding: 0.75rem;
+      border: 1px solid var(--border-color);
+      border-radius: 4px;
+      font-family: inherit;
+      font-size: 1rem;
+      transition: border-color 0.2s;
+    }
+
+    .form-group input:focus,
+    .form-group select:focus,
+    .form-group textarea:focus {
+      outline: none;
+      border-color: var(--primary-blue);
+      box-shadow: 0 0 0 3px rgba(46, 90, 138, 0.1);
+    }
+
+    .form-group textarea {
+      resize: vertical;
+      min-height: 100px;
+    }
+
+    .form-group small {
+      display: block;
+      margin-top: 0.25rem;
+      color: var(--text-light);
+      font-size: 0.875rem;
+    }
+
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+    }
+
+    .checkbox-group {
+      margin-top: 0.5rem;
+    }
+
+    .checkbox-item {
+      display: flex;
+      align-items: center;
+      margin-bottom: 0.75rem;
+    }
+
+    .checkbox-item input[type="checkbox"] {
+      width: auto;
+      margin-right: 0.5rem;
+    }
+
+    .checkbox-item label {
+      margin: 0;
+      font-weight: normal;
+    }
+
+    .form-actions {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 3rem;
+      padding-top: 2rem;
+      border-top: 1px solid var(--border-color);
+    }
+
+    .btn {
+      padding: 0.875rem 2rem;
+      border: none;
+      border-radius: 4px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .btn-primary {
+      background: var(--primary-blue);
+      color: white;
+    }
+
+    .btn-primary:hover {
+      background: var(--secondary-blue);
+      transform: translateY(-1px);
+      box-shadow: 0 4px 8px rgba(46, 90, 138, 0.2);
+    }
+
+    .btn-secondary {
+      background: var(--light-gray);
+      color: var(--text-dark);
+    }
+
+    .btn-secondary:hover {
+      background: #e0e0e0;
+    }
+
+    .btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .fee-summary {
+      background: var(--light-gray);
+      padding: 1.5rem;
+      border-radius: 4px;
+      border-left: 4px solid var(--accent-teal);
+    }
+
+    .fee-summary h3 {
+      font-family: 'Marcellus', Georgia, serif;
+      color: var(--primary-blue);
+      margin-bottom: 1rem;
+    }
+
+    .fee-item {
+      display: flex;
+      justify-content: space-between;
+      padding: 0.5rem 0;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .fee-item:last-child {
+      border-bottom: none;
+      font-weight: 700;
+      font-size: 1.25rem;
+      color: var(--primary-blue);
+      padding-top: 1rem;
+    }
+
+    .loading-overlay {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.7);
+      z-index: 9999;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .loading-overlay.active {
+      display: flex;
+    }
+
+    .loading-content {
+      background: white;
+      padding: 2rem;
+      border-radius: 8px;
+      text-align: center;
+    }
+
+    .spinner {
+      width: 50px;
+      height: 50px;
+      border: 4px solid var(--light-gray);
+      border-top-color: var(--primary-blue);
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      margin: 0 auto 1rem;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    .error-message {
+      background: #f8d7da;
+      color: #721c24;
+      padding: 1rem;
+      border-radius: 4px;
+      margin-bottom: 1rem;
+      display: none;
+    }
+
+    .error-message.active {
+      display: block;
+    }
+
+    .success-message {
+      background: #d4edda;
+      color: #155724;
+      padding: 1rem;
+      border-radius: 4px;
+      margin-bottom: 1rem;
+      display: none;
+    }
+
+    .success-message.active {
+      display: block;
+    }
+
+    @media (max-width: 768px) {
+      .form-row {
+        grid-template-columns: 1fr;
+      }
+
+      .progress-bar {
+        flex-direction: column;
+      }
+
+      .progress-step::after {
+        display: none;
+      }
+
+      .registration-header h1 {
+        font-size: 2rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="registration-container">
+    <div class="registration-header">
+      <h1>ISRS Conference 2026</h1>
+      <p>Register for the International Shellfish Restoration Society Conference</p>
+      <p><strong>June 15-18, 2026</strong></p>
+    </div>
+
+    <div class="progress-bar">
+      <div class="progress-step active" data-step="1">
+        <div class="step-number">1</div>
+        <div class="step-label">Your Profile</div>
+      </div>
+      <div class="progress-step" data-step="2">
+        <div class="step-number">2</div>
+        <div class="step-label">Registration Details</div>
+      </div>
+      <div class="progress-step" data-step="3">
+        <div class="step-number">3</div>
+        <div class="step-label">Review & Payment</div>
+      </div>
+    </div>
+
+    <div class="registration-form">
+      <div class="error-message" id="errorMessage"></div>
+      <div class="success-message" id="successMessage"></div>
+
+      <!-- Step 1: Profile -->
+      <div class="form-section active" data-step="1">
+        <h2 class="section-title">Your Profile</h2>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label>First Name <span class="required">*</span></label>
+            <input type="text" id="firstName" required>
+          </div>
+          <div class="form-group">
+            <label>Last Name <span class="required">*</span></label>
+            <input type="text" id="lastName" required>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Email Address <span class="required">*</span></label>
+          <input type="email" id="email" required>
+          <small>This will be your login email for accessing your registration</small>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label>Organization</label>
+            <input type="text" id="organizationName">
+          </div>
+          <div class="form-group">
+            <label>Position/Title</label>
+            <input type="text" id="position">
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label>Country <span class="required">*</span></label>
+            <input type="text" id="country" required>
+          </div>
+          <div class="form-group">
+            <label>City</label>
+            <input type="text" id="city">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Phone Number</label>
+          <input type="tel" id="phone">
+        </div>
+
+        <div class="form-group">
+          <label>Professional Bio</label>
+          <textarea id="bio" rows="4" placeholder="Tell us about your work in shellfish restoration..."></textarea>
+          <small>This will be visible in the attendee directory</small>
+        </div>
+
+        <div class="form-group">
+          <label>CV/Resume URL (Optional)</label>
+          <input type="url" id="cvUrl" placeholder="https://...">
+        </div>
+
+        <div class="form-group">
+          <label>Research Areas (comma-separated)</label>
+          <input type="text" id="researchAreas" placeholder="e.g., oyster restoration, water quality, climate adaptation">
+        </div>
+
+        <div class="form-actions">
+          <div></div>
+          <button type="button" class="btn btn-primary" onclick="nextStep()">Next</button>
+        </div>
+      </div>
+
+      <!-- Step 2: Registration Details -->
+      <div class="form-section" data-step="2">
+        <h2 class="section-title">Registration Details</h2>
+
+        <div class="form-group">
+          <label>Registration Type <span class="required">*</span></label>
+          <select id="registrationType" onchange="updateFee()">
+            <option value="">Select registration type...</option>
+            <option value="early_bird">Early Bird ($350) - Before March 1, 2026</option>
+            <option value="regular">Regular ($450) - March 1 - June 1, 2026</option>
+            <option value="student">Student ($250)</option>
+            <option value="late">Late Registration ($550) - After June 1, 2026</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label>Attendance Type <span class="required">*</span></label>
+          <select id="attendanceType">
+            <option value="in-person">In-Person</option>
+            <option value="virtual">Virtual</option>
+          </select>
+        </div>
+
+        <div class="checkbox-group">
+          <div class="checkbox-item">
+            <input type="checkbox" id="isFirstTime">
+            <label for="isFirstTime">This is my first ISRS conference</label>
+          </div>
+          <div class="checkbox-item">
+            <input type="checkbox" id="isPresenter">
+            <label for="isPresenter">I plan to submit an abstract for presentation</label>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Dietary Restrictions</label>
+          <select id="dietaryRestrictions">
+            <option value="">None</option>
+            <option value="vegetarian">Vegetarian</option>
+            <option value="vegan">Vegan</option>
+            <option value="gluten-free">Gluten-Free</option>
+            <option value="other">Other (specify below)</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label>Dietary Notes</label>
+          <textarea id="dietaryNotes" rows="2" placeholder="Please specify any allergies or dietary requirements..."></textarea>
+        </div>
+
+        <div class="form-group">
+          <label>Accessibility Needs</label>
+          <textarea id="accessibilityNeeds" rows="2" placeholder="Please let us know if you require any accommodations..."></textarea>
+        </div>
+
+        <div class="form-group">
+          <label>Emergency Contact Name</label>
+          <input type="text" id="emergencyName">
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label>Emergency Contact Phone</label>
+            <input type="tel" id="emergencyPhone">
+          </div>
+          <div class="form-group">
+            <label>Relationship</label>
+            <input type="text" id="emergencyRelationship" placeholder="e.g., Spouse, Parent, Friend">
+          </div>
+        </div>
+
+        <!-- Special Events & Activities -->
+        <h3 style="font-family: 'Marcellus', Georgia, serif; color: var(--primary-blue); margin: 2rem 0 1rem 0; padding-top: 2rem; border-top: 2px solid var(--border-color);">Special Events & Activities</h3>
+        <p style="margin-bottom: 1.5rem; color: var(--text-light);">Select the special events and activities you'd like to attend. Some events may have additional fees.</p>
+
+        <div class="form-group">
+          <label style="display: flex; align-items: center; margin-bottom: 1rem;">
+            <input type="checkbox" id="welcomeReception" style="width: auto; margin-right: 0.75rem;">
+            <span><strong>Welcome Reception</strong> - Join us for the opening night reception (Included in registration)</span>
+          </label>
+
+          <label style="display: flex; align-items: center; margin-bottom: 1rem;">
+            <input type="checkbox" id="lowCountryBoil" style="width: auto; margin-right: 0.75rem;">
+            <span><strong>Low Country Boil Dinner</strong> - Traditional seafood feast with colleagues (Included in registration)</span>
+          </label>
+        </div>
+
+        <!-- Field Trips -->
+        <div class="form-group">
+          <label><strong>Field Trips</strong> (Select all that interest you - limited capacity, additional fees may apply)</label>
+          <div style="margin-top: 0.75rem;">
+            <label style="display: flex; align-items: center; margin-bottom: 0.75rem;">
+              <input type="checkbox" id="dolphinTours" style="width: auto; margin-right: 0.75rem;">
+              <span>Dolphin Watching Tours - Guided coastal wildlife tour</span>
+            </label>
+            <label style="display: flex; align-items: center; margin-bottom: 0.75rem;">
+              <input type="checkbox" id="seaTurtleCenter" style="width: auto; margin-right: 0.75rem;">
+              <span>Sea Turtle Center Visit - Educational tour of conservation facility</span>
+            </label>
+            <label style="display: flex; align-items: center; margin-bottom: 0.75rem;">
+              <input type="checkbox" id="restorationSiteTour" style="width: auto; margin-right: 0.75rem;">
+              <span>Local Restoration Site Tour - Visit active restoration projects</span>
+            </label>
+          </div>
+        </div>
+
+        <!-- Special Activities -->
+        <div class="form-group">
+          <label style="display: flex; align-items: center; margin-bottom: 1rem;">
+            <input type="checkbox" id="golfTournament" style="width: auto; margin-right: 0.75rem;">
+            <span><strong>Golf Tournament</strong> - Networking golf tournament (Additional fee: $75)</span>
+          </label>
+        </div>
+
+        <!-- T-Shirt Size -->
+        <div class="form-row">
+          <div class="form-group">
+            <label>Conference T-Shirt Size (Optional)</label>
+            <select id="tshirtSize">
+              <option value="">No t-shirt needed</option>
+              <option value="XS">Extra Small (XS)</option>
+              <option value="S">Small (S)</option>
+              <option value="M">Medium (M)</option>
+              <option value="L">Large (L)</option>
+              <option value="XL">Extra Large (XL)</option>
+              <option value="2XL">2XL</option>
+              <option value="3XL">3XL</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label>Bringing a Guest to Social Events?</label>
+            <select id="guestCount">
+              <option value="0">No guests</option>
+              <option value="1">1 guest (+$150)</option>
+              <option value="2">2 guests (+$300)</option>
+            </select>
+            <small>Guests may attend social events and meals (additional fee applies)</small>
+          </div>
+        </div>
+
+        <!-- Continuing Education Credits -->
+        <div class="form-group">
+          <label style="display: flex; align-items: center; margin-bottom: 1rem;">
+            <input type="checkbox" id="continuingEducation" style="width: auto; margin-right: 0.75rem;">
+            <span><strong>Request Continuing Education Credits</strong> - Society for Ecological Restoration (SER) CE credits</span>
+          </label>
+          <div id="ceDetails" style="display: none; margin-left: 2rem; background: var(--light-gray); padding: 1rem; border-radius: 4px;">
+            <div class="form-group" style="margin-bottom: 0.5rem;">
+              <label>Professional License Number (if applicable)</label>
+              <input type="text" id="licenseNumber" placeholder="e.g., PWS #12345">
+            </div>
+            <div class="form-group" style="margin-bottom: 0;">
+              <label>Licensing Organization</label>
+              <input type="text" id="licensingOrg" placeholder="e.g., Society for Ecological Restoration">
+            </div>
+          </div>
+        </div>
+
+        <!-- Accommodation Preferences -->
+        <h3 style="font-family: 'Marcellus', Georgia, serif; color: var(--primary-blue); margin: 2rem 0 1rem 0; padding-top: 2rem; border-top: 2px solid var(--border-color);">Accommodation Preferences</h3>
+
+        <div class="checkbox-group">
+          <div class="checkbox-item">
+            <input type="checkbox" id="needsAccommodation">
+            <label for="needsAccommodation">I need help booking accommodation</label>
+          </div>
+          <div class="checkbox-item">
+            <input type="checkbox" id="roomSharing">
+            <label for="roomSharing">I'm interested in sharing a room to reduce costs</label>
+          </div>
+        </div>
+
+        <div class="form-group" id="roomPreferences" style="display: none; background: var(--light-gray); padding: 1rem; border-radius: 4px;">
+          <label>Roommate Preferences/Notes</label>
+          <textarea id="roommateNotes" rows="2" placeholder="Any preferences for a roommate? Gender preference, quiet vs social, etc."></textarea>
+        </div>
+
+        <!-- Other Preferences -->
+        <h3 style="font-family: 'Marcellus', Georgia, serif; color: var(--primary-blue); margin: 2rem 0 1rem 0; padding-top: 2rem; border-top: 2px solid var(--border-color);">Additional Information</h3>
+
+        <div class="checkbox-group">
+          <div class="checkbox-item">
+            <input type="checkbox" id="willingVolunteer">
+            <label for="willingVolunteer">Willing to volunteer during the conference</label>
+          </div>
+          <div class="checkbox-item">
+            <input type="checkbox" id="firstTimeAttendee">
+            <label for="firstTimeAttendee">This is my first ISRS/ICSR conference</label>
+          </div>
+        </div>
+
+        <div class="checkbox-group">
+          <div class="checkbox-item">
+            <input type="checkbox" id="optInMailingList" checked>
+            <label for="optInMailingList">Join ISRS mailing list</label>
+          </div>
+          <div class="checkbox-item">
+            <input type="checkbox" id="optInFutureConferences" checked>
+            <label for="optInFutureConferences">Receive updates about future conferences</label>
+          </div>
+        </div>
+
+        <div class="form-actions">
+          <button type="button" class="btn btn-secondary" onclick="prevStep()">Back</button>
+          <button type="button" class="btn btn-primary" onclick="nextStep()">Next</button>
+        </div>
+      </div>
+
+      <!-- Step 3: Review & Payment -->
+      <div class="form-section" data-step="3">
+        <h2 class="section-title">Review & Payment</h2>
+
+        <div id="registrationSummary"></div>
+
+        <div class="fee-summary">
+          <h3>Registration Fee</h3>
+          <div class="fee-item">
+            <span id="feeType">Registration Type</span>
+            <span id="feeAmount">$0.00</span>
+          </div>
+          <div class="fee-item">
+            <strong>Total</strong>
+            <strong id="totalAmount">$0.00</strong>
+          </div>
+        </div>
+
+        <div class="form-group" style="margin-top: 2rem;">
+          <label>Payment Method <span class="required">*</span></label>
+          <select id="paymentMethod" required onchange="togglePaymentInstructions()">
+            <option value="">Select payment method...</option>
+            <option value="zeffy">Online Payment (Credit/Debit Card via Zeffy)</option>
+            <option value="bank_transfer">Bank Transfer</option>
+          </select>
+        </div>
+
+        <!-- Zeffy Payment Info -->
+        <div id="zeffyInfo" style="display: none; background: #f0f9ff; border: 2px solid #3b82f6; padding: 1.5rem; border-radius: 4px; margin-top: 1rem;">
+          <h4 style="color: var(--primary-blue); margin-bottom: 0.5rem;">💳 Online Payment via Zeffy</h4>
+          <p style="margin-bottom: 0.5rem;"><strong>ISRS uses Zeffy, a 100% free payment platform for nonprofits.</strong></p>
+          <p style="margin-bottom: 0.5rem;">When you proceed to payment, you'll be redirected to Zeffy's secure checkout page.</p>
+          <p style="margin-bottom: 0.5rem; color: #1e40af;"><strong>Important:</strong> Zeffy may ask if you'd like to add an optional tip to help keep their platform free for nonprofits like ISRS. <strong>This tip is completely optional</strong> and goes to Zeffy, not ISRS. You can choose "$0" or any amount you wish.</p>
+          <p style="margin-bottom: 0;"><em>Your conference registration fee goes 100% to ISRS to support the conference and our mission.</em></p>
+        </div>
+
+        <!-- Bank Transfer Info -->
+        <div id="bankTransferInfo" style="display: none; background: #fef3c7; border: 2px solid #f59e0b; padding: 1.5rem; border-radius: 4px; margin-top: 1rem;">
+          <h4 style="color: #92400e; margin-bottom: 0.5rem;">🏦 Bank Transfer Instructions</h4>
+          <p style="margin-bottom: 1rem;">Please transfer the registration fee to the following ISRS bank account:</p>
+          <div style="background: white; padding: 1rem; border-radius: 4px; font-family: monospace; margin-bottom: 1rem;">
+            <p style="margin: 0.25rem 0;"><strong>Bank Name:</strong> Chase Bank</p>
+            <p style="margin: 0.25rem 0;"><strong>Account Name:</strong> The International Shellfish Restoration Society</p>
+            <p style="margin: 0.25rem 0;"><strong>Account Number:</strong> 735867718</p>
+            <p style="margin: 0.25rem 0;"><strong>Routing Number (ACH/Direct Deposit):</strong> 044000037</p>
+            <p style="margin: 0.25rem 0;"><strong>Routing Number (Wire Transfer):</strong> 021000021</p>
+            <p style="margin: 0.25rem 0;"><strong>SWIFT Code:</strong> CHASUS33 (for international wire transfers)</p>
+          </div>
+          <p style="margin-bottom: 0.5rem;"><strong>Important:</strong></p>
+          <ul style="margin-left: 1.5rem; line-height: 1.8;">
+            <li>Include your registration number in the transfer reference</li>
+            <li>Send proof of transfer to <a href="mailto:treasurer@shellfish-restoration.org" style="color: #2563eb;">treasurer@shellfish-restoration.org</a></li>
+            <li>Your registration will be confirmed once payment is received (typically 3-5 business days)</li>
+          </ul>
+        </div>
+
+        <div class="form-actions">
+          <button type="button" class="btn btn-secondary" onclick="prevStep()">Back</button>
+          <button type="button" class="btn btn-primary" onclick="submitRegistration()">Complete Registration</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="loading-overlay" id="loadingOverlay">
+    <div class="loading-content">
+      <div class="spinner"></div>
+      <p>Processing your registration...</p>
+    </div>
+  </div>
+
+  <script>
+    const API_BASE_URL = 'https://isrs-database-backend.onrender.com';
+    let currentStep = 1;
+    let conferenceData = null;
+    let profileId = null;
+    let registrationId = null;
+
+    // Fee structure
+    const FEES = {
+      early_bird: 350.00,
+      regular: 450.00,
+      student: 250.00,
+      late: 550.00
+    };
+
+    // Load conference data on page load
+    window.addEventListener('DOMContentLoaded', async () => {
+      try {
+        const response = await fetch(`${API_BASE_URL}/api/conference/active`);
+        const data = await response.json();
+
+        if (data.success) {
+          conferenceData = data.data;
+        } else {
+          showError('Unable to load conference information. Please try again later.');
+        }
+      } catch (error) {
+        console.error('Error loading conference:', error);
+        showError('Unable to connect to registration system. Please try again later.');
+      }
+    });
+
+    function nextStep() {
+      if (!validateStep(currentStep)) {
+        return;
+      }
+
+      // Hide current step
+      document.querySelector(`[data-step="${currentStep}"].form-section`).classList.remove('active');
+      document.querySelector(`[data-step="${currentStep}"].progress-step`).classList.add('completed');
+
+      // Show next step
+      currentStep++;
+      document.querySelector(`[data-step="${currentStep}"].form-section`).classList.add('active');
+      document.querySelector(`[data-step="${currentStep}"].progress-step`).classList.add('active');
+
+      // If moving to review step, populate summary
+      if (currentStep === 3) {
+        populateSummary();
+      }
+
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function prevStep() {
+      // Hide current step
+      document.querySelector(`[data-step="${currentStep}"].form-section`).classList.remove('active');
+      document.querySelector(`[data-step="${currentStep}"].progress-step`).classList.remove('active');
+
+      // Show previous step
+      currentStep--;
+      document.querySelector(`[data-step="${currentStep}"].form-section`).classList.add('active');
+      document.querySelector(`[data-step="${currentStep}"].progress-step`).classList.remove('completed');
+
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function validateStep(step) {
+      hideError();
+
+      if (step === 1) {
+        const firstName = document.getElementById('firstName').value.trim();
+        const lastName = document.getElementById('lastName').value.trim();
+        const email = document.getElementById('email').value.trim();
+        const country = document.getElementById('country').value.trim();
+
+        if (!firstName || !lastName || !email || !country) {
+          showError('Please fill in all required fields (marked with *)');
+          return false;
+        }
+
+        if (!isValidEmail(email)) {
+          showError('Please enter a valid email address');
+          return false;
+        }
+      }
+
+      if (step === 2) {
+        const registrationType = document.getElementById('registrationType').value;
+
+        if (!registrationType) {
+          showError('Please select a registration type');
+          return false;
+        }
+      }
+
+      return true;
+    }
+
+    function isValidEmail(email) {
+      return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+    }
+
+    function updateFee() {
+      const registrationType = document.getElementById('registrationType').value;
+
+      if (registrationType) {
+        const fee = FEES[registrationType];
+        document.getElementById('feeAmount').textContent = `$${fee.toFixed(2)}`;
+        document.getElementById('totalAmount').textContent = `$${fee.toFixed(2)}`;
+
+        const typeLabels = {
+          early_bird: 'Early Bird Registration',
+          regular: 'Regular Registration',
+          student: 'Student Registration',
+          late: 'Late Registration'
+        };
+        document.getElementById('feeType').textContent = typeLabels[registrationType];
+      }
+    }
+
+    function populateSummary() {
+      const summary = `
+        <div style="background: var(--light-gray); padding: 1.5rem; border-radius: 4px; margin-bottom: 2rem;">
+          <h3 style="font-family: 'Marcellus', Georgia, serif; color: var(--primary-blue); margin-bottom: 1rem;">Registration Summary</h3>
+          <p><strong>Name:</strong> ${document.getElementById('firstName').value} ${document.getElementById('lastName').value}</p>
+          <p><strong>Email:</strong> ${document.getElementById('email').value}</p>
+          <p><strong>Organization:</strong> ${document.getElementById('organizationName').value || 'Not specified'}</p>
+          <p><strong>Country:</strong> ${document.getElementById('country').value}</p>
+          <p><strong>Registration Type:</strong> ${document.getElementById('registrationType').selectedOptions[0].text}</p>
+          <p><strong>Attendance:</strong> ${document.getElementById('attendanceType').value === 'in-person' ? 'In-Person' : 'Virtual'}</p>
+        </div>
+      `;
+
+      document.getElementById('registrationSummary').innerHTML = summary;
+      updateFee();
+    }
+
+    function togglePaymentInstructions() {
+      const method = document.getElementById('paymentMethod').value;
+      document.getElementById('zeffyInfo').style.display = method === 'zeffy' ? 'block' : 'none';
+      document.getElementById('bankTransferInfo').style.display = method === 'bank_transfer' ? 'block' : 'none';
+    }
+
+    // Add event listeners for conditional fields
+    document.addEventListener('DOMContentLoaded', () => {
+      // Show/hide CE details
+      document.getElementById('continuingEducation').addEventListener('change', (e) => {
+        document.getElementById('ceDetails').style.display = e.target.checked ? 'block' : 'none';
+      });
+
+      // Show/hide room sharing preferences
+      document.getElementById('roomSharing').addEventListener('change', (e) => {
+        document.getElementById('roomPreferences').style.display = e.target.checked ? 'block' : 'none';
+      });
+    });
+
+    async function submitRegistration() {
+      // Validate payment method is selected
+      const paymentMethod = document.getElementById('paymentMethod').value;
+      if (!paymentMethod) {
+        showError('Please select a payment method');
+        return;
+      }
+
+      showLoading();
+      hideError();
+
+      try {
+        // Step 1: Create/update profile
+        const researchAreasStr = document.getElementById('researchAreas').value;
+        const researchAreas = researchAreasStr ? researchAreasStr.split(',').map(a => a.trim()) : [];
+
+        const profileData = {
+          user_email: document.getElementById('email').value,
+          first_name: document.getElementById('firstName').value,
+          last_name: document.getElementById('lastName').value,
+          organization_name: document.getElementById('organizationName').value,
+          position: document.getElementById('position').value,
+          country: document.getElementById('country').value,
+          city: document.getElementById('city').value,
+          phone: document.getElementById('phone').value,
+          bio: document.getElementById('bio').value,
+          cv_url: document.getElementById('cvUrl').value,
+          research_areas: researchAreas
+        };
+
+        const profileResponse = await fetch(`${API_BASE_URL}/api/conference/profile`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(profileData)
+        });
+
+        const profileResult = await profileResponse.json();
+
+        if (!profileResult.success) {
+          throw new Error(profileResult.error || 'Failed to create profile');
+        }
+
+        profileId = profileResult.data.id;
+
+        // Step 2: Create registration
+        const registrationType = document.getElementById('registrationType').value;
+        const registrationFee = FEES[registrationType];
+
+        // Calculate guest fee
+        const guestCount = parseInt(document.getElementById('guestCount').value) || 0;
+        const guestFee = guestCount * 150;
+
+        const registrationData = {
+          conference_id: conferenceData.id,
+          attendee_id: profileId,
+          registration_type: registrationType,
+          registration_fee: registrationFee + guestFee,
+          is_virtual: document.getElementById('attendanceType').value === 'virtual',
+          is_presenter: document.getElementById('isPresenter').checked,
+          is_first_time: document.getElementById('isFirstTime').checked,
+          dietary_restrictions: document.getElementById('dietaryRestrictions').value,
+          dietary_notes: document.getElementById('dietaryNotes').value,
+          accessibility_needs: document.getElementById('accessibilityNeeds').value,
+          emergency_contact_name: document.getElementById('emergencyName').value,
+          emergency_contact_phone: document.getElementById('emergencyPhone').value,
+          emergency_contact_relationship: document.getElementById('emergencyRelationship').value,
+          interested_in_workshops: document.getElementById('interestedWorkshops').checked,
+          interested_in_field_trips: document.getElementById('interestedFieldTrips').checked,
+          interested_in_social_events: document.getElementById('interestedSocialEvents').checked,
+          needs_accommodation_help: document.getElementById('needsAccommodation').checked,
+          willing_to_volunteer: document.getElementById('willingVolunteer').checked,
+          opt_in_mailing_list: document.getElementById('optInMailingList').checked,
+          opt_in_future_conferences: document.getElementById('optInFutureConferences').checked,
+
+          // Special Events & Activities
+          welcome_reception: document.getElementById('welcomeReception').checked,
+          low_country_boil: document.getElementById('lowCountryBoil').checked,
+          dolphin_tours: document.getElementById('dolphinTours').checked,
+          sea_turtle_center: document.getElementById('seaTurtleCenter').checked,
+          restoration_site_tour: document.getElementById('restorationSiteTour').checked,
+          golf_tournament: document.getElementById('golfTournament').checked,
+
+          // T-Shirt & Guests
+          tshirt_size: document.getElementById('tshirtSize').value,
+          guest_count: guestCount,
+          guest_fee: guestFee,
+
+          // Continuing Education
+          continuing_education: document.getElementById('continuingEducation').checked,
+          license_number: document.getElementById('licenseNumber').value,
+          licensing_org: document.getElementById('licensingOrg').value,
+
+          // Room Sharing
+          room_sharing: document.getElementById('roomSharing').checked,
+          roommate_notes: document.getElementById('roommateNotes').value
+        };
+
+        const regResponse = await fetch(`${API_BASE_URL}/api/conference/register`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(registrationData)
+        });
+
+        const regResult = await regResponse.json();
+
+        if (!regResult.success) {
+          throw new Error(regResult.error || 'Failed to create registration');
+        }
+
+        registrationId = regResult.data.id;
+
+        // Step 3: Handle payment based on method
+        if (paymentMethod === 'zeffy') {
+          // Create Zeffy payment checkout
+          const paymentResponse = await fetch(`${API_BASE_URL}/api/conference/payment/create`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              registration_id: registrationId,
+              amount: registrationFee
+            })
+          });
+
+          const paymentResult = await paymentResponse.json();
+
+          if (!paymentResult.success) {
+            throw new Error(paymentResult.error || 'Failed to create payment');
+          }
+
+          // Redirect to Zeffy payment
+          hideLoading();
+          showSuccess('Registration created successfully! Redirecting to payment...');
+
+          setTimeout(() => {
+            window.location.href = `/conference/confirmation.html?registration=${registrationId}&checkout=${encodeURIComponent(paymentResult.data.checkout_url)}&method=zeffy`;
+          }, 2000);
+        } else if (paymentMethod === 'bank_transfer') {
+          // Bank transfer - just go to confirmation with instructions
+          hideLoading();
+          showSuccess('Registration created successfully! Redirecting to payment instructions...');
+
+          setTimeout(() => {
+            window.location.href = `/conference/confirmation.html?registration=${registrationId}&method=bank_transfer`;
+          }, 2000);
+        }
+
+      } catch (error) {
+        hideLoading();
+        console.error('Registration error:', error);
+        showError(error.message || 'Registration failed. Please try again.');
+      }
+    }
+
+    function showLoading() {
+      document.getElementById('loadingOverlay').classList.add('active');
+    }
+
+    function hideLoading() {
+      document.getElementById('loadingOverlay').classList.remove('active');
+    }
+
+    function showError(message) {
+      const errorEl = document.getElementById('errorMessage');
+      errorEl.textContent = message;
+      errorEl.classList.add('active');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function hideError() {
+      document.getElementById('errorMessage').classList.remove('active');
+    }
+
+    function showSuccess(message) {
+      const successEl = document.getElementById('successMessage');
+      successEl.textContent = message;
+      successEl.classList.add('active');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  </script>
+</body>
+</html>
