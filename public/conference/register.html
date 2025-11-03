@@ -916,7 +916,140 @@
         console.error('Error loading conference:', error);
         showError('Unable to connect to registration system. Please try again later.');
       }
+
+      // Add email lookup functionality for auto-fill
+      const emailField = document.getElementById('email');
+      if (emailField) {
+        emailField.addEventListener('blur', lookupProfileByEmail);
+      }
     });
+
+    // Lookup profile by email and auto-fill form
+    async function lookupProfileByEmail() {
+      const emailField = document.getElementById('email');
+      const email = emailField?.value?.trim();
+
+      if (!email || !email.includes('@')) {
+        return; // Don't lookup if email is empty or invalid
+      }
+
+      try {
+        // Show subtle loading indicator
+        emailField.style.borderColor = '#3b82f6';
+        emailField.style.opacity = '0.7';
+
+        // Call membership lookup API
+        const response = await fetch(`${API_BASE_URL}/api/membership/lookup?email=${encodeURIComponent(email)}`);
+        const result = await response.json();
+
+        // Reset email field styling
+        emailField.style.borderColor = '';
+        emailField.style.opacity = '';
+
+        if (result.success && result.found) {
+          // Profile found - auto-fill the form
+          const member = result.data;
+          autoFillProfile(member);
+          showWelcomeBackMessage(member.first_name);
+
+          // Track returning user in analytics
+          if (window.ISRSAnalytics) {
+            window.ISRSAnalytics.trackEvent('profile_autofill', {
+              membership_type: member.membership_type
+            });
+          }
+        }
+      } catch (error) {
+        console.error('Profile lookup error:', error);
+        emailField.style.borderColor = '';
+        emailField.style.opacity = '';
+        // Silently fail - don't disrupt user experience
+      }
+    }
+
+    // Auto-fill form with member data
+    function autoFillProfile(member) {
+      // Helper function to safely set field value
+      const setField = (id, value) => {
+        const field = document.getElementById(id);
+        if (field && value) {
+          field.value = value;
+          // Trigger change event for any dependent logic
+          field.dispatchEvent(new Event('change', { bubbles: true }));
+        }
+      };
+
+      // Fill personal information
+      setField('firstName', member.first_name);
+      setField('lastName', member.last_name);
+      setField('organizationName', member.organization_name);
+      setField('position', member.position);
+      setField('country', member.country);
+      setField('state', member.state_province);
+      setField('city', member.city);
+      setField('phone', member.phone);
+
+      // Mark fields as auto-filled (add subtle background)
+      const autoFilledFields = [
+        'firstName', 'lastName', 'organizationName', 'position',
+        'country', 'state', 'city', 'phone'
+      ];
+
+      autoFilledFields.forEach(fieldId => {
+        const field = document.getElementById(fieldId);
+        if (field && field.value) {
+          field.style.background = 'linear-gradient(135deg, rgba(91, 192, 190, 0.05) 0%, rgba(46, 90, 138, 0.05) 100%)';
+          field.style.transition = 'background 0.3s ease';
+
+          // Remove highlight after user edits
+          field.addEventListener('input', function() {
+            this.style.background = '';
+          }, { once: true });
+        }
+      });
+    }
+
+    // Show "Welcome Back" message
+    function showWelcomeBackMessage(firstName) {
+      const headerElement = document.querySelector('.registration-header p:last-child');
+
+      if (headerElement) {
+        const welcomeMessage = document.createElement('div');
+        welcomeMessage.id = 'welcomeBackMessage';
+        welcomeMessage.style.cssText = `
+          background: linear-gradient(135deg, rgba(91, 192, 190, 0.15) 0%, rgba(46, 90, 138, 0.15) 100%);
+          color: var(--primary-blue);
+          padding: 1rem 1.5rem;
+          border-radius: 6px;
+          margin-top: 1rem;
+          border-left: 4px solid var(--accent-teal);
+          font-weight: 600;
+          animation: slideDown 0.3s ease;
+        `;
+        welcomeMessage.innerHTML = `
+          <span style="font-size: 1.2rem;">👋</span>
+          Welcome back, ${firstName}! We've pre-filled your information. Please review and update as needed.
+        `;
+
+        headerElement.parentNode.insertBefore(welcomeMessage, headerElement.nextSibling);
+
+        // Add animation
+        const style = document.createElement('style');
+        style.textContent = `
+          @keyframes slideDown {
+            from {
+              opacity: 0;
+              transform: translateY(-10px);
+            }
+            to {
+              opacity: 1;
+              transform: translateY(0);
+            }
+          }
+        `;
+        document.head.appendChild(style);
+      }
+    }
 
     function nextStep() {
       if (!validateStep(currentStep)) {
