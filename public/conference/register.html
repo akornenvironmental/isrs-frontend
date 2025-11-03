@@ -590,11 +590,12 @@
           <label>Registration Type <span class="required">*</span></label>
           <select id="registrationType" onchange="updateFee()">
             <option value="">Select registration type...</option>
-            <option value="early_bird">Early Bird ($350) - Before March 1, 2026</option>
-            <option value="regular">Regular ($450) - March 1 - June 1, 2026</option>
+            <option value="early_bird">Early Bird ($350)</option>
             <option value="student">Student ($250)</option>
-            <option value="late">Late Registration ($550) - After June 1, 2026</option>
           </select>
+          <small style="color: var(--text-light); margin-top: 0.5rem; display: block;">
+            🎉 Early Bird pricing available now! Register before March 1, 2026 to save.
+          </small>
         </div>
 
         <div class="form-group">
@@ -894,12 +895,10 @@
     }
     let registrationId = null;
 
-    // Fee structure
+    // Fee structure (Early Bird Period)
     const FEES = {
       early_bird: 350.00,
-      regular: 450.00,
-      student: 250.00,
-      late: 550.00
+      student: 250.00
     };
 
     // Load conference data on page load
@@ -1000,9 +999,7 @@
 
         const typeLabels = {
           early_bird: 'Early Bird Registration',
-          regular: 'Regular Registration',
-          student: 'Student Registration',
-          late: 'Late Registration'
+          student: 'Student Registration'
         };
         document.getElementById('feeType').textContent = typeLabels[registrationType];
       }
