@@ -9,8 +9,9 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Marcellus&family=PT+Serif:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/css/styles.css">
+  <script src="/js/analytics.js"></script>
   <!-- Google reCAPTCHA v3 -->
-  <script src="https://www.google.com/recaptcha/api.js?render=YOUR_SITE_KEY_HERE" async defer></script>
+  <script src="https://www.google.com/recaptcha/api.js?render=6LfVHJsqAAAAAKYN8vE_wqVb0mHPmZxKQVjQ0F8H" async defer></script>
   <style>
     body {
       background: var(--light-gray);
@@ -1100,6 +1101,17 @@
       hideError();
 
       try {
+        // Get reCAPTCHA token for bot protection
+        let recaptchaToken = null;
+        if (typeof grecaptcha !== 'undefined') {
+          try {
+            recaptchaToken = await grecaptcha.execute('6LfVHJsqAAAAAKYN8vE_wqVb0mHPmZxKQVjQ0F8H', {action: 'registration'});
+            console.log('✅ reCAPTCHA token obtained');
+          } catch (error) {
+            console.warn('⚠️ reCAPTCHA token generation failed:', error);
+            // Continue anyway - reCAPTCHA is optional for better UX
+          }
+        }
         // Step 1: Create/update profile
         const researchAreasStr = document.getElementById('researchAreas').value;
         const researchAreas = researchAreasStr ? researchAreasStr.split(',').map(a => a.trim()) : [];
@@ -1184,7 +1196,10 @@
 
           // Room Sharing
           room_sharing: document.getElementById('roomSharing')?.checked || false,
-          roommate_notes: document.getElementById('roommateNotes')?.value || ''
+          roommate_notes: document.getElementById('roommateNotes')?.value || '',
+
+          // Bot Protection
+          recaptcha_token: recaptchaToken
         };
 
         const regResponse = await fetch(`${API_BASE_URL}/api/conference/register`, {
@@ -1200,6 +1215,16 @@
         }
 
         registrationId = regResult.data.id;
+
+        // Track registration in Google Analytics
+        if (window.ISRSAnalytics) {
+          window.ISRSAnalytics.trackFormSubmission('conference_registration');
+          window.ISRSAnalytics.trackEvent('registration_completed', {
+            registration_type: registrationType,
+            payment_method: paymentMethod,
+            registration_fee: registrationFee
+          });
+        }
 
         // Step 3: Handle payment based on method
         if (paymentMethod === 'zeffy') {
