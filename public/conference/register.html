@@ -27,6 +27,35 @@
       padding: 2rem;
       border-radius: 8px 8px 0 0;
       border-bottom: 3px solid var(--primary-blue);
+      position: relative;
+    }
+
+    .back-button {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.75rem 1.25rem;
+      background: var(--white);
+      border: 2px solid var(--primary-blue);
+      color: var(--primary-blue);
+      text-decoration: none;
+      border-radius: 6px;
+      font-weight: 600;
+      font-size: 0.95rem;
+      transition: all 0.3s ease;
+      cursor: pointer;
+      margin-bottom: 1.5rem;
+    }
+
+    .back-button:hover {
+      background: var(--primary-blue);
+      color: var(--white);
+      transform: translateX(-3px);
+    }
+
+    .back-button svg {
+      width: 20px;
+      height: 20px;
     }
 
     .registration-header h1 {
@@ -369,6 +398,12 @@
 <body>
   <div class="registration-container">
     <div class="registration-header">
+      <a href="#" class="back-button" id="backButton" onclick="goBack(event)">
+        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+        </svg>
+        Back to Conference Info
+      </a>
       <h1>ISRS Conference 2026</h1>
       <p>Register for the International Shellfish Restoration Society Conference</p>
       <p><strong>June 15-18, 2026</strong></p>
@@ -831,6 +866,26 @@
     let currentStep = 1;
     let conferenceData = null;
     let profileId = null;
+
+    // Back button functionality
+    function goBack(event) {
+      event.preventDefault();
+
+      // If opened in new window, close window and return to opener
+      if (window.opener && !window.opener.closed) {
+        window.close();
+        return;
+      }
+
+      // If there's a referrer, go back in history
+      if (document.referrer) {
+        window.history.back();
+        return;
+      }
+
+      // Otherwise, navigate to conference page
+      window.location.href = '/conference';
+    }
     let registrationId = null;
 
     // Fee structure
