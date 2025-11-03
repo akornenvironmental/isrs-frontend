@@ -1323,7 +1323,10 @@
         let recaptchaToken = null;
         if (typeof grecaptcha !== 'undefined' && grecaptcha.enterprise) {
           try {
-            await grecaptcha.enterprise.ready();
+            // Wrap ready() in a Promise since it expects a callback
+            await new Promise((resolve) => {
+              grecaptcha.enterprise.ready(resolve);
+            });
             recaptchaToken = await grecaptcha.enterprise.execute('6LfnNQAsAAAAALsKryyU06I6fPvdQ_-7YgHAvYeA', {action: 'registration'});
             console.log('✅ reCAPTCHA token obtained');
           } catch (error) {
