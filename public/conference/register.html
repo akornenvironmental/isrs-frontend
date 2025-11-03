@@ -957,10 +957,10 @@
       hideError();
 
       if (step === 1) {
-        const firstName = document.getElementById('firstName').value.trim();
-        const lastName = document.getElementById('lastName').value.trim();
-        const email = document.getElementById('email').value.trim();
-        const country = document.getElementById('country').value.trim();
+        const firstName = document.getElementById('firstName')?.value?.trim() || '';
+        const lastName = document.getElementById('lastName')?.value?.trim() || '';
+        const email = document.getElementById('email')?.value?.trim() || '';
+        const country = document.getElementById('country')?.value?.trim() || '';
 
         if (!firstName || !lastName || !email || !country) {
           showError('Please fill in all required fields (marked with *)');
@@ -974,7 +974,7 @@
       }
 
       if (step === 2) {
-        const registrationType = document.getElementById('registrationType').value;
+        const registrationType = document.getElementById('registrationType')?.value || '';
 
         if (!registrationType) {
           showError('Please select a registration type');
@@ -990,7 +990,7 @@
     }
 
     function updateFee() {
-      const registrationType = document.getElementById('registrationType').value;
+      const registrationType = document.getElementById('registrationType')?.value || '';
 
       if (registrationType) {
         const fee = FEES[registrationType];
@@ -1088,7 +1088,7 @@
 
     async function submitRegistration() {
       // Validate payment method is selected
-      const paymentMethod = document.getElementById('paymentMethod').value;
+      const paymentMethod = document.getElementById('paymentMethod')?.value || '';
       if (!paymentMethod) {
         showError('Please select a payment method');
         return;
@@ -1110,21 +1110,21 @@
           }
         }
         // Step 1: Create/update profile
-        const researchAreasStr = document.getElementById('researchAreas').value;
+        const researchAreasStr = document.getElementById('researchAreas')?.value || '';
         const researchAreas = researchAreasStr ? researchAreasStr.split(',').map(a => a.trim()) : [];
 
         const profileData = {
-          user_email: document.getElementById('email').value,
-          first_name: document.getElementById('firstName').value,
-          last_name: document.getElementById('lastName').value,
-          organization_name: document.getElementById('organizationName').value,
-          position: document.getElementById('position').value,
-          country: document.getElementById('country').value,
+          user_email: document.getElementById('email')?.value || '',
+          first_name: document.getElementById('firstName')?.value || '',
+          last_name: document.getElementById('lastName')?.value || '',
+          organization_name: document.getElementById('organizationName')?.value || '',
+          position: document.getElementById('position')?.value || '',
+          country: document.getElementById('country')?.value || '',
           state_province: document.getElementById('state')?.value || null,
-          city: document.getElementById('city').value,
-          phone: document.getElementById('phone').value,
-          bio: document.getElementById('bio').value,
-          cv_url: document.getElementById('cvUrl').value,
+          city: document.getElementById('city')?.value || '',
+          phone: document.getElementById('phone')?.value || '',
+          bio: document.getElementById('bio')?.value || '',
+          cv_url: document.getElementById('cvUrl')?.value || '',
           research_areas: researchAreas
         };
 
@@ -1143,11 +1143,11 @@
         profileId = profileResult.data.id;
 
         // Step 2: Create registration
-        const registrationType = document.getElementById('registrationType').value;
-        const registrationFee = FEES[registrationType];
+        const registrationType = document.getElementById('registrationType')?.value || '';
+        const registrationFee = FEES[registrationType] || 0;
 
         // Calculate guest fee
-        const guestCount = parseInt(document.getElementById('guestCount').value) || 0;
+        const guestCount = parseInt(document.getElementById('guestCount')?.value) || 0;
         const guestFee = guestCount * 150;
 
         const registrationData = {
@@ -1155,7 +1155,7 @@
           attendee_id: profileId,
           registration_type: registrationType,
           registration_fee: registrationFee + guestFee,
-          is_virtual: document.getElementById('attendanceType').value === 'virtual',
+          is_virtual: document.getElementById('attendanceType')?.value === 'virtual',
           is_presenter: document.getElementById('isPresenter')?.checked || false,
           is_first_time: document.getElementById('isFirstTime')?.checked || false,
           dietary_restrictions: document.getElementById('dietaryRestrictions')?.value || '',
