@@ -10,8 +10,8 @@
   <link href="https://fonts.googleapis.com/css2?family=Marcellus&family=PT+Serif:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/css/styles.css?v=2.0">
   <script src="/js/analytics.js?v=2.0"></script>
-  <!-- Google reCAPTCHA v3 -->
-  <script src="https://www.google.com/recaptcha/api.js?render=6LfVHJsqAAAAAKYN8vE_wqVb0mHPmZxKQVjQ0F8H" async defer></script>
+  <!-- Google reCAPTCHA Enterprise -->
+  <script src="https://www.google.com/recaptcha/enterprise.js?render=6LfnNQAsAAAAALsKryyU06I6fPvdQ_-7YgHAvYeA" async defer></script>
   <style>
     body {
       background: var(--light-gray);
@@ -1321,9 +1321,10 @@
       try {
         // Get reCAPTCHA token for bot protection
         let recaptchaToken = null;
-        if (typeof grecaptcha !== 'undefined') {
+        if (typeof grecaptcha !== 'undefined' && grecaptcha.enterprise) {
           try {
-            recaptchaToken = await grecaptcha.execute('6LfVHJsqAAAAAKYN8vE_wqVb0mHPmZxKQVjQ0F8H', {action: 'registration'});
+            await grecaptcha.enterprise.ready();
+            recaptchaToken = await grecaptcha.enterprise.execute('6LfnNQAsAAAAALsKryyU06I6fPvdQ_-7YgHAvYeA', {action: 'registration'});
             console.log('✅ reCAPTCHA token obtained');
           } catch (error) {
             console.warn('⚠️ reCAPTCHA token generation failed:', error);
