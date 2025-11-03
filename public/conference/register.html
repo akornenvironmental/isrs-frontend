@@ -643,13 +643,18 @@
 
         <div class="form-row">
           <div class="form-group">
+            <label>Emergency Contact Email <span class="required">*</span></label>
+            <input type="email" id="emergencyEmail" required>
+          </div>
+          <div class="form-group">
             <label>Emergency Contact Phone <span class="required">*</span></label>
             <input type="tel" id="emergencyPhone" required>
           </div>
-          <div class="form-group">
-            <label>Relationship <span class="required">*</span></label>
-            <input type="text" id="emergencyRelationship" placeholder="e.g., Spouse, Parent, Friend" required>
-          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Relationship <span class="required">*</span></label>
+          <input type="text" id="emergencyRelationship" placeholder="e.g., Spouse, Parent, Friend" required>
         </div>
 
         <!-- Special Events & Activities -->
@@ -1142,43 +1147,44 @@
           registration_type: registrationType,
           registration_fee: registrationFee + guestFee,
           is_virtual: document.getElementById('attendanceType').value === 'virtual',
-          is_presenter: document.getElementById('isPresenter').checked,
-          is_first_time: document.getElementById('isFirstTime').checked,
-          dietary_restrictions: document.getElementById('dietaryRestrictions').value,
-          dietary_notes: document.getElementById('dietaryNotes').value,
-          accessibility_needs: document.getElementById('accessibilityNeeds').value,
-          emergency_contact_name: document.getElementById('emergencyName').value,
-          emergency_contact_phone: document.getElementById('emergencyPhone').value,
-          emergency_contact_relationship: document.getElementById('emergencyRelationship').value,
+          is_presenter: document.getElementById('isPresenter')?.checked || false,
+          is_first_time: document.getElementById('isFirstTime')?.checked || false,
+          dietary_restrictions: document.getElementById('dietaryRestrictions')?.value || '',
+          dietary_notes: document.getElementById('dietaryNotes')?.value || '',
+          accessibility_needs: document.getElementById('accessibilityNeeds')?.value || '',
+          emergency_contact_name: document.getElementById('emergencyName')?.value || '',
+          emergency_contact_email: document.getElementById('emergencyEmail')?.value || '',
+          emergency_contact_phone: document.getElementById('emergencyPhone')?.value || '',
+          emergency_contact_relationship: document.getElementById('emergencyRelationship')?.value || '',
           interested_in_workshops: document.getElementById('interestedWorkshops')?.checked || false,
           interested_in_field_trips: document.getElementById('interestedFieldTrips')?.checked || false,
           interested_in_social_events: document.getElementById('interestedSocialEvents')?.checked || false,
-          needs_accommodation_help: document.getElementById('needsAccommodation').checked,
-          willing_to_volunteer: document.getElementById('willingVolunteer').checked,
-          opt_in_mailing_list: document.getElementById('optInMailingList').checked,
-          opt_in_future_conferences: document.getElementById('optInFutureConferences').checked,
+          needs_accommodation_help: document.getElementById('needsAccommodation')?.checked || false,
+          willing_to_volunteer: document.getElementById('willingVolunteer')?.checked || false,
+          opt_in_mailing_list: document.getElementById('optInMailingList')?.checked || false,
+          opt_in_future_conferences: document.getElementById('optInFutureConferences')?.checked || false,
 
           // Special Events & Activities
-          welcome_reception: document.getElementById('welcomeReception').checked,
-          low_country_boil: document.getElementById('lowCountryBoil').checked,
-          dolphin_tours: document.getElementById('dolphinTours').checked,
-          sea_turtle_center: document.getElementById('seaTurtleCenter').checked,
-          restoration_site_tour: document.getElementById('restorationSiteTour').checked,
-          golf_tournament: document.getElementById('golfTournament').checked,
+          welcome_reception: document.getElementById('welcomeReception')?.checked || false,
+          low_country_boil: document.getElementById('lowCountryBoil')?.checked || false,
+          dolphin_tours: document.getElementById('dolphinTours')?.checked || false,
+          sea_turtle_center: document.getElementById('seaTurtleCenter')?.checked || false,
+          restoration_site_tour: document.getElementById('restorationSiteTour')?.checked || false,
+          golf_tournament: document.getElementById('golfTournament')?.checked || false,
 
           // T-Shirt & Guests
-          tshirt_size: document.getElementById('tshirtSize').value,
+          tshirt_size: document.getElementById('tshirtSize')?.value || '',
           guest_count: guestCount,
           guest_fee: guestFee,
 
           // Continuing Education
-          continuing_education: document.getElementById('continuingEducation').checked,
-          license_number: document.getElementById('licenseNumber').value,
-          licensing_org: document.getElementById('licensingOrg').value,
+          continuing_education: document.getElementById('continuingEducation')?.checked || false,
+          license_number: document.getElementById('licenseNumber')?.value || '',
+          licensing_org: document.getElementById('licensingOrg')?.value || '',
 
           // Room Sharing
-          room_sharing: document.getElementById('roomSharing').checked,
-          roommate_notes: document.getElementById('roommateNotes').value
+          room_sharing: document.getElementById('roomSharing')?.checked || false,
+          roommate_notes: document.getElementById('roommateNotes')?.value || ''
         };
 
         const regResponse = await fetch(`${API_BASE_URL}/api/conference/register`, {
