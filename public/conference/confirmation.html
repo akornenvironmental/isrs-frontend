@@ -456,13 +456,13 @@
           if (paymentMethod === 'bank_transfer') {
             // Show bank transfer instructions
             document.getElementById('bankTransferSection').style.display = 'block';
-            document.getElementById('amountDueBank').textContent = `$${registration.registration_fee.toFixed(2)}`;
+            document.getElementById('amountDueBank').textContent = `$${parseFloat(registration.registration_fee).toFixed(2)}`;
             document.getElementById('bankRefNumber').textContent = registration.registration_number;
             document.getElementById('bankRefNumber2').textContent = registration.registration_number;
           } else {
             // Show Zeffy payment section (default)
             document.getElementById('zeffyPaymentSection').style.display = 'block';
-            document.getElementById('amountDue').textContent = `$${registration.registration_fee.toFixed(2)}`;
+            document.getElementById('amountDue').textContent = `$${parseFloat(registration.registration_fee).toFixed(2)}`;
             document.getElementById('paymentLink').href = checkoutUrl || registration.zeffy_checkout_url || '#';
           }
 
