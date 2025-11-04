@@ -408,7 +408,7 @@
         <div class="submission-number" id="submissionNumber">ABS2026-XXX</div>
         <p>You will receive a confirmation email shortly.</p>
         <p style="margin-top: 1rem;">
-          <a href="/abstracts/dashboard.html" style="color: var(--primary-blue); font-weight: 600;">View Your Submissions →</a>
+          <a href="/profile/dashboard.html" style="color: var(--primary-blue); font-weight: 600;">View Your Profile Dashboard →</a>
         </p>
       </div>
 
@@ -585,6 +585,56 @@
     const API_BASE_URL = 'https://isrs-database-backend.onrender.com';
     let coAuthors = [];
     let keywords = [];
+    let sessionToken = localStorage.getItem('isrs_session');
+    let userData = null;
+    let activeConference = null;
+
+    // Check if logged in
+    if (!sessionToken) {
+      alert('Please log in to submit an abstract');
+      window.location.href = '/profile/login.html';
+    }
+
+    // Load user profile and conference data
+    async function loadUserData() {
+      try {
+        // Get user profile
+        const profileResponse = await fetch(`${API_BASE_URL}/api/profile/me?sessionToken=${sessionToken}`);
+        const profileData = await profileResponse.json();
+
+        if (!profileData.success) {
+          if (profileResponse.status === 401) {
+            localStorage.removeItem('isrs_session');
+            alert('Your session has expired. Please log in again.');
+            window.location.href = '/profile/login.html';
+            return;
+          }
+          throw new Error('Failed to load profile');
+        }
+
+        userData = profileData.data.profile;
+
+        // Pre-fill author information
+        document.getElementById('authorEmail').value = userData.user_email;
+        document.getElementById('authorName').value = `${userData.first_name} ${userData.last_name}`;
+        document.getElementById('organization').value = userData.organization_name || '';
+
+        // Get active conference
+        const conferenceResponse = await fetch(`${API_BASE_URL}/api/conference/active`);
+        const conferenceData = await conferenceResponse.json();
+
+        if (conferenceData.success && conferenceData.data) {
+          activeConference = conferenceData.data;
+          console.log('Active conference loaded:', activeConference);
+        }
+
+      } catch (error) {
+        console.error('Error loading user data:', error);
+      }
+    }
+
+    // Load data on page load
+    loadUserData();
 
     // Character counters
     document.getElementById('title').addEventListener('input', (e) => {
@@ -736,13 +786,17 @@
           throw new Error('Please select a presentation format');
         }
 
-        // Get active conference (hardcode for now, could fetch from API)
-        const conferenceId = '550e8400-e29b-41d4-a716-446655440000'; // Replace with actual UUID
-        const attendeeId = localStorage.getItem('isrs_attendee_id') || '550e8400-e29b-41d4-a716-446655440001'; // Should come from login
+        if (!activeConference) {
+          throw new Error('No active conference found. Please try again later.');
+        }
+
+        if (!userData || !userData.id) {
+          throw new Error('User profile not loaded. Please refresh the page.');
+        }
 
         const abstractData = {
-          conference_id: conferenceId,
-          attendee_id: attendeeId,
+          conference_id: activeConference.id,
+          attendee_id: userData.id,
           title: document.getElementById('title').value,
           abstract: document.getElementById('abstract').value,
           keywords: keywords,

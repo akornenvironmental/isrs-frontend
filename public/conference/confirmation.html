@@ -375,6 +375,35 @@
           </ul>
         </div>
 
+        <!-- Profile Access Section -->
+        <div class="profile-access-section" style="background: linear-gradient(135deg, #2e5a8a 0%, #1e3a5f 100%); color: white; padding: 2rem; border-radius: 8px; margin: 2rem 0;">
+          <h3 style="color: white; margin-bottom: 1rem;">Your Profile Dashboard</h3>
+          <p style="margin-bottom: 1.5rem;">Access your personalized dashboard to view all your registrations, manage your information, and track your conference activity.</p>
+
+          <div style="display: flex; gap: 1rem; flex-wrap: wrap; margin-bottom: 1.5rem;">
+            <a href="/profile/login.html" class="btn" style="background: white; color: #2e5a8a; border: none;">
+              Access Your Profile
+            </a>
+            <button id="abstractSubmitBtn" class="btn" style="background: rgba(255, 255, 255, 0.2); border: 2px solid white; display: none;" onclick="window.location.href='/abstracts/submit.html'">
+              Submit Your Abstract
+            </button>
+          </div>
+
+          <div style="background: rgba(255, 255, 255, 0.15); padding: 1rem; border-radius: 6px; font-size: 0.9rem;">
+            <p style="margin: 0;"><strong>Secure Access:</strong> We use magic link authentication - no passwords needed! Check your email (<span id="profileEmail" style="font-weight: 600;"></span>) for a secure login link that expires in 15 minutes.</p>
+          </div>
+
+          <div style="margin-top: 1rem; font-size: 0.9rem;">
+            <p style="margin: 0;"><strong>From your dashboard you can:</strong></p>
+            <ul style="margin-top: 0.5rem; margin-bottom: 0;">
+              <li>View all your conference registrations</li>
+              <li>Submit and manage multiple abstracts</li>
+              <li>Update your contact information</li>
+              <li>Track your payment status</li>
+            </ul>
+          </div>
+        </div>
+
         <!-- Share Section -->
         <div class="share-section">
           <h3>🎉 Spread the Word!</h3>
@@ -464,6 +493,14 @@
             document.getElementById('zeffyPaymentSection').style.display = 'block';
             document.getElementById('amountDue').textContent = `$${parseFloat(registration.registration_fee).toFixed(2)}`;
             document.getElementById('paymentLink').href = checkoutUrl || registration.zeffy_checkout_url || '#';
+          }
+
+          // Populate profile access section
+          document.getElementById('profileEmail').textContent = registration.email;
+
+          // Show abstract submission button if interested
+          if (registration.interested_in_abstract_submission) {
+            document.getElementById('abstractSubmitBtn').style.display = 'inline-block';
           }
 
           document.getElementById('loadingContent').style.display = 'none';
