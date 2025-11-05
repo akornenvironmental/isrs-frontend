@@ -19,28 +19,10 @@
 </head>
 <body>
   <!-- Header & Navigation -->
-  <header>
-    <nav class="navbar">
-      <a href="/" class="logo">
-        <img src="/images/logo-wide-blue.png" alt="ISRS Logo" width="1640" height="640" fetchpriority="high" />
-      </a>
-      <button class="mobile-menu-toggle" onclick="toggleMobileMenu()" aria-label="Toggle menu">☰</button>
-      <ul class="nav-links" id="navLinks">
-        <li><a href="/">Home</a></li>
-        <li><a href="/about.html">About</a></li>
-        <li class="dropdown">
-          <a href="/icsr.html">ICSR</a>
-          <ul class="dropdown-menu">
-            <li><a href="/icsr.html">ICSR</a></li>
-            <li><a href="/icsr2026.html">ICSR2026</a></li>
-          </ul>
-        </li>
-        <li><a href="https://www.zeffy.com/en-US/donation-form/isrs-building-tomorrows-ocean-leaders" target="_blank" class="btn-donate">DONATE</a></li>
-      </ul>
-    </nav>
-  </header>
+  <header id="site-header"></header>
 
   <!-- Hero Section -->
+  <main id="main-content">
   <section class="hero" style="background-image: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), url('/images/hero-shellfish.jpg');">
     <div class="hero-content">
       <h1>Building community and advancing innovation in global shellfish restoration</h1>
@@ -183,67 +165,13 @@
   </section>
 
   <!-- Stay Connected -->
-  <section class="section stay-connected">
-    <div class="container">
-      <h2>Stay Connected</h2>
-      <p class="stay-connected-text">Interested in working together? Fill out some info and we will be in touch shortly.<br>We can't wait to hear from you!</p>
-      <form class="contact-form" id="contactForm">
-        <div class="form-row">
-          <div class="form-group">
-            <label for="firstName">First Name *</label>
-            <input type="text" id="firstName" name="firstName" required />
-          </div>
-          <div class="form-group">
-            <label for="lastName">Last Name *</label>
-            <input type="text" id="lastName" name="lastName" required />
-          </div>
-        </div>
-        <div class="form-group">
-          <label for="email">Email *</label>
-          <input type="email" id="email" name="email" required />
-        </div>
-        <div class="form-group">
-          <label for="message">Message</label>
-          <textarea id="message" name="message" rows="5"></textarea>
-        </div>
-        <button type="submit" class="btn btn-primary">Send</button>
-      </form>
-    </div>
-  </section>
+  <div id="stay-connected"></div>
+  </main>
 
   <!-- Footer -->
-  <footer>
-    <div class="container">
-      <div class="footer-content">
-        <div class="footer-section footer-logo-section">
-          <img src="/images/logo-wide-white.svg" alt="ISRS Logo" class="footer-logo" />
-          <p>International Shellfish Restoration Society</p>
-          <p>Building community and advancing innovation in global shellfish restoration</p>
-          <p class="footer-ein">Tax ID (EIN): 39-2829151</p>
-        </div>
-        <div class="footer-section">
-          <h4>Quick Links</h4>
-          <ul>
-            <li><a href="/">Home</a></li>
-            <li><a href="/about.html">About</a></li>
-            <li><a href="/icsr.html">ICSR</a></li>
-            <li><a href="/icsr2026.html">ICSR2026</a></li>
-          </ul>
-        </div>
-        <div class="footer-section">
-          <h4>Connect</h4>
-          <ul>
-            <li><a href="https://www.zeffy.com/en-US/donation-form/isrs-building-tomorrows-ocean-leaders" target="_blank">Donate</a></li>
-            <li><a href="/admin/">Admin Portal</a></li>
-          </ul>
-        </div>
-      </div>
-      <div class="footer-bottom">
-        <p>&copy; 2025 International Shellfish Restoration Society. All rights reserved.</p>
-      </div>
-    </div>
-  </footer>
+  <footer id="site-footer"></footer>
 
+  <script src="/js/components.js"></script>
   <script src="/js/main.js"></script>
 </body>
 </html>
