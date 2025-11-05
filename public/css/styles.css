@@ -179,23 +179,23 @@ header {
 
 /* Sections */
 .section {
-  padding: 2rem 0;
+  padding: 1.5rem 0;
 }
 
 .section h2 {
   font-family: 'Marcellus', Georgia, serif;
-  font-size: 2.5rem;
+  font-size: 2.25rem;
   font-weight: 400;
-  margin-bottom: 0.75rem;
+  margin-bottom: 0.5rem;
   color: var(--text-dark);
   text-align: center;
 }
 
 .section-intro {
   text-align: center;
-  font-size: 1.1rem;
+  font-size: 1.05rem;
   color: var(--text-light);
-  margin-bottom: 1.5rem;
+  margin-bottom: 1.25rem;
   max-width: 800px;
   margin-left: auto;
   margin-right: auto;
@@ -203,21 +203,21 @@ header {
 
 .section-closing {
   text-align: center;
-  font-size: 1.1rem;
+  font-size: 1.05rem;
   color: var(--text-dark);
-  margin: 1rem auto 0.75rem;
+  margin: 0.5rem auto 0.5rem;
   max-width: 800px;
   font-weight: 500;
 }
 
 .why-matters .btn {
-  margin-top: 0.5rem;
+  margin-top: 0;
 }
 
 /* Grid Layouts */
 .grid {
   display: grid;
-  gap: 1.5rem;
+  gap: 1.25rem;
 }
 
 .grid-3 {
@@ -229,7 +229,7 @@ header {
   background: var(--white);
   border: 1px solid var(--border-color);
   border-radius: 8px;
-  padding: 1.25rem;
+  padding: 1rem;
   transition: all 0.3s;
   cursor: pointer;
 }
@@ -242,10 +242,10 @@ header {
 
 .card img, .news-card img {
   width: 100%;
-  height: 220px;
+  height: 200px;
   object-fit: cover;
   border-radius: 4px;
-  margin-bottom: 1rem;
+  margin-bottom: 0.75rem;
   image-rendering: -webkit-optimize-contrast;
   image-rendering: high-quality;
   transition: transform 0.3s;
@@ -257,9 +257,9 @@ header {
 
 .card h3, .news-card h3 {
   font-family: 'Marcellus', Georgia, serif;
-  font-size: 1.4rem;
+  font-size: 1.35rem;
   font-weight: 400;
-  margin-bottom: 0.65rem;
+  margin-bottom: 0.5rem;
   color: var(--text-dark);
   transition: color 0.3s;
 }
@@ -270,8 +270,8 @@ header {
 
 .card p, .news-card p {
   color: var(--text-light);
-  margin-bottom: 1rem;
-  line-height: 1.6;
+  margin-bottom: 0.75rem;
+  line-height: 1.55;
 }
 
 .donation-note {
@@ -328,19 +328,19 @@ header {
 /* Why Matters Section */
 .why-matters {
   background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
-  padding: 2.5rem 0 !important;
+  padding: 2rem 0 !important;
 }
 
 .benefits-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 1.5rem;
-  margin: 1.5rem 0;
+  gap: 1rem;
+  margin: 1rem 0 0.75rem;
 }
 
 .benefit-item {
   background: var(--white);
-  padding: 1.25rem;
+  padding: 1rem;
   border-radius: 8px;
   text-align: center;
   border: 1px solid var(--border-color);
@@ -355,14 +355,19 @@ header {
 }
 
 .benefit-item h4 {
-  font-size: 1.15rem;
-  margin-bottom: 0.5rem;
+  font-size: 1.1rem;
+  margin-bottom: 0.4rem;
   color: var(--primary-blue);
   transition: all 0.3s;
 }
 
 .benefit-item:hover h4 {
   color: var(--secondary-blue);
+}
+
+.benefit-item p {
+  font-size: 0.95rem;
+  margin-bottom: 0;
 }
 
 /* Get Involved */
@@ -377,29 +382,30 @@ header {
 }
 
 .network-stats {
-  font-size: 1.5rem;
+  font-size: 1.4rem;
   color: var(--primary-blue);
   font-weight: 600;
-  margin-bottom: 1.5rem;
+  margin-bottom: 1rem;
 }
 
 .partners-list ul {
   list-style: none;
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 1rem;
-  margin: 1.5rem 0;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 0.75rem;
+  margin: 1rem 0;
   max-width: 900px;
   margin-left: auto;
   margin-right: auto;
 }
 
 .partners-list li {
-  padding: 0.75rem;
+  padding: 0.65rem;
   background: var(--white);
   border-radius: 4px;
   border: 1px solid var(--border-color);
   font-weight: 500;
+  font-size: 0.95rem;
 }
 
 .network-image {
@@ -407,7 +413,7 @@ header {
   max-width: 1000px;
   height: auto;
   border-radius: 8px;
-  margin-top: 2rem;
+  margin-top: 1rem;
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
   image-rendering: -webkit-optimize-contrast;
   image-rendering: high-quality;
@@ -416,23 +422,23 @@ header {
 /* Contact Form */
 .stay-connected {
   background: var(--white);
-  padding: 2.5rem 0 !important;
+  padding: 2rem 0 !important;
 }
 
 .stay-connected-text {
   text-align: center;
-  font-size: 1.1rem;
+  font-size: 1.05rem;
   color: var(--text-light);
-  margin: 0.5rem auto 1.5rem;
+  margin: 0.5rem auto 1.25rem;
   max-width: 700px;
-  line-height: 1.6;
+  line-height: 1.55;
 }
 
 .contact-form {
   max-width: 600px;
   margin: 0 auto;
   background: var(--light-gray);
-  padding: 1.5rem;
+  padding: 1.25rem;
   border-radius: 8px;
   border: 1px solid var(--border-color);
 }
@@ -440,28 +446,29 @@ header {
 .form-row {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 1rem;
+  gap: 0.75rem;
 }
 
 .form-group {
-  margin-bottom: 1.25rem;
+  margin-bottom: 1rem;
 }
 
 .form-group label {
   display: block;
-  margin-bottom: 0.5rem;
+  margin-bottom: 0.4rem;
   font-weight: 600;
   color: var(--text-dark);
+  font-size: 0.95rem;
 }
 
 .form-group input,
 .form-group textarea {
   width: 100%;
-  padding: 0.75rem;
+  padding: 0.65rem;
   border: 1px solid var(--border-color);
   border-radius: 4px;
   font-family: inherit;
-  font-size: 1rem;
+  font-size: 0.95rem;
   transition: border-color 0.3s;
 }
 
@@ -473,20 +480,21 @@ header {
 
 .form-group textarea {
   resize: vertical;
+  min-height: 100px;
 }
 
 /* Footer */
 footer {
   background: var(--dark-gray);
   color: var(--white);
-  padding: 2rem 0 1rem;
+  padding: 1.5rem 0 1rem;
 }
 
 .footer-content {
   display: grid;
   grid-template-columns: 2fr 1fr 1fr;
-  gap: 2.5rem;
-  margin-bottom: 1.5rem;
+  gap: 2rem;
+  margin-bottom: 1.25rem;
 }
 
 .footer-logo {
@@ -505,15 +513,16 @@ footer {
 }
 
 .footer-section h4 {
-  font-size: 1.25rem;
-  margin-bottom: 0.75rem;
+  font-size: 1.15rem;
+  margin-bottom: 0.65rem;
   color: var(--white);
 }
 
 .footer-section p {
   color: #bdc3c7;
-  margin-bottom: 0.5rem;
-  line-height: 1.7;
+  margin-bottom: 0.4rem;
+  line-height: 1.6;
+  font-size: 0.95rem;
 }
 
 .footer-section ul {
@@ -521,13 +530,14 @@ footer {
 }
 
 .footer-section ul li {
-  margin-bottom: 0.5rem;
+  margin-bottom: 0.4rem;
 }
 
 .footer-section a {
   color: #bdc3c7;
   text-decoration: none;
   transition: color 0.3s;
+  font-size: 0.95rem;
 }
 
 .footer-section a:hover {
@@ -537,10 +547,10 @@ footer {
 
 .footer-bottom {
   border-top: 1px solid rgba(255, 255, 255, 0.1);
-  padding-top: 1.5rem;
+  padding-top: 1rem;
   text-align: center;
   color: #bdc3c7;
-  font-size: 0.9rem;
+  font-size: 0.85rem;
 }
 
 /* Responsive Design */
