@@ -60,6 +60,47 @@ const translations = {
     benefit4Title: '🍽️ Food Security',
     benefit4Text: 'Sustainable seafood for local communities',
 
+    benefit5Title: '🌱 Carbon Sequestration',
+    benefit5Text: 'Climate change mitigation through carbon storage',
+
+    benefit6Title: '🎣 Sustainable Fisheries',
+    benefit6Text: 'Supporting local economies and food security',
+
+    benefit7Title: '🏛️ Cultural Heritage',
+    benefit7Text: 'Preservation of traditional practices',
+
+    // Call to Action
+    ctaText: 'Together, we can restore these vital ecosystems and build more resilient coasts.',
+
+    // Get Involved Section
+    getInvolvedHeading: 'Get Involved',
+
+    joinNetworkTitle: 'Join Our Network',
+    joinNetworkText: 'Connect with restoration practitioners, scientists, and community leaders worldwide. Members gain access to exclusive resources, networking opportunities, and conference discounts.',
+    joinNetworkButton: 'Become a Member',
+
+    shareKnowledgeTitle: 'Share Your Knowledge',
+    shareKnowledgeText: 'Present your research, contribute to best practices guides, or mentor emerging professionals. Your expertise helps advance the field of shellfish restoration.',
+    shareKnowledgeButton: 'Partner With Us',
+
+    supportMissionTitle: 'Support Our Mission',
+    supportMissionText: 'Help build a sustainable future for coastal ecosystems through membership, partnership, or charitable giving.',
+    supportMissionButton: 'Make a Donation',
+
+    donationNote: 'ISRS uses Zeffy, a 100% free fundraising platform that allows us to receive every dollar of your donation without deducting platform fees. When you donate, you\'ll see an optional contribution to support Zeffy\'s free service. This tip is completely optional - you may adjust it to any amount or $0.',
+
+    // Global Network
+    globalNetworkHeading: 'Our Global Network',
+    globalNetworkIntro: 'Join our growing network of over 2,600 members working to advance shellfish restoration worldwide.',
+    globalNetworkText: 'ISRS connects restoration practitioners across six continents, fostering collaboration among:',
+
+    stakeholder1: 'Research institutions',
+    stakeholder2: 'Government agencies',
+    stakeholder3: 'Conservation organizations',
+    stakeholder4: 'Indigenous communities',
+    stakeholder5: 'Industry partners',
+    stakeholder6: 'Local stakeholders',
+
     // Common buttons
     learnMore: 'Learn More',
     getInvolved: 'Get Involved',
@@ -136,6 +177,47 @@ const translations = {
     benefit4Title: '🍽️ Seguridad Alimentaria',
     benefit4Text: 'Mariscos sostenibles para comunidades locales',
 
+    benefit5Title: '🌱 Secuestro de Carbono',
+    benefit5Text: 'Mitigación del cambio climático mediante almacenamiento de carbono',
+
+    benefit6Title: '🎣 Pesquerías Sostenibles',
+    benefit6Text: 'Apoyo a las economías locales y seguridad alimentaria',
+
+    benefit7Title: '🏛️ Patrimonio Cultural',
+    benefit7Text: 'Preservación de prácticas tradicionales',
+
+    // Llamado a la Acción
+    ctaText: 'Juntos, podemos restaurar estos ecosistemas vitales y construir costas más resilientes.',
+
+    // Sección Participa
+    getInvolvedHeading: 'Participa',
+
+    joinNetworkTitle: 'Únete a Nuestra Red',
+    joinNetworkText: 'Conéctate con profesionales de restauración, científicos y líderes comunitarios de todo el mundo. Los miembros obtienen acceso a recursos exclusivos, oportunidades de networking y descuentos en conferencias.',
+    joinNetworkButton: 'Hazte Miembro',
+
+    shareKnowledgeTitle: 'Comparte Tu Conocimiento',
+    shareKnowledgeText: 'Presenta tu investigación, contribuye a guías de mejores prácticas o asesora a profesionales emergentes. Tu experiencia ayuda a avanzar en el campo de la restauración de moluscos.',
+    shareKnowledgeButton: 'Asóciate con Nosotros',
+
+    supportMissionTitle: 'Apoya Nuestra Misión',
+    supportMissionText: 'Ayuda a construir un futuro sostenible para los ecosistemas costeros a través de membresía, asociación o donaciones caritativas.',
+    supportMissionButton: 'Haz una Donación',
+
+    donationNote: 'ISRS usa Zeffy, una plataforma de recaudación de fondos 100% gratuita que nos permite recibir cada dólar de tu donación sin deducir tarifas de plataforma. Cuando dones, verás una contribución opcional para apoyar el servicio gratuito de Zeffy. Esta propina es completamente opcional: puedes ajustarla a cualquier cantidad o $0.',
+
+    // Red Global
+    globalNetworkHeading: 'Nuestra Red Global',
+    globalNetworkIntro: 'Únete a nuestra red en crecimiento de más de 2,600 miembros trabajando para avanzar en la restauración de moluscos en todo el mundo.',
+    globalNetworkText: 'ISRS conecta a profesionales de restauración en seis continentes, fomentando la colaboración entre:',
+
+    stakeholder1: 'Instituciones de investigación',
+    stakeholder2: 'Agencias gubernamentales',
+    stakeholder3: 'Organizaciones de conservación',
+    stakeholder4: 'Comunidades indígenas',
+    stakeholder5: 'Socios industriales',
+    stakeholder6: 'Partes interesadas locales',
+
     // Botones comunes
     learnMore: 'Saber Más',
     getInvolved: 'Participar',
@@ -211,6 +293,47 @@ const translations = {
 
     benefit4Title: '🍽️ Sécurité Alimentaire',
     benefit4Text: 'Fruits de mer durables pour les communautés locales',
+
+    benefit5Title: '🌱 Séquestration du Carbone',
+    benefit5Text: 'Atténuation du changement climatique par le stockage du carbone',
+
+    benefit6Title: '🎣 Pêcheries Durables',
+    benefit6Text: 'Soutien aux économies locales et à la sécurité alimentaire',
+
+    benefit7Title: '🏛️ Patrimoine Culturel',
+    benefit7Text: 'Préservation des pratiques traditionnelles',
+
+    // Appel à l\'Action
+    ctaText: 'Ensemble, nous pouvons restaurer ces écosystèmes vitaux et construire des côtes plus résilientes.',
+
+    // Section S\'impliquer
+    getInvolvedHeading: 'S\'impliquer',
+
+    joinNetworkTitle: 'Rejoignez Notre Réseau',
+    joinNetworkText: 'Connectez-vous avec des praticiens de la restauration, des scientifiques et des leaders communautaires du monde entier. Les membres ont accès à des ressources exclusives, des opportunités de réseautage et des réductions pour les conférences.',
+    joinNetworkButton: 'Devenir Membre',
+
+    shareKnowledgeTitle: 'Partagez Vos Connaissances',
+    shareKnowledgeText: 'Présentez vos recherches, contribuez aux guides de meilleures pratiques ou mentorez des professionnels émergents. Votre expertise aide à faire progresser le domaine de la restauration des mollusques.',
+    shareKnowledgeButton: 'Partenariat avec Nous',
+
+    supportMissionTitle: 'Soutenez Notre Mission',
+    supportMissionText: 'Aidez à construire un avenir durable pour les écosystèmes côtiers par le biais de l\'adhésion, du partenariat ou du don caritatif.',
+    supportMissionButton: 'Faire un Don',
+
+    donationNote: 'ISRS utilise Zeffy, une plateforme de collecte de fonds 100% gratuite qui nous permet de recevoir chaque dollar de votre don sans déduire de frais de plateforme. Lorsque vous faites un don, vous verrez une contribution optionnelle pour soutenir le service gratuit de Zeffy. Ce pourboire est entièrement optionnel - vous pouvez l\'ajuster à n\'importe quel montant ou 0$.',
+
+    // Réseau Global
+    globalNetworkHeading: 'Notre Réseau Mondial',
+    globalNetworkIntro: 'Rejoignez notre réseau en croissance de plus de 2 600 membres travaillant à faire progresser la restauration des mollusques dans le monde entier.',
+    globalNetworkText: 'ISRS connecte les praticiens de la restauration sur six continents, favorisant la collaboration entre:',
+
+    stakeholder1: 'Institutions de recherche',
+    stakeholder2: 'Agences gouvernementales',
+    stakeholder3: 'Organisations de conservation',
+    stakeholder4: 'Communautés autochtones',
+    stakeholder5: 'Partenaires industriels',
+    stakeholder6: 'Parties prenantes locales',
 
     // Boutons communs
     learnMore: 'En Savoir Plus',
