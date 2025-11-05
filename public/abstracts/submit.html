@@ -385,6 +385,9 @@
   </style>
 </head>
 <body>
+  <header id="site-header"></header>
+
+  <main id="main-content">
   <div class="submit-container">
     <div class="submit-header">
       <h1>Submit Your Abstract</h1>
@@ -580,6 +583,12 @@
       </div>
     </form>
   </div>
+
+  <!-- Stay Connected -->
+  <div id="stay-connected"></div>
+  </main>
+
+  <footer id="site-footer"></footer>
 
   <script>
     const API_BASE_URL = 'https://isrs-database-backend.onrender.com';
@@ -850,5 +859,7 @@
       window.ISRSAnalytics.trackPageView('abstract_submission');
     }
   </script>
+
+  <script src="/js/components.js"></script>
 </body>
 </html>

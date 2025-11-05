@@ -9,22 +9,9 @@
   <script src="/js/analytics.js"></script>
 </head>
 <body>
-  <!-- Header & Navigation -->
-  <header>
-    <nav>
-      <a href="/" class="logo">ISRS</a>
-      <button class="mobile-menu-toggle" onclick="toggleMobileMenu()">☰</button>
-      <ul class="nav-links" id="navLinks">
-        <li><a href="/">Home</a></li>
-        <li><a href="/about.html">About</a></li>
-        <li><a href="/icsr.html">ICSR</a></li>
-        <li><a href="/icsr2026.html">ICSR2026</a></li>
-        <li><a href="/admin/" class="btn-admin">Admin</a></li>
-        <li><a href="https://www.zeffy.com/en-US/donation-form/support-isrs" target="_blank" class="btn-donate">DONATE</a></li>
-      </ul>
-    </nav>
-  </header>
+  <header id="site-header"></header>
 
+  <main id="main-content">
   <!-- Hero Section -->
   <section class="hero">
     <h1>International Conference on Shellfish Restoration</h1>
@@ -236,38 +223,12 @@
     </section>
   </div>
 
-  <!-- Footer -->
-  <footer>
-    <div class="footer-content">
-      <div class="footer-section">
-        <h4>International Shellfish Restoration Society</h4>
-        <p>Building community and advancing innovation in global shellfish restoration.</p>
-        <p style="margin-top: 1rem;">501(c)(3) nonprofit | EIN: 39-2829151</p>
-      </div>
-      <div class="footer-section">
-        <h4>Quick Links</h4>
-        <p><a href="/">Home</a></p>
-        <p><a href="/about.html">About</a></p>
-        <p><a href="/icsr.html">ICSR</a></p>
-        <p><a href="/icsr2026.html">ICSR2026</a></p>
-      </div>
-      <div class="footer-section">
-        <h4>Contact</h4>
-        <p>Email: <a href="mailto:info@shellfish-society.org">info@shellfish-society.org</a></p>
-        <p style="margin-top: 1rem;"><a href="https://www.zeffy.com/en-US/donation-form/support-isrs" target="_blank">Donate</a></p>
-      </div>
-    </div>
-    <div class="footer-bottom">
-      <p>&copy; 2024-2025 International Shellfish Restoration Society. All rights reserved.</p>
-    </div>
-  </footer>
+  <!-- Stay Connected -->
+  <div id="stay-connected"></div>
+  </main>
 
-  <!-- Scripts -->
-  <script>
-    function toggleMobileMenu() {
-      const navLinks = document.getElementById('navLinks');
-      navLinks.classList.toggle('active');
-    }
-  </script>
+  <footer id="site-footer"></footer>
+
+  <script src="/js/components.js"></script>
 </body>
 </html>

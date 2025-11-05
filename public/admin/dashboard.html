@@ -187,11 +187,109 @@
       </div>
     </div>
 
-    <div class="dashboard-card">
-      <h3>System Status</h3>
-      <p><strong>Database:</strong> Connected</p>
-      <p><strong>Total Contacts:</strong> 2,620</p>
-      <p><strong>Total Organizations:</strong> 399</p>
+    </div>
+
+    <!-- Metrics Dashboard -->
+    <div style="margin-top: 1rem;">
+      <h2 style="font-family: 'Marcellus', Georgia, serif; font-size: 1.5rem; margin-bottom: 1rem; color: var(--text-dark);">Dashboard Metrics</h2>
+
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1rem; margin-bottom: 1rem;">
+        <!-- Database Status -->
+        <div class="dashboard-card" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: white; border: none;">
+          <h3 style="color: white; opacity: 0.9; font-size: 0.9rem; margin-bottom: 0.5rem;">Database Status</h3>
+          <p style="font-size: 2rem; font-weight: 700; margin: 0; color: white;">✓ Connected</p>
+          <p style="margin: 0.5rem 0 0 0; opacity: 0.9; font-size: 0.85rem; color: white;">All systems operational</p>
+        </div>
+
+        <!-- Total Contacts -->
+        <div class="dashboard-card" style="background: linear-gradient(135deg, var(--primary-blue) 0%, var(--secondary-blue) 100%); color: white; border: none;">
+          <h3 style="color: white; opacity: 0.9; font-size: 0.9rem; margin-bottom: 0.5rem;">Total Contacts</h3>
+          <p style="font-size: 2.5rem; font-weight: 700; margin: 0; color: white;" id="metricContacts">2,620</p>
+          <p style="margin: 0.5rem 0 0 0; opacity: 0.9; font-size: 0.85rem; color: white;">Network members worldwide</p>
+        </div>
+
+        <!-- Total Organizations -->
+        <div class="dashboard-card" style="background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%); color: white; border: none;">
+          <h3 style="color: white; opacity: 0.9; font-size: 0.9rem; margin-bottom: 0.5rem;">Organizations</h3>
+          <p style="font-size: 2.5rem; font-weight: 700; margin: 0; color: white;" id="metricOrgs">399</p>
+          <p style="margin: 0.5rem 0 0 0; opacity: 0.9; font-size: 0.85rem; color: white;">Partner institutions</p>
+        </div>
+
+        <!-- Conference Registrations -->
+        <div class="dashboard-card" style="background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); color: white; border: none;">
+          <h3 style="color: white; opacity: 0.9; font-size: 0.9rem; margin-bottom: 0.5rem;">ICSR2026 Registrations</h3>
+          <p style="font-size: 2.5rem; font-weight: 700; margin: 0; color: white;" id="metricRegistrations">-</p>
+          <p style="margin: 0.5rem 0 0 0; opacity: 0.9; font-size: 0.85rem; color: white;">Opens December 2025</p>
+        </div>
+      </div>
+
+      <!-- Fundraising & Membership Section -->
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1rem;">
+        <!-- Fundraising Progress -->
+        <div class="dashboard-card">
+          <h3 style="display: flex; align-items: center; gap: 0.5rem;">
+            💰 Fundraising Progress
+          </h3>
+          <div style="margin-top: 1rem;">
+            <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+              <span style="font-size: 0.9rem; color: var(--text-light);">Annual Goal</span>
+              <span style="font-weight: 700; color: var(--text-dark);">$150,000</span>
+            </div>
+            <div style="background: #e5e7eb; height: 12px; border-radius: 6px; overflow: hidden; margin-bottom: 0.5rem;">
+              <div style="background: linear-gradient(90deg, var(--primary-blue), var(--secondary-blue)); height: 100%; width: 34%; transition: width 0.3s;"></div>
+            </div>
+            <div style="display: flex; justify-content: space-between;">
+              <span style="font-size: 0.9rem; color: var(--text-light);">Raised to Date</span>
+              <span style="font-weight: 700; color: var(--primary-blue);" id="metricFundsRaised">$51,000</span>
+            </div>
+          </div>
+          <a href="/admin/funding.html" style="display: inline-block; margin-top: 1rem; color: var(--primary-blue); text-decoration: none; font-weight: 600; font-size: 0.9rem;">View Funding Details →</a>
+        </div>
+
+        <!-- ISRS Memberships -->
+        <div class="dashboard-card">
+          <h3 style="display: flex; align-items: center; gap: 0.5rem;">
+            👥 ISRS Memberships
+          </h3>
+          <div style="margin-top: 1rem;">
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 0.5rem;">
+              <div>
+                <p style="font-size: 0.85rem; color: var(--text-light); margin: 0;">Active Members</p>
+                <p style="font-size: 1.75rem; font-weight: 700; margin: 0.25rem 0; color: var(--primary-blue);" id="metricActiveMembers">342</p>
+              </div>
+              <div>
+                <p style="font-size: 0.85rem; color: var(--text-light); margin: 0;">Lifetime Members</p>
+                <p style="font-size: 1.75rem; font-weight: 700; margin: 0.25rem 0; color: var(--secondary-blue);" id="metricLifetimeMembers">89</p>
+              </div>
+            </div>
+            <div style="background: var(--light-gray); padding: 0.75rem; border-radius: 6px; margin-top: 1rem;">
+              <p style="font-size: 0.85rem; margin: 0; color: var(--text-dark);">💡 <strong>New this month:</strong> <span id="metricNewMembers">12</span> members joined</p>
+            </div>
+          </div>
+          <a href="/admin/contacts.html?filter=members" style="display: inline-block; margin-top: 1rem; color: var(--primary-blue); text-decoration: none; font-weight: 600; font-size: 0.9rem;">Manage Memberships →</a>
+        </div>
+
+        <!-- Quick Actions -->
+        <div class="dashboard-card" style="background: var(--light-gray);">
+          <h3 style="display: flex; align-items: center; gap: 0.5rem;">
+            ⚡ Quick Actions
+          </h3>
+          <div style="margin-top: 1rem; display: flex; flex-direction: column; gap: 0.75rem;">
+            <a href="/admin/contacts.html" style="display: flex; align-items: center; justify-content: space-between; padding: 0.75rem; background: white; border: 1px solid var(--border-color); border-radius: 6px; text-decoration: none; color: var(--text-dark); transition: all 0.3s;">
+              <span style="font-weight: 600; font-size: 0.9rem;">📧 Email Campaign</span>
+              <span style="color: var(--primary-blue);">→</span>
+            </a>
+            <a href="/admin/conferences.html" style="display: flex; align-items: center; justify-content: space-between; padding: 0.75rem; background: white; border: 1px solid var(--border-color); border-radius: 6px; text-decoration: none; color: var(--text-dark); transition: all 0.3s;">
+              <span style="font-weight: 600; font-size: 0.9rem;">🎟️ Export Registrations</span>
+              <span style="color: var(--primary-blue);">→</span>
+            </a>
+            <a href="/admin/funding.html" style="display: flex; align-items: center; justify-content: space-between; padding: 0.75rem; background: white; border: 1px solid var(--border-color); border-radius: 6px; text-decoration: none; color: var(--text-dark); transition: all 0.3s;">
+              <span style="font-weight: 600; font-size: 0.9rem;">💵 Add Donation</span>
+              <span style="color: var(--primary-blue);">→</span>
+            </a>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 
@@ -553,6 +651,7 @@
     }
 
     .ai-tab-text {
+      font-family: 'PT Serif', Georgia, serif;
       font-weight: 500;
       white-space: nowrap;
     }

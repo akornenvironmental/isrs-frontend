@@ -304,6 +304,13 @@ header {
   padding: 1rem;
   transition: all 0.3s;
   cursor: pointer;
+  display: flex;
+  flex-direction: column;
+}
+
+.card .btn, .news-card .btn {
+  align-self: flex-end;
+  margin-top: auto;
 }
 
 .card:hover, .news-card:hover {

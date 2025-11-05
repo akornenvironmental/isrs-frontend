@@ -306,6 +306,9 @@
   </style>
 </head>
 <body>
+  <header id="site-header"></header>
+
+  <main id="main-content">
   <div class="confirmation-container">
     <div class="confirmation-card">
       <div id="loadingContent" class="loading">
@@ -455,6 +458,12 @@
       </div>
     </div>
   </div>
+
+  <!-- Stay Connected -->
+  <div id="stay-connected"></div>
+  </main>
+
+  <footer id="site-footer"></footer>
 
   <script>
     const API_BASE_URL = 'https://isrs-database-backend.onrender.com';
@@ -636,5 +645,7 @@ Hope to see you there!`,
     window.removeEmail = removeEmail;
     window.sendInvites = sendInvites;
   </script>
+
+  <script src="/js/components.js"></script>
 </body>
 </html>
