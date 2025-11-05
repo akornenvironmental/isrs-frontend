@@ -1,4 +1,5 @@
 // Contact Management Features - Import, Export, Duplicate Detection, Bulk Operations, Merge
+// Updated to use new Claude AI and file parser services
 
 // ========== GLOBAL STATE ==========
 let importData = null;
@@ -60,7 +61,8 @@ async function handleFileUpload(event) {
     const formData = new FormData();
     formData.append('file', file);
 
-    const response = await fetch(`${API_BASE_URL}/api/admin/contacts/import/analyze`, {
+    // Use new /api/import/upload endpoint
+    const response = await fetch(`${API_BASE_URL}/api/import/upload`, {
       method: 'POST',
       headers: {
         'Authorization': `Bearer ${sessionToken}`
@@ -74,21 +76,11 @@ async function handleFileUpload(event) {
     if (result.success) {
       importData = result;
       fileInfo.style.display = 'block';
-      fileInfo.innerHTML += `<br><strong>Rows:</strong> ${result.rowCount}<br><strong>Columns:</strong> ${result.columns.length}`;
+      fileInfo.innerHTML += `<br><strong>Contacts extracted:</strong> ${result.contacts.length}`;
       document.getElementById('importNextBtn').style.display = 'inline-block';
-
-      // Show duplicate warnings if any
-      if (result.duplicates && result.duplicates.length > 0) {
-        const warnings = document.getElementById('duplicateWarnings');
-        warnings.style.display = 'block';
-        warnings.innerHTML = `
-          <strong>⚠️ Duplicates found in file:</strong><br>
-          ${result.duplicates.length} potential duplicate(s) detected. They will be highlighted during import.
-        `;
-      }
     } else {
       error.style.display = 'block';
-      error.textContent = result.error || 'Failed to analyze file';
+      error.textContent = result.error || result.details || 'Failed to parse file';
     }
   } catch (err) {
     loading.style.display = 'none';
@@ -99,24 +91,13 @@ async function handleFileUpload(event) {
 
 function importNextStep() {
   if (importStep === 1) {
-    // Move to field mapping step
+    // Move to preview step (skip field mapping since parser auto-maps)
     importStep = 2;
     document.getElementById('importStep1').style.display = 'none';
-    document.getElementById('importStep2').style.display = 'block';
-    document.getElementById('importBackBtn').style.display = 'inline-block';
-
-    // Build field mapping UI
-    buildFieldMappingUI();
-  } else if (importStep === 2) {
-    // Move to preview step
-    importStep = 3;
-    document.getElementById('importStep2').style.display = 'none';
     document.getElementById('importStep3').style.display = 'block';
+    document.getElementById('importBackBtn').style.display = 'inline-block';
     document.getElementById('importNextBtn').style.display = 'none';
     document.getElementById('importExecuteBtn').style.display = 'inline-block';
-
-    // Collect field mappings
-    collectFieldMappings();
 
     // Show preview
     showImportPreview();
@@ -126,107 +107,66 @@ function importNextStep() {
 function importPrevStep() {
   if (importStep === 2) {
     importStep = 1;
-    document.getElementById('importStep2').style.display = 'none';
+    document.getElementById('importStep3').style.display = 'none';
     document.getElementById('importStep1').style.display = 'block';
     document.getElementById('importBackBtn').style.display = 'none';
-    document.getElementById('importNextBtn').style.display = 'inline-block';
-  } else if (importStep === 3) {
-    importStep = 2;
-    document.getElementById('importStep3').style.display = 'none';
-    document.getElementById('importStep2').style.display = 'block';
     document.getElementById('importNextBtn').style.display = 'inline-block';
     document.getElementById('importExecuteBtn').style.display = 'none';
   }
 }
 
-function buildFieldMappingUI() {
-  const container = document.getElementById('fieldMappingContainer');
-  const suggestedMapping = importData.suggestedMapping || {};
-
-  const dbFields = [
-    { value: '', label: '-- Skip this column --' },
-    { value: 'first_name', label: 'First Name' },
-    { value: 'last_name', label: 'Last Name' },
-    { value: 'email', label: 'Email' },
-    { value: 'organization_name', label: 'Organization Name' },
-    { value: 'country', label: 'Country' },
-    { value: 'member_type', label: 'Member Type' },
-    { value: 'phone', label: 'Phone' },
-    { value: 'position', label: 'Position' },
-    { value: 'expertise', label: 'Expertise' },
-    { value: 'notes', label: 'Notes' }
-  ];
-
-  let html = '';
-  for (const col of importData.columns) {
-    const suggested = suggestedMapping[col];
-    const confidence = suggested ? suggested.confidence : 0;
-    const selectedField = suggested ? suggested.field : '';
-
-    let confidenceClass = 'confidence-low';
-    let confidenceText = 'Low';
-    if (confidence > 0.8) {
-      confidenceClass = 'confidence-high';
-      confidenceText = 'High';
-    } else if (confidence > 0.5) {
-      confidenceClass = 'confidence-medium';
-      confidenceText = 'Medium';
-    }
-
-    html += `
-      <div class="field-mapping-row">
-        <label>${col}</label>
-        <select data-import-column="${col}">
-          ${dbFields.map(f => `<option value="${f.value}" ${f.value === selectedField ? 'selected' : ''}>${f.label}</option>`).join('')}
-        </select>
-        ${suggested ? `<span class="confidence-indicator ${confidenceClass}">✓ ${confidenceText}</span>` : '<span class="confidence-indicator">-</span>'}
-      </div>
-    `;
-  }
-
-  container.innerHTML = html;
-}
-
-function collectFieldMappings() {
-  const selects = document.querySelectorAll('#fieldMappingContainer select');
-  importFieldMapping = {};
-
-  selects.forEach(select => {
-    const importCol = select.getAttribute('data-import-column');
-    const dbField = select.value;
-    if (dbField) {
-      importFieldMapping[importCol] = { field: dbField, confidence: 1.0 };
-    }
-  });
-}
-
 function showImportPreview() {
   const preview = document.getElementById('importPreview');
-  const previewRows = importData.preview || importData.data.slice(0, 5);
+  const previewContacts = importData.contacts.slice(0, 5);
 
   let html = `
-    <p><strong>Ready to import ${importData.rowCount} rows</strong></p>
-    <p>Preview of first 5 rows with mapped fields:</p>
+    <p><strong>Ready to import ${importData.contacts.length} contacts</strong></p>
+    <p>Preview of first 5 contacts:</p>
     <div class="import-preview-table">
-      <table style="width: 100%; border-collapse: collapse;">
+      <table style="width: 100%; border-collapse: collapse; font-size: 0.85rem;">
         <thead>
           <tr>
-            ${Object.values(importFieldMapping).map(m => `<th style="padding: 0.5rem; border: 1px solid #ddd; background: #f5f5f5;">${m.field}</th>`).join('')}
+            <th style="padding: 0.5rem; border: 1px solid #ddd; background: #f5f5f5;">Name</th>
+            <th style="padding: 0.5rem; border: 1px solid #ddd; background: #f5f5f5;">Email</th>
+            <th style="padding: 0.5rem; border: 1px solid #ddd; background: #f5f5f5;">Phone</th>
+            <th style="padding: 0.5rem; border: 1px solid #ddd; background: #f5f5f5;">Organization</th>
+            <th style="padding: 0.5rem; border: 1px solid #ddd; background: #f5f5f5;">Country</th>
           </tr>
         </thead>
         <tbody>
-          ${previewRows.map(row => `
+          ${previewContacts.map(contact => `
             <tr>
-              ${Object.keys(importFieldMapping).map(col => `<td style="padding: 0.5rem; border: 1px solid #ddd;">${row[col] || '-'}</td>`).join('')}
+              <td style="padding: 0.5rem; border: 1px solid #ddd;">${contact.full_name || '-'}</td>
+              <td style="padding: 0.5rem; border: 1px solid #ddd;">${contact.email || '-'}</td>
+              <td style="padding: 0.5rem; border: 1px solid #ddd;">${contact.phone || '-'}</td>
+              <td style="padding: 0.5rem; border: 1px solid #ddd;">${contact.organization_name || '-'}</td>
+              <td style="padding: 0.5rem; border: 1px solid #ddd;">${contact.country || '-'}</td>
             </tr>
           `).join('')}
         </tbody>
       </table>
     </div>
+
+    <div style="margin-top: 1rem;">
+      <h4>Optional: Source Tracking</h4>
+      <div class="form-group">
+        <label>Source Provider</label>
+        <input type="text" id="sourceProvider" placeholder="e.g., John Doe, NOAA, etc." class="form-input">
+      </div>
+      <div class="form-group">
+        <label>Source Date</label>
+        <input type="date" id="sourceDate" class="form-input">
+      </div>
+      <div class="form-group">
+        <label>Source Description</label>
+        <textarea id="sourceDescription" placeholder="Notes about this data source..." class="form-input" rows="2"></textarea>
+      </div>
+    </div>
+
     <div class="form-group" style="margin-top: 1rem;">
       <label>
         <input type="checkbox" id="confirmImport">
-        I confirm that I want to import these contacts
+        I confirm that I want to import these ${importData.contacts.length} contacts
       </label>
     </div>
   `;
@@ -245,20 +185,27 @@ async function executeImport() {
   executeBtn.disabled = true;
   executeBtn.textContent = 'Importing...';
 
-  const updateExisting = document.getElementById('updateExisting').checked;
+  // Collect source tracking
+  const sourceProvider = document.getElementById('sourceProvider')?.value || null;
+  const sourceDate = document.getElementById('sourceDate')?.value || null;
+  const sourceDescription = document.getElementById('sourceDescription')?.value || null;
 
   try {
     const sessionToken = localStorage.getItem('isrs_session');
-    const response = await fetch(`${API_BASE_URL}/api/admin/contacts/import/execute`, {
+
+    // Use new /api/import/save endpoint
+    const response = await fetch(`${API_BASE_URL}/api/import/save`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${sessionToken}`
       },
       body: JSON.stringify({
-        data: importData.data,
-        fieldMapping: importFieldMapping,
-        options: { updateExisting }
+        contacts: importData.contacts,
+        import_log_id: importData.import_log_id,
+        source_provider: sourceProvider,
+        source_date: sourceDate,
+        source_description: sourceDescription
       })
     });
 
@@ -269,17 +216,20 @@ async function executeImport() {
       resultsDiv.style.display = 'block';
       resultsDiv.innerHTML = `
         <div class="success">
-          <h3>Import Complete!</h3>
-          <p><strong>Imported:</strong> ${result.results.imported} contacts</p>
-          <p><strong>Updated:</strong> ${result.results.updated} contacts</p>
+          <h3>✅ Import Complete!</h3>
+          <p><strong>Created:</strong> ${result.results.created} new contacts</p>
+          <p><strong>Updated:</strong> ${result.results.updated} existing contacts</p>
           <p><strong>Skipped:</strong> ${result.results.skipped} contacts</p>
-          ${result.results.errors.length > 0 ? `
-            <details style="margin-top: 1rem;">
-              <summary style="cursor: pointer;">View Errors (${result.results.errors.length})</summary>
-              <ul style="margin-top: 0.5rem;">
-                ${result.results.errors.slice(0, 20).map(err => `<li>${err}</li>`).join('')}
-              </ul>
-            </details>
+          ${result.results.failed > 0 ? `
+            <p style="color: #f44336;"><strong>Failed:</strong> ${result.results.failed} contacts</p>
+            ${result.results.errors.length > 0 ? `
+              <details style="margin-top: 1rem;">
+                <summary style="cursor: pointer;">View Errors (${result.results.errors.length})</summary>
+                <ul style="margin-top: 0.5rem;">
+                  ${result.results.errors.slice(0, 20).map(err => `<li>${err.contact}: ${err.error}</li>`).join('')}
+                </ul>
+              </details>
+            ` : ''}
           ` : ''}
         </div>
       `;
@@ -291,8 +241,10 @@ async function executeImport() {
       // Reload contacts
       setTimeout(() => {
         closeImportModal();
-        loadContacts();
-        showToast('Import completed successfully', 'success');
+        if (typeof loadContacts === 'function') {
+          loadContacts();
+        }
+        showToast(`Import completed: ${result.results.created} created, ${result.results.updated} updated`, 'success');
       }, 2000);
     } else {
       showToast(result.error || 'Import failed', 'error');
@@ -322,7 +274,7 @@ async function exportAllToCSV() {
       const url = window.URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;
-      a.download = `contacts-export-${Date.now()}.csv`;
+      a.download = `isrs-contacts-${Date.now()}.csv`;
       document.body.appendChild(a);
       a.click();
       window.URL.revokeObjectURL(url);
@@ -337,7 +289,52 @@ async function exportAllToCSV() {
   }
 }
 
-// ========== DUPLICATES FUNCTIONS ==========
+function exportSelected() {
+  if (selectedContacts.size === 0) {
+    showToast('Please select contacts first', 'error');
+    return;
+  }
+
+  // Get selected contact data
+  const selectedData = Array.from(selectedContacts).map(id => {
+    return allContacts.find(c => c.id === id);
+  }).filter(Boolean);
+
+  // Convert to CSV
+  const csv = convertToCSV(selectedData);
+
+  // Download
+  const blob = new Blob([csv], { type: 'text/csv' });
+  const url = window.URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `isrs-contacts-selected-${Date.now()}.csv`;
+  document.body.appendChild(a);
+  a.click();
+  window.URL.revokeObjectURL(url);
+  document.body.removeChild(a);
+  showToast(`Exported ${selectedData.length} contacts`, 'success');
+}
+
+function convertToCSV(data) {
+  if (!data || data.length === 0) return '';
+
+  const headers = Object.keys(data[0]);
+  const rows = data.map(row =>
+    headers.map(header => {
+      const value = row[header];
+      if (value === null || value === undefined) return '';
+      const str = String(value);
+      return str.includes(',') || str.includes('"') || str.includes('\n')
+        ? `"${str.replace(/"/g, '""')}"`
+        : str;
+    }).join(',')
+  );
+
+  return [headers.join(','), ...rows].join('\n');
+}
+
+// ========== AI-POWERED DUPLICATES FUNCTIONS ==========
 
 function showDuplicatesModal() {
   document.getElementById('duplicatesModal').classList.add('show');
@@ -353,14 +350,22 @@ async function detectDuplicates() {
   const content = document.getElementById('duplicatesContent');
 
   loading.style.display = 'block';
+  loading.textContent = '🤖 AI is analyzing contacts for duplicates...';
   content.style.display = 'none';
 
   try {
     const sessionToken = localStorage.getItem('isrs_session');
-    const response = await fetch(`${API_BASE_URL}/api/admin/contacts/duplicates`, {
+
+    // Use new Claude AI duplicate detection endpoint
+    const response = await fetch(`${API_BASE_URL}/api/claude/find-duplicates`, {
+      method: 'POST',
       headers: {
+        'Content-Type': 'application/json',
         'Authorization': `Bearer ${sessionToken}`
-      }
+      },
+      body: JSON.stringify({
+        limit: 500 // Analyze up to 500 most recent contacts
+      })
     });
 
     const result = await response.json();
@@ -368,7 +373,7 @@ async function detectDuplicates() {
 
     if (result.success) {
       duplicatesData = result;
-      displayDuplicates(result);
+      displayAIDuplicates(result);
       content.style.display = 'block';
     } else {
       showToast(result.error || 'Failed to detect duplicates', 'error');
@@ -381,89 +386,164 @@ async function detectDuplicates() {
   }
 }
 
-function displayDuplicates(data) {
+function displayAIDuplicates(data) {
   const summary = document.querySelector('.duplicates-summary');
   const list = document.querySelector('.duplicates-list');
 
-  const totalEmailDupes = data.totalEmailDupes || 0;
-  const totalNameDupes = data.totalNameDupes || 0;
+  const duplicates = data.duplicates || [];
 
   summary.innerHTML = `
-    <h3>Duplicate Detection Results</h3>
-    <p><strong>Email Duplicates:</strong> ${totalEmailDupes} group(s)</p>
-    <p><strong>Name Duplicates:</strong> ${totalNameDupes} potential match(es)</p>
+    <h3>🤖 AI Duplicate Detection Results</h3>
+    <p><strong>Analyzed:</strong> ${data.analyzed_count} contacts</p>
+    <p><strong>Duplicate Groups Found:</strong> ${duplicates.length}</p>
+    ${duplicates.length > 0 ? '<p style="color: #ff9800;">⚠️ AI has identified potential duplicates with confidence scores. Review and merge as needed.</p>' : ''}
   `;
 
   let listHTML = '';
 
-  // Display email duplicates
-  if (data.emailDuplicates && data.emailDuplicates.length > 0) {
-    listHTML += '<h3>Email Duplicates</h3>';
-    for (const dup of data.emailDuplicates) {
-      listHTML += `
-        <div class="duplicate-group">
-          <div class="duplicate-group-header">Email: ${dup.email} (${dup.count} contacts)</div>
-          <button class="btn btn-sm btn-primary" onclick="showMergeModal('${dup.contactIds.join(',')}')">Merge These Contacts</button>
-        </div>
-      `;
-    }
-  }
+  if (duplicates.length > 0) {
+    for (const dup of duplicates) {
+      const contacts = dup.contacts || [];
+      const confidence = dup.confidence || 0;
+      const reason = dup.reason || 'Potential duplicate';
+      const action = dup.recommended_action || 'review';
 
-  // Display name duplicates
-  if (data.nameDuplicates && data.nameDuplicates.length > 0) {
-    listHTML += '<h3 style="margin-top: 2rem;">Name Similarity Matches</h3>';
-    for (const dup of data.nameDuplicates.slice(0, 20)) { // Limit to 20 for performance
-      const contact1 = dup.contacts[0];
-      const contact2 = dup.contacts[1];
+      const confidenceColor = confidence >= 80 ? '#4caf50' : confidence >= 60 ? '#ff9800' : '#f44336';
+
       listHTML += `
         <div class="duplicate-group">
-          <div class="duplicate-group-header">${dup.reason}</div>
-          <div class="duplicate-contacts">
-            <div class="duplicate-contact">
-              <strong>${contact1.first_name} ${contact1.last_name}</strong><br>
-              Email: ${contact1.email || 'N/A'}<br>
-              Organization: ${contact1.organization_id || 'N/A'}
-            </div>
-            <div class="duplicate-contact">
-              <strong>${contact2.first_name} ${contact2.last_name}</strong><br>
-              Email: ${contact2.email || 'N/A'}<br>
-              Organization: ${contact2.organization_id || 'N/A'}
-            </div>
+          <div class="duplicate-group-header">
+            <span style="color: ${confidenceColor}; font-weight: 700;">${confidence}% Confidence</span> - ${reason}
+            <span style="float: right; font-size: 0.85rem; color: #666;">Action: ${action}</span>
           </div>
-          <button class="btn btn-sm btn-primary" onclick="showMergeModal('${contact1.id},${contact2.id}')">Merge These Contacts</button>
+          <div class="duplicate-contacts" style="display: flex; gap: 1rem; flex-wrap: wrap; margin: 1rem 0;">
+            ${contacts.map(contact => `
+              <div class="duplicate-contact" style="flex: 1; min-width: 200px;">
+                <strong>${contact.full_name || 'Unknown'}</strong><br>
+                ${contact.email ? `📧 ${contact.email}<br>` : ''}
+                ${contact.phone ? `📞 ${contact.phone}<br>` : ''}
+                ${contact.organization_name ? `🏢 ${contact.organization_name}<br>` : ''}
+                ${contact.city || contact.state_province || contact.country ?
+                  `📍 ${[contact.city, contact.state_province, contact.country].filter(Boolean).join(', ')}` : ''}
+              </div>
+            `).join('')}
+          </div>
+          ${contacts.length === 2 ? `
+            <button class="btn btn-sm btn-primary" onclick="showAIMergeModal([${contacts.map(c => c.id).join(',')}])">
+              🤖 AI-Assisted Merge
+            </button>
+          ` : `
+            <button class="btn btn-sm btn-secondary" onclick="showToast('Select 2 contacts to merge', 'info')">
+              Select 2 to Merge
+            </button>
+          `}
         </div>
       `;
     }
-  }
-
-  if (totalEmailDupes === 0 && totalNameDupes === 0) {
-    listHTML = '<p style="text-align: center; padding: 2rem; color: #666;">No duplicates found! Your contact database is clean.</p>';
+  } else {
+    listHTML = '<p style="text-align: center; padding: 3rem; color: #666;">✅ No duplicates found! Your contact database is clean.</p>';
   }
 
   list.innerHTML = listHTML;
 }
 
-// ========== MERGE FUNCTIONS ==========
+// ========== AI-ASSISTED MERGE FUNCTIONS ==========
 
-async function showMergeModal(contactIdsStr) {
-  const contactIds = contactIdsStr.split(',');
+async function showAIMergeModal(contactIds) {
   if (contactIds.length !== 2) {
     showToast('Please select exactly 2 contacts to merge', 'error');
     return;
   }
 
-  // Fetch full contact details
-  const contacts = await Promise.all(contactIds.map(id => fetchContactById(id)));
+  const modal = document.getElementById('mergeModal');
+  const content = document.getElementById('mergeContent');
 
-  if (contacts.some(c => !c)) {
-    showToast('Failed to load contact details', 'error');
-    return;
+  modal.classList.add('show');
+  content.innerHTML = '<div class="loading">🤖 AI is analyzing contacts and suggesting merge strategy...</div>';
+
+  try {
+    const sessionToken = localStorage.getItem('isrs_session');
+
+    // Use Claude AI to suggest merge
+    const response = await fetch(`${API_BASE_URL}/api/claude/suggest-merge`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${sessionToken}`
+      },
+      body: JSON.stringify({
+        contact_ids: contactIds
+      })
+    });
+
+    const result = await response.json();
+
+    if (result.success) {
+      mergeContactsData = {
+        contactIds,
+        suggestion: result.suggestion,
+        sourceContacts: result.source_contacts
+      };
+      buildAIMergeUI(result);
+    } else {
+      showToast(result.error || 'Failed to analyze contacts', 'error');
+      closeMergeModal();
+    }
+  } catch (err) {
+    showToast('Error: ' + err.message, 'error');
+    closeMergeModal();
   }
+}
 
-  mergeContactsData = { contacts, primaryId: contactIds[0], secondaryId: contactIds[1] };
+function buildAIMergeUI(result) {
+  const content = document.getElementById('mergeContent');
+  const suggestion = result.suggestion;
+  const merged = suggestion.merged_contact;
+  const conflicts = suggestion.conflicts || [];
+  const confidence = suggestion.confidence || 0;
 
-  document.getElementById('mergeModal').classList.add('show');
-  buildMergeUI(contacts);
+  let html = `
+    <div style="background: #e3f2fd; padding: 1rem; border-radius: 4px; margin-bottom: 1rem;">
+      <h3>🤖 AI Merge Suggestion (${confidence}% confidence)</h3>
+      ${suggestion.notes_to_add ? `<p><em>${suggestion.notes_to_add}</em></p>` : ''}
+    </div>
+
+    <h4>Merged Contact Preview:</h4>
+    <div style="background: #f5f5f5; padding: 1rem; border-radius: 4px; margin-bottom: 1rem;">
+      <p><strong>Name:</strong> ${merged.full_name || `${merged.first_name} ${merged.last_name}`}</p>
+      <p><strong>Email:</strong> ${merged.email || '-'}</p>
+      <p><strong>Phone:</strong> ${merged.phone || '-'}</p>
+      <p><strong>Organization:</strong> ${merged.organization_name || '-'}</p>
+      <p><strong>Role:</strong> ${merged.role || '-'}</p>
+      <p><strong>Location:</strong> ${[merged.city, merged.state_province, merged.country].filter(Boolean).join(', ') || '-'}</p>
+      ${merged.expertise ? `<p><strong>Expertise:</strong> ${merged.expertise}</p>` : ''}
+      ${merged.interests ? `<p><strong>Interests:</strong> ${merged.interests}</p>` : ''}
+    </div>
+
+    ${conflicts.length > 0 ? `
+      <div style="background: #fff3e0; padding: 1rem; border-radius: 4px; margin-bottom: 1rem;">
+        <h4 style="color: #f57c00; margin-top: 0;">⚠️ Conflicts Requiring Review:</h4>
+        <ul>
+          ${conflicts.map(conflict => `
+            <li>
+              <strong>${conflict.field}:</strong><br>
+              Values: ${conflict.values.join(', ')}<br>
+              <em>Recommendation: ${conflict.recommendation}</em>
+            </li>
+          `).join('')}
+        </ul>
+      </div>
+    ` : ''}
+
+    <p style="margin-top: 1rem;">
+      <label>
+        <input type="checkbox" id="confirmMerge">
+        I confirm that I want to merge these contacts with the AI-suggested data
+      </label>
+    </p>
+  `;
+
+  content.innerHTML = html;
 }
 
 function closeMergeModal() {
@@ -471,101 +551,233 @@ function closeMergeModal() {
   mergeContactsData = null;
 }
 
-async function fetchContactById(id) {
-  try {
-    const sessionToken = localStorage.getItem('isrs_session');
-    const response = await fetch(`${API_BASE_URL}/api/admin/contacts`, {
-      headers: {
-        'Authorization': `Bearer ${sessionToken}`
-      }
-    });
-    const result = await response.json();
-    if (result.success) {
-      return result.data.find(c => c.id === id);
-    }
-  } catch (err) {
-    console.error('Error fetching contact:', err);
-  }
-  return null;
-}
-
-function buildMergeUI(contacts) {
-  const comparison = document.querySelector('.merge-comparison');
-  const [contact1, contact2] = contacts;
-
-  const fields = ['first_name', 'last_name', 'email', 'phone', 'country', 'member_type', 'position', 'expertise', 'notes'];
-
-  let html = '';
-  html += '<div class="merge-field-label">Field</div>';
-  html += '<div class="merge-field-label">Contact 1 (Primary)</div>';
-  html += '<div class="merge-field-label">Contact 2 (Secondary)</div>';
-
-  for (const field of fields) {
-    html += `<div class="merge-field-label">${field.replace('_', ' ').toUpperCase()}</div>`;
-    html += `
-      <div class="merge-field-option selected" onclick="selectMergeField('${field}', 'primary', this)">
-        <input type="radio" name="merge_${field}" value="primary" checked>
-        ${contact1[field] || '-'}
-      </div>
-      <div class="merge-field-option" onclick="selectMergeField('${field}', 'secondary', this)">
-        <input type="radio" name="merge_${field}" value="secondary">
-        ${contact2[field] || '-'}
-      </div>
-    `;
-  }
-
-  comparison.innerHTML = html;
-}
-
-function selectMergeField(field, source, element) {
-  // Deselect siblings
-  const siblings = element.parentElement.querySelectorAll('.merge-field-option');
-  siblings.forEach(s => s.classList.remove('selected'));
-
-  // Select clicked
-  element.classList.add('selected');
-  element.querySelector('input').checked = true;
-}
-
 async function executeMerge() {
   if (!mergeContactsData) return;
 
-  // Collect field selections
-  const fieldSelections = {};
-  const radios = document.querySelectorAll('.merge-comparison input[type="radio"]:checked');
-  radios.forEach(radio => {
-    const field = radio.name.replace('merge_', '');
-    fieldSelections[field] = radio.value;
-  });
+  const confirmed = document.getElementById('confirmMerge')?.checked;
+  if (!confirmed) {
+    showToast('Please confirm the merge', 'error');
+    return;
+  }
 
   try {
     const sessionToken = localStorage.getItem('isrs_session');
-    const response = await fetch(`${API_BASE_URL}/api/admin/contacts/merge`, {
+
+    // Use Claude AI execute merge endpoint
+    const response = await fetch(`${API_BASE_URL}/api/claude/execute-merge`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${sessionToken}`
       },
       body: JSON.stringify({
-        primaryId: mergeContactsData.primaryId,
-        secondaryId: mergeContactsData.secondaryId,
-        fieldSelections
+        contact_ids: mergeContactsData.contactIds,
+        merged_data: mergeContactsData.suggestion.merged_contact
       })
     });
 
     const result = await response.json();
 
     if (result.success) {
-      showToast('Contacts merged successfully', 'success');
+      showToast(`✅ Contacts merged successfully! Deleted ${result.deleted_ids.length} duplicate(s).`, 'success');
       closeMergeModal();
       closeDuplicatesModal();
-      loadContacts();
+      if (typeof loadContacts === 'function') {
+        loadContacts();
+      }
     } else {
       showToast(result.error || 'Merge failed', 'error');
     }
   } catch (err) {
     showToast('Error merging contacts: ' + err.message, 'error');
   }
+}
+
+// ========== AI ENHANCEMENT FUNCTIONS ==========
+
+async function enhanceSelectedContact() {
+  if (selectedContacts.size === 0) {
+    showToast('Please select a contact first', 'error');
+    return;
+  }
+
+  if (selectedContacts.size > 1) {
+    showToast('Please select only one contact to enhance', 'error');
+    return;
+  }
+
+  const contactId = Array.from(selectedContacts)[0];
+
+  showToast('🤖 AI is analyzing contact and generating suggestions...', 'info');
+
+  try {
+    const sessionToken = localStorage.getItem('isrs_session');
+
+    const response = await fetch(`${API_BASE_URL}/api/claude/enhance-contact`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${sessionToken}`
+      },
+      body: JSON.stringify({
+        contact_id: contactId
+      })
+    });
+
+    const result = await response.json();
+
+    if (result.success) {
+      displayEnhancementSuggestions(result.contact, result.enhancement);
+    } else {
+      showToast(result.error || 'Enhancement failed', 'error');
+    }
+  } catch (err) {
+    showToast('Error: ' + err.message, 'error');
+  }
+}
+
+function displayEnhancementSuggestions(contact, enhancement) {
+  const quality = enhancement.quality_score || 0;
+  const issues = enhancement.issues || [];
+  const suggestions = enhancement.suggestions || {};
+  const inferred = enhancement.inferred_data || {};
+  const relevance = enhancement.relevance_score || 0;
+
+  const qualityColor = quality >= 80 ? '#4caf50' : quality >= 60 ? '#ff9800' : '#f44336';
+
+  let html = `
+    <h3>🤖 AI Enhancement for ${contact.full_name}</h3>
+
+    <div style="background: #f5f5f5; padding: 1rem; border-radius: 4px; margin: 1rem 0;">
+      <strong>Quality Score:</strong> <span style="color: ${qualityColor}; font-weight: 700;">${quality}/100</span><br>
+      <strong>Relevance to Shellfish Restoration:</strong> ${relevance}/10<br>
+      ${enhancement.relevance_notes ? `<em style="display: block; margin-top: 0.5rem;">${enhancement.relevance_notes}</em>` : ''}
+    </div>
+
+    ${issues.length > 0 ? `
+      <h4>Issues Found:</h4>
+      <ul>
+        ${issues.map(issue => `<li>${issue}</li>`).join('')}
+      </ul>
+    ` : ''}
+
+    ${Object.keys(suggestions).length > 0 ? `
+      <h4>Suggested Improvements:</h4>
+      <ul>
+        ${Object.entries(suggestions).map(([field, value]) =>
+          `<li><strong>${field}:</strong> ${value}</li>`
+        ).join('')}
+      </ul>
+    ` : ''}
+
+    ${Object.keys(inferred).length > 0 ? `
+      <h4>Inferred Information:</h4>
+      <ul>
+        ${Object.entries(inferred).map(([field, value]) =>
+          `<li><strong>${field}:</strong> ${value}</li>`
+        ).join('')}
+      </ul>
+    ` : ''}
+  `;
+
+  // Show in a toast or modal
+  const toast = document.createElement('div');
+  toast.className = 'message-toast info';
+  toast.style.cssText = 'background: #e3f2fd; color: #1565c0; max-width: 600px; padding: 1.5rem; right: 20px; top: 20px; max-height: 80vh; overflow-y: auto;';
+  toast.innerHTML = html + `<br><button class="btn btn-sm" onclick="this.parentElement.remove()">Close</button>`;
+  document.body.appendChild(toast);
+}
+
+async function reviewDataQuality() {
+  showToast('🤖 AI is reviewing your contact database quality...', 'info');
+
+  try {
+    const sessionToken = localStorage.getItem('isrs_session');
+
+    const response = await fetch(`${API_BASE_URL}/api/claude/review-contacts`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${sessionToken}`
+      },
+      body: JSON.stringify({
+        limit: 100,
+        focus: 'quality'
+      })
+    });
+
+    const result = await response.json();
+
+    if (result.success) {
+      displayQualityReview(result.review, result.analyzed_count);
+    } else {
+      showToast(result.error || 'Review failed', 'error');
+    }
+  } catch (err) {
+    showToast('Error: ' + err.message, 'error');
+  }
+}
+
+function displayQualityReview(review, count) {
+  const health = review.health_score || 0;
+  const healthColor = health >= 80 ? '#4caf50' : health >= 60 ? '#ff9800' : '#f44336';
+
+  let html = `
+    <h2>🤖 Database Quality Review</h2>
+    <p>Analyzed ${count} contacts</p>
+
+    <div style="background: #f5f5f5; padding: 1rem; border-radius: 4px; margin: 1rem 0;">
+      <strong>Overall Health Score:</strong> <span style="color: ${healthColor}; font-weight: 700; font-size: 1.5rem;">${health}/100</span><br>
+      <p style="margin-top: 0.5rem;">${review.summary}</p>
+    </div>
+
+    ${review.common_issues && review.common_issues.length > 0 ? `
+      <h3>Common Issues:</h3>
+      <ul>
+        ${review.common_issues.map(issue => `<li>${issue}</li>`).join('')}
+      </ul>
+    ` : ''}
+
+    ${review.recommendations && review.recommendations.length > 0 ? `
+      <h3>Recommendations:</h3>
+      <ul>
+        ${review.recommendations.map(rec => `<li>${rec}</li>`).join('')}
+      </ul>
+    ` : ''}
+
+    ${review.insights ? `
+      <h3>Insights:</h3>
+      <ul>
+        ${review.insights.role_distribution ? `<li><strong>Roles:</strong> ${review.insights.role_distribution}</li>` : ''}
+        ${review.insights.geographic_coverage ? `<li><strong>Geographic Coverage:</strong> ${review.insights.geographic_coverage}</li>` : ''}
+        ${review.insights.data_completeness ? `<li><strong>Data Completeness:</strong> ${review.insights.data_completeness}</li>` : ''}
+      </ul>
+    ` : ''}
+
+    ${review.priority_contacts && review.priority_contacts.length > 0 ? `
+      <h3>Priority Contacts to Review:</h3>
+      <ul>
+        ${review.priority_contacts.slice(0, 10).map(pc =>
+          `<li><strong>${pc.contact.full_name}</strong> - ${pc.reason} (${pc.priority} priority)</li>`
+        ).join('')}
+      </ul>
+    ` : ''}
+  `;
+
+  const modal = document.createElement('div');
+  modal.className = 'modal show';
+  modal.style.display = 'flex';
+  modal.innerHTML = `
+    <div class="modal-content" style="max-width: 800px;">
+      <div class="modal-header">
+        ${html}
+      </div>
+      <div class="form-actions">
+        <button class="btn btn-primary" onclick="this.closest('.modal').remove()">Close</button>
+      </div>
+    </div>
+  `;
+  document.body.appendChild(modal);
 }
 
 // ========== BULK OPERATIONS ==========
@@ -626,7 +838,9 @@ async function executeBulkEdit(event) {
       showToast(result.message, 'success');
       closeBulkEditModal();
       clearSelection();
-      loadContacts();
+      if (typeof loadContacts === 'function') {
+        loadContacts();
+      }
     } else {
       showToast(result.error || 'Bulk update failed', 'error');
     }
@@ -664,7 +878,9 @@ async function bulkDeleteSelected() {
     if (result.success) {
       showToast(result.message, 'success');
       clearSelection();
-      loadContacts();
+      if (typeof loadContacts === 'function') {
+        loadContacts();
+      }
     } else {
       showToast(result.error || 'Bulk delete failed', 'error');
     }
@@ -687,7 +903,9 @@ function showToast(message, type = 'info') {
   setTimeout(() => {
     toast.style.opacity = '0';
     setTimeout(() => {
-      document.body.removeChild(toast);
+      if (toast.parentElement) {
+        document.body.removeChild(toast);
+      }
     }, 300);
-  }, 3000);
+  }, 5000);
 }

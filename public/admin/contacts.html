@@ -148,7 +148,9 @@
           <div class="toolbar-right">
             <button class="btn btn-primary" onclick="showImportModal()">📤 Import</button>
             <button class="btn btn-secondary" onclick="exportAllToCSV()">📥 Export All</button>
-            <button class="btn btn-secondary" onclick="showDuplicatesModal()">🔍 Find Duplicates</button>
+            <button class="btn btn-secondary" onclick="showDuplicatesModal()">🤖 Find Duplicates</button>
+            <button class="btn btn-secondary" onclick="enhanceSelectedContact()">✨ Enhance Contact</button>
+            <button class="btn btn-secondary" onclick="reviewDataQuality()">📊 Review Quality</button>
             <button class="btn btn-secondary" onclick="toggleColumnMenu()">Columns ▼</button>
             <button class="btn btn-success" onclick="showEmailModal()" id="emailBtn" disabled>Send Email</button>
             <button class="ai-query-btn" onclick="showAIModal()" id="aiQueryBtn" style="display:none;">🤖 AI Query</button>
@@ -286,9 +288,9 @@
           <div class="file-upload-icon">📁</div>
           <div class="file-upload-text">
             <strong>Click to upload</strong> or drag and drop<br>
-            CSV or Excel files (max 10MB)
+            CSV, Excel, PDF, or Word files (max 50MB)
           </div>
-          <input type="file" id="fileInput" accept=".csv,.xlsx,.xls" style="display: none;" onchange="handleFileUpload(event)">
+          <input type="file" id="fileInput" accept=".csv,.xlsx,.xls,.tsv,.pdf,.docx,.doc" style="display: none;" onchange="handleFileUpload(event)">
         </div>
 
         <div id="fileInfo" class="file-info" style="display: none;"></div>
