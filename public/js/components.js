@@ -15,7 +15,7 @@ const translations = {
 
     // Homepage - Hero
     heroHeading: 'Building community and advancing innovation in global shellfish restoration',
-    heroSubtitle: 'The International Shellfish Restoration Society (ISRS) unites scientists, practitioners, and communities worldwide to protect and restore vital shellfish ecosystems. Through knowledge sharing, collaboration, and innovative approaches, we're working to ensure the resilience of coastal ecosystems for generations to come.',
+    heroSubtitle: 'The International Shellfish Restoration Society (ISRS) unites scientists, practitioners, and communities worldwide to protect and restore vital shellfish ecosystems. Through knowledge sharing, collaboration, and innovative approaches, we\'re working to ensure the resilience of coastal ecosystems for generations to come.',
 
     // Homepage - Featured Initiatives
     icsrCardTitle: 'International Conference on Shellfish Restoration (ICSR)',
