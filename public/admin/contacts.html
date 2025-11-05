@@ -114,7 +114,23 @@
     .merge-field-option:hover { border-color: var(--primary-blue); background: #f0f7ff; }
     .merge-field-option.selected { border-color: var(--primary-blue); background: #e3f2fd; }
     .merge-field-option input[type="radio"] { margin-right: 0.5rem; }
+
+    /* Export Dropdown */
+    .export-dropdown { position: relative; display: inline-block; }
+    .export-menu { display: none; position: absolute; right: 0; top: 100%; margin-top: 0.5rem; background: white; border: 1px solid var(--border-color); border-radius: 4px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); min-width: 200px; z-index: 100; }
+    .export-menu.show { display: block; }
+    .export-menu-item { display: block; width: 100%; text-align: left; padding: 0.75rem 1rem; border: none; background: none; cursor: pointer; font-size: 0.875rem; color: var(--text-dark); transition: background 0.2s; }
+    .export-menu-item:hover { background: var(--light-gray); }
+
+    /* Pagination */
+    .pagination { display: flex; justify-content: space-between; align-items: center; padding: 1rem 1.5rem; border-top: 1px solid var(--border-color); background: white; }
+    .pagination-info { color: var(--text-light); font-size: 0.9rem; }
+    .pagination-controls { display: flex; gap: 0.5rem; }
   </style>
+
+  <!-- AI Query Bar -->
+  <link rel="stylesheet" href="/admin/ai-query-bar.css">
+  <link rel="stylesheet" href="/admin/claude-ai-dropdown.css">
 </head>
 <body>
   <div class="admin-nav">
@@ -143,19 +159,26 @@
             <select id="countryFilter" class="search-box" style="width: 200px;">
               <option value="">All Countries</option>
             </select>
+            <select id="pageSizeSelect" class="search-box" style="width: 130px;">
+              <option value="20">Show 20</option>
+              <option value="50">Show 50</option>
+              <option value="100">Show 100</option>
+              <option value="999999">Show ALL</option>
+            </select>
           </div>
 
           <div class="toolbar-right">
-            <button class="btn btn-primary" onclick="showImportModal()">📤 Import</button>
-            <button class="btn btn-secondary" onclick="exportAllToCSV()">📥 Export All</button>
-            <button class="btn btn-secondary" onclick="showDuplicatesModal()">🤖 Find Duplicates</button>
-            <button class="btn btn-secondary" onclick="enhanceSelectedContact()">✨ Enhance Contact</button>
-            <button class="btn btn-secondary" onclick="reviewDataQuality()">📊 Review Quality</button>
-            <button class="btn btn-secondary" onclick="toggleColumnMenu()">Columns ▼</button>
-            <button class="btn btn-success" onclick="showEmailModal()" id="emailBtn" disabled>Send Email</button>
-            <button class="ai-query-btn" onclick="showAIModal()" id="aiQueryBtn" style="display:none;">🤖 AI Query</button>
+            <button class="btn btn-secondary" onclick="handleReset()" title="Reset filters and sorting">
+              🔄 Reset
+            </button>
+            <button class="btn btn-secondary" onclick="toggleColumnMenu()">
+              ⚙️ Columns
+            </button>
             <div class="column-toggle">
               <div class="column-toggle-menu" id="columnMenu">
+                <div style="padding: 0.5rem 1rem; border-bottom: 1px solid var(--border-color); font-weight: 600; font-size: 0.875rem; color: var(--text-dark);">
+                  Show/Hide Columns
+                </div>
                 <div class="column-toggle-item">
                   <input type="checkbox" id="col-email" checked onchange="toggleColumn('email')">
                   <label for="col-email">Email</label>
@@ -176,8 +199,36 @@
                   <input type="checkbox" id="col-city" checked onchange="toggleColumn('city')">
                   <label for="col-city">City</label>
                 </div>
+                <div class="column-toggle-item">
+                  <input type="checkbox" id="col-phone" checked onchange="toggleColumn('phone')">
+                  <label for="col-phone">Phone</label>
+                </div>
               </div>
             </div>
+            <div class="export-dropdown">
+              <button class="btn btn-secondary" onclick="toggleExportMenu()">
+                📥 Export
+              </button>
+              <div class="export-menu" id="exportMenu">
+                <div style="padding: 0.5rem 1rem; border-bottom: 1px solid var(--border-color); font-size: 0.75rem; color: var(--text-light);">
+                  <span id="exportCount"></span>
+                </div>
+                <button onclick="exportToCSV()" class="export-menu-item">
+                  CSV Format (.csv)
+                </button>
+                <button onclick="exportToTSV()" class="export-menu-item">
+                  TSV Format (.tsv)
+                </button>
+                <button onclick="exportToExcel()" class="export-menu-item">
+                  Excel Format (.xls)
+                </button>
+                <button onclick="exportToVCard()" class="export-menu-item">
+                  vCard Format (.vcf)
+                </button>
+              </div>
+            </div>
+            <button class="btn btn-primary" onclick="showImportModal()">📤 Import</button>
+            <button class="btn btn-success" onclick="showEmailModal()" id="emailBtn" disabled>✉️ Send Email</button>
           </div>
         </div>
       </div>
@@ -200,6 +251,17 @@
       <div class="stats-bar">
         <span>Total: <strong id="totalCount">0</strong> contacts</span>
         <span>Showing: <strong id="filteredCount">0</strong> contacts</span>
+      </div>
+
+      <!-- Pagination -->
+      <div class="pagination" id="pagination" style="display: none;">
+        <div class="pagination-info">
+          Page <strong id="currentPageNum">1</strong> of <strong id="totalPages">1</strong>
+        </div>
+        <div class="pagination-controls">
+          <button class="btn btn-sm" id="prevPageBtn" onclick="previousPage()" disabled>← Previous</button>
+          <button class="btn btn-sm" id="nextPageBtn" onclick="nextPage()" disabled>Next →</button>
+        </div>
       </div>
     </div>
   </div>
@@ -415,6 +477,9 @@
     let selectedContacts = new Set();
     let currentSort = { column: null, direction: 'asc' };
     let userPermissions = null;
+    let currentPage = 1;
+    let pageSize = 20;
+    let paginatedContacts = [];
 
     // Initialize
     window.addEventListener('DOMContentLoaded', async () => {
@@ -427,6 +492,7 @@
       await loadUserPermissions();
       await loadContacts();
       setupEventListeners();
+      updatePagination();
     });
 
     async function loadUserPermissions() {
@@ -489,10 +555,11 @@
               <th class="col-role">Role</th>
               <th class="sortable col-country" onclick="sortBy('country')">Country</th>
               <th class="col-city">City</th>
+              <th class="col-phone">Phone</th>
             </tr>
           </thead>
           <tbody>
-            ${filteredContacts.map(contact => `
+            ${paginatedContacts.map(contact => `
               <tr>
                 <td class="checkbox-cell">
                   <input type="checkbox" class="contact-checkbox" value="${contact.email}"
@@ -505,6 +572,7 @@
                 <td class="col-role">${contact.role || '-'}</td>
                 <td class="col-country">${contact.country || '-'}</td>
                 <td class="col-city">${contact.city || '-'}</td>
+                <td class="col-phone">${contact.phone || '-'}</td>
               </tr>
             `).join('')}
           </tbody>
@@ -521,7 +589,8 @@
         filteredContacts = allContacts.filter(c =>
           JSON.stringify(c).toLowerCase().includes(term)
         );
-        displayContacts();
+        currentPage = 1;
+        updatePagination();
         updateStats();
       });
 
@@ -533,8 +602,16 @@
         } else {
           filteredContacts = [...allContacts];
         }
-        displayContacts();
+        currentPage = 1;
+        updatePagination();
         updateStats();
+      });
+
+      // Page size selector
+      document.getElementById('pageSizeSelect').addEventListener('change', (e) => {
+        pageSize = parseInt(e.target.value);
+        currentPage = 1;
+        updatePagination();
       });
 
       // Close column menu when clicking outside
@@ -575,7 +652,8 @@
         }
       });
 
-      displayContacts();
+      currentPage = 1;
+      updatePagination();
       updateSortIndicators();
     }
 
@@ -638,14 +716,193 @@
 
     function updateStats() {
       document.getElementById('totalCount').textContent = allContacts.length;
-      document.getElementById('filteredCount').textContent = filteredContacts.length;
+      document.getElementById('filteredCount').textContent = paginatedContacts.length;
+    }
+
+    // Enhanced Table Features
+
+    // Reset filters and sorting
+    function handleReset() {
+      document.getElementById('searchBox').value = '';
+      document.getElementById('countryFilter').value = '';
+      document.getElementById('pageSizeSelect').value = '20';
+      pageSize = 20;
+      currentPage = 1;
+      currentSort = { column: null, direction: 'asc' };
+      selectedContacts.clear();
+      filteredContacts = [...allContacts];
+      updatePagination();
+      displayContacts();
+      updateStats();
+      document.getElementById('selectAll').checked = false;
+      document.querySelectorAll('th.sortable').forEach(th => {
+        th.classList.remove('sort-asc', 'sort-desc');
+      });
+    }
+
+    // Export menu toggle
+    function toggleExportMenu() {
+      const menu = document.getElementById('exportMenu');
+      menu.classList.toggle('show');
+      updateExportCount();
+
+      // Close column menu if open
+      document.getElementById('columnMenu').classList.remove('show');
+    }
+
+    function updateExportCount() {
+      const count = selectedContacts.size > 0 ? selectedContacts.size : filteredContacts.length;
+      const text = selectedContacts.size > 0 ? `Export ${count} selected` : `Export all ${count} contacts`;
+      document.getElementById('exportCount').textContent = text;
+    }
+
+    // Close export menu when clicking outside
+    document.addEventListener('click', (e) => {
+      if (!e.target.closest('.export-dropdown')) {
+        document.getElementById('exportMenu').classList.remove('show');
+      }
+    });
+
+    // Pagination functions
+    function updatePagination() {
+      // Calculate paginated contacts
+      const start = (currentPage - 1) * pageSize;
+      const end = pageSize >= 999999 ? filteredContacts.length : start + pageSize;
+      paginatedContacts = filteredContacts.slice(start, end);
+
+      const totalPages = pageSize >= 999999 ? 1 : Math.ceil(filteredContacts.length / pageSize);
+
+      // Update UI
+      document.getElementById('currentPageNum').textContent = currentPage;
+      document.getElementById('totalPages').textContent = totalPages;
+      document.getElementById('prevPageBtn').disabled = currentPage === 1;
+      document.getElementById('nextPageBtn').disabled = currentPage === totalPages;
+
+      // Show/hide pagination
+      const paginationEl = document.getElementById('pagination');
+      paginationEl.style.display = totalPages > 1 ? 'flex' : 'none';
+
+      displayContacts();
+    }
+
+    function previousPage() {
+      if (currentPage > 1) {
+        currentPage--;
+        updatePagination();
+      }
+    }
+
+    function nextPage() {
+      const totalPages = Math.ceil(filteredContacts.length / pageSize);
+      if (currentPage < totalPages) {
+        currentPage++;
+        updatePagination();
+      }
     }
 
     function exportToCSV() {
-      const contacts = filteredContacts.length > 0 ? filteredContacts : allContacts;
+      const contacts = selectedContacts.size > 0 ?
+        allContacts.filter(c => selectedContacts.has(c.email)) :
+        filteredContacts;
       const csv = generateCSV(contacts);
       downloadCSV(csv, 'isrs_contacts_' + new Date().toISOString().split('T')[0] + '.csv');
-      showToast('Exported ' + contacts.length + ' contacts', 'success');
+      document.getElementById('exportMenu').classList.remove('show');
+      showToast('Exported ' + contacts.length + ' contacts as CSV', 'success');
+    }
+
+    function exportToTSV() {
+      const contacts = selectedContacts.size > 0 ?
+        allContacts.filter(c => selectedContacts.has(c.email)) :
+        filteredContacts;
+      const headers = ['Full Name', 'Email', 'Organization', 'Role', 'Country', 'City', 'Phone'];
+      const rows = contacts.map(c => [
+        c.full_name || '',
+        c.email || '',
+        c.organization_name || '',
+        c.role || '',
+        c.country || '',
+        c.city || '',
+        c.phone || ''
+      ]);
+      const tsv = [headers, ...rows].map(row => row.join('\t')).join('\n');
+      const blob = new Blob([tsv], { type: 'text/tab-separated-values' });
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'isrs_contacts_' + new Date().toISOString().split('T')[0] + '.tsv';
+      a.click();
+      window.URL.revokeObjectURL(url);
+      document.getElementById('exportMenu').classList.remove('show');
+      showToast('Exported ' + contacts.length + ' contacts as TSV', 'success');
+    }
+
+    function exportToExcel() {
+      const contacts = selectedContacts.size > 0 ?
+        allContacts.filter(c => selectedContacts.has(c.email)) :
+        filteredContacts;
+      const headers = ['Full Name', 'Email', 'Organization', 'Role', 'Country', 'City', 'Phone'];
+      const rows = contacts.map(c => [
+        c.full_name || '',
+        c.email || '',
+        c.organization_name || '',
+        c.role || '',
+        c.country || '',
+        c.city || '',
+        c.phone || ''
+      ]);
+
+      const html = `
+        <html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel">
+        <head><meta charset="UTF-8"></head>
+        <body>
+          <table>
+            <thead><tr>${headers.map(h => `<th>${h}</th>`).join('')}</tr></thead>
+            <tbody>
+              ${rows.map(row => `<tr>${row.map(cell => `<td>${cell}</td>`).join('')}</tr>`).join('')}
+            </tbody>
+          </table>
+        </body>
+        </html>
+      `;
+
+      const blob = new Blob([html], { type: 'application/vnd.ms-excel' });
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'isrs_contacts_' + new Date().toISOString().split('T')[0] + '.xls';
+      a.click();
+      window.URL.revokeObjectURL(url);
+      document.getElementById('exportMenu').classList.remove('show');
+      showToast('Exported ' + contacts.length + ' contacts as Excel', 'success');
+    }
+
+    function exportToVCard() {
+      const contacts = selectedContacts.size > 0 ?
+        allContacts.filter(c => selectedContacts.has(c.email)) :
+        filteredContacts;
+      const vcards = contacts.map(contact => {
+        const lines = [
+          'BEGIN:VCARD',
+          'VERSION:3.0',
+          `FN:${contact.full_name || ''}`,
+          `EMAIL:${contact.email || ''}`,
+          `ORG:${contact.organization_name || ''}`,
+          `TITLE:${contact.role || ''}`,
+          `TEL:${contact.phone || ''}`,
+          'END:VCARD'
+        ];
+        return lines.join('\r\n');
+      }).join('\r\n\r\n');
+
+      const blob = new Blob([vcards], { type: 'text/vcard' });
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'isrs_contacts_' + new Date().toISOString().split('T')[0] + '.vcf';
+      a.click();
+      window.URL.revokeObjectURL(url);
+      document.getElementById('exportMenu').classList.remove('show');
+      showToast('Exported ' + contacts.length + ' contacts as vCard', 'success');
     }
 
     function exportSelected() {
@@ -878,5 +1135,9 @@
 
   <!-- Contact Management Features -->
   <script src="/admin/contact-management.js"></script>
+
+  <!-- AI Query Bar -->
+  <script src="/admin/ai-query-bar.js"></script>
+  <script src="/admin/claude-ai-dropdown.js"></script>
 </body>
 </html>
