@@ -482,7 +482,7 @@ function loadStayConnected() {
           </div>
           <div class="form-group">
             <label for="message">${t('message')}</label>
-            <textarea id="message" name="message" rows="5" aria-describedby="message-hint"></textarea>
+            <textarea id="message" name="message" rows="3" aria-describedby="message-hint"></textarea>
             <span id="message-hint" class="sr-only">Optional message field</span>
           </div>
           <button type="submit" class="btn btn-primary">${t('send')}</button>
