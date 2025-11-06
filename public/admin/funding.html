@@ -83,9 +83,10 @@
       <a href="/admin/dashboard.html">Dashboard</a>
       <a href="/admin/contacts.html">Contacts</a>
       <a href="/admin/organizations.html">Organizations</a>
+      <a href="/admin/funding.html">Funding</a>
+      <a href="/admin/import.html">Import</a>
       <a href="/admin/votes.html">Board Votes</a>
       <a href="/admin/conferences.html">Conferences</a>
-      <a href="/admin/funding.html">Funding</a>
     </div>
     <button class="btn" onclick="logout()">Logout</button>
   </div>
@@ -94,7 +95,10 @@
     <div class="data-table">
       <div class="table-header">
         <h1>Funding Prospects</h1>
-        <button class="btn btn-success" onclick="showAddForm()">+ Add New Prospect</button>
+        <div style="display: flex; gap: 0.5rem;">
+          <a href="/admin/import.html" class="btn" style="background: #fbbf24; color: #92400e;">⬆ Import</a>
+          <button class="btn btn-success" onclick="showAddForm()">+ Add New Prospect</button>
+        </div>
       </div>
       <div class="table-wrapper">
         <div id="tableContent">
