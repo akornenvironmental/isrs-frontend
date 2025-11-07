@@ -5,7 +5,16 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="About ISRS - Mission, vision, and values of the International Shellfish Restoration Society">
   <title>About ISRS - International Shellfish Restoration Society</title>
+  <link rel="icon" type="image/png" href="/images/favicon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Marcellus&family=PT+Serif:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/css/styles.css">
+
+  <!-- Preload critical images -->
+  <link rel="preload" as="image" href="/images/community-gathering.jpg" fetchpriority="high">
+  <link rel="preload" as="image" href="/images/logo-wide-blue.png">
+
   <script src="/js/analytics.js"></script>
 </head>
 <body>
@@ -14,9 +23,11 @@
 
   <!-- Hero Section -->
   <main id="main-content">
-  <section class="hero">
-    <h1>About ISRS</h1>
-    <p>The International Shellfish Restoration Society supports the global shellfish restoration community through collaboration, innovation, and knowledge exchange.</p>
+  <section class="hero" style="background-image: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), url('/images/community-gathering.jpg');">
+    <div class="hero-content">
+      <h1>About ISRS</h1>
+      <p class="hero-subtitle">The International Shellfish Restoration Society supports the global shellfish restoration community through collaboration, innovation, and knowledge exchange.</p>
+    </div>
   </section>
 
   <!-- Main Content -->

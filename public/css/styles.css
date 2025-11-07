@@ -3,7 +3,8 @@
 :root {
   --primary-blue: #2e5a8a;
   --secondary-blue: #4a7ab5;
-  --accent-teal: #3fa9b9;
+  --accent-teal: #16a085;
+  --accent-teal-hover: #138d75;
   --dark-gray: #2c3e50;
   --light-gray: #f8f9fa;
   --white: #ffffff;
@@ -20,6 +21,7 @@
 
 body {
   font-family: 'PT Serif', Georgia, serif;
+  font-size: 16px;
   line-height: 1.6;
   color: var(--text-dark);
   background: var(--white);
@@ -84,8 +86,7 @@ header {
   height: 60px;
   width: auto;
   display: block;
-  image-rendering: -webkit-optimize-contrast;
-  image-rendering: high-quality;
+  image-rendering: auto;
 }
 
 .nav-links {
@@ -100,7 +101,7 @@ header {
   color: var(--text-dark);
   font-family: 'PT Serif', Georgia, serif;
   font-weight: 400;
-  font-size: 0.95rem;
+  font-size: 1rem;
   transition: color 0.3s;
 }
 
@@ -146,7 +147,7 @@ header {
 }
 
 .btn-donate {
-  background: var(--primary-blue) !important;
+  background: var(--accent-teal) !important;
   color: var(--white) !important;
   padding: 0.75rem 1.5rem !important;
   border-radius: 4px;
@@ -155,9 +156,9 @@ header {
 }
 
 .btn-donate:hover {
-  background: var(--secondary-blue) !important;
+  background: var(--accent-teal-hover) !important;
   transform: translateY(-2px);
-  box-shadow: 0 4px 8px rgba(46, 90, 138, 0.3);
+  box-shadow: 0 4px 8px rgba(22, 160, 133, 0.4);
 }
 
 .mobile-menu-toggle {
@@ -179,11 +180,11 @@ header {
 .lang-btn {
   background: none;
   border: 1px solid var(--border-color);
-  padding: 0.4rem 0.75rem;
+  padding: 0.5rem 0.875rem;
   border-radius: 4px;
   cursor: pointer;
   font-family: 'PT Serif', Georgia, serif;
-  font-size: 0.85rem;
+  font-size: 1rem;
   font-weight: 600;
   color: var(--text-dark);
   transition: all 0.3s;
@@ -224,7 +225,7 @@ header {
   text-align: center;
   color: var(--white);
   image-rendering: -webkit-optimize-contrast;
-  image-rendering: crisp-edges;
+  image-rendering: auto;
 }
 
 .hero-content {
@@ -249,16 +250,24 @@ header {
   text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.3);
 }
 
+.hero-buttons {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-top: 2rem;
+}
+
 /* Sections */
 .section {
-  padding: 1.25rem 0;
+  padding: 4rem 0;
 }
 
 .section h2 {
   font-family: 'Marcellus', Georgia, serif;
-  font-size: 1.8rem;
+  font-size: 2.25rem;
   font-weight: 400;
-  margin-bottom: 1rem;
+  margin-bottom: 1.5rem;
   color: var(--text-dark);
   text-align: center;
 }
@@ -267,7 +276,7 @@ header {
   text-align: center;
   font-size: 1.05rem;
   color: var(--text-light);
-  margin-bottom: 1.25rem;
+  margin-bottom: 2.5rem;
   max-width: 800px;
   margin-left: auto;
   margin-right: auto;
@@ -277,7 +286,7 @@ header {
   text-align: center;
   font-size: 1.05rem;
   color: var(--text-dark);
-  margin: 0.5rem auto 0.5rem;
+  margin: 1.5rem auto 1.5rem;
   max-width: 800px;
   font-weight: 500;
 }
@@ -289,7 +298,7 @@ header {
 /* Grid Layouts */
 .grid {
   display: grid;
-  gap: 1.25rem;
+  gap: 2rem;
 }
 
 .grid-3 {
@@ -301,7 +310,7 @@ header {
   background: var(--white);
   border: 1px solid var(--border-color);
   border-radius: 6px;
-  padding: 0.875rem;
+  padding: 1.75rem;
   transition: all 0.3s;
   cursor: pointer;
   display: flex;
@@ -324,9 +333,8 @@ header {
   height: 200px;
   object-fit: cover;
   border-radius: 4px;
-  margin-bottom: 0.75rem;
-  image-rendering: -webkit-optimize-contrast;
-  image-rendering: high-quality;
+  margin-bottom: 1.25rem;
+  image-rendering: auto;
   transition: transform 0.3s;
 }
 
@@ -336,9 +344,9 @@ header {
 
 .card h3, .news-card h3 {
   font-family: 'Marcellus', Georgia, serif;
-  font-size: 1.15rem;
+  font-size: 1.35rem;
   font-weight: 400;
-  margin-bottom: 0.4rem;
+  margin-bottom: 0.75rem;
   color: var(--text-dark);
   transition: color 0.3s;
 }
@@ -349,9 +357,9 @@ header {
 
 .card p, .news-card p {
   color: var(--text-light);
-  margin-bottom: 0.5rem;
-  line-height: 1.5;
-  font-size: 0.95rem;
+  margin-bottom: 0.75rem;
+  line-height: 1.7;
+  font-size: 1rem;
 }
 
 .donation-note {
@@ -368,24 +376,25 @@ header {
 
 .timeline-item {
   background: var(--white);
-  border-left: 3px solid var(--primary-blue);
-  padding: 0.75rem 1rem;
-  margin-bottom: 0.75rem;
+  border-left: 4px solid var(--primary-blue);
+  padding: 1.5rem 1.75rem;
+  margin-bottom: 1.25rem;
   border-radius: 4px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
 }
 
 .timeline-item h4 {
   font-family: 'Marcellus', Georgia, serif;
-  font-size: 1.1rem;
+  font-size: 1.25rem;
   color: var(--primary-blue);
-  margin-bottom: 0.35rem;
+  margin-bottom: 0.75rem;
 }
 
 .timeline-item p {
   color: var(--text-light);
-  margin: 0.25rem 0;
-  font-size: 0.925rem;
-  line-height: 1.5;
+  margin: 0.5rem 0;
+  font-size: 1rem;
+  line-height: 1.7;
 }
 
 /* Values List */
@@ -398,12 +407,12 @@ header {
 
 .values-list li {
   background: var(--light-gray);
-  padding: 0.75rem 1rem;
-  margin-bottom: 0.625rem;
+  padding: 1.25rem 1.5rem;
+  margin-bottom: 1rem;
   border-radius: 4px;
-  border-left: 3px solid var(--primary-blue);
-  font-size: 0.975rem;
-  line-height: 1.5;
+  border-left: 4px solid var(--primary-blue);
+  font-size: 1rem;
+  line-height: 1.7;
 }
 
 .values-list strong {
@@ -424,25 +433,26 @@ header {
 }
 
 .btn-primary {
-  background: var(--primary-blue);
+  background: var(--accent-teal);
   color: var(--white);
 }
 
 .btn-primary:hover {
-  background: var(--secondary-blue);
+  background: var(--accent-teal-hover);
   transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(46, 90, 138, 0.3);
+  box-shadow: 0 4px 12px rgba(22, 160, 133, 0.4);
 }
 
 .btn-secondary {
   background: var(--white);
-  color: var(--primary-blue);
-  border: 2px solid var(--primary-blue);
+  color: var(--accent-teal);
+  border: 2px solid var(--accent-teal);
 }
 
 .btn-secondary:hover {
-  background: var(--primary-blue);
+  background: var(--accent-teal);
   color: var(--white);
+  border-color: var(--accent-teal);
 }
 
 /* Featured Initiatives */
@@ -464,13 +474,13 @@ header {
 .benefits-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 1rem;
-  margin: 1rem 0 0.75rem;
+  gap: 1.75rem;
+  margin: 2rem 0 1.5rem;
 }
 
 .benefit-item {
   background: var(--white);
-  padding: 1rem;
+  padding: 1.75rem 1.5rem;
   border-radius: 8px;
   text-align: center;
   border: 1px solid var(--border-color);
@@ -485,8 +495,8 @@ header {
 }
 
 .benefit-item h4 {
-  font-size: 1.1rem;
-  margin-bottom: 0.4rem;
+  font-size: 1.25rem;
+  margin-bottom: 0.75rem;
   color: var(--primary-blue);
   transition: all 0.3s;
 }
@@ -496,8 +506,9 @@ header {
 }
 
 .benefit-item p {
-  font-size: 0.95rem;
+  font-size: 1rem;
   margin-bottom: 0;
+  line-height: 1.6;
 }
 
 /* Get Involved */
@@ -522,20 +533,20 @@ header {
   list-style: none;
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-  gap: 0.75rem;
-  margin: 1rem 0;
+  gap: 1.25rem;
+  margin: 2rem 0;
   max-width: 900px;
   margin-left: auto;
   margin-right: auto;
 }
 
 .partners-list li {
-  padding: 0.65rem;
+  padding: 1rem 1.25rem;
   background: var(--white);
   border-radius: 4px;
   border: 1px solid var(--border-color);
   font-weight: 500;
-  font-size: 0.95rem;
+  font-size: 1rem;
 }
 
 .network-image {
@@ -545,8 +556,7 @@ header {
   border-radius: 8px;
   margin-top: 1rem;
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
-  image-rendering: -webkit-optimize-contrast;
-  image-rendering: high-quality;
+  image-rendering: auto;
 }
 
 /* Contact Form */
@@ -557,18 +567,18 @@ header {
 
 .stay-connected-text {
   text-align: center;
-  font-size: 0.9rem;
+  font-size: 1rem;
   color: var(--text-light);
   margin: 0.25rem auto 0.75rem;
   max-width: 600px;
-  line-height: 1.4;
+  line-height: 1.6;
 }
 
 .contact-form {
   max-width: 550px;
   margin: 0 auto;
   background: var(--light-gray);
-  padding: 1rem;
+  padding: 2rem;
   border-radius: 6px;
   border: 1px solid var(--border-color);
 }
@@ -576,11 +586,11 @@ header {
 .form-row {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 0.5rem;
+  gap: 1rem;
 }
 
 .form-group {
-  margin-bottom: 0.75rem;
+  margin-bottom: 1.25rem;
 }
 
 .form-group label {
@@ -588,17 +598,17 @@ header {
   margin-bottom: 0.3rem;
   font-weight: 600;
   color: var(--text-dark);
-  font-size: 0.85rem;
+  font-size: 1rem;
 }
 
 .form-group input,
 .form-group textarea {
   width: 100%;
-  padding: 0.5rem;
+  padding: 0.625rem;
   border: 1px solid var(--border-color);
   border-radius: 4px;
   font-family: inherit;
-  font-size: 0.875rem;
+  font-size: 1rem;
   transition: border-color 0.3s;
 }
 
@@ -617,14 +627,14 @@ header {
 footer {
   background: var(--dark-gray);
   color: var(--white);
-  padding: 1.5rem 0 1rem;
+  padding: 3rem 0 1.5rem;
 }
 
 .footer-content {
   display: grid;
   grid-template-columns: 2fr 1fr 1fr;
-  gap: 2rem;
-  margin-bottom: 1.25rem;
+  gap: 3rem;
+  margin-bottom: 2rem;
 }
 
 .footer-logo {
@@ -638,20 +648,20 @@ footer {
   margin-top: 0.75rem;
   font-weight: 600;
   color: var(--white) !important;
-  font-size: 0.95rem;
+  font-size: 1rem;
 }
 
 .footer-section h4 {
-  font-size: 1.15rem;
+  font-size: 1.25rem;
   margin-bottom: 0.65rem;
   color: var(--white);
 }
 
 .footer-section p {
-  color: #bdc3c7;
+  color: #d4d8db;
   margin-bottom: 0.4rem;
   line-height: 1.6;
-  font-size: 0.95rem;
+  font-size: 1rem;
 }
 
 .footer-section ul {
@@ -663,10 +673,10 @@ footer {
 }
 
 .footer-section a {
-  color: #bdc3c7;
+  color: #d4d8db;
   text-decoration: none;
   transition: color 0.3s;
-  font-size: 0.95rem;
+  font-size: 1rem;
 }
 
 .footer-section a:hover {
@@ -678,8 +688,8 @@ footer {
   border-top: 1px solid rgba(255, 255, 255, 0.1);
   padding-top: 1rem;
   text-align: center;
-  color: #bdc3c7;
-  font-size: 0.85rem;
+  color: #d4d8db;
+  font-size: 1rem;
 }
 
 /* Responsive Design */

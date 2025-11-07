@@ -5,7 +5,16 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="ICSR2026 - International Conference on Shellfish Restoration in Puget Sound, Washington, October 4-8, 2026">
   <title>ICSR2026 - Puget Sound, Washington</title>
+  <link rel="icon" type="image/png" href="/images/favicon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Marcellus&family=PT+Serif:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/css/styles.css">
+
+  <!-- Preload critical images -->
+  <link rel="preload" as="image" href="/images/coastal-ecosystem.jpg" fetchpriority="high">
+  <link rel="preload" as="image" href="/images/logo-wide-blue.png">
+
   <script src="/js/analytics.js"></script>
 </head>
 <body>
@@ -13,13 +22,15 @@
 
   <main id="main-content">
   <!-- Hero Section -->
-  <section class="hero">
-    <h1>ICSR2026</h1>
-    <p style="font-size: 1.5rem; font-weight: 600;">Hosted by Squaxin Island Tribe</p>
-    <p>Puget Sound, Washington State<br>October 4-8, 2026</p>
-    <div class="hero-buttons">
-      <a href="#registration" class="btn btn-primary">Registration Coming Soon</a>
-      <a href="mailto:info@shellfish-society.org" class="btn btn-secondary">Contact Us</a>
+  <section class="hero" style="background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('/images/coastal-ecosystem.jpg');">
+    <div class="hero-content">
+      <h1>ICSR2026</h1>
+      <p style="font-size: 1.5rem; font-weight: 600;" class="hero-subtitle">Hosted by Squaxin Island Tribe</p>
+      <p class="hero-subtitle">Puget Sound, Washington State<br>October 4-8, 2026</p>
+      <div class="hero-buttons" style="margin-top: 1.5rem;">
+        <a href="#registration" class="btn btn-primary">Registration Coming Soon</a>
+        <a href="mailto:info@shellfish-society.org" class="btn btn-secondary">Contact Us</a>
+      </div>
     </div>
   </section>
 
