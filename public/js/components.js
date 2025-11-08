@@ -443,10 +443,24 @@ function loadHeader() {
         </li>
         <li><a href="https://www.zeffy.com/en-US/donation-form/isrs-building-tomorrows-ocean-leaders" target="_blank" rel="noopener noreferrer" class="btn-donate">${t('donate')}</a></li>
       </ul>
-      <div class="language-switcher" role="group" aria-label="Language selection">
-        <button class="lang-btn ${currentLang === 'en' ? 'active' : ''}" data-lang="en" onclick="changeLanguage('en')" aria-label="English" ${currentLang === 'en' ? 'aria-current="true"' : ''}>EN</button>
-        <button class="lang-btn ${currentLang === 'es' ? 'active' : ''}" data-lang="es" onclick="changeLanguage('es')" aria-label="Español" ${currentLang === 'es' ? 'aria-current="true"' : ''}>ES</button>
-        <button class="lang-btn ${currentLang === 'fr' ? 'active' : ''}" data-lang="fr" onclick="changeLanguage('fr')" aria-label="Français" ${currentLang === 'fr' ? 'aria-current="true"' : ''}>FR</button>
+      <div class="header-controls">
+        <div class="control-divider"></div>
+        <button id="text-size-toggle" class="control-btn" onclick="cycleTextSize()" aria-label="Change text size" title="Change text size">
+          <span aria-hidden="true">A</span>
+        </button>
+        <button id="theme-toggle" class="control-btn" onclick="toggleTheme()" aria-label="Toggle dark mode" title="Toggle dark mode">
+          <span class="theme-icon" aria-hidden="true">🌙</span>
+        </button>
+        <div class="control-divider"></div>
+        <div class="language-switcher" role="group" aria-label="Language selection">
+          <button class="lang-btn ${currentLang === 'en' ? 'active' : ''}" data-lang="en" onclick="changeLanguage('en')" aria-label="English" ${currentLang === 'en' ? 'aria-current="true"' : ''}>EN</button>
+          <button class="lang-btn ${currentLang === 'es' ? 'active' : ''}" data-lang="es" onclick="changeLanguage('es')" aria-label="Español" ${currentLang === 'es' ? 'aria-current="true"' : ''}>ES</button>
+          <button class="lang-btn ${currentLang === 'fr' ? 'active' : ''}" data-lang="fr" onclick="changeLanguage('fr')" aria-label="Français" ${currentLang === 'fr' ? 'aria-current="true"' : ''}>FR</button>
+        </div>
+        <div class="control-divider"></div>
+        <a href="/admin/" class="control-btn user-profile-btn" aria-label="Admin Portal" title="Admin Portal">
+          <span aria-hidden="true">👤</span>
+        </a>
       </div>
     </nav>
   `;
