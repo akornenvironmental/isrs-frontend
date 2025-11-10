@@ -459,7 +459,7 @@ function loadHeader() {
         </div>
         <div class="control-divider"></div>
         <a href="/admin/" class="control-btn user-profile-btn" aria-label="Admin Portal" title="Admin Portal">
-          <span aria-hidden="true">👤</span>
+          <span aria-hidden="true">🦪</span>
         </a>
       </div>
     </nav>
