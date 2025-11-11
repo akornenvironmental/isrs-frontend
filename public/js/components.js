@@ -458,7 +458,7 @@ function loadHeader() {
           <button class="lang-btn ${currentLang === 'fr' ? 'active' : ''}" data-lang="fr" onclick="changeLanguage('fr')" aria-label="Français" ${currentLang === 'fr' ? 'aria-current="true"' : ''}>FR</button>
         </div>
         <div class="control-divider"></div>
-        <a href="/admin/" class="control-btn user-profile-btn" aria-label="Admin Portal" title="Admin Portal">
+        <a href="/admin/" class="control-btn user-profile-btn" aria-label="Member Profile" title="Member Profile">
           <span aria-hidden="true">🦪</span>
         </a>
       </div>
