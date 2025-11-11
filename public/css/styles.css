@@ -471,12 +471,23 @@ header {
 
 .compact-card {
   padding: 1rem;
-  cursor: default;
+  cursor: pointer;
+}
+
+.compact-card:hover {
+  box-shadow: 0 10px 25px rgba(46, 90, 138, 0.12);
+  transform: translateY(-6px);
+  border-color: var(--primary-blue);
 }
 
 .compact-card h3 {
   font-size: 1.1rem;
   margin-bottom: 0.5rem;
+  transition: color 0.3s;
+}
+
+.compact-card:hover h3 {
+  color: var(--primary-blue);
 }
 
 .compact-card p {
