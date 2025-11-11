@@ -474,33 +474,37 @@ function loadStayConnected() {
   stayConnected.innerHTML = `
     <section class="section stay-connected" aria-labelledby="stay-connected-heading">
       <div class="container">
-        <h2 id="stay-connected-heading">${t('stayConnected')}</h2>
-        <p class="stay-connected-text">
-          ${t('stayConnectedText')}<br>
-          ${t('stayConnectedText2')}
-        </p>
-        <form class="contact-form" id="contactForm" onsubmit="handleContactSubmit(event)">
-          <div class="form-row form-row-3">
-            <div class="form-group">
-              <label for="firstName">${t('firstName')} <span class="required" aria-label="required">${t('required')}</span></label>
-              <input type="text" id="firstName" name="firstName" required aria-required="true" />
-            </div>
-            <div class="form-group">
-              <label for="lastName">${t('lastName')} <span class="required" aria-label="required">${t('required')}</span></label>
-              <input type="text" id="lastName" name="lastName" required aria-required="true" />
-            </div>
-            <div class="form-group">
-              <label for="email">${t('email')} <span class="required" aria-label="required">${t('required')}</span></label>
-              <input type="email" id="email" name="email" required aria-required="true" />
-            </div>
+        <div class="stay-connected-wrapper">
+          <div class="stay-connected-content">
+            <h2 id="stay-connected-heading">${t('stayConnected')}</h2>
+            <p class="stay-connected-text">
+              ${t('stayConnectedText')}<br>
+              ${t('stayConnectedText2')}
+            </p>
           </div>
-          <div class="form-group">
-            <label for="message">${t('message')}</label>
-            <textarea id="message" name="message" rows="3" aria-describedby="message-hint"></textarea>
-            <span id="message-hint" class="sr-only">Optional message field</span>
-          </div>
-          <button type="submit" class="btn btn-primary">${t('send')}</button>
-        </form>
+          <form class="contact-form" id="contactForm" onsubmit="handleContactSubmit(event)">
+            <div class="form-row form-row-3">
+              <div class="form-group">
+                <label for="firstName">${t('firstName')} <span class="required" aria-label="required">${t('required')}</span></label>
+                <input type="text" id="firstName" name="firstName" required aria-required="true" />
+              </div>
+              <div class="form-group">
+                <label for="lastName">${t('lastName')} <span class="required" aria-label="required">${t('required')}</span></label>
+                <input type="text" id="lastName" name="lastName" required aria-required="true" />
+              </div>
+              <div class="form-group">
+                <label for="email">${t('email')} <span class="required" aria-label="required">${t('required')}</span></label>
+                <input type="email" id="email" name="email" required aria-required="true" />
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="message">${t('message')}</label>
+              <textarea id="message" name="message" rows="3" aria-describedby="message-hint"></textarea>
+              <span id="message-hint" class="sr-only">Optional message field</span>
+            </div>
+            <button type="submit" class="btn btn-primary">${t('send')}</button>
+          </form>
+        </div>
       </div>
     </section>
   `;
