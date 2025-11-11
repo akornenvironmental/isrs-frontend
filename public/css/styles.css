@@ -64,6 +64,13 @@ body {
   background: var(--white);
 }
 
+/* General focus styles for accessibility */
+a:focus,
+button:focus {
+  outline: 2px solid var(--primary-blue);
+  outline-offset: 2px;
+}
+
 .container {
   max-width: 1400px;
   margin: 0 auto;
@@ -602,6 +609,11 @@ header {
   box-shadow: 0 4px 12px rgba(22, 160, 133, 0.4);
 }
 
+.btn-primary:focus {
+  outline: 3px solid var(--primary-blue);
+  outline-offset: 2px;
+}
+
 .btn-secondary {
   background: var(--white);
   color: var(--accent-teal);
@@ -612,6 +624,11 @@ header {
   background: var(--accent-teal);
   color: var(--white);
   border-color: var(--accent-teal);
+}
+
+.btn-secondary:focus {
+  outline: 3px solid var(--primary-blue);
+  outline-offset: 2px;
 }
 
 /* Featured Initiatives */

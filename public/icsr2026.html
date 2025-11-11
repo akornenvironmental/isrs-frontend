@@ -204,10 +204,10 @@
   <footer id="site-footer"></footer>
 
   <!-- Mailing List Modal -->
-  <div id="mailingListModal" class="modal" onclick="if(event.target === this) closeMailingListModal()">
+  <div id="mailingListModal" class="modal" role="dialog" aria-labelledby="mailingListModalTitle" aria-modal="true" onclick="if(event.target === this) closeMailingListModal()">
     <div class="modal-content">
-      <span class="modal-close" onclick="closeMailingListModal()">&times;</span>
-      <h2 style="margin-top: 0;">Join Our Mailing List</h2>
+      <span class="modal-close" onclick="closeMailingListModal()" aria-label="Close mailing list modal">&times;</span>
+      <h2 id="mailingListModalTitle" style="margin-top: 0;">Join Our Mailing List</h2>
       <p style="font-size: 0.95rem; color: var(--text-light); margin-bottom: 1.5rem;">Stay updated on ICSR2026 registration, abstract submissions, and conference details.</p>
       <form id="mailingListForm" onsubmit="submitMailingList(event)">
         <div class="form-group">
