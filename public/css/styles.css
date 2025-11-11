@@ -629,24 +629,76 @@ header {
   margin-bottom: 1rem;
 }
 
-.partners-list ul {
-  list-style: none;
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-  gap: 1.25rem;
-  margin: 2rem 0;
-  max-width: 900px;
-  margin-left: auto;
-  margin-right: auto;
+/* Partner Cards - Colorful Grid */
+.partners-grid {
+  margin: 2rem auto;
+  max-width: 1000px;
 }
 
-.partners-list li {
-  padding: 1rem 1.25rem;
-  background: var(--white);
-  border-radius: 4px;
-  border: 1px solid var(--border-color);
-  font-weight: 500;
+.partner-card {
+  padding: 1.5rem 1.25rem;
+  border-radius: 8px;
+  text-align: center;
+  transition: transform 0.3s, box-shadow 0.3s;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.partner-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+}
+
+.partner-card h4 {
+  margin: 0.5rem 0 0;
   font-size: 1rem;
+  font-weight: 600;
+  line-height: 1.4;
+}
+
+.partner-icon {
+  display: block;
+  font-size: 2rem;
+  margin-bottom: 0.5rem;
+}
+
+/* 508-Compliant Color Backgrounds */
+.partner-card-teal {
+  background: linear-gradient(135deg, #16a085 0%, #1abc9c 100%);
+  color: white;
+}
+
+.partner-card-blue {
+  background: linear-gradient(135deg, #2980b9 0%, #3498db 100%);
+  color: white;
+}
+
+.partner-card-green {
+  background: linear-gradient(135deg, #27ae60 0%, #2ecc71 100%);
+  color: white;
+}
+
+.partner-card-coral {
+  background: linear-gradient(135deg, #e74c3c 0%, #ec7063 100%);
+  color: white;
+}
+
+.partner-card-purple {
+  background: linear-gradient(135deg, #8e44ad 0%, #9b59b6 100%);
+  color: white;
+}
+
+.partner-card-amber {
+  background: linear-gradient(135deg, #f39c12 0%, #f1c40f 100%);
+  color: #2c3e50;
+}
+
+/* Dark mode adjustments for partner cards */
+.dark-mode .partner-card {
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+.dark-mode .partner-card:hover {
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.4);
 }
 
 .network-image {
