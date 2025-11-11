@@ -3,7 +3,7 @@
 :root {
   --primary-blue: #2e5a8a;
   --secondary-blue: #4a7ab5;
-  --accent-teal: #16a085;
+  --accent-teal: #546d7d;
   --accent-teal-hover: #138d75;
   --dark-gray: #2c3e50;
   --light-gray: #f8f9fa;
@@ -722,7 +722,7 @@ header {
 
 /* 508-Compliant Color Backgrounds */
 .partner-card-teal {
-  background: linear-gradient(135deg, #16a085 0%, #1abc9c 100%);
+  background: linear-gradient(135deg, #546d7d 0%, #6b8694 100%);
   color: white;
 }
 
