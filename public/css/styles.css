@@ -404,6 +404,10 @@ header {
   gap: 1.5rem;
 }
 
+.grid-2 {
+  grid-template-columns: repeat(2, 1fr);
+}
+
 .grid-3 {
   grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
 }
@@ -975,6 +979,10 @@ footer {
 
   .grid {
     gap: 1.25rem;
+  }
+
+  .grid-2 {
+    grid-template-columns: 1fr;
   }
 
   .benefits-grid {
