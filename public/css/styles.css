@@ -287,10 +287,16 @@ header {
 .user-profile-btn {
   width: 40px;
   height: 40px;
+  padding: 5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   background: linear-gradient(135deg, var(--accent-teal) 0%, var(--accent-teal-hover) 100%);
   color: var(--white);
   border-radius: 8px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  font-size: 1.5rem;
+  line-height: 1;
 }
 
 .user-profile-btn:hover {
