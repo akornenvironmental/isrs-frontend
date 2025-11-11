@@ -161,10 +161,12 @@ header {
   list-style: none;
   min-width: 180px;
   padding: 0.5rem 0;
-  margin-top: 0.5rem;
+  margin-top: 0;
+  z-index: 1000;
 }
 
-.dropdown:hover .dropdown-menu {
+.dropdown:hover .dropdown-menu,
+.dropdown-menu:hover {
   display: block;
 }
 
