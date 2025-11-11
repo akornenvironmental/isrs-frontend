@@ -362,6 +362,10 @@ header {
   padding: 2.5rem 0;
 }
 
+.compact-section {
+  padding: 1.5rem 0;
+}
+
 .section h2 {
   font-family: 'Marcellus', Georgia, serif;
   font-size: 2rem;
@@ -459,6 +463,44 @@ header {
   margin-bottom: 0.75rem;
   line-height: 1.7;
   font-size: 1rem;
+}
+
+.compact-card {
+  padding: 1rem;
+  cursor: default;
+}
+
+.compact-card h3 {
+  font-size: 1.1rem;
+  margin-bottom: 0.5rem;
+}
+
+.compact-card p {
+  font-size: 0.9rem;
+  line-height: 1.5;
+  margin-bottom: 0;
+}
+
+.value-card {
+  background: var(--white);
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  padding: 1rem;
+  text-align: left;
+}
+
+.value-card h4 {
+  font-family: 'PT Serif', serif;
+  font-size: 1rem;
+  margin-bottom: 0.5rem;
+  color: var(--text-dark);
+}
+
+.value-card p {
+  color: var(--text-light);
+  font-size: 0.9rem;
+  line-height: 1.5;
+  margin: 0;
 }
 
 .donation-note {
