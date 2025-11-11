@@ -661,23 +661,23 @@ header {
 /* Contact Form */
 .stay-connected {
   background: var(--white);
-  padding: 1.5rem 0 !important;
+  padding: 1.25rem 0 !important;
 }
 
 .stay-connected-text {
   text-align: center;
-  font-size: 1rem;
+  font-size: 0.95rem;
   color: var(--text-light);
-  margin: 0.25rem auto 0.75rem;
+  margin: 0.25rem auto 0.625rem;
   max-width: 600px;
-  line-height: 1.6;
+  line-height: 1.5;
 }
 
 .contact-form {
-  max-width: 550px;
+  max-width: 900px;
   margin: 0 auto;
   background: var(--light-gray);
-  padding: 2rem;
+  padding: 1.5rem;
   border-radius: 6px;
   border: 1px solid var(--border-color);
 }
@@ -686,10 +686,15 @@ header {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 1rem;
+  margin-bottom: 0;
+}
+
+.form-row-3 {
+  grid-template-columns: 1fr 1fr 1fr;
 }
 
 .form-group {
-  margin-bottom: 1.25rem;
+  margin-bottom: 1rem;
 }
 
 .form-group label {
