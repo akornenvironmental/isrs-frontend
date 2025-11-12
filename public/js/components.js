@@ -613,6 +613,11 @@ document.addEventListener('DOMContentLoaded', () => {
   // Translate page content
   translatePage();
 
+  // Initialize feedback widget
+  if (typeof initFeedbackWidget !== 'undefined') {
+    initFeedbackWidget({ isAdminPortal: false });
+  }
+
   // Make functions globally available
   window.changeLanguage = changeLanguage;
   window.toggleMobileMenu = toggleMobileMenu;
