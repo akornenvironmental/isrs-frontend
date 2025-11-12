@@ -1785,6 +1785,64 @@
     }
 
     function populateSummary() {
+      // Build selected sessions display
+      let sessionsHtml = '';
+      if (selectedSessions.length > 0) {
+        sessionsHtml = `
+          <div style="margin-top: 1rem; padding-top: 1rem; border-top: 1px solid var(--border-color);">
+            <h4 style="color: var(--primary-blue); margin-bottom: 0.75rem;">Selected Sessions & Workshops</h4>
+        `;
+        selectedSessions.forEach(sessionId => {
+          const session = availableSessions.find(s => s.id === sessionId);
+          if (session) {
+            sessionsHtml += `
+              <div style="padding: 0.75rem; background: #f0f8ff; border-radius: 4px; margin-bottom: 0.5rem; border-left: 3px solid var(--primary-blue);">
+                <strong style="color: var(--primary-blue);">${session.session_name}</strong><br>
+                <span style="color: var(--text-light); font-size: 0.9rem;">
+                  ${new Date(session.session_date + 'T00:00:00').toLocaleDateString('en-US', {
+                    weekday: 'short',
+                    month: 'short',
+                    day: 'numeric'
+                  })} • ${session.start_time}${session.room ? ' • ' + session.room : ''}
+                </span>
+                ${session.requires_additional_fee ? `
+                  <span style="display: block; margin-top: 0.25rem; font-size: 0.85rem; color: #f57c00;">
+                    Additional fee: $${parseFloat(session.additional_fee || 0).toFixed(2)}
+                  </span>
+                ` : ''}
+              </div>
+            `;
+          }
+        });
+        sessionsHtml += '</div>';
+      }
+
+      // Build discount display
+      let discountHtml = '';
+      if (appliedDiscount) {
+        const registrationType = document.getElementById('registrationType').value;
+        const baseFee = FEES[registrationType] || 0;
+        let discountAmount = 0;
+
+        if (appliedDiscount.discountType === 'percentage') {
+          discountAmount = (baseFee * appliedDiscount.discountValue) / 100;
+        } else if (appliedDiscount.discountType === 'fixed_amount') {
+          discountAmount = Math.min(appliedDiscount.discountValue, baseFee);
+        }
+
+        discountHtml = `
+          <div style="margin-top: 1rem; padding-top: 1rem; border-top: 1px solid var(--border-color);">
+            <h4 style="color: var(--primary-blue); margin-bottom: 0.75rem;">Discount Applied</h4>
+            <div style="padding: 0.75rem; background: #d4edda; border-radius: 4px; border-left: 3px solid #28a745;">
+              <strong style="color: #155724;">${appliedDiscount.code.toUpperCase()}</strong><br>
+              <span style="color: #155724; font-size: 0.9rem;">
+                ${appliedDiscount.description || 'Discount code applied'} - You save $${discountAmount.toFixed(2)}
+              </span>
+            </div>
+          </div>
+        `;
+      }
+
       const summary = `
         <div style="background: var(--light-gray); padding: 1.5rem; border-radius: 4px; margin-bottom: 2rem;">
           <h3 style="font-family: 'Marcellus', Georgia, serif; color: var(--primary-blue); margin-bottom: 1rem;">Registration Summary</h3>
@@ -1794,6 +1852,8 @@
           <p><strong>Country:</strong> ${document.getElementById('country').value}</p>
           <p><strong>Registration Type:</strong> ${document.getElementById('registrationType').selectedOptions[0].text}</p>
           <p><strong>Attendance:</strong> ${document.getElementById('attendanceType').value === 'in-person' ? 'In-Person' : 'Virtual'}</p>
+          ${discountHtml}
+          ${sessionsHtml}
         </div>
       `;
 
@@ -1979,6 +2039,9 @@
           room_sharing: document.getElementById('roomSharing')?.checked || false,
           roommate_notes: document.getElementById('roommateNotes')?.value || '',
 
+          // Discount Code
+          discount_code: appliedDiscount ? appliedDiscount.code : null,
+
           // Bot Protection
           recaptcha_token: recaptchaToken
         };
@@ -1996,6 +2059,31 @@
         }
 
         registrationId = regResult.data.id;
+
+        // Step 2.5: Register for sessions if any were selected
+        if (selectedSessions.length > 0) {
+          try {
+            const sessionsResponse = await fetch(`${API_BASE_URL}/api/conference/sessions/register`, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                registrationId: registrationId,
+                sessionIds: selectedSessions
+              })
+            });
+
+            const sessionsResult = await sessionsResponse.json();
+
+            if (!sessionsResult.success) {
+              console.warn('Session registration failed:', sessionsResult.error);
+              // Don't fail the entire registration if session registration fails
+              // The user can add sessions later
+            }
+          } catch (sessionError) {
+            console.error('Error registering for sessions:', sessionError);
+            // Don't fail the entire registration
+          }
+        }
 
         // Track registration in Google Analytics
         if (window.ISRSAnalytics) {
