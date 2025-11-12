@@ -401,6 +401,148 @@
       color: white;
     }
 
+    .session-card {
+      border: 2px solid var(--border-color);
+      border-radius: 6px;
+      padding: 1.5rem;
+      margin-bottom: 1rem;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      background: white;
+    }
+
+    .session-card:hover {
+      border-color: var(--primary-blue);
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      transform: translateY(-1px);
+    }
+
+    .session-card.selected {
+      border-color: var(--primary-blue);
+      background: linear-gradient(135deg, #f0f8ff 0%, #e6f3ff 100%);
+      box-shadow: 0 3px 10px rgba(46, 90, 138, 0.15);
+    }
+
+    .session-card.full {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+
+    .session-card.full:hover {
+      transform: none;
+      box-shadow: none;
+    }
+
+    .session-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: start;
+      margin-bottom: 0.75rem;
+      gap: 1rem;
+    }
+
+    .session-title {
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: var(--primary-blue);
+      margin-bottom: 0.25rem;
+    }
+
+    .session-meta {
+      color: var(--text-light);
+      font-size: 0.9rem;
+    }
+
+    .session-badges {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      align-items: flex-end;
+    }
+
+    .session-badge {
+      padding: 0.25rem 0.75rem;
+      border-radius: 12px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+
+    .session-badge.workshop {
+      background: #e3f2fd;
+      color: #1976d2;
+    }
+
+    .session-badge.field-trip {
+      background: #f3e5f5;
+      color: #7b1fa2;
+    }
+
+    .session-badge.presentation {
+      background: #e8f5e9;
+      color: #388e3c;
+    }
+
+    .session-badge.available {
+      background: #e8f5e9;
+      color: #388e3c;
+    }
+
+    .session-badge.limited {
+      background: #fff3e0;
+      color: #f57c00;
+    }
+
+    .session-badge.waitlist {
+      background: #ffebee;
+      color: #d32f2f;
+    }
+
+    .session-description {
+      color: var(--text-dark);
+      margin-bottom: 0.5rem;
+      line-height: 1.5;
+    }
+
+    .session-chair {
+      font-size: 0.9rem;
+      color: var(--text-light);
+      margin-bottom: 0.5rem;
+    }
+
+    .session-fee-notice {
+      margin-top: 0.75rem;
+      padding: 0.75rem;
+      background: #fff3e0;
+      border-radius: 4px;
+      font-size: 0.9rem;
+      border-left: 3px solid #f57c00;
+    }
+
+    .sessions-by-date {
+      margin-bottom: 2rem;
+    }
+
+    .session-date-header {
+      color: var(--primary-blue);
+      font-family: 'Marcellus', Georgia, serif;
+      font-size: 1.4rem;
+      margin: 2rem 0 1rem;
+      padding-bottom: 0.5rem;
+      border-bottom: 2px solid var(--accent-teal);
+    }
+
+    .session-date-header:first-child {
+      margin-top: 0;
+    }
+
+    .no-sessions-message {
+      text-align: center;
+      padding: 3rem 2rem;
+      color: var(--text-light);
+      font-size: 1.1rem;
+    }
+
     @media (max-width: 768px) {
       .form-row {
         grid-template-columns: 1fr;
@@ -416,6 +558,17 @@
 
       .registration-header h1 {
         font-size: 2rem;
+      }
+
+      .session-header {
+        flex-direction: column;
+        align-items: start;
+      }
+
+      .session-badges {
+        flex-direction: row;
+        align-items: center;
+        margin-top: 0.5rem;
       }
     }
   </style>
@@ -448,6 +601,10 @@
       </div>
       <div class="progress-step" data-step="3">
         <div class="step-number">3</div>
+        <div class="step-label">Sessions & Workshops</div>
+      </div>
+      <div class="progress-step" data-step="4">
+        <div class="step-number">4</div>
         <div class="step-label">Review & Payment</div>
       </div>
     </div>
@@ -889,8 +1046,36 @@
         </div>
       </div>
 
-      <!-- Step 3: Review & Payment -->
+      <!-- Step 3: Session Selection -->
       <div class="form-section" data-step="3">
+        <h2 class="section-title">Select Your Sessions & Workshops</h2>
+
+        <p style="color: var(--text-light); margin-bottom: 2rem;">
+          Choose the workshops and sessions you'd like to attend. Some sessions have limited capacity and may have a waitlist. <strong>Session selection is optional</strong> - you can skip this step if you're not interested in specific sessions.
+        </p>
+
+        <div id="sessionsLoading" style="text-align: center; padding: 3rem;">
+          <div class="spinner" style="margin: 0 auto 1rem;"></div>
+          <p>Loading available sessions...</p>
+        </div>
+
+        <div id="sessionsContainer" style="display: none;">
+          <!-- Sessions will be populated here by JavaScript -->
+        </div>
+
+        <div id="sessionsError" style="display: none; padding: 2rem; text-align: center; color: #721c24; background: #f8d7da; border-radius: 4px;">
+          <p style="margin-bottom: 0.5rem; font-weight: 600;">Unable to load sessions</p>
+          <p style="font-size: 0.9rem;">You can continue with registration and add sessions later, or try refreshing the page.</p>
+        </div>
+
+        <div class="form-actions">
+          <button type="button" class="btn btn-secondary" onclick="prevStep()">Back</button>
+          <button type="button" class="btn btn-primary" onclick="nextStep()">Continue to Review</button>
+        </div>
+      </div>
+
+      <!-- Step 4: Review & Payment -->
+      <div class="form-section" data-step="4">
         <h2 class="section-title">Review & Payment</h2>
 
         <div id="registrationSummary"></div>
@@ -1159,6 +1344,175 @@
       });
     }
 
+    // Session selection management
+    let selectedSessions = [];
+    let availableSessions = [];
+
+    async function loadSessions() {
+      if (!conferenceData || !conferenceData.id) {
+        document.getElementById('sessionsLoading').style.display = 'none';
+        document.getElementById('sessionsError').style.display = 'block';
+        return;
+      }
+
+      try {
+        const response = await fetch(
+          `${API_BASE_URL}/api/conference/${conferenceData.id}/sessions`
+        );
+        const result = await response.json();
+
+        if (result.success && result.data && result.data.length > 0) {
+          availableSessions = result.data;
+          renderSessions();
+          document.getElementById('sessionsLoading').style.display = 'none';
+          document.getElementById('sessionsContainer').style.display = 'block';
+        } else {
+          // No sessions available - not an error, just show a message
+          document.getElementById('sessionsLoading').style.display = 'none';
+          document.getElementById('sessionsContainer').innerHTML = `
+            <div class="no-sessions-message">
+              <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin: 0 auto 1rem; opacity: 0.3;">
+                <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                <line x1="16" y1="2" x2="16" y2="6"></line>
+                <line x1="8" y1="2" x2="8" y2="6"></line>
+                <line x1="3" y1="10" x2="21" y2="10"></line>
+              </svg>
+              <p>No sessions are currently available for selection.</p>
+              <p style="font-size: 0.95rem;">Check back later or continue with your registration.</p>
+            </div>
+          `;
+          document.getElementById('sessionsContainer').style.display = 'block';
+        }
+      } catch (error) {
+        console.error('Error loading sessions:', error);
+        document.getElementById('sessionsLoading').style.display = 'none';
+        document.getElementById('sessionsError').style.display = 'block';
+      }
+    }
+
+    function renderSessions() {
+      const container = document.getElementById('sessionsContainer');
+
+      if (!availableSessions || availableSessions.length === 0) {
+        container.innerHTML = `
+          <div class="no-sessions-message">
+            <p>No sessions are currently available for selection.</p>
+          </div>
+        `;
+        return;
+      }
+
+      // Group sessions by date
+      const sessionsByDate = {};
+      availableSessions.forEach(session => {
+        const date = session.session_date;
+        if (!sessionsByDate[date]) {
+          sessionsByDate[date] = [];
+        }
+        sessionsByDate[date].push(session);
+      });
+
+      let html = '';
+      Object.keys(sessionsByDate).sort().forEach(date => {
+        html += `
+          <h3 class="session-date-header">
+            ${new Date(date + 'T00:00:00').toLocaleDateString('en-US', {
+              weekday: 'long',
+              month: 'long',
+              day: 'numeric',
+              year: 'numeric'
+            })}
+          </h3>
+        `;
+
+        sessionsByDate[date].forEach(session => {
+          const isSelected = selectedSessions.includes(session.id);
+          const isFull = session.is_full || false;
+          const hasSpots = session.available_spots;
+
+          let availabilityBadgeClass = 'available';
+          let availabilityBadgeText = 'Available';
+
+          if (isFull && session.enable_waitlist) {
+            availabilityBadgeClass = 'waitlist';
+            availabilityBadgeText = 'Waitlist Only';
+          } else if (isFull) {
+            availabilityBadgeClass = 'waitlist';
+            availabilityBadgeText = 'Full';
+          } else if (hasSpots !== null && hasSpots < 10) {
+            availabilityBadgeClass = 'limited';
+            availabilityBadgeText = `${hasSpots} spots left`;
+          }
+
+          const canSelect = !isFull || session.enable_waitlist;
+
+          html += `
+            <div class="session-card ${isSelected ? 'selected' : ''} ${!canSelect ? 'full' : ''}"
+                 onclick="${canSelect ? `toggleSession('${session.id}')` : ''}"
+                 id="session-${session.id}">
+              <div class="session-header">
+                <div style="flex: 1;">
+                  <div class="session-title">${session.session_name || 'Untitled Session'}</div>
+                  <div class="session-meta">
+                    ${session.start_time || ''} ${session.end_time ? '- ' + session.end_time : ''} ${session.room ? '• ' + session.room : ''}
+                  </div>
+                </div>
+                <div class="session-badges">
+                  ${session.session_type ? `<span class="session-badge ${session.session_type.toLowerCase().replace(' ', '-')}">${session.session_type}</span>` : ''}
+                  <span class="session-badge ${availabilityBadgeClass}">${availabilityBadgeText}</span>
+                </div>
+              </div>
+              ${session.description ? `
+                <p class="session-description">${session.description}</p>
+              ` : ''}
+              ${session.chair_name ? `
+                <div class="session-chair">Chair: ${session.chair_name}</div>
+              ` : ''}
+              ${session.requires_additional_fee ? `
+                <div class="session-fee-notice">
+                  <strong>Additional fee:</strong> $${parseFloat(session.additional_fee || 0).toFixed(2)}
+                </div>
+              ` : ''}
+              ${isSelected ? `
+                <div style="margin-top: 0.75rem; padding: 0.5rem; background: #d4edda; border-radius: 4px; color: #155724; font-size: 0.9rem; display: flex; align-items: center; gap: 0.5rem;">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <polyline points="20 6 9 17 4 12"></polyline>
+                  </svg>
+                  <span>Selected</span>
+                </div>
+              ` : ''}
+            </div>
+          `;
+        });
+      });
+
+      container.innerHTML = html;
+    }
+
+    function toggleSession(sessionId) {
+      const session = availableSessions.find(s => s.id === sessionId);
+      if (!session) return;
+
+      // Check if full and no waitlist
+      const isFull = session.is_full || false;
+      if (isFull && !session.enable_waitlist) {
+        showError('This session is full and does not have a waitlist.');
+        setTimeout(() => hideError(), 3000);
+        return;
+      }
+
+      const index = selectedSessions.indexOf(sessionId);
+      if (index > -1) {
+        // Remove selection
+        selectedSessions.splice(index, 1);
+      } else {
+        // Add selection
+        selectedSessions.push(sessionId);
+      }
+
+      renderSessions();
+    }
+
     // Load conference data on page load
     window.addEventListener('DOMContentLoaded', async () => {
       try {
@@ -1352,8 +1706,13 @@
       document.querySelector(`[data-step="${currentStep}"].form-section`).classList.add('active');
       document.querySelector(`[data-step="${currentStep}"].progress-step`).classList.add('active');
 
+      // If moving to session selection step, load sessions
+      if (currentStep === 3 && availableSessions.length === 0) {
+        loadSessions();
+      }
+
       // If moving to review step, populate summary
-      if (currentStep === 3) {
+      if (currentStep === 4) {
         populateSummary();
       }
 
