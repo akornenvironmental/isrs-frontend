@@ -803,6 +803,27 @@ header {
   font-weight: 500;
 }
 
+/* Conference Feature Items (What to Expect, etc.) */
+.feature-item {
+  text-align: center;
+  padding: 1rem;
+}
+
+.feature-item h3 {
+  font-size: 1.05rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  color: var(--text-dark);
+  line-height: 1.4;
+}
+
+.feature-item p {
+  font-size: 0.9rem;
+  line-height: 1.5;
+  color: var(--text-light);
+  margin: 0;
+}
+
 /* 508-Compliant Color Backgrounds */
 .partner-card-teal {
   background: linear-gradient(135deg, #546d7d 0%, #6b8694 100%);
@@ -1157,6 +1178,25 @@ header {
 
 .dark-mode .stat-item p {
   color: #e0e0e0;
+}
+
+/* Feature Items */
+.dark-mode .feature-item h3 {
+  color: #e0e0e0;
+}
+
+.dark-mode .feature-item p {
+  color: #b0b0b0;
+}
+
+/* Light Gray Sections (#ecf0f1) */
+.dark-mode .section[style*="#ecf0f1"] {
+  background-color: #2a2a2a !important;
+}
+
+.dark-mode .section[style*="#ecf0f1"] p,
+.dark-mode .section[style*="#ecf0f1"] strong {
+  color: #e0e0e0 !important;
 }
 
 /* Modal Styles */

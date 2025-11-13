@@ -111,7 +111,7 @@
         ICSR has convened biannually since 1996, spanning four continents and bringing together thousands of restoration professionals over nearly three decades.
       </p>
 
-      <div class="timeline">
+      <div class="timeline" id="conferenceTimeline">
         <div class="timeline-item">
           <h4>2024 - Jekyll Island, Georgia, USA</h4>
           <p><strong>300+ attendees | 150+ presentations | 23 countries</strong></p>
@@ -143,45 +143,51 @@
           <p>Showcased restoration in subtropical environments and addressed climate change impacts.</p>
         </div>
 
-        <div class="timeline-item">
+        <div class="timeline-item timeline-item-hidden" style="display: none;">
           <h4>2010 - Williamsburg, Virginia, USA</h4>
           <p>Tenth conference milestone celebrating progress in restoration science and practice.</p>
         </div>
 
-        <div class="timeline-item">
+        <div class="timeline-item timeline-item-hidden" style="display: none;">
           <h4>2007 - Texel, Netherlands</h4>
           <p>European conference highlighting North Sea restoration and international collaboration.</p>
         </div>
 
-        <div class="timeline-item">
+        <div class="timeline-item timeline-item-hidden" style="display: none;">
           <h4>2005 - Brest, France</h4>
           <p>Focus on European oyster (Ostrea edulis) restoration and habitat restoration techniques.</p>
         </div>
 
-        <div class="timeline-item">
+        <div class="timeline-item timeline-item-hidden" style="display: none;">
           <h4>2003 - Jekyll Island, Georgia, USA</h4>
           <p>Addressed emerging restoration challenges and innovative reef construction methods.</p>
         </div>
 
-        <div class="timeline-item">
+        <div class="timeline-item timeline-item-hidden" style="display: none;">
           <h4>2001 - Baltimore, Maryland, USA</h4>
           <p>Emphasized urban restoration and the role of shellfish in improving water quality.</p>
         </div>
 
-        <div class="timeline-item">
+        <div class="timeline-item timeline-item-hidden" style="display: none;">
           <h4>1999 - Cork, Ireland</h4>
           <p>First ICSR outside North America, expanding the conference's international reach.</p>
         </div>
 
-        <div class="timeline-item">
+        <div class="timeline-item timeline-item-hidden" style="display: none;">
           <h4>1997 - Hilton Head Island, South Carolina, USA</h4>
           <p>Second conference building on the momentum of the inaugural gathering.</p>
         </div>
 
-        <div class="timeline-item">
+        <div class="timeline-item timeline-item-hidden" style="display: none;">
           <h4>1996 - Williamsburg, Virginia, USA</h4>
           <p><strong>Inaugural Conference</strong> - The beginning of a global movement to advance shellfish restoration science and practice.</p>
         </div>
+      </div>
+
+      <div class="text-center" style="margin-top: 1.5rem;">
+        <button id="toggleHistory" class="btn btn-secondary" onclick="toggleConferenceHistory()">
+          <span id="toggleHistoryText">View Full History (9 more conferences)</span>
+        </button>
       </div>
     </section>
 
@@ -243,5 +249,23 @@
 
   <script src="/js/feedback-widget.js"></script>
   <script src="/js/components.js"></script>
+  <script>
+    function toggleConferenceHistory() {
+      const hiddenItems = document.querySelectorAll('.timeline-item-hidden');
+      const button = document.getElementById('toggleHistory');
+      const buttonText = document.getElementById('toggleHistoryText');
+      const isHidden = hiddenItems[0].style.display === 'none';
+
+      hiddenItems.forEach(item => {
+        if (isHidden) {
+          item.style.display = 'block';
+        } else {
+          item.style.display = 'none';
+        }
+      });
+
+      buttonText.textContent = isHidden ? 'Show Less' : 'View Full History (9 more conferences)';
+    }
+  </script>
 </body>
 </html>
