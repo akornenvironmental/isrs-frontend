@@ -515,6 +515,14 @@ header {
   border-radius: 6px;
   padding: 1rem;
   text-align: left;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.value-card:hover {
+  box-shadow: 0 10px 25px rgba(46, 90, 138, 0.12);
+  transform: translateY(-6px);
+  border-color: var(--primary-blue);
 }
 
 .value-card h4 {
@@ -522,6 +530,11 @@ header {
   font-size: 1rem;
   margin-bottom: 0.5rem;
   color: var(--text-dark);
+  transition: color 0.3s;
+}
+
+.value-card:hover h4 {
+  color: var(--primary-blue);
 }
 
 .value-card p {
@@ -669,7 +682,7 @@ header {
 }
 
 .benefit-item:hover {
-  box-shadow: 0 8px 20px rgba(46, 90, 138, 0.15);
+  box-shadow: 0 10px 25px rgba(46, 90, 138, 0.12);
   transform: translateY(-6px);
   border-color: var(--primary-blue);
 }
@@ -682,7 +695,8 @@ header {
 }
 
 .benefit-item:hover h4 {
-  color: var(--secondary-blue);
+  color: var(--primary-blue);
+  filter: brightness(1.2);
 }
 
 .benefit-item p {
@@ -719,13 +733,16 @@ header {
   padding: 1.5rem 1.25rem;
   border-radius: 8px;
   text-align: center;
-  transition: transform 0.3s, box-shadow 0.3s;
+  transition: all 0.3s;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  cursor: pointer;
+  border: 1px solid transparent;
 }
 
 .partner-card:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+  transform: translateY(-6px);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+  filter: brightness(1.05);
 }
 
 .partner-card h4 {
@@ -733,6 +750,7 @@ header {
   font-size: 1rem;
   font-weight: 600;
   line-height: 1.4;
+  transition: all 0.3s;
 }
 
 .partner-icon {
@@ -778,7 +796,8 @@ header {
 }
 
 .dark-mode .partner-card:hover {
-  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.4);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+  filter: brightness(1.15);
 }
 
 /* ========================================
@@ -1026,12 +1045,25 @@ header {
   border-color: #505050;
 }
 
+.dark-mode .value-card:hover {
+  border-color: #5BC0BE;
+  box-shadow: 0 10px 25px rgba(91, 192, 190, 0.2);
+}
+
 .dark-mode .value-card h4 {
   color: #e0e0e0;
 }
 
+.dark-mode .value-card:hover h4 {
+  color: #5BC0BE;
+}
+
 .dark-mode .value-card h4 strong {
   color: #6EC5F8;
+}
+
+.dark-mode .value-card:hover h4 strong {
+  color: #5BC0BE;
 }
 
 .dark-mode .value-card p {
@@ -1044,8 +1076,17 @@ header {
   border-color: #505050;
 }
 
+.dark-mode .compact-card:hover {
+  border-color: #5BC0BE;
+  box-shadow: 0 10px 25px rgba(91, 192, 190, 0.2);
+}
+
 .dark-mode .compact-card h3 {
   color: #e0e0e0;
+}
+
+.dark-mode .compact-card:hover h3 {
+  color: #5BC0BE;
 }
 
 .dark-mode .compact-card p {
