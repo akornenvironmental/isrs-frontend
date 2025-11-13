@@ -835,7 +835,8 @@ header {
 
 .history-tab {
   padding: 0.75rem 2rem;
-  font-size: 1rem;
+  font-family: 'PT Serif', Georgia, serif;
+  font-size: 1.05rem;
   font-weight: 600;
   background: var(--white);
   color: var(--text-dark);
@@ -1257,6 +1258,19 @@ header {
   background: #6EC5F8;
   color: #1a1a1a;
   border-color: #6EC5F8;
+}
+
+/* Code of Conduct Card */
+.dark-mode .card ul li {
+  color: #e0e0e0;
+}
+
+.dark-mode .card ul {
+  color: #e0e0e0;
+}
+
+.dark-mode .card p strong {
+  color: #e0e0e0;
 }
 
 /* Modal Styles */
