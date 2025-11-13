@@ -13,7 +13,7 @@
   --border-color: #e1e1e1;
 }
 
-/* Dark Mode */
+/* Dark Mode - 508 Compliant Colors */
 .dark-mode {
   --light-gray: #1a1a1a;
   --white: #2d2d2d;
@@ -21,6 +21,10 @@
   --text-light: #b0b0b0;
   --border-color: #404040;
   --dark-gray: #1a1a1a;
+  /* Accessible blue for dark backgrounds - 7:1 contrast ratio */
+  --primary-blue-dark: #6EC5F8;
+  --secondary-blue-dark: #8FD4FA;
+  --accent-teal-dark: #5BC0BE;
 }
 
 .dark-mode body {
@@ -775,6 +779,168 @@ header {
 
 .dark-mode .partner-card:hover {
   box-shadow: 0 6px 16px rgba(0, 0, 0, 0.4);
+}
+
+/* ========================================
+   DARK MODE - 508 COMPLIANT
+   ======================================== */
+
+/* Header Controls */
+.dark-mode .control-btn {
+  color: #b0b0b0;
+}
+
+.dark-mode .control-btn:hover {
+  background: #3a3a3a;
+  color: #5BC0BE;
+}
+
+.dark-mode .control-divider {
+  background-color: #404040;
+}
+
+/* Language Buttons */
+.dark-mode .lang-btn {
+  border-color: #505050;
+  color: #e0e0e0;
+}
+
+.dark-mode .lang-btn:hover {
+  background: #3a3a3a;
+  border-color: #5BC0BE;
+  color: #5BC0BE;
+}
+
+.dark-mode .lang-btn.active {
+  background: linear-gradient(135deg, #2E5A8A 0%, #5BC0BE 100%);
+  border-color: transparent;
+  color: white;
+}
+
+/* Donate Button */
+.dark-mode .btn-donate {
+  background: linear-gradient(135deg, #546d7d 0%, #5BC0BE 100%) !important;
+  color: white !important;
+}
+
+.dark-mode .btn-donate:hover {
+  background: linear-gradient(135deg, #5BC0BE 0%, #546d7d 100%) !important;
+}
+
+/* Cards and News Cards */
+.dark-mode .card,
+.dark-mode .news-card {
+  background: #2d2d2d;
+  border-color: #404040;
+}
+
+.dark-mode .card:hover,
+.dark-mode .news-card:hover {
+  border-color: #5BC0BE;
+  box-shadow: 0 10px 25px rgba(91, 192, 190, 0.2);
+}
+
+.dark-mode .card h3,
+.dark-mode .news-card h3 {
+  color: #e0e0e0;
+}
+
+.dark-mode .card:hover h3,
+.dark-mode .news-card:hover h3 {
+  color: #5BC0BE;
+}
+
+.dark-mode .card p,
+.dark-mode .news-card p {
+  color: #b0b0b0;
+}
+
+/* Benefit Items - High Contrast Blue for Dark Mode */
+.dark-mode .benefit-item {
+  background: #2d2d2d;
+  border-color: #404040;
+}
+
+.dark-mode .benefit-item:hover {
+  border-color: #5BC0BE;
+  box-shadow: 0 8px 20px rgba(91, 192, 190, 0.25);
+}
+
+.dark-mode .benefit-item h4 {
+  color: #6EC5F8;  /* Lighter blue with 7:1 contrast ratio */
+}
+
+.dark-mode .benefit-item:hover h4 {
+  color: #8FD4FA;  /* Even lighter on hover */
+}
+
+.dark-mode .benefit-item p {
+  color: #e0e0e0;
+}
+
+/* Network Stats - Accessible Blue */
+.dark-mode .network-stats {
+  color: #6EC5F8;  /* Same accessible blue */
+}
+
+/* Section Intro Text */
+.dark-mode .section-intro,
+.dark-mode .section-closing {
+  color: #b0b0b0;
+}
+
+/* Buttons in Dark Mode */
+.dark-mode .btn {
+  border-color: #5BC0BE;
+}
+
+.dark-mode .btn-primary {
+  background: linear-gradient(135deg, #2E5A8A 0%, #5BC0BE 100%);
+  color: white;
+}
+
+.dark-mode .btn-primary:hover {
+  background: linear-gradient(135deg, #5BC0BE 0%, #2E5A8A 100%);
+}
+
+.dark-mode .btn-secondary {
+  background: transparent;
+  color: #5BC0BE;
+  border: 2px solid #5BC0BE;
+}
+
+.dark-mode .btn-secondary:hover {
+  background: #5BC0BE;
+  color: #1a1a1a;
+}
+
+/* Hero Section */
+.dark-mode .hero {
+  background-blend-mode: darken;
+}
+
+.dark-mode .hero-content h1,
+.dark-mode .hero-content .hero-subtitle {
+  text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.9);
+}
+
+/* Section Headings */
+.dark-mode h1,
+.dark-mode h2,
+.dark-mode h3,
+.dark-mode h4,
+.dark-mode h5,
+.dark-mode h6 {
+  color: #e0e0e0;
+}
+
+/* Links */
+.dark-mode a {
+  color: #6EC5F8;
+}
+
+.dark-mode a:hover {
+  color: #8FD4FA;
 }
 
 /* Modal Styles */
