@@ -348,7 +348,7 @@ header {
 
 .hero h1 {
   font-family: 'Marcellus', Georgia, serif;
-  font-size: 3rem;
+  font-size: 3.5rem;
   font-weight: 400;
   margin-bottom: 1rem;
   line-height: 1.2;
@@ -356,7 +356,7 @@ header {
 }
 
 .hero-subtitle {
-  font-size: 1.25rem;
+  font-size: 1.5rem;
   line-height: 1.7;
   margin-bottom: 0;
   text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.3);
@@ -762,15 +762,6 @@ header {
 /* Community/Stakeholder Items */
 .community-item {
   text-align: center;
-  padding: 1rem;
-  transition: all 0.3s;
-  cursor: pointer;
-  border-radius: 6px;
-}
-
-.community-item:hover {
-  background: rgba(46, 90, 138, 0.05);
-  transform: translateY(-2px);
 }
 
 .community-item h3 {
@@ -779,7 +770,6 @@ header {
   font-weight: 600;
   margin-bottom: 0.5rem;
   line-height: 1.4;
-  transition: color 0.3s;
 }
 
 .community-item:hover h3 {
@@ -1148,10 +1138,6 @@ header {
 }
 
 /* Community Items */
-.dark-mode .community-item:hover {
-  background: rgba(91, 192, 190, 0.1);
-}
-
 .dark-mode .community-item h3 {
   color: #6EC5F8;
 }
@@ -1436,11 +1422,11 @@ footer {
   }
 
   .hero h1 {
-    font-size: 2rem;
+    font-size: 2.5rem;
   }
 
   .hero-subtitle {
-    font-size: 1rem;
+    font-size: 1.25rem;
   }
 
   .section {
@@ -1503,7 +1489,7 @@ footer {
 
 @media (max-width: 480px) {
   .hero h1 {
-    font-size: 1.5rem;
+    font-size: 1.75rem;
   }
 
   .section h2 {
