@@ -78,28 +78,37 @@
     </section>
 
     <!-- Conference Activities -->
-    <section class="section" style="background-color: #ecf0f1; padding: 1.5rem; border-radius: 8px;">
+    <section class="section">
       <h2>Conference Activities</h2>
-      <div class="grid grid-2">
-        <div>
-          <h3 style="color: #1e5a8e; font-size: 1.1rem;">📊 Research Presentations</h3>
-          <p style="margin-bottom: 1.25rem; font-size: 0.95rem;">Oral presentations and lightning talks showcasing the latest research on oyster population dynamics, habitat assessment, urban restoration, species interactions, and restoration monitoring.</p>
-
-          <h3 style="color: #1e5a8e; font-size: 1.1rem;">🎓 Interactive Workshops</h3>
-          <p style="margin-bottom: 1.25rem; font-size: 0.95rem;">Hands-on sessions covering restoration techniques, monitoring protocols, data analysis, stakeholder engagement, and project planning.</p>
-
-          <h3 style="color: #1e5a8e; font-size: 1.1rem;">🗺️ Field Trips</h3>
-          <p style="font-size: 0.95rem;">Site visits to active restoration projects, providing firsthand experience with local restoration approaches and challenges.</p>
+      <div class="grid grid-3">
+        <div class="card compact-card">
+          <h3>📊 Research Presentations</h3>
+          <p>Oral presentations and lightning talks showcasing the latest research on oyster population dynamics, habitat assessment, urban restoration, species interactions, and restoration monitoring.</p>
         </div>
-        <div>
-          <h3 style="color: #1e5a8e; font-size: 1.1rem;">📋 Panel Discussions</h3>
-          <p style="margin-bottom: 1.25rem; font-size: 0.95rem;">Expert panels addressing policy, funding, partnerships, climate adaptation, and emerging restoration challenges.</p>
 
-          <h3 style="color: #1e5a8e; font-size: 1.1rem;">🎯 Poster Sessions</h3>
-          <p style="margin-bottom: 1.25rem; font-size: 0.95rem;">Evening poster presentations allowing in-depth discussions of research and restoration projects.</p>
+        <div class="card compact-card">
+          <h3>🎓 Interactive Workshops</h3>
+          <p>Hands-on sessions covering restoration techniques, monitoring protocols, data analysis, stakeholder engagement, and project planning.</p>
+        </div>
 
-          <h3 style="color: #1e5a8e; font-size: 1.1rem;">🤝 Networking Events</h3>
-          <p style="font-size: 0.95rem;">Welcome receptions, banquets, and social activities fostering connections across the global community.</p>
+        <div class="card compact-card">
+          <h3>🗺️ Field Trips</h3>
+          <p>Site visits to active restoration projects, providing firsthand experience with local restoration approaches and challenges.</p>
+        </div>
+
+        <div class="card compact-card">
+          <h3>📋 Panel Discussions</h3>
+          <p>Expert panels addressing policy, funding, partnerships, climate adaptation, and emerging restoration challenges.</p>
+        </div>
+
+        <div class="card compact-card">
+          <h3>🎯 Poster Sessions</h3>
+          <p>Evening poster presentations allowing in-depth discussions of research and restoration projects.</p>
+        </div>
+
+        <div class="card compact-card">
+          <h3>🤝 Networking Events</h3>
+          <p>Welcome receptions, banquets, and social activities fostering connections across the global community.</p>
         </div>
       </div>
     </section>
@@ -107,87 +116,97 @@
     <!-- Conference History -->
     <section class="section">
       <h2>Conference History</h2>
-      <p class="text-center" style="font-size: 1rem; margin-bottom: 1.25rem;">
+      <p class="text-center" style="font-size: 1rem; margin-bottom: 1.5rem;">
         ICSR has convened biannually since 1996, spanning four continents and bringing together thousands of restoration professionals over nearly three decades.
       </p>
 
-      <div class="timeline" id="conferenceTimeline">
-        <div class="timeline-item">
-          <h4>2024 - Jekyll Island, Georgia, USA</h4>
-          <p><strong>300+ attendees | 150+ presentations | 23 countries</strong></p>
-          <p>Record-breaking attendance with presentations covering novel restoration techniques, climate adaptation, and ecosystem services valuation.</p>
-        </div>
+      <!-- History Tabs -->
+      <div class="history-tabs">
+        <button class="history-tab active" onclick="showHistoryDecade('2020s')">2020s</button>
+        <button class="history-tab" onclick="showHistoryDecade('2010s')">2010s</button>
+        <button class="history-tab" onclick="showHistoryDecade('2000s')">2000s</button>
+        <button class="history-tab" onclick="showHistoryDecade('1990s')">1990s</button>
+      </div>
 
-        <div class="timeline-item">
-          <h4>2022 - Virtual Conference</h4>
-          <p>Global pandemic adaptation enabled worldwide participation with international speakers across multiple time zones.</p>
-        </div>
-
-        <div class="timeline-item">
-          <h4>2018 - Adelaide, Australia</h4>
-          <p>First ICSR in the Southern Hemisphere, featuring unique perspectives on temperate and subtropical shellfish restoration.</p>
-        </div>
-
-        <div class="timeline-item">
-          <h4>2016 - Annapolis, Maryland, USA</h4>
-          <p>Focus on Chesapeake Bay restoration efforts and large-scale ecosystem recovery programs.</p>
-        </div>
-
-        <div class="timeline-item">
-          <h4>2014 - Charleston, South Carolina, USA</h4>
-          <p>Emphasis on oyster reef restoration and living shorelines in the southeastern United States.</p>
-        </div>
-
-        <div class="timeline-item">
-          <h4>2012 - St. Augustine, Florida, USA</h4>
-          <p>Showcased restoration in subtropical environments and addressed climate change impacts.</p>
-        </div>
-
-        <div class="timeline-item timeline-item-hidden" style="display: none;">
-          <h4>2010 - Williamsburg, Virginia, USA</h4>
-          <p>Tenth conference milestone celebrating progress in restoration science and practice.</p>
-        </div>
-
-        <div class="timeline-item timeline-item-hidden" style="display: none;">
-          <h4>2007 - Texel, Netherlands</h4>
-          <p>European conference highlighting North Sea restoration and international collaboration.</p>
-        </div>
-
-        <div class="timeline-item timeline-item-hidden" style="display: none;">
-          <h4>2005 - Brest, France</h4>
-          <p>Focus on European oyster (Ostrea edulis) restoration and habitat restoration techniques.</p>
-        </div>
-
-        <div class="timeline-item timeline-item-hidden" style="display: none;">
-          <h4>2003 - Jekyll Island, Georgia, USA</h4>
-          <p>Addressed emerging restoration challenges and innovative reef construction methods.</p>
-        </div>
-
-        <div class="timeline-item timeline-item-hidden" style="display: none;">
-          <h4>2001 - Baltimore, Maryland, USA</h4>
-          <p>Emphasized urban restoration and the role of shellfish in improving water quality.</p>
-        </div>
-
-        <div class="timeline-item timeline-item-hidden" style="display: none;">
-          <h4>1999 - Cork, Ireland</h4>
-          <p>First ICSR outside North America, expanding the conference's international reach.</p>
-        </div>
-
-        <div class="timeline-item timeline-item-hidden" style="display: none;">
-          <h4>1997 - Hilton Head Island, South Carolina, USA</h4>
-          <p>Second conference building on the momentum of the inaugural gathering.</p>
-        </div>
-
-        <div class="timeline-item timeline-item-hidden" style="display: none;">
-          <h4>1996 - Williamsburg, Virginia, USA</h4>
-          <p><strong>Inaugural Conference</strong> - The beginning of a global movement to advance shellfish restoration science and practice.</p>
+      <!-- 2020s Content -->
+      <div id="decade-2020s" class="history-decade-content active">
+        <div class="timeline">
+          <div class="timeline-item">
+            <h4>2024 - Jekyll Island, Georgia, USA</h4>
+            <p><strong>300+ attendees | 150+ presentations | 23 countries</strong></p>
+            <p>Record-breaking attendance with presentations covering novel restoration techniques, climate adaptation, and ecosystem services valuation.</p>
+          </div>
+          <div class="timeline-item">
+            <h4>2022 - Virtual Conference</h4>
+            <p>Global pandemic adaptation enabled worldwide participation with international speakers across multiple time zones.</p>
+          </div>
         </div>
       </div>
 
-      <div class="text-center" style="margin-top: 1.5rem;">
-        <button id="toggleHistory" class="btn btn-secondary" onclick="toggleConferenceHistory()">
-          <span id="toggleHistoryText">View Full History (9 more conferences)</span>
-        </button>
+      <!-- 2010s Content -->
+      <div id="decade-2010s" class="history-decade-content">
+        <div class="timeline">
+          <div class="timeline-item">
+            <h4>2018 - Adelaide, Australia</h4>
+            <p>First ICSR in the Southern Hemisphere, featuring unique perspectives on temperate and subtropical shellfish restoration.</p>
+          </div>
+          <div class="timeline-item">
+            <h4>2016 - Annapolis, Maryland, USA</h4>
+            <p>Focus on Chesapeake Bay restoration efforts and large-scale ecosystem recovery programs.</p>
+          </div>
+          <div class="timeline-item">
+            <h4>2014 - Charleston, South Carolina, USA</h4>
+            <p>Emphasis on oyster reef restoration and living shorelines in the southeastern United States.</p>
+          </div>
+          <div class="timeline-item">
+            <h4>2012 - St. Augustine, Florida, USA</h4>
+            <p>Showcased restoration in subtropical environments and addressed climate change impacts.</p>
+          </div>
+          <div class="timeline-item">
+            <h4>2010 - Williamsburg, Virginia, USA</h4>
+            <p>Tenth conference milestone celebrating progress in restoration science and practice.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- 2000s Content -->
+      <div id="decade-2000s" class="history-decade-content">
+        <div class="timeline">
+          <div class="timeline-item">
+            <h4>2007 - Texel, Netherlands</h4>
+            <p>European conference highlighting North Sea restoration and international collaboration.</p>
+          </div>
+          <div class="timeline-item">
+            <h4>2005 - Brest, France</h4>
+            <p>Focus on European oyster (Ostrea edulis) restoration and habitat restoration techniques.</p>
+          </div>
+          <div class="timeline-item">
+            <h4>2003 - Jekyll Island, Georgia, USA</h4>
+            <p>Addressed emerging restoration challenges and innovative reef construction methods.</p>
+          </div>
+          <div class="timeline-item">
+            <h4>2001 - Baltimore, Maryland, USA</h4>
+            <p>Emphasized urban restoration and the role of shellfish in improving water quality.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- 1990s Content -->
+      <div id="decade-1990s" class="history-decade-content">
+        <div class="timeline">
+          <div class="timeline-item">
+            <h4>1999 - Cork, Ireland</h4>
+            <p>First ICSR outside North America, expanding the conference's international reach.</p>
+          </div>
+          <div class="timeline-item">
+            <h4>1997 - Hilton Head Island, South Carolina, USA</h4>
+            <p>Second conference building on the momentum of the inaugural gathering.</p>
+          </div>
+          <div class="timeline-item">
+            <h4>1996 - Williamsburg, Virginia, USA</h4>
+            <p><strong>Inaugural Conference</strong> - The beginning of a global movement to advance shellfish restoration science and practice.</p>
+          </div>
+        </div>
       </div>
     </section>
 
@@ -250,21 +269,22 @@
   <script src="/js/feedback-widget.js"></script>
   <script src="/js/components.js"></script>
   <script>
-    function toggleConferenceHistory() {
-      const hiddenItems = document.querySelectorAll('.timeline-item-hidden');
-      const button = document.getElementById('toggleHistory');
-      const buttonText = document.getElementById('toggleHistoryText');
-      const isHidden = hiddenItems[0].style.display === 'none';
-
-      hiddenItems.forEach(item => {
-        if (isHidden) {
-          item.style.display = 'block';
-        } else {
-          item.style.display = 'none';
-        }
+    function showHistoryDecade(decade) {
+      // Hide all decade contents
+      document.querySelectorAll('.history-decade-content').forEach(content => {
+        content.classList.remove('active');
       });
 
-      buttonText.textContent = isHidden ? 'Show Less' : 'View Full History (9 more conferences)';
+      // Remove active class from all tabs
+      document.querySelectorAll('.history-tab').forEach(tab => {
+        tab.classList.remove('active');
+      });
+
+      // Show selected decade
+      document.getElementById('decade-' + decade).classList.add('active');
+
+      // Add active class to clicked tab
+      event.target.classList.add('active');
     }
   </script>
 </body>
