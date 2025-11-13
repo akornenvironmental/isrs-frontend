@@ -46,8 +46,10 @@
     // Create button
     const button = document.createElement('button');
     button.id = 'isrs-feedback-widget';
+    button.setAttribute('aria-label', 'Open feedback form');
+    button.setAttribute('type', 'button');
     button.innerHTML = `
-      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
         <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
       </svg>
       <span>Feedback</span>
@@ -73,6 +75,7 @@
     const style = document.createElement('style');
     style.id = 'isrs-feedback-styles';
     style.textContent = `
+      /* Feedback Button */
       #isrs-feedback-widget {
         position: fixed;
         right: 0;
@@ -99,6 +102,11 @@
       #isrs-feedback-widget:hover {
         background: linear-gradient(135deg, #5BC0BE 0%, #2E5A8A 100%);
         box-shadow: 0 4px 12px rgba(46, 90, 138, 0.5);
+      }
+
+      #isrs-feedback-widget:focus {
+        outline: 3px solid #FFC107;
+        outline-offset: 2px;
       }
 
       #isrs-feedback-widget svg {
@@ -158,14 +166,19 @@
         color: white;
         font-size: 28px;
         cursor: pointer;
-        padding: 0;
+        padding: 4px 8px;
         line-height: 1;
-        opacity: 0.8;
-        transition: opacity 0.2s;
+        transition: all 0.2s;
+        border-radius: 4px;
       }
 
       .isrs-feedback-modal-close:hover {
-        opacity: 1;
+        background: rgba(255, 255, 255, 0.2);
+      }
+
+      .isrs-feedback-modal-close:focus {
+        outline: 3px solid #FFC107;
+        outline-offset: 2px;
       }
 
       .isrs-feedback-modal-body {
@@ -180,7 +193,7 @@
         display: block;
         margin-bottom: 8px;
         font-weight: 600;
-        color: #333;
+        color: #1a1a1a;
         font-size: 14px;
       }
 
@@ -189,18 +202,21 @@
       .isrs-feedback-form-group textarea {
         width: 100%;
         padding: 12px;
-        border: 2px solid #e0e0e0;
+        border: 2px solid #d0d0d0;
         border-radius: 6px;
         font-size: 14px;
         font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-        transition: border-color 0.2s;
+        transition: all 0.2s;
         box-sizing: border-box;
+        background: white;
+        color: #1a1a1a;
       }
 
       .isrs-feedback-form-group input:focus,
       .isrs-feedback-form-group select:focus,
       .isrs-feedback-form-group textarea:focus {
-        outline: none;
+        outline: 3px solid #2E5A8A;
+        outline-offset: 2px;
         border-color: #2E5A8A;
       }
 
@@ -212,7 +228,7 @@
       .isrs-feedback-form-group small {
         display: block;
         margin-top: 4px;
-        color: #666;
+        color: #4a4a4a;
         font-size: 12px;
       }
 
@@ -226,10 +242,17 @@
         cursor: pointer;
         transition: transform 0.1s;
         user-select: none;
+        padding: 4px;
+        border-radius: 4px;
       }
 
       .isrs-feedback-rating-star:hover {
         transform: scale(1.2);
+      }
+
+      .isrs-feedback-rating-star:focus {
+        outline: 3px solid #2E5A8A;
+        outline-offset: 2px;
       }
 
       .isrs-feedback-modal-footer {
@@ -250,6 +273,11 @@
         font-family: inherit;
       }
 
+      .isrs-feedback-btn:focus {
+        outline: 3px solid #FFC107;
+        outline-offset: 2px;
+      }
+
       .isrs-feedback-btn-primary {
         background: linear-gradient(135deg, #2E5A8A 0%, #5BC0BE 100%);
         color: white;
@@ -266,12 +294,14 @@
       }
 
       .isrs-feedback-btn-secondary {
-        background: #f5f5f5;
-        color: #333;
+        background: #f0f0f0;
+        color: #1a1a1a;
+        border: 2px solid #d0d0d0;
       }
 
       .isrs-feedback-btn-secondary:hover {
         background: #e0e0e0;
+        border-color: #b0b0b0;
       }
 
       .isrs-feedback-success {
@@ -292,10 +322,72 @@
 
       .isrs-feedback-success p {
         margin: 0;
-        color: #666;
+        color: #4a4a4a;
         font-size: 16px;
       }
 
+      /* Dark Mode Styles - 508 Compliant */
+      @media (prefers-color-scheme: dark) {
+        .isrs-feedback-modal {
+          background: #1a1a1a;
+          border: 1px solid #404040;
+        }
+
+        .isrs-feedback-modal-body {
+          background: #1a1a1a;
+        }
+
+        .isrs-feedback-form-group label {
+          color: #f0f0f0;
+        }
+
+        .isrs-feedback-form-group input,
+        .isrs-feedback-form-group select,
+        .isrs-feedback-form-group textarea {
+          background: #2a2a2a;
+          color: #f0f0f0;
+          border-color: #505050;
+        }
+
+        .isrs-feedback-form-group input:focus,
+        .isrs-feedback-form-group select:focus,
+        .isrs-feedback-form-group textarea:focus {
+          background: #2a2a2a;
+          border-color: #5BC0BE;
+          outline-color: #5BC0BE;
+        }
+
+        .isrs-feedback-form-group small {
+          color: #b0b0b0;
+        }
+
+        .isrs-feedback-btn-secondary {
+          background: #2a2a2a;
+          color: #f0f0f0;
+          border-color: #505050;
+        }
+
+        .isrs-feedback-btn-secondary:hover {
+          background: #3a3a3a;
+          border-color: #606060;
+        }
+
+        .isrs-feedback-success h3 {
+          color: #5BC0BE;
+        }
+
+        .isrs-feedback-success p {
+          color: #b0b0b0;
+        }
+
+        /* Ensure select dropdown is readable in dark mode */
+        .isrs-feedback-form-group select option {
+          background: #2a2a2a;
+          color: #f0f0f0;
+        }
+      }
+
+      /* Mobile Responsive */
       @media (max-width: 768px) {
         #isrs-feedback-widget span {
           display: none;
@@ -314,6 +406,32 @@
           padding-right: 20px;
         }
       }
+
+      /* High Contrast Mode Support */
+      @media (prefers-contrast: high) {
+        .isrs-feedback-form-group input,
+        .isrs-feedback-form-group select,
+        .isrs-feedback-form-group textarea {
+          border-width: 3px;
+        }
+
+        .isrs-feedback-btn {
+          border: 3px solid currentColor;
+        }
+      }
+
+      /* Reduced Motion Support */
+      @media (prefers-reduced-motion: reduce) {
+        #isrs-feedback-widget,
+        .isrs-feedback-btn,
+        .isrs-feedback-rating-star,
+        .isrs-feedback-modal-close,
+        .isrs-feedback-form-group input,
+        .isrs-feedback-form-group select,
+        .isrs-feedback-form-group textarea {
+          transition: none;
+        }
+      }
     `;
 
     document.head.appendChild(style);
@@ -328,33 +446,59 @@
     const modal = document.createElement('div');
     modal.className = 'isrs-feedback-modal-overlay';
     modal.id = 'isrs-feedback-modal';
+    modal.setAttribute('role', 'dialog');
+    modal.setAttribute('aria-modal', 'true');
+    modal.setAttribute('aria-labelledby', 'feedback-modal-title');
     modal.innerHTML = `
       <div class="isrs-feedback-modal" onclick="event.stopPropagation()">
         <div class="isrs-feedback-modal-header">
-          <h2>📝 Send Feedback</h2>
-          <button class="isrs-feedback-modal-close" onclick="window.closeFeedbackModal()">&times;</button>
+          <h2 id="feedback-modal-title">📝 Send Feedback</h2>
+          <button
+            class="isrs-feedback-modal-close"
+            onclick="window.closeFeedbackModal()"
+            aria-label="Close feedback form"
+            type="button"
+          >&times;</button>
         </div>
         <div class="isrs-feedback-modal-body">
           <form id="isrs-feedback-form">
             <div class="isrs-feedback-form-group">
-              <label>Your Name (optional)</label>
-              <input type="text" id="feedback-name" placeholder="John Doe">
+              <label for="feedback-name">Your Name (optional)</label>
+              <input
+                type="text"
+                id="feedback-name"
+                name="name"
+                placeholder="John Doe"
+                autocomplete="name"
+              >
             </div>
 
             <div class="isrs-feedback-form-group">
-              <label>Email (optional)</label>
-              <input type="email" id="feedback-email" placeholder="you@example.com">
-              <small>We'll only use this to follow up on your feedback if needed</small>
+              <label for="feedback-email">Email (optional)</label>
+              <input
+                type="email"
+                id="feedback-email"
+                name="email"
+                placeholder="you@example.com"
+                autocomplete="email"
+                aria-describedby="email-help"
+              >
+              <small id="email-help">We'll only use this to follow up on your feedback if needed</small>
             </div>
 
             <div class="isrs-feedback-form-group">
-              <label>What component is this about? (optional)</label>
-              <input type="text" id="feedback-component" placeholder="e.g., Registration form, Member directory">
+              <label for="feedback-component">What component is this about? (optional)</label>
+              <input
+                type="text"
+                id="feedback-component"
+                name="component"
+                placeholder="e.g., Registration form, Member directory"
+              >
             </div>
 
             <div class="isrs-feedback-form-group">
-              <label>Feedback Type</label>
-              <select id="feedback-type">
+              <label for="feedback-type">Feedback Type</label>
+              <select id="feedback-type" name="type" required>
                 <option value="general">General Feedback</option>
                 <option value="bug">🐛 Bug Report</option>
                 <option value="feature_request">✨ Feature Request</option>
@@ -363,26 +507,46 @@
             </div>
 
             <div class="isrs-feedback-form-group">
-              <label>Rating (optional)</label>
-              <div class="isrs-feedback-rating" id="feedback-rating">
-                <span class="isrs-feedback-rating-star" data-rating="1">☆</span>
-                <span class="isrs-feedback-rating-star" data-rating="2">☆</span>
-                <span class="isrs-feedback-rating-star" data-rating="3">☆</span>
-                <span class="isrs-feedback-rating-star" data-rating="4">☆</span>
-                <span class="isrs-feedback-rating-star" data-rating="5">☆</span>
+              <label id="rating-label">Rating (optional)</label>
+              <div
+                class="isrs-feedback-rating"
+                id="feedback-rating"
+                role="radiogroup"
+                aria-labelledby="rating-label"
+              >
+                <span class="isrs-feedback-rating-star" data-rating="1" role="radio" aria-checked="false" aria-label="1 star" tabindex="0">☆</span>
+                <span class="isrs-feedback-rating-star" data-rating="2" role="radio" aria-checked="false" aria-label="2 stars" tabindex="-1">☆</span>
+                <span class="isrs-feedback-rating-star" data-rating="3" role="radio" aria-checked="false" aria-label="3 stars" tabindex="-1">☆</span>
+                <span class="isrs-feedback-rating-star" data-rating="4" role="radio" aria-checked="false" aria-label="4 stars" tabindex="-1">☆</span>
+                <span class="isrs-feedback-rating-star" data-rating="5" role="radio" aria-checked="false" aria-label="5 stars" tabindex="-1">☆</span>
               </div>
-              <input type="hidden" id="feedback-rating-value" value="">
+              <input type="hidden" id="feedback-rating-value" name="rating" value="">
             </div>
 
             <div class="isrs-feedback-form-group">
-              <label>Your Feedback *</label>
-              <textarea id="feedback-message" required placeholder="Tell us what's on your mind..."></textarea>
+              <label for="feedback-message">Your Feedback <span aria-label="required">*</span></label>
+              <textarea
+                id="feedback-message"
+                name="message"
+                required
+                placeholder="Tell us what's on your mind..."
+                aria-required="true"
+              ></textarea>
             </div>
           </form>
         </div>
         <div class="isrs-feedback-modal-footer">
-          <button type="button" class="isrs-feedback-btn isrs-feedback-btn-secondary" onclick="window.closeFeedbackModal()">Cancel</button>
-          <button type="submit" form="isrs-feedback-form" class="isrs-feedback-btn isrs-feedback-btn-primary" id="feedback-submit-btn">Send Feedback</button>
+          <button
+            type="button"
+            class="isrs-feedback-btn isrs-feedback-btn-secondary"
+            onclick="window.closeFeedbackModal()"
+          >Cancel</button>
+          <button
+            type="submit"
+            form="isrs-feedback-form"
+            class="isrs-feedback-btn isrs-feedback-btn-primary"
+            id="feedback-submit-btn"
+          >Send Feedback</button>
         </div>
       </div>
     `;
@@ -400,28 +564,64 @@
   }
 
   /**
-   * Setup rating stars
+   * Setup rating stars with keyboard navigation
    */
   function setupRatingStars() {
     const stars = document.querySelectorAll('.isrs-feedback-rating-star');
+
+    function selectRating(rating) {
+      document.getElementById('feedback-rating-value').value = rating;
+
+      // Update star display and aria-checked
+      stars.forEach((s, index) => {
+        const starRating = index + 1;
+        s.textContent = starRating <= rating ? '★' : '☆';
+        s.setAttribute('aria-checked', starRating === rating ? 'true' : 'false');
+        s.setAttribute('tabindex', starRating === rating ? '0' : '-1');
+      });
+    }
+
     stars.forEach(star => {
+      // Click handler
       star.onclick = function() {
         const rating = parseInt(this.dataset.rating);
-        document.getElementById('feedback-rating-value').value = rating;
+        selectRating(rating);
+        this.focus();
+      };
 
-        // Update star display
-        stars.forEach((s, index) => {
-          s.textContent = index < rating ? '★' : '☆';
-        });
+      // Keyboard navigation
+      star.onkeydown = function(e) {
+        const rating = parseInt(this.dataset.rating);
+
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          selectRating(rating);
+        } else if (e.key === 'ArrowRight' || e.key === 'ArrowUp') {
+          e.preventDefault();
+          if (rating < 5) {
+            stars[rating].focus();
+          }
+        } else if (e.key === 'ArrowLeft' || e.key === 'ArrowDown') {
+          e.preventDefault();
+          if (rating > 1) {
+            stars[rating - 2].focus();
+          }
+        }
       };
     });
   }
 
+  let previouslyFocusedElement = null;
+
   /**
-   * Open feedback modal
+   * Open feedback modal with focus management
    */
   function openFeedbackModal() {
     const modal = document.getElementById('isrs-feedback-modal');
+
+    // Store currently focused element
+    previouslyFocusedElement = document.activeElement;
+
     modal.classList.add('active');
 
     // Pre-fill user info if available
@@ -431,20 +631,82 @@
     if (feedbackConfig.userEmail) {
       document.getElementById('feedback-email').value = feedbackConfig.userEmail;
     }
+
+    // Focus first form field
+    setTimeout(() => {
+      const firstField = document.getElementById('feedback-name');
+      if (firstField) firstField.focus();
+    }, 100);
+
+    // Add keyboard event listener for ESC key
+    document.addEventListener('keydown', handleModalKeydown);
+
+    // Trap focus within modal
+    trapFocus(modal);
   }
 
   /**
-   * Close feedback modal
+   * Close feedback modal and restore focus
    */
   window.closeFeedbackModal = function() {
     const modal = document.getElementById('isrs-feedback-modal');
     modal.classList.remove('active');
 
-    // Reset form
+    // Reset form and rating stars
     document.getElementById('isrs-feedback-form').reset();
     document.getElementById('feedback-rating-value').value = '';
-    document.querySelectorAll('.isrs-feedback-rating-star').forEach(s => s.textContent = '☆');
+    const stars = document.querySelectorAll('.isrs-feedback-rating-star');
+    stars.forEach((s, index) => {
+      s.textContent = '☆';
+      s.setAttribute('aria-checked', 'false');
+      s.setAttribute('tabindex', index === 0 ? '0' : '-1');
+    });
+
+    // Remove keyboard event listener
+    document.removeEventListener('keydown', handleModalKeydown);
+
+    // Restore focus to previously focused element
+    if (previouslyFocusedElement) {
+      previouslyFocusedElement.focus();
+      previouslyFocusedElement = null;
+    }
   };
+
+  /**
+   * Handle modal keyboard events (ESC to close)
+   */
+  function handleModalKeydown(e) {
+    if (e.key === 'Escape') {
+      window.closeFeedbackModal();
+    }
+  }
+
+  /**
+   * Trap focus within modal
+   */
+  function trapFocus(modalElement) {
+    const focusableElements = modalElement.querySelectorAll(
+      'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+    );
+    const firstElement = focusableElements[0];
+    const lastElement = focusableElements[focusableElements.length - 1];
+
+    modalElement.addEventListener('keydown', function(e) {
+      if (e.key !== 'Tab') return;
+
+      if (e.shiftKey) {
+        if (document.activeElement === firstElement) {
+          e.preventDefault();
+          lastElement.focus();
+        }
+      } else {
+        if (document.activeElement === lastElement) {
+          e.preventDefault();
+          firstElement.focus();
+        }
+      }
+    });
+  }
 
   /**
    * Handle feedback submission
