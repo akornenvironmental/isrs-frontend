@@ -759,6 +759,60 @@ header {
   margin-bottom: 0.5rem;
 }
 
+/* Community/Stakeholder Items */
+.community-item {
+  text-align: center;
+  padding: 1rem;
+  transition: all 0.3s;
+  cursor: pointer;
+  border-radius: 6px;
+}
+
+.community-item:hover {
+  background: rgba(46, 90, 138, 0.05);
+  transform: translateY(-2px);
+}
+
+.community-item h3 {
+  color: var(--primary-blue);
+  font-size: 1.15rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  line-height: 1.4;
+  transition: color 0.3s;
+}
+
+.community-item:hover h3 {
+  color: var(--secondary-blue);
+}
+
+.community-item p {
+  font-size: 0.95rem;
+  line-height: 1.5;
+  margin: 0;
+  color: var(--text-dark);
+}
+
+/* Statistics Display Items */
+.stat-item {
+  text-align: center;
+}
+
+.stat-item h3 {
+  font-size: 2.25rem;
+  color: var(--primary-blue);
+  margin-bottom: 0.35rem;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.stat-item p {
+  font-size: 1.05rem;
+  margin: 0;
+  color: var(--text-dark);
+  font-weight: 500;
+}
+
 /* 508-Compliant Color Backgrounds */
 .partner-card-teal {
   background: linear-gradient(135deg, #546d7d 0%, #6b8694 100%);
@@ -1091,6 +1145,32 @@ header {
 
 .dark-mode .compact-card p {
   color: #b0b0b0;
+}
+
+/* Community Items */
+.dark-mode .community-item:hover {
+  background: rgba(91, 192, 190, 0.1);
+}
+
+.dark-mode .community-item h3 {
+  color: #6EC5F8;
+}
+
+.dark-mode .community-item:hover h3 {
+  color: #8FD4FA;
+}
+
+.dark-mode .community-item p {
+  color: #e0e0e0;
+}
+
+/* Statistics Items */
+.dark-mode .stat-item h3 {
+  color: #6EC5F8;
+}
+
+.dark-mode .stat-item p {
+  color: #e0e0e0;
 }
 
 /* Modal Styles */
