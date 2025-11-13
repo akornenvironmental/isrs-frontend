@@ -1283,8 +1283,21 @@ header {
   color: #e0e0e0;
 }
 
+.dark-mode .card p {
+  color: #e0e0e0;
+}
+
 .dark-mode .card p strong {
   color: #e0e0e0;
+}
+
+.dark-mode .card a {
+  color: #6EC5F8 !important;
+  text-decoration: underline;
+}
+
+.dark-mode .card a:hover {
+  color: #8FD4FA !important;
 }
 
 /* Modal Styles */
