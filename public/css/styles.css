@@ -41,6 +41,20 @@
   background: #1a1a1a;
 }
 
+.dark-mode .footer-section p,
+.dark-mode .footer-section a,
+.dark-mode .footer-bottom {
+  color: #e0e0e0 !important;
+}
+
+.dark-mode .footer-section h4 {
+  color: #f5f5f5 !important;
+}
+
+.dark-mode .footer-ein {
+  color: #f5f5f5 !important;
+}
+
 /* Text Size Variations */
 .text-size-small {
   font-size: 14px;
