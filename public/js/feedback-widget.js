@@ -625,11 +625,38 @@
     modal.classList.add('active');
 
     // Pre-fill user info if available
-    if (feedbackConfig.userName) {
-      document.getElementById('feedback-name').value = feedbackConfig.userName;
+    // Priority: 1) feedbackConfig (passed in), 2) localStorage (logged in), 3) sessionStorage (previously entered)
+    let userName = feedbackConfig.userName;
+    let userEmail = feedbackConfig.userEmail;
+
+    // Check localStorage for logged-in user
+    if (!userName || !userEmail) {
+      try {
+        const userData = localStorage.getItem('isrs_user_data');
+        if (userData) {
+          const user = JSON.parse(userData);
+          userName = userName || `${user.firstName || ''} ${user.lastName || ''}`.trim();
+          userEmail = userEmail || user.email;
+        }
+      } catch (e) {
+        console.error('Failed to parse user data:', e);
+      }
     }
-    if (feedbackConfig.userEmail) {
-      document.getElementById('feedback-email').value = feedbackConfig.userEmail;
+
+    // Check sessionStorage for previously entered info
+    if (!userName) {
+      userName = userName || sessionStorage.getItem('isrs_user_name') || '';
+    }
+    if (!userEmail) {
+      userEmail = userEmail || sessionStorage.getItem('isrs_user_email') || '';
+    }
+
+    // Set the form values
+    if (userName) {
+      document.getElementById('feedback-name').value = userName;
+    }
+    if (userEmail) {
+      document.getElementById('feedback-email').value = userEmail;
     }
 
     // Focus first form field
@@ -756,6 +783,17 @@
       const result = await response.json();
 
       if (result.success) {
+        // Save user info to sessionStorage for next time
+        const name = document.getElementById('feedback-name').value;
+        const email = document.getElementById('feedback-email').value;
+
+        if (name) {
+          sessionStorage.setItem('isrs_user_name', name);
+        }
+        if (email) {
+          sessionStorage.setItem('isrs_user_email', email);
+        }
+
         showSuccessMessage();
       } else {
         throw new Error(result.error || 'Failed to submit feedback');
