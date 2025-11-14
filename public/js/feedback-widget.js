@@ -91,7 +91,7 @@
         cursor: pointer;
         font-size: 14px;
         font-weight: 600;
-        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        font-family: 'PT Serif', Georgia, serif;
         box-shadow: 0 2px 8px rgba(46, 90, 138, 0.3);
         transition: all 0.2s ease;
         display: flex;
@@ -158,6 +158,7 @@
         margin: 0;
         font-size: 24px;
         font-weight: 700;
+        font-family: 'PT Serif', Georgia, serif;
       }
 
       .isrs-feedback-modal-close {
@@ -195,6 +196,7 @@
         font-weight: 600;
         color: #1a1a1a;
         font-size: 14px;
+        font-family: 'PT Serif', Georgia, serif;
       }
 
       .isrs-feedback-form-group input,
@@ -205,7 +207,7 @@
         border: 2px solid #d0d0d0;
         border-radius: 6px;
         font-size: 14px;
-        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        font-family: 'PT Serif', Georgia, serif;
         transition: all 0.2s;
         box-sizing: border-box;
         background: white;
@@ -270,7 +272,7 @@
         cursor: pointer;
         transition: all 0.2s;
         border: none;
-        font-family: inherit;
+        font-family: 'PT Serif', Georgia, serif;
       }
 
       .isrs-feedback-btn:focus {
@@ -318,73 +320,14 @@
         margin: 0 0 12px;
         color: #2E5A8A;
         font-size: 24px;
+        font-family: 'PT Serif', Georgia, serif;
       }
 
       .isrs-feedback-success p {
         margin: 0;
         color: #4a4a4a;
         font-size: 16px;
-      }
-
-      /* Dark Mode Styles - 508 Compliant */
-      @media (prefers-color-scheme: dark) {
-        .isrs-feedback-modal {
-          background: #1a1a1a;
-          border: 1px solid #404040;
-        }
-
-        .isrs-feedback-modal-body {
-          background: #1a1a1a;
-        }
-
-        .isrs-feedback-form-group label {
-          color: #f0f0f0;
-        }
-
-        .isrs-feedback-form-group input,
-        .isrs-feedback-form-group select,
-        .isrs-feedback-form-group textarea {
-          background: #2a2a2a;
-          color: #f0f0f0;
-          border-color: #505050;
-        }
-
-        .isrs-feedback-form-group input:focus,
-        .isrs-feedback-form-group select:focus,
-        .isrs-feedback-form-group textarea:focus {
-          background: #2a2a2a;
-          border-color: #5BC0BE;
-          outline-color: #5BC0BE;
-        }
-
-        .isrs-feedback-form-group small {
-          color: #b0b0b0;
-        }
-
-        .isrs-feedback-btn-secondary {
-          background: #2a2a2a;
-          color: #f0f0f0;
-          border-color: #505050;
-        }
-
-        .isrs-feedback-btn-secondary:hover {
-          background: #3a3a3a;
-          border-color: #606060;
-        }
-
-        .isrs-feedback-success h3 {
-          color: #5BC0BE;
-        }
-
-        .isrs-feedback-success p {
-          color: #b0b0b0;
-        }
-
-        /* Ensure select dropdown is readable in dark mode */
-        .isrs-feedback-form-group select option {
-          background: #2a2a2a;
-          color: #f0f0f0;
-        }
+        font-family: 'PT Serif', Georgia, serif;
       }
 
       /* Mobile Responsive */
