@@ -108,7 +108,7 @@ const translations = {
 
     // Footer
     stayConnected: 'Stay Connected',
-    stayConnectedText: 'Interested in working together? Fill out some info and we will be in touch shortly.',
+    stayConnectedText: 'Interested in working together? Fill out some info and we will be in touch shortly.<br>',
     stayConnectedText2: "We can't wait to hear from you!",
     firstName: 'First Name',
     lastName: 'Last Name',
