@@ -57,7 +57,10 @@
       <div class="grid grid-2">
         <div class="card">
           <h3 style="color: #1e5a8e; font-size: 1.1rem;">📅 Conference Dates</h3>
-          <p style="font-size: 1.1rem; font-weight: 600; color: var(--primary-blue);">October 4-8, 2026</p>
+          <p style="font-size: 1.1rem; font-weight: 600; color: var(--primary-blue); margin-bottom: 0.75rem;">October 4-8, 2026</p>
+          <button onclick="addToCalendar()" class="btn btn-secondary" style="font-size: 0.9rem; padding: 0.5rem 1rem;">
+            📅 Add to Calendar
+          </button>
         </div>
         <div class="card">
           <h3 style="color: #1e5a8e; font-size: 1.1rem;">📝 Abstract Deadline</h3>
@@ -189,7 +192,7 @@
     <section class="section compact-section" style="background-color: #ecf0f1; padding: 1.25rem; border-radius: 8px;">
       <h2 class="text-center">Code of Conduct</h2>
       <p style="font-size: 0.95rem; line-height: 1.5; max-width: 900px; margin: 0 auto;">
-        ICSR2026 is committed to providing a <strong>respectful, inclusive, and welcoming environment</strong> for all participants. We maintain a <strong>zero-tolerance policy for harassment</strong> and inappropriate behavior. All attendees are expected to treat each other with respect, welcome diverse perspectives, and refrain from unauthorized photography or recording.
+        ICSR2026 is committed to providing a <strong>respectful, inclusive, and&nbsp;welcoming environment</strong> for all participants. We maintain a <strong>zero-tolerance policy for&nbsp;harassment</strong> and inappropriate behavior. All attendees are expected to treat each other with respect, welcome diverse perspectives, and refrain from unauthorized photography or&nbsp;recording.
       </p>
       <p style="font-size: 0.95rem; line-height: 1.5; max-width: 900px; margin: 0.75rem auto 0; text-align: center;">
         <strong>Questions or concerns?</strong> Contact us at <a href="mailto:info@shellfish-society.org" style="color: var(--primary-blue);">info@shellfish-society.org</a>
@@ -301,6 +304,51 @@
         closeMailingListModal();
       }
     });
+
+    // Add to Calendar function
+    function addToCalendar() {
+      // Create ICS file content
+      const eventTitle = 'ICSR2026 - International Conference on Shellfish Restoration';
+      const eventLocation = 'Puget Sound, Washington State';
+      const eventDescription = 'Join us for the International Conference on Shellfish Restoration hosted by Squaxin Island Tribe. Visit https://www.shellfish-society.org/icsr2026.html for details.';
+      const startDate = '20261004'; // October 4, 2026
+      const endDate = '20261009'; // October 9, 2026 (day after, for all-day event)
+      const timestamp = new Date().toISOString().replace(/[-:]/g, '').split('.')[0] + 'Z';
+
+      const icsContent = [
+        'BEGIN:VCALENDAR',
+        'VERSION:2.0',
+        'PRODID:-//ISRS//ICSR2026//EN',
+        'CALSCALE:GREGORIAN',
+        'METHOD:PUBLISH',
+        'BEGIN:VEVENT',
+        'UID:icsr2026-' + timestamp + '@shellfish-society.org',
+        'DTSTAMP:' + timestamp,
+        'DTSTART;VALUE=DATE:' + startDate,
+        'DTEND;VALUE=DATE:' + endDate,
+        'SUMMARY:' + eventTitle,
+        'DESCRIPTION:' + eventDescription.replace(/\n/g, '\\n'),
+        'LOCATION:' + eventLocation,
+        'STATUS:CONFIRMED',
+        'SEQUENCE:0',
+        'BEGIN:VALARM',
+        'TRIGGER:-P7D',
+        'ACTION:DISPLAY',
+        'DESCRIPTION:ICSR2026 is one week away!',
+        'END:VALARM',
+        'END:VEVENT',
+        'END:VCALENDAR'
+      ].join('\r\n');
+
+      // Create blob and download
+      const blob = new Blob([icsContent], { type: 'text/calendar;charset=utf-8' });
+      const link = document.createElement('a');
+      link.href = window.URL.createObjectURL(blob);
+      link.setAttribute('download', 'ICSR2026.ics');
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    }
   </script>
 </body>
 </html>
