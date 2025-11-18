@@ -10,123 +10,327 @@
   <link href="https://fonts.googleapis.com/css2?family=Marcellus&family=PT+Serif:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/css/styles.css">
   <style>
-    .dashboard-container {
-      max-width: 1400px;
-      margin: 0 auto;
-      padding: 1rem;
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
     }
 
-    .dashboard-header {
-      background: var(--white);
-      padding: 1rem 1.5rem;
-      border-bottom: 1px solid var(--border-color);
-      margin-bottom: 1rem;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      border-radius: 8px;
-      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    body {
+      font-family: 'PT Serif', Georgia, serif;
+      background: #f8f9fa;
+      color: #1f2937;
     }
 
-    .user-info {
+    /* Sidebar Navigation */
+    .sidebar {
+      position: fixed;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      width: 260px;
+      background: white;
+      border-right: 1px solid #e5e7eb;
+      display: flex;
+      flex-direction: column;
+      z-index: 100;
+    }
+
+    .sidebar-header {
+      padding: 1.5rem 1.25rem;
+      border-bottom: 1px solid #e5e7eb;
+    }
+
+    .sidebar-logo {
+      font-family: 'Marcellus', Georgia, serif;
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--primary-blue);
+      text-decoration: none;
+      display: block;
+    }
+
+    .sidebar-subtitle {
+      font-size: 0.75rem;
+      color: #6b7280;
+      margin-top: 0.25rem;
+    }
+
+    .sidebar-nav {
+      flex: 1;
+      padding: 1.5rem 0;
+      overflow-y: auto;
+    }
+
+    .nav-section {
+      margin-bottom: 1.5rem;
+    }
+
+    .nav-section-title {
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: #9ca3af;
+      padding: 0 1.25rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .nav-item {
       display: flex;
       align-items: center;
-      gap: 1rem;
+      gap: 0.75rem;
+      padding: 0.75rem 1.25rem;
+      color: #4b5563;
+      text-decoration: none;
+      transition: all 0.2s;
+      font-size: 0.95rem;
+      border-left: 3px solid transparent;
+    }
+
+    .nav-item:hover {
+      background: #f3f4f6;
+      color: var(--primary-blue);
+      border-left-color: var(--primary-blue);
+    }
+
+    .nav-item.active {
+      background: #eff6ff;
+      color: var(--primary-blue);
+      border-left-color: var(--primary-blue);
+      font-weight: 600;
+    }
+
+    .nav-icon {
+      font-size: 1.25rem;
+      width: 24px;
+      text-align: center;
+    }
+
+    .sidebar-footer {
+      padding: 1rem 1.25rem;
+      border-top: 1px solid #e5e7eb;
+    }
+
+    .user-profile {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      margin-bottom: 0.75rem;
+    }
+
+    .user-avatar {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--primary-blue), var(--secondary-blue));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-weight: 700;
+      font-size: 1rem;
+    }
+
+    .user-details {
+      flex: 1;
+      min-width: 0;
     }
 
     .user-email {
-      color: var(--text-light);
-      font-size: 0.9rem;
+      font-size: 0.875rem;
+      font-weight: 600;
+      color: #1f2937;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
 
     .user-role {
-      background: var(--primary-blue);
-      color: var(--white);
-      padding: 0.25rem 0.75rem;
-      border-radius: 4px;
-      font-size: 0.85rem;
-      font-weight: 600;
+      font-size: 0.75rem;
+      color: #6b7280;
       text-transform: uppercase;
+      letter-spacing: 0.05em;
     }
 
     .btn-logout {
-      background: var(--light-gray);
-      color: var(--text-dark);
-      padding: 0.75rem 1.5rem;
-      border: 1px solid var(--border-color);
-      border-radius: 4px;
+      width: 100%;
+      padding: 0.625rem 1rem;
+      background: #f3f4f6;
+      border: 1px solid #e5e7eb;
+      border-radius: 6px;
+      font-size: 0.875rem;
+      font-weight: 600;
+      color: #4b5563;
       cursor: pointer;
-      font-family: inherit;
-      font-size: 0.95rem;
-      transition: all 0.3s;
+      transition: all 0.2s;
+      font-family: 'PT Serif', Georgia, serif;
     }
 
     .btn-logout:hover {
-      background: var(--border-color);
+      background: #e5e7eb;
+      color: #1f2937;
     }
 
-    .dashboard-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-      gap: 1rem;
-      margin-bottom: 1rem;
+    /* Main Content */
+    .main-content {
+      margin-left: 260px;
+      min-height: 100vh;
     }
 
-    .dashboard-card {
-      background: var(--white);
-      padding: 1rem;
-      border-radius: 8px;
-      border: 1px solid var(--border-color);
-      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-      transition: all 0.3s;
+    .top-bar {
+      background: white;
+      border-bottom: 1px solid #e5e7eb;
+      padding: 1.25rem 2rem;
+      position: sticky;
+      top: 0;
+      z-index: 50;
     }
 
-    .dashboard-card:hover {
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-    }
-
-    .dashboard-card h3 {
+    .top-bar h1 {
       font-family: 'Marcellus', Georgia, serif;
-      font-size: 1.15rem;
+      font-size: 1.75rem;
+      color: #1f2937;
       margin-bottom: 0.25rem;
-      color: var(--primary-blue);
     }
 
-    .dashboard-card p {
-      color: var(--text-light);
-      margin-bottom: 0.75rem;
+    .top-bar p {
+      color: #6b7280;
       font-size: 0.95rem;
     }
 
-    .dashboard-card a {
-      display: inline-block;
-      color: var(--primary-blue);
-      text-decoration: none;
-      font-weight: 600;
-      transition: color 0.3s;
+    .content-wrapper {
+      padding: 2rem;
+      max-width: 1400px;
     }
 
-    .dashboard-card a:hover {
-      color: var(--secondary-blue);
+    /* Alert Banner */
+    .alert-banner {
+      background: linear-gradient(135deg, var(--accent-teal) 0%, #2e8b9e 100%);
+      color: white;
+      padding: 1.5rem 2rem;
+      border-radius: 12px;
+      margin-bottom: 2rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1.5rem;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
     }
 
-    .welcome-section {
-      background: linear-gradient(135deg, var(--primary-blue) 0%, var(--secondary-blue) 100%);
-      color: var(--white);
-      padding: 1.5rem;
+    .alert-content h2 {
+      font-family: 'Marcellus', Georgia, serif;
+      font-size: 1.35rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .alert-content p {
+      font-size: 1rem;
+      opacity: 0.95;
+    }
+
+    .alert-actions {
+      display: flex;
+      gap: 0.75rem;
+      flex-shrink: 0;
+    }
+
+    .btn {
+      padding: 0.75rem 1.5rem;
       border-radius: 8px;
+      font-weight: 600;
+      font-size: 0.95rem;
+      text-decoration: none;
+      transition: all 0.2s;
+      cursor: pointer;
+      border: none;
+      font-family: 'PT Serif', Georgia, serif;
+      white-space: nowrap;
+    }
+
+    .btn-primary {
+      background: white;
+      color: var(--primary-blue);
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    }
+
+    .btn-secondary {
+      background: rgba(255, 255, 255, 0.2);
+      color: white;
+      border: 1px solid rgba(255, 255, 255, 0.3);
+    }
+
+    .btn-secondary:hover {
+      background: rgba(255, 255, 255, 0.3);
+    }
+
+    /* Key Metrics */
+    .metrics-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1.5rem;
+      margin-bottom: 2rem;
+    }
+
+    .metric-card {
+      background: white;
+      padding: 1.75rem;
+      border-radius: 12px;
+      border: 1px solid #e5e7eb;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+      transition: all 0.3s;
+    }
+
+    .metric-card:hover {
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+      transform: translateY(-2px);
+    }
+
+    .metric-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
       margin-bottom: 1rem;
     }
 
-    .welcome-section h1 {
-      font-family: 'Marcellus', Georgia, serif;
-      font-size: 1.75rem;
-      margin-bottom: 0.25rem;
+    .metric-title {
+      font-size: 0.875rem;
+      font-weight: 600;
+      color: #6b7280;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .metric-icon {
+      width: 48px;
+      height: 48px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+    }
+
+    .metric-value {
+      font-size: 2.75rem;
+      font-weight: 700;
+      color: #1f2937;
+      margin-bottom: 0.5rem;
+      line-height: 1;
+    }
+
+    .metric-description {
+      font-size: 0.875rem;
+      color: #6b7280;
     }
 
     .loading-dots {
       animation: blink 1.4s infinite;
-      opacity: 0.7;
     }
 
     @keyframes blink {
@@ -134,193 +338,536 @@
       50% { opacity: 1; }
     }
 
-    @media (max-width: 768px) {
-      .welcome-section > div {
-        flex-direction: column !important;
-        gap: 1rem;
+    /* Quick Actions */
+    .section {
+      margin-bottom: 2.5rem;
+    }
+
+    .section-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 1.25rem;
+    }
+
+    .section-title {
+      font-family: 'Marcellus', Georgia, serif;
+      font-size: 1.5rem;
+      color: #1f2937;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .section-icon {
+      font-size: 1.75rem;
+    }
+
+    .actions-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 1.25rem;
+    }
+
+    .action-card {
+      background: white;
+      padding: 1.75rem;
+      border-radius: 12px;
+      border: 2px solid #e5e7eb;
+      text-decoration: none;
+      transition: all 0.3s;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 0.75rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .action-card:hover {
+      border-color: var(--primary-blue);
+      box-shadow: 0 8px 24px rgba(59, 130, 246, 0.15);
+      transform: translateY(-4px);
+    }
+
+    .action-card-icon {
+      width: 56px;
+      height: 56px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.75rem;
+      background: #f3f4f6;
+    }
+
+    .action-card-title {
+      font-size: 1.125rem;
+      font-weight: 700;
+      color: #1f2937;
+    }
+
+    .action-card-description {
+      font-size: 0.875rem;
+      color: #6b7280;
+      line-height: 1.5;
+    }
+
+    /* Collapsible Section */
+    .collapsible-section {
+      background: white;
+      border: 1px solid #e5e7eb;
+      border-radius: 12px;
+      margin-bottom: 1.5rem;
+      overflow: hidden;
+    }
+
+    .collapsible-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 1.5rem 1.75rem;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    .collapsible-header:hover {
+      background: #f9fafb;
+    }
+
+    .collapsible-title {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      font-size: 1.125rem;
+      font-weight: 700;
+      color: #1f2937;
+    }
+
+    .collapsible-toggle {
+      font-size: 1.5rem;
+      color: #9ca3af;
+      transition: transform 0.3s;
+    }
+
+    .collapsible-toggle.open {
+      transform: rotate(180deg);
+    }
+
+    .collapsible-content {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.3s ease-out;
+    }
+
+    .collapsible-content.open {
+      max-height: 2000px;
+    }
+
+    .collapsible-inner {
+      padding: 0 1.75rem 1.75rem 1.75rem;
+    }
+
+    .financial-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 1.25rem;
+    }
+
+    .financial-item {
+      background: #f9fafb;
+      padding: 1.25rem;
+      border-radius: 8px;
+      border: 1px solid #e5e7eb;
+    }
+
+    .financial-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 0.75rem;
+    }
+
+    .financial-label {
+      font-size: 0.875rem;
+      font-weight: 600;
+      color: #4b5563;
+    }
+
+    .financial-account {
+      font-size: 0.75rem;
+      color: #9ca3af;
+    }
+
+    .financial-amount {
+      font-size: 1.75rem;
+      font-weight: 700;
+      color: #1f2937;
+      margin-bottom: 0.5rem;
+    }
+
+    .financial-note {
+      font-size: 0.75rem;
+      color: #6b7280;
+      line-height: 1.5;
+    }
+
+    .link-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+      margin-top: 1rem;
+    }
+
+    .link-item {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.875rem;
+      background: #f9fafb;
+      border: 1px solid #e5e7eb;
+      border-radius: 8px;
+      text-decoration: none;
+      color: var(--primary-blue);
+      font-size: 0.875rem;
+      font-weight: 600;
+      transition: all 0.2s;
+    }
+
+    .link-item:hover {
+      background: #eff6ff;
+      border-color: var(--primary-blue);
+    }
+
+    /* Status Badge */
+    .status-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.5rem 1rem;
+      background: #d1fae5;
+      color: #065f46;
+      border-radius: 6px;
+      font-size: 0.875rem;
+      font-weight: 600;
+    }
+
+    .status-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #10b981;
+    }
+
+    /* Mobile Responsive */
+    @media (max-width: 1024px) {
+      .sidebar {
+        transform: translateX(-100%);
+        transition: transform 0.3s;
       }
 
-      .welcome-section > div > div:last-child {
-        text-align: center !important;
+      .sidebar.mobile-open {
+        transform: translateX(0);
+      }
+
+      .main-content {
+        margin-left: 0;
+      }
+
+      .mobile-menu-btn {
+        display: block;
+        position: fixed;
+        bottom: 1.5rem;
+        right: 1.5rem;
+        width: 56px;
+        height: 56px;
+        border-radius: 50%;
+        background: var(--primary-blue);
+        color: white;
+        border: none;
+        font-size: 1.5rem;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        cursor: pointer;
+        z-index: 200;
+      }
+
+      .alert-banner {
+        flex-direction: column;
+        text-align: center;
+      }
+
+      .alert-actions {
+        flex-direction: column;
+        width: 100%;
+      }
+
+      .btn {
+        width: 100%;
+      }
+
+      .metrics-grid,
+      .actions-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 640px) {
+      .content-wrapper {
+        padding: 1rem;
+      }
+
+      .top-bar {
+        padding: 1rem;
+      }
+
+      .metric-value {
+        font-size: 2rem;
       }
     }
   </style>
 </head>
 <body>
-  <div class="dashboard-container">
-    <div class="dashboard-header">
-      <div class="user-info">
-        <span class="user-email" id="userEmail"></span>
-        <span class="user-role" id="userRole"></span>
-      </div>
-      <button class="btn-logout" onclick="logout()">Logout</button>
+  <!-- Sidebar Navigation -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+      <a href="/admin/dashboard.html" class="sidebar-logo">ISRS Admin</a>
+      <div class="sidebar-subtitle">Management Portal</div>
     </div>
 
-    <div class="welcome-section">
-      <div style="display: flex; justify-content: space-between; align-items: center;">
-        <div>
-          <h1>Welcome to the ISRS Admin Dashboard</h1>
-          <p>Manage all ISRS and ICSR data and content</p>
+    <nav class="sidebar-nav">
+      <div class="nav-section">
+        <div class="nav-section-title">Overview</div>
+        <a href="/admin/dashboard.html" class="nav-item active">
+          <span class="nav-icon">📊</span>
+          <span>Dashboard</span>
+        </a>
+      </div>
+
+      <div class="nav-section">
+        <div class="nav-section-title">Data Management</div>
+        <a href="/admin/contacts.html" class="nav-item">
+          <span class="nav-icon">👥</span>
+          <span>Contacts</span>
+        </a>
+        <a href="/admin/organizations.html" class="nav-item">
+          <span class="nav-icon">🏢</span>
+          <span>Organizations</span>
+        </a>
+        <a href="/admin/conferences.html" class="nav-item">
+          <span class="nav-icon">📅</span>
+          <span>Conferences</span>
+        </a>
+      </div>
+
+      <div class="nav-section">
+        <div class="nav-section-title">Governance</div>
+        <a href="/admin/votes.html" class="nav-item">
+          <span class="nav-icon">🗳️</span>
+          <span>Board Votes</span>
+        </a>
+        <a href="/admin/funding.html" class="nav-item">
+          <span class="nav-icon">💰</span>
+          <span>Funding</span>
+        </a>
+      </div>
+
+      <div class="nav-section">
+        <div class="nav-section-title">System</div>
+        <a href="/admin/settings.html" class="nav-item">
+          <span class="nav-icon">⚙️</span>
+          <span>Settings</span>
+        </a>
+      </div>
+    </nav>
+
+    <div class="sidebar-footer">
+      <div class="user-profile">
+        <div class="user-avatar" id="userAvatar">A</div>
+        <div class="user-details">
+          <div class="user-email" id="userEmail">Loading...</div>
+          <div class="user-role" id="userRole">Admin</div>
         </div>
-        <div style="text-align: right;">
-          <div style="background: rgba(255, 255, 255, 0.2); padding: 1rem 1.5rem; border-radius: 8px; backdrop-filter: blur(10px);">
-            <p style="margin: 0; font-size: 0.9rem; color: rgba(255, 255, 255, 0.9); font-weight: 600;">Database Status</p>
-            <p style="margin: 0.5rem 0 0 0; font-size: 1.5rem; font-weight: 700; color: white;">✓ Connected</p>
-            <p style="margin: 0.25rem 0 0 0; font-size: 0.85rem; color: rgba(255, 255, 255, 0.9);">All systems operational</p>
+      </div>
+      <button class="btn-logout" onclick="logout()">Sign Out</button>
+    </div>
+  </aside>
+
+  <!-- Main Content -->
+  <main class="main-content">
+    <!-- Top Bar -->
+    <div class="top-bar">
+      <h1>Dashboard</h1>
+      <p>Welcome back! Here's what's happening with ISRS today.</p>
+    </div>
+
+    <!-- Content -->
+    <div class="content-wrapper">
+      <!-- Conference Alert Banner -->
+      <div class="alert-banner">
+        <div class="alert-content">
+          <h2>ICSR2026 Registration Now Open!</h2>
+          <p>October 4-8, 2026 | Registration opens December 1, 2025</p>
+        </div>
+        <div class="alert-actions">
+          <a href="/conference/register.html" target="_blank" class="btn btn-primary">Public Portal</a>
+          <a href="/admin/conferences.html" class="btn btn-secondary">Manage</a>
+        </div>
+      </div>
+
+      <!-- Key Metrics -->
+      <div class="metrics-grid">
+        <div class="metric-card">
+          <div class="metric-header">
+            <div class="metric-title">Total Contacts</div>
+            <div class="metric-icon" style="background: linear-gradient(135deg, #3b82f6, #2563eb); color: white;">👥</div>
           </div>
-        </div>
-      </div>
-    </div>
-
-    <div style="background: linear-gradient(135deg, var(--accent-teal) 0%, #2e8b9e 100%); color: white; padding: 2rem; border-radius: 8px; margin-bottom: 1rem; text-align: center;">
-      <h2 style="font-family: 'Marcellus', Georgia, serif; font-size: 1.75rem; margin-bottom: 0.5rem;">ICSR2026 Registration Now Open!</h2>
-      <p style="margin-bottom: 1.5rem; font-size: 1.1rem;">October 4-8, 2026 | Registration opens December 1, 2025</p>
-      <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
-        <a href="/conference/register.html" target="_blank" style="background: white; color: var(--primary-blue); padding: 1rem 2rem; border-radius: 4px; text-decoration: none; font-weight: 700; display: inline-block; transition: transform 0.2s; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">📝 Public Registration Portal</a>
-        <a href="/admin/conferences.html" style="background: var(--primary-blue); color: white; padding: 1rem 2rem; border-radius: 4px; text-decoration: none; font-weight: 700; display: inline-block; transition: transform 0.2s;">📊 Manage Registrations</a>
-      </div>
-    </div>
-
-    <!-- Metrics Dashboard -->
-    <div style="margin-top: 1rem;">
-      <h2 style="font-family: 'Marcellus', Georgia, serif; font-size: 1.5rem; margin-bottom: 1rem; color: var(--text-dark);">Dashboard Metrics</h2>
-
-      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1rem; margin-bottom: 1rem;">
-        <!-- Total Contacts -->
-        <div class="dashboard-card" style="background: linear-gradient(135deg, var(--primary-blue) 0%, var(--secondary-blue) 100%); color: white; border: none;">
-          <h3 style="color: white; opacity: 0.9; font-size: 0.9rem; margin-bottom: 0.5rem;">Total Contacts</h3>
-          <p style="font-size: 2.5rem; font-weight: 700; margin: 0; color: white;" id="metricContacts">
-            <span class="loading-dots">Loading...</span>
-          </p>
-          <p style="margin: 0.5rem 0 0 0; opacity: 0.9; font-size: 0.85rem; color: white;">Network members worldwide</p>
+          <div class="metric-value" id="metricContacts"><span class="loading-dots">...</span></div>
+          <div class="metric-description">Network members worldwide</div>
         </div>
 
-        <!-- Total Organizations -->
-        <div class="dashboard-card" style="background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%); color: white; border: none;">
-          <h3 style="color: white; opacity: 0.9; font-size: 0.9rem; margin-bottom: 0.5rem;">Organizations</h3>
-          <p style="font-size: 2.5rem; font-weight: 700; margin: 0; color: white;" id="metricOrgs">
-            <span class="loading-dots">Loading...</span>
-          </p>
-          <p style="margin: 0.5rem 0 0 0; opacity: 0.9; font-size: 0.85rem; color: white;">Partner institutions</p>
+        <div class="metric-card">
+          <div class="metric-header">
+            <div class="metric-title">Organizations</div>
+            <div class="metric-icon" style="background: linear-gradient(135deg, #8b5cf6, #7c3aed); color: white;">🏢</div>
+          </div>
+          <div class="metric-value" id="metricOrgs"><span class="loading-dots">...</span></div>
+          <div class="metric-description">Partner institutions</div>
         </div>
 
-        <!-- Conference Registrations -->
-        <div class="dashboard-card" style="background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); color: white; border: none;">
-          <h3 style="color: white; opacity: 0.9; font-size: 0.9rem; margin-bottom: 0.5rem;">ICSR2026 Registrations</h3>
-          <p style="font-size: 2.5rem; font-weight: 700; margin: 0; color: white;" id="metricRegistrations">
-            <span class="loading-dots">Loading...</span>
-          </p>
-          <p style="margin: 0.5rem 0 0 0; opacity: 0.9; font-size: 0.85rem; color: white;">Opens December 2025</p>
+        <div class="metric-card">
+          <div class="metric-header">
+            <div class="metric-title">ICSR2026 Registrations</div>
+            <div class="metric-icon" style="background: linear-gradient(135deg, #f59e0b, #d97706); color: white;">📅</div>
+          </div>
+          <div class="metric-value" id="metricRegistrations"><span class="loading-dots">...</span></div>
+          <div class="metric-description">Opens December 2025</div>
         </div>
       </div>
 
-      <!-- Fundraising & Membership Section -->
-      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1rem;">
-        <!-- Fundraising Progress -->
-        <div class="dashboard-card">
-          <h3 style="display: flex; align-items: center; gap: 0.5rem;">
-            💰 Fundraising & Accounts
-          </h3>
-          <div style="margin-top: 1rem;">
-            <div style="background: var(--light-gray); padding: 0.75rem; border-radius: 6px; margin-bottom: 1rem;">
-              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
-                <span style="font-size: 0.85rem; font-weight: 600; color: var(--text-dark);">💳 Chase Business Credit</span>
-                <span style="font-size: 0.75rem; color: var(--text-light);">...5704</span>
-              </div>
-              <div style="display: flex; justify-content: space-between; margin-bottom: 0.25rem;">
-                <span style="font-size: 0.85rem; color: var(--text-light);">Available Credit</span>
-                <span style="font-weight: 700; color: var(--primary-blue);">$8,000.00</span>
-              </div>
-              <div style="font-size: 0.75rem; color: var(--text-light); margin-top: 0.5rem;">
-                💡 Earn 90,000 bonus points with $8,000 spend by Nov 12, 2025
-              </div>
-            </div>
+      <!-- Quick Actions -->
+      <section class="section">
+        <div class="section-header">
+          <h2 class="section-title">
+            <span class="section-icon">⚡</span>
+            Quick Actions
+          </h2>
+        </div>
+        <div class="actions-grid">
+          <a href="/admin/contacts.html" class="action-card">
+            <div class="action-card-icon" style="background: #eff6ff; color: #3b82f6;">👥</div>
+            <div class="action-card-title">Manage Contacts</div>
+            <div class="action-card-description">View and edit network members, add new contacts</div>
+          </a>
 
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; margin-bottom: 1rem;">
-              <div style="background: var(--light-gray); padding: 0.75rem; border-radius: 6px;">
-                <div style="font-size: 0.75rem; color: var(--text-light); margin-bottom: 0.25rem;">🏦 Checking</div>
-                <div style="font-weight: 700; color: var(--text-dark);" id="checkingBalance">
-                  <span class="loading-dots" style="font-size: 0.9rem;">Loading...</span>
+          <a href="/admin/organizations.html" class="action-card">
+            <div class="action-card-icon" style="background: #f5f3ff; color: #8b5cf6;">🏢</div>
+            <div class="action-card-title">View Organizations</div>
+            <div class="action-card-description">Browse partner institutions and affiliates</div>
+          </a>
+
+          <a href="/admin/conferences.html" class="action-card">
+            <div class="action-card-icon" style="background: #fef3c7; color: #f59e0b;">📅</div>
+            <div class="action-card-title">Conference Manager</div>
+            <div class="action-card-description">Manage ICSR2026 registrations and details</div>
+          </a>
+
+          <a href="/admin/votes.html" class="action-card">
+            <div class="action-card-icon" style="background: #dbeafe; color: #0284c7;">🗳️</div>
+            <div class="action-card-title">Board Voting</div>
+            <div class="action-card-description">Review votes and governance decisions</div>
+          </a>
+        </div>
+      </section>
+
+      <!-- Financial Details (Collapsible) -->
+      <div class="collapsible-section">
+        <div class="collapsible-header" onclick="toggleCollapsible('financials')">
+          <div class="collapsible-title">
+            <span>💰</span>
+            Financial Overview & Accounts
+          </div>
+          <span class="collapsible-toggle" id="financials-toggle">▼</span>
+        </div>
+        <div class="collapsible-content" id="financials-content">
+          <div class="collapsible-inner">
+            <div class="financial-grid">
+              <div class="financial-item">
+                <div class="financial-header">
+                  <div class="financial-label">💳 Business Credit</div>
+                  <div class="financial-account">...5704</div>
                 </div>
-                <div style="font-size: 0.7rem; color: var(--text-light); margin-top: 0.25rem;">...7718</div>
-              </div>
-              <div style="background: var(--light-gray); padding: 0.75rem; border-radius: 6px;">
-                <div style="font-size: 0.75rem; color: var(--text-light); margin-bottom: 0.25rem;">💵 Savings</div>
-                <div style="font-weight: 700; color: var(--text-dark);" id="savingsBalance">
-                  <span class="loading-dots" style="font-size: 0.9rem;">Loading...</span>
+                <div class="financial-amount">$8,000.00</div>
+                <div class="financial-note">Available Credit</div>
+                <div class="financial-note" style="margin-top: 0.5rem; background: #fef3c7; padding: 0.5rem; border-radius: 4px;">
+                  💡 Earn 90,000 bonus points with $8,000 spend by Nov 12, 2025
                 </div>
-                <div style="font-size: 0.7rem; color: var(--text-light); margin-top: 0.25rem;">...0717</div>
+              </div>
+
+              <div class="financial-item">
+                <div class="financial-header">
+                  <div class="financial-label">🏦 Checking Account</div>
+                  <div class="financial-account">...7718</div>
+                </div>
+                <div class="financial-amount" id="checkingBalance"><span class="loading-dots">...</span></div>
+                <div class="financial-note">Current balance</div>
+              </div>
+
+              <div class="financial-item">
+                <div class="financial-header">
+                  <div class="financial-label">💵 Savings Account</div>
+                  <div class="financial-account">...0717</div>
+                </div>
+                <div class="financial-amount" id="savingsBalance"><span class="loading-dots">...</span></div>
+                <div class="financial-note">Current balance</div>
               </div>
             </div>
 
-            <div style="border-top: 1px solid var(--border-color); padding-top: 1rem;">
-              <div style="font-size: 0.85rem; font-weight: 600; color: var(--text-dark); margin-bottom: 0.5rem;">Zeffy Fundraising Links</div>
-              <div style="display: flex; flex-direction: column; gap: 0.5rem;">
-                <a href="https://www.zeffy.com/en-US/ticketing/icsr2026-international-conference-on-shellfish-restoration" target="_blank" style="font-size: 0.8rem; color: var(--primary-blue); text-decoration: none;">🎟️ ICSR2026 Tickets</a>
-                <a href="https://www.zeffy.com/en-US/donation-form/icsr2026-science-without-barriers" target="_blank" style="font-size: 0.8rem; color: var(--primary-blue); text-decoration: none;">🎓 Science Without Barriers</a>
-                <a href="https://www.zeffy.com/en-US/donation-form/isrs-building-tomorrows-ocean-leaders" target="_blank" style="font-size: 0.8rem; color: var(--primary-blue); text-decoration: none;">🌊 Building Tomorrow's Leaders</a>
+            <div style="margin-top: 1.5rem; padding-top: 1.5rem; border-top: 1px solid #e5e7eb;">
+              <h4 style="font-size: 1rem; font-weight: 700; color: #1f2937; margin-bottom: 1rem;">Zeffy Fundraising Links</h4>
+              <div class="link-list">
+                <a href="https://www.zeffy.com/en-US/ticketing/icsr2026-international-conference-on-shellfish-restoration" target="_blank" class="link-item">
+                  <span>🎟️</span>
+                  ICSR2026 Tickets
+                </a>
+                <a href="https://www.zeffy.com/en-US/donation-form/icsr2026-science-without-barriers" target="_blank" class="link-item">
+                  <span>🎓</span>
+                  Science Without Barriers Fund
+                </a>
+                <a href="https://www.zeffy.com/en-US/donation-form/isrs-building-tomorrows-ocean-leaders" target="_blank" class="link-item">
+                  <span>🌊</span>
+                  Building Tomorrow's Leaders Fund
+                </a>
               </div>
+            </div>
+
+            <div style="margin-top: 1.5rem; text-align: right;">
+              <a href="/admin/funding.html" style="color: var(--primary-blue); font-weight: 600; text-decoration: none; font-size: 0.95rem;">View Full Funding Details →</a>
             </div>
           </div>
-          <a href="/admin/funding.html" style="display: inline-block; margin-top: 1rem; color: var(--primary-blue); text-decoration: none; font-weight: 600; font-size: 0.9rem;">View Funding Details →</a>
         </div>
+      </div>
 
-        <!-- ISRS Memberships -->
-        <div class="dashboard-card">
-          <h3 style="display: flex; align-items: center; gap: 0.5rem;">
-            👥 ISRS Memberships
-          </h3>
-          <div style="margin-top: 1rem;">
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 0.5rem;">
-              <div>
-                <p style="font-size: 0.85rem; color: var(--text-light); margin: 0;">Active Members</p>
-                <p style="font-size: 1.75rem; font-weight: 700; margin: 0.25rem 0; color: var(--primary-blue);" id="metricActiveMembers">
-                  <span class="loading-dots">...</span>
-                </p>
-              </div>
-              <div>
-                <p style="font-size: 0.85rem; color: var(--text-light); margin: 0;">Lifetime Members</p>
-                <p style="font-size: 1.75rem; font-weight: 700; margin: 0.25rem 0; color: var(--secondary-blue);" id="metricLifetimeMembers">
-                  <span class="loading-dots">...</span>
-                </p>
-              </div>
-            </div>
-            <div style="background: var(--light-gray); padding: 0.75rem; border-radius: 6px; margin-top: 1rem;">
-              <p style="font-size: 0.85rem; margin: 0; color: var(--text-dark);">💡 <strong>New this month:</strong> <span id="metricNewMembers" class="loading-dots">...</span> members joined</p>
+      <!-- System Status -->
+      <div style="background: white; padding: 1.5rem; border-radius: 12px; border: 1px solid #e5e7eb;">
+        <div style="display: flex; align-items: center; justify-content: space-between;">
+          <div style="display: flex; align-items: center; gap: 0.75rem;">
+            <span style="font-size: 1.5rem;">🔒</span>
+            <div>
+              <h3 style="font-size: 1.125rem; font-weight: 700; color: #1f2937; margin-bottom: 0.25rem;">System Status</h3>
+              <p style="font-size: 0.875rem; color: #6b7280;">All systems operational</p>
             </div>
           </div>
-          <a href="/admin/contacts.html?filter=members" style="display: inline-block; margin-top: 1rem; color: var(--primary-blue); text-decoration: none; font-weight: 600; font-size: 0.9rem;">Manage Memberships →</a>
-        </div>
-
-        <!-- Admin Navigation -->
-        <div class="dashboard-card" style="background: var(--light-gray);">
-          <h3 style="display: flex; align-items: center; gap: 0.5rem;">
-            🗂️ Admin Sections
-          </h3>
-          <div style="margin-top: 1rem; display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem;">
-            <a href="/admin/contacts.html" style="display: flex; align-items: center; gap: 0.5rem; padding: 0.75rem; background: white; border: 1px solid var(--border-color); border-radius: 6px; text-decoration: none; color: var(--text-dark); transition: all 0.3s; font-size: 0.85rem; font-weight: 600;">
-              <span>👥</span> Contacts
-            </a>
-            <a href="/admin/organizations.html" style="display: flex; align-items: center; gap: 0.5rem; padding: 0.75rem; background: white; border: 1px solid var(--border-color); border-radius: 6px; text-decoration: none; color: var(--text-dark); transition: all 0.3s; font-size: 0.85rem; font-weight: 600;">
-              <span>🏢</span> Organizations
-            </a>
-            <a href="/admin/votes.html" style="display: flex; align-items: center; gap: 0.5rem; padding: 0.75rem; background: white; border: 1px solid var(--border-color); border-radius: 6px; text-decoration: none; color: var(--text-dark); transition: all 0.3s; font-size: 0.85rem; font-weight: 600;">
-              <span>🗳️</span> Board Votes
-            </a>
-            <a href="/admin/conferences.html" style="display: flex; align-items: center; gap: 0.5rem; padding: 0.75rem; background: white; border: 1px solid var(--border-color); border-radius: 6px; text-decoration: none; color: var(--text-dark); transition: all 0.3s; font-size: 0.85rem; font-weight: 600;">
-              <span>📅</span> Conferences
-            </a>
-            <a href="/admin/funding.html" style="display: flex; align-items: center; gap: 0.5rem; padding: 0.75rem; background: white; border: 1px solid var(--border-color); border-radius: 6px; text-decoration: none; color: var(--text-dark); transition: all 0.3s; font-size: 0.85rem; font-weight: 600;">
-              <span>💰</span> Funding
-            </a>
-            <a href="/admin/settings.html" style="display: flex; align-items: center; gap: 0.5rem; padding: 0.75rem; background: white; border: 1px solid var(--border-color); border-radius: 6px; text-decoration: none; color: var(--text-dark); transition: all 0.3s; font-size: 0.85rem; font-weight: 600;">
-              <span>⚙️</span> Settings
-            </a>
+          <div class="status-badge">
+            <span class="status-dot"></span>
+            Connected
           </div>
         </div>
       </div>
     </div>
-  </div>
+  </main>
+
+  <!-- Mobile Menu Button -->
+  <button class="mobile-menu-btn" onclick="toggleMobileMenu()" style="display: none;">☰</button>
 
   <script>
     const API_BASE_URL = 'https://isrs-database-backend.onrender.com';
@@ -338,6 +885,26 @@
         minimumFractionDigits: 0,
         maximumFractionDigits: 0
       }).format(amount);
+    }
+
+    // Toggle collapsible sections
+    function toggleCollapsible(id) {
+      const content = document.getElementById(`${id}-content`);
+      const toggle = document.getElementById(`${id}-toggle`);
+
+      if (content.classList.contains('open')) {
+        content.classList.remove('open');
+        toggle.classList.remove('open');
+      } else {
+        content.classList.add('open');
+        toggle.classList.add('open');
+      }
+    }
+
+    // Toggle mobile menu
+    function toggleMobileMenu() {
+      const sidebar = document.getElementById('sidebar');
+      sidebar.classList.toggle('mobile-open');
     }
 
     // Load dashboard metrics
@@ -375,14 +942,7 @@
           document.getElementById('metricRegistrations').textContent = regCount > 0 ? formatNumber(regCount) : '0';
         }
 
-        // TODO: Fetch membership data when available
-        // For now, show as unavailable
-        document.getElementById('metricActiveMembers').textContent = 'TBD';
-        document.getElementById('metricLifetimeMembers').textContent = 'TBD';
-        document.getElementById('metricNewMembers').textContent = '0';
-
-        // TODO: Fetch bank account balances from Chase API or manual entry
-        // For now, show as unavailable
+        // Bank account balances - TODO: integrate with actual API
         document.getElementById('checkingBalance').textContent = 'Contact bank';
         document.getElementById('savingsBalance').textContent = 'Contact bank';
 
@@ -422,6 +982,10 @@
           document.getElementById('userEmail').textContent = userEmail;
           document.getElementById('userRole').textContent = userRole;
 
+          // Set avatar initial
+          const initial = userEmail.charAt(0).toUpperCase();
+          document.getElementById('userAvatar').textContent = initial;
+
           // Load dashboard metrics
           loadDashboardMetrics();
         }
@@ -449,6 +1013,19 @@
       localStorage.clear();
       window.location.href = '/admin/';
     }
+
+    // Close mobile menu when clicking outside
+    document.addEventListener('click', (e) => {
+      const sidebar = document.getElementById('sidebar');
+      const mobileBtn = document.querySelector('.mobile-menu-btn');
+
+      if (window.innerWidth <= 1024 &&
+          sidebar.classList.contains('mobile-open') &&
+          !sidebar.contains(e.target) &&
+          !mobileBtn.contains(e.target)) {
+        sidebar.classList.remove('mobile-open');
+      }
+    });
   </script>
 
   <!-- AI Assistant Sidebar -->
