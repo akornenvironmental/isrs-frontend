@@ -78,10 +78,10 @@
       /* Feedback Button */
       #isrs-feedback-widget {
         position: fixed;
-        right: -1px;
+        right: 0;
         top: 50%;
-        transform: translateY(-50%) translateX(0) rotate(-90deg);
-        transform-origin: right center;
+        transform: translateY(-50%) translateX(50%) rotate(-90deg);
+        transform-origin: center center;
         z-index: 10000;
         background: linear-gradient(135deg, #2E5A8A 0%, #5BC0BE 100%);
         color: white;
@@ -98,12 +98,13 @@
         align-items: center;
         gap: 10px;
         letter-spacing: 0.5px;
+        white-space: nowrap;
       }
 
       #isrs-feedback-widget:hover {
         background: linear-gradient(135deg, #5BC0BE 0%, #2E5A8A 100%);
         box-shadow: -2px 4px 16px rgba(46, 90, 138, 0.6);
-        transform: translateY(-50%) translateX(-2px) rotate(-90deg);
+        transform: translateY(-50%) translateX(40%) rotate(-90deg);
       }
 
       #isrs-feedback-widget:focus {
