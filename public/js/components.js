@@ -426,7 +426,7 @@ function loadHeader() {
     <a href="#main-content" class="skip-link">${t('skipToMain')}</a>
     <nav class="navbar" role="navigation" aria-label="Main navigation">
       <a href="/" class="logo" aria-label="ISRS Home">
-        <img src="/images/logo-wide-blue.png" alt="ISRS Logo" width="1640" height="640" fetchpriority="high" />
+        <img id="header-logo" src="/images/logo-wide-blue.png" alt="ISRS Logo" width="1640" height="640" fetchpriority="high" />
       </a>
       <button class="mobile-menu-toggle" onclick="toggleMobileMenu()" aria-label="Toggle menu" aria-expanded="false">
         <span aria-hidden="true">☰</span>

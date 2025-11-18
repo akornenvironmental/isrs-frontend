@@ -55,17 +55,17 @@
   color: #f5f5f5 !important;
 }
 
-/* Text Size Variations */
+/* Text Size Variations - 508 Compliant */
 .text-size-small {
-  font-size: 14px;
+  font-size: 16px; /* Minimum for 508 compliance */
 }
 
 .text-size-medium {
-  font-size: 16px;
+  font-size: 18px; /* Improved readability */
 }
 
 .text-size-large {
-  font-size: 18px;
+  font-size: 20px; /* Better for accessibility */
 }
 
 * {
@@ -518,7 +518,7 @@ header {
 }
 
 .compact-card p {
-  font-size: 0.9rem;
+  font-size: 1rem;
   line-height: 1.5;
   margin-bottom: 0;
 }
@@ -553,7 +553,7 @@ header {
 
 .value-card p {
   color: var(--text-light);
-  font-size: 0.9rem;
+  font-size: 1rem;
   line-height: 1.5;
   margin: 0;
 }
@@ -791,7 +791,7 @@ header {
 }
 
 .community-item p {
-  font-size: 0.95rem;
+  font-size: 1rem;
   line-height: 1.5;
   margin: 0;
   color: var(--text-dark);
@@ -832,7 +832,7 @@ header {
 }
 
 .feature-item p {
-  font-size: 0.9rem;
+  font-size: 1rem;
   line-height: 1.5;
   color: var(--text-light);
   margin: 0;
@@ -1382,7 +1382,7 @@ header {
 
 .stay-connected-text {
   text-align: left;
-  font-size: 0.95rem;
+  font-size: 1rem;
   color: var(--text-light);
   margin: 0;
   line-height: 1.5;
@@ -1686,7 +1686,7 @@ footer {
   display: block;
   margin-top: 0.25rem;
   color: var(--text-light);
-  font-size: 0.9rem;
+  font-size: 1rem;
 }
 
 /* Profile Completion */

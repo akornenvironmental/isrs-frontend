@@ -58,9 +58,17 @@
         <div class="card">
           <h3 style="color: #1e5a8e; font-size: 1.1rem;">📅 Conference Dates</h3>
           <p style="font-size: 1.1rem; font-weight: 600; color: var(--primary-blue); margin-bottom: 0.75rem;">October 4-8, 2026</p>
-          <button onclick="addToCalendar()" class="btn btn-secondary" style="font-size: 0.9rem; padding: 0.5rem 1rem;">
-            📅 Add to Calendar
-          </button>
+          <div style="display: flex; gap: 0.5rem; flex-wrap: wrap; justify-content: center;">
+            <button onclick="downloadICS()" class="btn btn-secondary" style="font-size: 0.85rem; padding: 0.5rem 0.75rem;">
+              📅 Download .ics
+            </button>
+            <button onclick="addToGoogleCalendar()" class="btn btn-secondary" style="font-size: 0.85rem; padding: 0.5rem 0.75rem;">
+              📅 Google Calendar
+            </button>
+            <button onclick="addToOutlook()" class="btn btn-secondary" style="font-size: 0.85rem; padding: 0.5rem 0.75rem;">
+              📅 Outlook
+            </button>
+          </div>
         </div>
         <div class="card">
           <h3 style="color: #1e5a8e; font-size: 1.1rem;">📝 Abstract Deadline</h3>
@@ -111,7 +119,7 @@
         We are honored to be hosted by the <strong class="highlight"><a href="https://squaxinisland.org/" target="_blank" rel="noopener noreferrer" style="color: inherit;">Squaxin Island Tribe</a></strong>, whose ancestral territory includes much of southern Puget Sound. The <a href="https://squaxinisland.org/" target="_blank" rel="noopener noreferrer" style="color: inherit;">Squaxin Island people</a> have been stewards of shellfish resources for thousands of years, maintaining deep cultural and spiritual connections to clams, oysters, and other shellfish.
       </p>
       <p style="font-size: 1.05rem; line-height: 1.6; max-width: 800px; margin: 1rem auto 0;">
-        Today, the Tribe continues this tradition through active shellfish management, restoration programs, and aquaculture operations, integrating traditional ecological knowledge with modern conservation science. ICSR2026 will provide unique opportunities to learn from Tribal restoration practitioners and experience Indigenous approaches to shellfish stewardship.
+        Today, the Tribe continues this tradition through active shellfish management, restoration programs, and aquaculture operations, integrating traditional ecological knowledge with modern conservation science. ICSR2026 will provide unique opportunities to learn from Tribal restoration practitioners and experience Indigenous approaches to&nbsp;shellfish&nbsp;stewardship.
       </p>
     </section>
 
@@ -174,7 +182,7 @@
         <div id="registration" style="background: linear-gradient(135deg, #1e5a8e, #2980b9); color: white; padding: 1.5rem; border-radius: 8px; text-align: center;">
           <h2 style="color: white; margin-bottom: 0.5rem; font-size: 1.5rem;">Registration</h2>
           <p style="font-size: 0.95rem; margin-bottom: 1rem; opacity: 0.95;">
-            Registration will open in early 2026. Sign up for updates to be notified when registration becomes available.
+            Registration will open in early&nbsp;2026. Sign up for updates to be notified when registration becomes&nbsp;available.
           </p>
           <a href="mailto:info@shellfish-society.org?subject=ICSR2026 Updates" class="btn btn-primary" style="background-color: #546d7d;">Request Updates</a>
         </div>
@@ -305,16 +313,20 @@
       }
     });
 
-    // Add to Calendar function
-    function addToCalendar() {
-      // Create ICS file content
-      const eventTitle = 'ICSR2026 - International Conference on Shellfish Restoration';
-      const eventLocation = 'Puget Sound, Washington State';
-      const eventDescription = 'Join us for the International Conference on Shellfish Restoration hosted by Squaxin Island Tribe. Visit https://www.shellfish-society.org/icsr2026.html for details.';
-      const startDate = '20261004'; // October 4, 2026
-      const endDate = '20261009'; // October 9, 2026 (day after, for all-day event)
-      const timestamp = new Date().toISOString().replace(/[-:]/g, '').split('.')[0] + 'Z';
+    // Calendar event details
+    const calendarEvent = {
+      title: 'ICSR2026 - International Conference on Shellfish Restoration',
+      location: 'Puget Sound, Washington State',
+      description: 'Join us for the International Conference on Shellfish Restoration hosted by Squaxin Island Tribe. Visit https://www.shellfish-society.org/icsr2026.html for details.',
+      startDate: '20261004',
+      endDate: '20261009',
+      startDateFormatted: '2026-10-04',
+      endDateFormatted: '2026-10-08'
+    };
 
+    // Download ICS file (works with Apple Calendar, Outlook, etc.)
+    function downloadICS() {
+      const timestamp = new Date().toISOString().replace(/[-:]/g, '').split('.')[0] + 'Z';
       const icsContent = [
         'BEGIN:VCALENDAR',
         'VERSION:2.0',
@@ -324,11 +336,11 @@
         'BEGIN:VEVENT',
         'UID:icsr2026-' + timestamp + '@shellfish-society.org',
         'DTSTAMP:' + timestamp,
-        'DTSTART;VALUE=DATE:' + startDate,
-        'DTEND;VALUE=DATE:' + endDate,
-        'SUMMARY:' + eventTitle,
-        'DESCRIPTION:' + eventDescription.replace(/\n/g, '\\n'),
-        'LOCATION:' + eventLocation,
+        'DTSTART;VALUE=DATE:' + calendarEvent.startDate,
+        'DTEND;VALUE=DATE:' + calendarEvent.endDate,
+        'SUMMARY:' + calendarEvent.title,
+        'DESCRIPTION:' + calendarEvent.description.replace(/\n/g, '\\n'),
+        'LOCATION:' + calendarEvent.location,
         'STATUS:CONFIRMED',
         'SEQUENCE:0',
         'BEGIN:VALARM',
@@ -340,7 +352,6 @@
         'END:VCALENDAR'
       ].join('\r\n');
 
-      // Create blob and download
       const blob = new Blob([icsContent], { type: 'text/calendar;charset=utf-8' });
       const link = document.createElement('a');
       link.href = window.URL.createObjectURL(blob);
@@ -348,6 +359,28 @@
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
+    }
+
+    // Add to Google Calendar
+    function addToGoogleCalendar() {
+      const googleUrl = 'https://calendar.google.com/calendar/render?action=TEMPLATE' +
+        '&text=' + encodeURIComponent(calendarEvent.title) +
+        '&dates=' + calendarEvent.startDate + '/' + calendarEvent.endDate +
+        '&details=' + encodeURIComponent(calendarEvent.description) +
+        '&location=' + encodeURIComponent(calendarEvent.location) +
+        '&sf=true&output=xml';
+      window.open(googleUrl, '_blank');
+    }
+
+    // Add to Outlook (web version)
+    function addToOutlook() {
+      const outlookUrl = 'https://outlook.live.com/calendar/0/deeplink/compose?path=/calendar/action/compose&rru=addevent' +
+        '&subject=' + encodeURIComponent(calendarEvent.title) +
+        '&startdt=' + calendarEvent.startDateFormatted +
+        '&enddt=' + calendarEvent.endDateFormatted +
+        '&body=' + encodeURIComponent(calendarEvent.description) +
+        '&location=' + encodeURIComponent(calendarEvent.location);
+      window.open(outlookUrl, '_blank');
     }
   </script>
 </body>

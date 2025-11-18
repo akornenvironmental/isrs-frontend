@@ -18,6 +18,19 @@ function applyTheme() {
 
   localStorage.setItem('isrs_theme', currentTheme);
   updateThemeButton();
+  updateHeaderLogo();
+}
+
+// Update header logo based on theme
+function updateHeaderLogo() {
+  const headerLogo = document.getElementById('header-logo');
+  if (!headerLogo) return;
+
+  if (currentTheme === 'dark') {
+    headerLogo.src = '/images/logo-wide-white.svg';
+  } else {
+    headerLogo.src = '/images/logo-wide-blue.png';
+  }
 }
 
 // Apply text size to document
