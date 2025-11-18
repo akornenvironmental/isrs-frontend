@@ -613,11 +613,13 @@ function updateUserProfileButton() {
       const user = JSON.parse(userData);
 
       // User is logged in - route to appropriate portal
-      if (user.role === 'admin' || user.role === 'superadmin') {
+      if (user.role === 'admin' || user.role === 'superadmin' || user.role === 'board') {
+        // Admin, superadmin, and board members go to admin portal
         profileBtn.href = '/admin/';
         profileBtn.setAttribute('aria-label', 'Admin Portal');
         profileBtn.setAttribute('title', 'Admin Portal');
       } else {
+        // Advisory and other members go to member portal
         profileBtn.href = '/member/profile.html';
         profileBtn.setAttribute('aria-label', 'My Profile');
         profileBtn.setAttribute('title', 'My Profile');

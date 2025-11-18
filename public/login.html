@@ -96,9 +96,11 @@
         }));
 
         // Route based on role
-        if (role === 'admin' || role === 'superadmin') {
+        if (role === 'admin' || role === 'superadmin' || role === 'board') {
+          // Admin, superadmin, and board members go to admin portal
           window.location.href = '/admin/';
         } else {
+          // Advisory and other members go to member portal
           window.location.href = '/member/profile.html';
         }
 
