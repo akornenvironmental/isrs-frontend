@@ -458,7 +458,7 @@ function loadHeader() {
           <button class="lang-btn ${currentLang === 'fr' ? 'active' : ''}" data-lang="fr" onclick="changeLanguage('fr')" aria-label="Français" ${currentLang === 'fr' ? 'aria-current="true"' : ''}>FR</button>
         </div>
         <div class="control-divider"></div>
-        <a href="/admin/" class="control-btn user-profile-btn" aria-label="Member Profile" title="Member Profile">
+        <a href="/login.html" class="control-btn user-profile-btn" id="user-profile-btn" aria-label="Login / Member Portal" title="Login / Member Portal">
           <span aria-hidden="true">🦪</span>
         </a>
       </div>
@@ -600,6 +600,41 @@ function toggleMobileMenu() {
   }
 }
 
+// Update user profile button based on login status
+function updateUserProfileButton() {
+  const profileBtn = document.getElementById('user-profile-btn');
+  if (!profileBtn) return;
+
+  try {
+    const userData = localStorage.getItem('isrs_user_data');
+    const authToken = localStorage.getItem('isrs_auth_token');
+
+    if (userData && authToken) {
+      const user = JSON.parse(userData);
+
+      // User is logged in - route to appropriate portal
+      if (user.role === 'admin' || user.role === 'superadmin') {
+        profileBtn.href = '/admin/';
+        profileBtn.setAttribute('aria-label', 'Admin Portal');
+        profileBtn.setAttribute('title', 'Admin Portal');
+      } else {
+        profileBtn.href = '/member/profile.html';
+        profileBtn.setAttribute('aria-label', 'My Profile');
+        profileBtn.setAttribute('title', 'My Profile');
+      }
+    } else {
+      // User is not logged in - go to login page
+      profileBtn.href = '/login.html';
+      profileBtn.setAttribute('aria-label', 'Login');
+      profileBtn.setAttribute('title', 'Login');
+    }
+  } catch (error) {
+    console.error('Error updating profile button:', error);
+    // Default to login page on error
+    profileBtn.href = '/login.html';
+  }
+}
+
 // Initialize components on page load
 document.addEventListener('DOMContentLoaded', () => {
   // Set document language
@@ -609,6 +644,9 @@ document.addEventListener('DOMContentLoaded', () => {
   loadHeader();
   loadStayConnected();
   loadFooter();
+
+  // Update user profile button based on login status
+  updateUserProfileButton();
 
   // Translate page content
   translatePage();

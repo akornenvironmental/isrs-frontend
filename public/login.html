@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login - ISRS</title>
+  <link rel="icon" type="image/png" href="/images/favicon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Marcellus&family=PT+Serif:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/styles.css">
+  <script src="/js/theme.js"></script>
+</head>
+<body>
+  <header id="site-header"></header>
+
+  <main id="main-content">
+    <div class="container" style="max-width: 500px; margin: 4rem auto; padding: 2rem;">
+      <div class="card" style="padding: 2rem;">
+        <h1 style="text-align: center; margin-bottom: 0.5rem; color: var(--primary-blue);">🦪 Login to ISRS</h1>
+        <p style="text-align: center; color: var(--text-light); margin-bottom: 2rem;">
+          Enter your email to receive a secure login link
+        </p>
+
+        <form id="loginForm" onsubmit="handleLogin(event)">
+          <div class="form-group">
+            <label for="email">Email Address</label>
+            <input
+              type="email"
+              id="email"
+              name="email"
+              required
+              placeholder="you@example.com"
+              autocomplete="email"
+            />
+          </div>
+
+          <button type="submit" class="btn btn-primary" id="loginBtn" style="width: 100%;">
+            Send Magic Link
+          </button>
+        </form>
+
+        <div id="successMessage" style="display: none; text-align: center; margin-top: 2rem;">
+          <div style="font-size: 3rem; margin-bottom: 1rem;">✅</div>
+          <h2 style="color: var(--primary-blue); margin-bottom: 0.5rem;">Check Your Email!</h2>
+          <p style="color: var(--text-light);">
+            We've sent a secure login link to <strong id="emailSent"></strong>
+          </p>
+          <p style="color: var(--text-light); font-size: 0.9rem; margin-top: 1rem;">
+            The link will expire in 15 minutes. Click it to complete your login.
+          </p>
+        </div>
+
+        <div style="text-align: center; margin-top: 2rem; padding-top: 2rem; border-top: 1px solid var(--border-color);">
+          <p style="font-size: 0.9rem; color: var(--text-light);">
+            Don't have an account? <a href="/member/welcome.html" style="color: var(--primary-blue);">Create one</a>
+          </p>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <footer id="site-footer"></footer>
+
+  <script src="/js/components.js"></script>
+  <script src="/js/feedback-widget.js"></script>
+  <script>
+    initFeedbackWidget({ isAdminPortal: false });
+
+    const API_BASE_URL = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+      ? 'http://localhost:3000'
+      : 'https://isrs-database-backend.onrender.com';
+
+    async function handleLogin(event) {
+      event.preventDefault();
+
+      const email = document.getElementById('email').value.trim();
+      const loginBtn = document.getElementById('loginBtn');
+      const loginForm = document.getElementById('loginForm');
+      const successMessage = document.getElementById('successMessage');
+
+      // Disable button during submission
+      loginBtn.disabled = true;
+      loginBtn.textContent = 'Sending...';
+
+      try {
+        const response = await fetch(`${API_BASE_URL}/api/auth/send-magic-link`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            email,
+            redirectUrl: window.location.origin + '/auth/verify'
+          })
+        });
+
+        const data = await response.json();
+
+        if (response.ok && data.success) {
+          // Show success message
+          loginForm.style.display = 'none';
+          successMessage.style.display = 'block';
+          document.getElementById('emailSent').textContent = email;
+        } else {
+          throw new Error(data.error || 'Failed to send magic link');
+        }
+      } catch (error) {
+        console.error('Login error:', error);
+        alert('Error sending login link. Please try again or contact support.');
+        loginBtn.disabled = false;
+        loginBtn.textContent = 'Send Magic Link';
+      }
+    }
+  </script>
+</body>
+</html>
