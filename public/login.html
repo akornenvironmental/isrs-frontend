@@ -19,7 +19,7 @@
       <div class="card" style="padding: 2rem;">
         <h1 style="text-align: center; margin-bottom: 0.5rem; color: var(--primary-blue);">🦪 Login to ISRS</h1>
         <p style="text-align: center; color: var(--text-light); margin-bottom: 2rem;">
-          Enter your email to receive a secure login link
+          Enter your registered email address to access your account
         </p>
 
         <form id="loginForm" onsubmit="handleLogin(event)">
@@ -36,20 +36,9 @@
           </div>
 
           <button type="submit" class="btn btn-primary" id="loginBtn" style="width: 100%;">
-            Send Magic Link
+            Login
           </button>
         </form>
-
-        <div id="successMessage" style="display: none; text-align: center; margin-top: 2rem;">
-          <div style="font-size: 3rem; margin-bottom: 1rem;">✅</div>
-          <h2 style="color: var(--primary-blue); margin-bottom: 0.5rem;">Check Your Email!</h2>
-          <p style="color: var(--text-light);">
-            We've sent a secure login link to <strong id="emailSent"></strong>
-          </p>
-          <p style="color: var(--text-light); font-size: 0.9rem; margin-top: 1rem;">
-            The link will expire in 15 minutes. Click it to complete your login.
-          </p>
-        </div>
 
         <div style="text-align: center; margin-top: 2rem; padding-top: 2rem; border-top: 1px solid var(--border-color);">
           <p style="font-size: 0.9rem; color: var(--text-light);">
@@ -76,40 +65,48 @@
 
       const email = document.getElementById('email').value.trim();
       const loginBtn = document.getElementById('loginBtn');
-      const loginForm = document.getElementById('loginForm');
-      const successMessage = document.getElementById('successMessage');
 
       // Disable button during submission
       loginBtn.disabled = true;
-      loginBtn.textContent = 'Sending...';
+      loginBtn.textContent = 'Logging in...';
 
       try {
-        const response = await fetch(`${API_BASE_URL}/api/auth/send-magic-link`, {
+        const response = await fetch(`${API_BASE_URL}/api/auth/login`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json'
           },
-          body: JSON.stringify({
-            email,
-            redirectUrl: window.location.origin + '/auth/verify'
-          })
+          body: JSON.stringify({ email })
         });
 
-        const data = await response.json();
+        const result = await response.json();
 
-        if (response.ok && data.success) {
-          // Show success message
-          loginForm.style.display = 'none';
-          successMessage.style.display = 'block';
-          document.getElementById('emailSent').textContent = email;
-        } else {
-          throw new Error(data.error || 'Failed to send magic link');
+        if (!response.ok || !result.success) {
+          throw new Error(result.error || 'Login failed');
         }
+
+        // Store auth data
+        const { sessionToken, email: userEmail, role, permissions } = result.data;
+
+        localStorage.setItem('isrs_auth_token', sessionToken);
+        localStorage.setItem('isrs_user_data', JSON.stringify({
+          email: userEmail,
+          role,
+          permissions
+        }));
+
+        // Route based on role
+        if (role === 'admin' || role === 'superadmin') {
+          window.location.href = '/admin/';
+        } else {
+          window.location.href = '/member/profile.html';
+        }
+
       } catch (error) {
         console.error('Login error:', error);
-        alert('Error sending login link. Please try again or contact support.');
+        alert(error.message || 'Login failed. Please check your email and try again.');
         loginBtn.disabled = false;
-        loginBtn.textContent = 'Send Magic Link';
+        loginBtn.textContent = 'Login';
       }
     }
   </script>
