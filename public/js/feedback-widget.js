@@ -238,29 +238,6 @@
         font-size: 12px;
       }
 
-      .isrs-feedback-rating {
-        display: flex;
-        gap: 8px;
-      }
-
-      .isrs-feedback-rating-star {
-        font-size: 32px;
-        cursor: pointer;
-        transition: transform 0.1s;
-        user-select: none;
-        padding: 4px;
-        border-radius: 4px;
-      }
-
-      .isrs-feedback-rating-star:hover {
-        transform: scale(1.2);
-      }
-
-      .isrs-feedback-rating-star:focus {
-        outline: 3px solid #2E5A8A;
-        outline-offset: 2px;
-      }
-
       .isrs-feedback-modal-footer {
         padding: 0 32px 32px;
         display: flex;
@@ -371,7 +348,6 @@
       @media (prefers-reduced-motion: reduce) {
         #isrs-feedback-widget,
         .isrs-feedback-btn,
-        .isrs-feedback-rating-star,
         .isrs-feedback-modal-close,
         .isrs-feedback-form-group input,
         .isrs-feedback-form-group select,
@@ -434,12 +410,14 @@
             </div>
 
             <div class="isrs-feedback-form-group">
-              <label for="feedback-component">What component is this about? (optional)</label>
+              <label for="feedback-component">What page is this about?</label>
               <input
                 type="text"
                 id="feedback-component"
                 name="component"
-                placeholder="e.g., Registration form, Member directory"
+                placeholder="Page will be auto-populated"
+                readonly
+                style="background-color: #f5f5f5;"
               >
             </div>
 
@@ -451,23 +429,6 @@
                 <option value="feature_request">✨ Feature Request</option>
                 <option value="improvement">📈 Improvement Suggestion</option>
               </select>
-            </div>
-
-            <div class="isrs-feedback-form-group">
-              <label id="rating-label">Rating (optional)</label>
-              <div
-                class="isrs-feedback-rating"
-                id="feedback-rating"
-                role="radiogroup"
-                aria-labelledby="rating-label"
-              >
-                <span class="isrs-feedback-rating-star" data-rating="1" role="radio" aria-checked="false" aria-label="1 star" tabindex="0">☆</span>
-                <span class="isrs-feedback-rating-star" data-rating="2" role="radio" aria-checked="false" aria-label="2 stars" tabindex="-1">☆</span>
-                <span class="isrs-feedback-rating-star" data-rating="3" role="radio" aria-checked="false" aria-label="3 stars" tabindex="-1">☆</span>
-                <span class="isrs-feedback-rating-star" data-rating="4" role="radio" aria-checked="false" aria-label="4 stars" tabindex="-1">☆</span>
-                <span class="isrs-feedback-rating-star" data-rating="5" role="radio" aria-checked="false" aria-label="5 stars" tabindex="-1">☆</span>
-              </div>
-              <input type="hidden" id="feedback-rating-value" name="rating" value="">
             </div>
 
             <div class="isrs-feedback-form-group">
@@ -503,59 +464,8 @@
 
     document.body.appendChild(modal);
 
-    // Setup rating stars
-    setupRatingStars();
-
     // Setup form submission
     document.getElementById('isrs-feedback-form').onsubmit = handleFeedbackSubmit;
-  }
-
-  /**
-   * Setup rating stars with keyboard navigation
-   */
-  function setupRatingStars() {
-    const stars = document.querySelectorAll('.isrs-feedback-rating-star');
-
-    function selectRating(rating) {
-      document.getElementById('feedback-rating-value').value = rating;
-
-      // Update star display and aria-checked
-      stars.forEach((s, index) => {
-        const starRating = index + 1;
-        s.textContent = starRating <= rating ? '★' : '☆';
-        s.setAttribute('aria-checked', starRating === rating ? 'true' : 'false');
-        s.setAttribute('tabindex', starRating === rating ? '0' : '-1');
-      });
-    }
-
-    stars.forEach(star => {
-      // Click handler
-      star.onclick = function() {
-        const rating = parseInt(this.dataset.rating);
-        selectRating(rating);
-        this.focus();
-      };
-
-      // Keyboard navigation
-      star.onkeydown = function(e) {
-        const rating = parseInt(this.dataset.rating);
-
-        if (e.key === 'Enter' || e.key === ' ') {
-          e.preventDefault();
-          selectRating(rating);
-        } else if (e.key === 'ArrowRight' || e.key === 'ArrowUp') {
-          e.preventDefault();
-          if (rating < 5) {
-            stars[rating].focus();
-          }
-        } else if (e.key === 'ArrowLeft' || e.key === 'ArrowDown') {
-          e.preventDefault();
-          if (rating > 1) {
-            stars[rating - 2].focus();
-          }
-        }
-      };
-    });
   }
 
   let previouslyFocusedElement = null;
@@ -606,10 +516,17 @@
       document.getElementById('feedback-email').value = userEmail;
     }
 
-    // Focus first form field
+    // Auto-populate page/component name
+    const pageName = document.title || window.location.pathname;
+    document.getElementById('feedback-component').value = pageName;
+
+    // Focus first form field (or feedback type if user is logged in)
     setTimeout(() => {
-      const firstField = document.getElementById('feedback-name');
-      if (firstField) firstField.focus();
+      if (userName && userEmail) {
+        document.getElementById('feedback-type').focus();
+      } else {
+        document.getElementById('feedback-name').focus();
+      }
     }, 100);
 
     // Add keyboard event listener for ESC key
@@ -626,15 +543,8 @@
     const modal = document.getElementById('isrs-feedback-modal');
     modal.classList.remove('active');
 
-    // Reset form and rating stars
+    // Reset form
     document.getElementById('isrs-feedback-form').reset();
-    document.getElementById('feedback-rating-value').value = '';
-    const stars = document.querySelectorAll('.isrs-feedback-rating-star');
-    stars.forEach((s, index) => {
-      s.textContent = '☆';
-      s.setAttribute('aria-checked', 'false');
-      s.setAttribute('tabindex', index === 0 ? '0' : '-1');
-    });
 
     // Remove keyboard event listener
     document.removeEventListener('keydown', handleModalKeydown);
@@ -713,7 +623,7 @@
         page_title: document.title,
         component_name: document.getElementById('feedback-component').value || null,
         feedback_type: document.getElementById('feedback-type').value,
-        rating: document.getElementById('feedback-rating-value').value ? parseInt(document.getElementById('feedback-rating-value').value) : null,
+        rating: null,
         message: document.getElementById('feedback-message').value,
         browser_info: browserInfo,
         is_admin_portal: feedbackConfig.isAdminPortal
