@@ -6,7 +6,7 @@
 class AdminTable {
   constructor(config) {
     this.containerId = config.containerId;
-    this.columns = config.columns; // Array of {key, label, sortable, filterable, render}
+    this.columns = config.columns; // Array of {key, label, sortable, filterable, render, editable}
     this.data = [];
     this.filteredData = [];
     this.sortKey = null;
@@ -14,7 +14,9 @@ class AdminTable {
     this.searchTerm = '';
     this.filters = {};
     this.onRowClick = config.onRowClick || null;
+    this.onCellEdit = config.onCellEdit || null; // Callback for cell edits: (rowData, key, newValue) => Promise
     this.exportFileName = config.exportFileName || 'data';
+    this.editingCell = null; // Track which cell is being edited
 
     this.init();
   }
@@ -237,10 +239,12 @@ class AdminTable {
 
     tbody.innerHTML = this.filteredData.map((row, index) => `
       <tr class="table-row" data-index="${index}">
-        ${this.columns.map(col => {
+        ${this.columns.map((col, colIndex) => {
           const value = row[col.key];
           const rendered = col.render ? col.render(value, row) : this.escapeHtml(value);
-          return `<td>${rendered || '-'}</td>`;
+          const editableClass = col.editable ? 'editable-cell' : '';
+          const editableTitle = col.editable ? 'title="Double-click to edit"' : '';
+          return `<td class="${editableClass}" data-col-index="${colIndex}" ${editableTitle}>${rendered || '-'}</td>`;
         }).join('')}
       </tr>
     `).join('');
@@ -249,12 +253,24 @@ class AdminTable {
     if (this.onRowClick) {
       const rows = tbody.querySelectorAll('.table-row');
       rows.forEach((row, index) => {
-        row.addEventListener('click', () => {
-          this.onRowClick(this.filteredData[index]);
+        row.addEventListener('click', (e) => {
+          // Don't trigger row click if clicking on editable cell
+          if (!e.target.classList.contains('editable-cell')) {
+            this.onRowClick(this.filteredData[index]);
+          }
         });
         row.style.cursor = 'pointer';
       });
     }
+
+    // Attach inline edit handlers
+    const editableCells = tbody.querySelectorAll('.editable-cell');
+    editableCells.forEach(cell => {
+      cell.addEventListener('dblclick', (e) => {
+        e.stopPropagation();
+        this.startCellEdit(cell);
+      });
+    });
   }
 
   updateSortIndicators() {
@@ -328,6 +344,135 @@ class AdminTable {
     const div = document.createElement('div');
     div.textContent = text.toString();
     return div.innerHTML;
+  }
+
+  /**
+   * Start editing a cell
+   */
+  startCellEdit(cell) {
+    if (this.editingCell) return; // Already editing another cell
+
+    const row = cell.closest('tr');
+    const rowIndex = parseInt(row.dataset.index);
+    const colIndex = parseInt(cell.dataset.colIndex);
+    const column = this.columns[colIndex];
+    const rowData = this.filteredData[rowIndex];
+    const currentValue = rowData[column.key] || '';
+
+    // Store original content and editing state
+    this.editingCell = {
+      cell,
+      rowIndex,
+      colIndex,
+      rowData,
+      column,
+      originalContent: cell.innerHTML,
+      originalValue: currentValue
+    };
+
+    // Create input field
+    const input = document.createElement('input');
+    input.type = 'text';
+    input.value = currentValue;
+    input.className = 'cell-edit-input';
+    input.style.width = '100%';
+    input.style.padding = '0.5rem';
+    input.style.border = '2px solid var(--primary-blue)';
+    input.style.borderRadius = '4px';
+    input.style.fontSize = 'inherit';
+    input.style.fontFamily = 'inherit';
+
+    // Replace cell content with input
+    cell.innerHTML = '';
+    cell.appendChild(input);
+    input.focus();
+    input.select();
+
+    // Save on Enter, cancel on Escape
+    input.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        this.saveCellEdit(input.value);
+      } else if (e.key === 'Escape') {
+        e.preventDefault();
+        this.cancelCellEdit();
+      }
+    });
+
+    // Save on blur (click outside)
+    input.addEventListener('blur', () => {
+      setTimeout(() => this.saveCellEdit(input.value), 100);
+    });
+  }
+
+  /**
+   * Save cell edit
+   */
+  async saveCellEdit(newValue) {
+    if (!this.editingCell) return;
+
+    const { cell, rowData, column, originalValue, originalContent } = this.editingCell;
+
+    // Check if value changed
+    if (newValue === originalValue) {
+      this.cancelCellEdit();
+      return;
+    }
+
+    // Lowercase emails
+    if (column.key === 'email' || column.key.includes('email')) {
+      newValue = newValue.toLowerCase().trim();
+    }
+
+    // Show loading state
+    cell.innerHTML = '<span style="color: #9ca3af;">Saving...</span>';
+
+    try {
+      // Call the onCellEdit callback if provided
+      if (this.onCellEdit) {
+        await this.onCellEdit(rowData, column.key, newValue);
+      }
+
+      // Update local data
+      rowData[column.key] = newValue;
+
+      // Re-render the cell with new value
+      const rendered = column.render ? column.render(newValue, rowData) : this.escapeHtml(newValue);
+      cell.innerHTML = rendered || '-';
+
+      // Show success feedback
+      cell.style.background = '#d4edda';
+      setTimeout(() => {
+        cell.style.background = '';
+      }, 1000);
+
+    } catch (error) {
+      console.error('Error saving cell edit:', error);
+
+      // Restore original content on error
+      cell.innerHTML = originalContent;
+
+      // Show error feedback
+      cell.style.background = '#f8d7da';
+      setTimeout(() => {
+        cell.style.background = '';
+      }, 2000);
+
+      alert('Failed to save changes: ' + error.message);
+    }
+
+    this.editingCell = null;
+  }
+
+  /**
+   * Cancel cell edit
+   */
+  cancelCellEdit() {
+    if (!this.editingCell) return;
+
+    const { cell, originalContent } = this.editingCell;
+    cell.innerHTML = originalContent;
+    this.editingCell = null;
   }
 }
 
