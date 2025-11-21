@@ -39,18 +39,38 @@
     .bulk-actions.show { display: flex; }
     .bulk-actions-count { font-weight: 600; }
 
-    /* Table */
-    .table-wrapper { overflow-x: auto; }
-    table { width: 100%; border-collapse: collapse; min-width: 1200px; }
-    thead { background: var(--light-gray); position: sticky; top: 0; z-index: 10; }
-    th { padding: 0.75rem; text-align: left; font-weight: 600; color: var(--text-dark); border-bottom: 2px solid var(--border-color); white-space: nowrap; cursor: pointer; user-select: none; }
-    th:hover { background: #e8e8e8; }
-    th.sortable::after { content: ' ⇅'; opacity: 0.3; }
-    th.sort-asc::after { content: ' ▲'; opacity: 1; }
-    th.sort-desc::after { content: ' ▼'; opacity: 1; }
-    td { padding: 0.75rem; border-bottom: 1px solid var(--border-color); }
-    tr:hover { background: var(--light-gray); }
-    .checkbox-cell { width: 40px; text-align: center; }
+    /* Table - Balanced spacing */
+    .table-wrapper { overflow-x: auto; max-height: 70vh; }
+    table { width: 100%; border-collapse: collapse; min-width: 1200px; font-size: 0.95rem; }
+    thead { background: #f5f7fa; position: sticky; top: 0; z-index: 10; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
+    th {
+      padding: 1rem 0.875rem;
+      text-align: left;
+      font-weight: 600;
+      color: #4a5568;
+      border-bottom: 2px solid #e2e8f0;
+      white-space: nowrap;
+      cursor: pointer;
+      user-select: none;
+      font-size: 0.875rem;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    th:hover { background: #edf2f7; }
+    th.sortable::after { content: ' ⇅'; opacity: 0.4; color: #a0aec0; }
+    th.sort-asc::after { content: ' ↑'; opacity: 1; color: #4299e1; }
+    th.sort-desc::after { content: ' ↓'; opacity: 1; color: #4299e1; }
+    td {
+      padding: 1rem 0.875rem;
+      border-bottom: 1px solid #e2e8f0;
+      color: #2d3748;
+      vertical-align: middle;
+    }
+    tbody tr { transition: background-color 0.15s ease; }
+    tbody tr:hover { background: #f7fafc; }
+    tbody tr:nth-child(even) { background: #fafbfc; }
+    tbody tr:nth-child(even):hover { background: #f0f4f8; }
+    .checkbox-cell { width: 50px; text-align: center; }
 
     /* Column Visibility */
     .column-toggle { position: relative; display: inline-block; }
@@ -140,10 +160,10 @@
           <!-- Top row: Action buttons aligned right -->
           <div style="display: flex; justify-content: flex-end; gap: 0.5rem;">
             <button class="btn btn-secondary" onclick="handleReset()" title="Reset filters and sorting">
-              🔄 Reset
+              Reset
             </button>
             <button class="btn btn-secondary" onclick="toggleColumnMenu()">
-              ⚙️ Columns
+              Columns
             </button>
             <div class="column-toggle">
               <div class="column-toggle-menu" id="columnMenu">
@@ -178,7 +198,7 @@
             </div>
             <div class="export-dropdown">
               <button class="btn btn-secondary" onclick="toggleExportMenu()">
-                📥 Export
+                Export
               </button>
               <div class="export-menu" id="exportMenu">
                 <div style="padding: 0.5rem 1rem; border-bottom: 1px solid var(--border-color); font-size: 0.75rem; color: var(--text-light);">
@@ -198,7 +218,7 @@
                 </button>
               </div>
             </div>
-            <button class="btn btn-primary" onclick="showImportModal()">📤 Import</button>
+            <button class="btn btn-primary" onclick="showImportModal()">Import</button>
           </div>
 
           <!-- Bottom row: Search and filters -->
@@ -217,13 +237,13 @@
         </div>
       </div>
 
-      <div class="bulk-actions" id="bulkActions">
-        <span class="bulk-actions-count"><span id="selectedCount">0</span> selected</span>
-        <button class="btn btn-sm btn-success" onclick="showEmailModal()">Send Email</button>
-        <button class="btn btn-sm btn-secondary" onclick="exportSelected()">Export Selected</button>
-        <button class="btn btn-sm btn-primary" onclick="showBulkEditModal()">Edit Selected</button>
-        <button class="btn btn-sm btn-danger" onclick="bulkDeleteSelected()">Delete Selected</button>
-        <button class="btn btn-sm btn-secondary" onclick="clearSelection()">Clear</button>
+      <div class="bulk-actions" id="bulkActions" style="display: none; padding: 1rem 1.5rem; background: #e3f2fd; border-bottom: 1px solid #90caf9; align-items: center; gap: 1rem;">
+        <span class="bulk-actions-count" style="font-weight: 600; color: #1976d2;"><span id="selectedCount">0</span> selected</span>
+        <button class="btn btn-sm" style="background: #2196f3; color: white;" onclick="showEmailModal()">Send Email</button>
+        <button class="btn btn-sm" style="background: #757575; color: white;" onclick="exportSelected()">Export Selected</button>
+        <button class="btn btn-sm" style="background: #2196f3; color: white;" onclick="showBulkEditModal()">Edit Selected</button>
+        <button class="btn btn-sm" style="background: #f44336; color: white;" onclick="bulkDeleteSelected()">Delete Selected</button>
+        <button class="btn btn-sm" style="background: white; color: #424242; border: 1px solid #bdbdbd;" onclick="clearSelection()">Clear Selection</button>
       </div>
 
       <div class="table-wrapper">
@@ -687,9 +707,20 @@
     }
 
     function updateBulkActionsBar() {
-      document.getElementById('selectedCount').textContent = selectedContacts.size;
-      document.getElementById('bulkActions').classList.toggle('show', selectedContacts.size > 0);
-      document.getElementById('emailBtn').disabled = selectedContacts.size === 0;
+      const selectedCountEl = document.getElementById('selectedCount');
+      if (selectedCountEl) {
+        selectedCountEl.textContent = selectedContacts.size;
+      }
+
+      const bulkActionsEl = document.getElementById('bulkActions');
+      if (bulkActionsEl) {
+        bulkActionsEl.style.display = selectedContacts.size > 0 ? 'flex' : 'none';
+      }
+
+      const emailBtn = document.getElementById('emailBtn');
+      if (emailBtn) {
+        emailBtn.disabled = selectedContacts.size === 0;
+      }
     }
 
     function clearSelection() {
