@@ -926,12 +926,16 @@
           localStorage.clear();
           window.location.href = '/admin/';
         } else {
+          // Get email from API response or fallback to localStorage
+          const email = data.data?.email || userEmail || 'User';
+          const role = data.data?.role || userRole || 'Admin';
+
           // Display user info
-          document.getElementById('userEmail').textContent = userEmail;
-          document.getElementById('userRole').textContent = userRole;
+          document.getElementById('userEmail').textContent = email;
+          document.getElementById('userRole').textContent = role.toUpperCase();
 
           // Set avatar initial
-          const initial = userEmail.charAt(0).toUpperCase();
+          const initial = email.charAt(0).toUpperCase();
           document.getElementById('userAvatar').textContent = initial;
 
           // Load dashboard metrics
