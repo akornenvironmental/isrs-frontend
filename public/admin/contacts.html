@@ -171,6 +171,7 @@
 
           <!-- Right: Action buttons -->
           <div style="display: flex; gap: 0.5rem; margin-left: auto;">
+            <div id="claudeAIContainer"></div>
             <button class="btn btn-secondary" onclick="handleReset()" title="Reset filters and sorting">Reset</button>
             <button class="btn btn-secondary" onclick="toggleColumnMenu()">Columns</button>
             <div class="column-toggle">
@@ -568,7 +569,7 @@
                 </td>
                 <td>${contact.full_name || ((contact.first_name || '') + ' ' + (contact.last_name || '')).trim() || '-'}</td>
                 <td class="col-email">${contact.email ? contact.email.toLowerCase() : '-'}</td>
-                <td class="col-organization">${contact.organization_name || '-'}</td>
+                <td class="col-organization">${contact.organization_name ? `<a href="/admin/organizations.html?search=${encodeURIComponent(contact.organization_name)}" style="color: #2563eb; text-decoration: none; font-weight: 500;">${contact.organization_name}</a>` : '-'}</td>
                 <td class="col-role">${contact.role || '-'}</td>
                 <td class="col-country">${contact.country || '-'}</td>
                 <td class="col-city">${contact.city || '-'}</td>
@@ -1150,6 +1151,14 @@
   <!-- AI Query Bar -->
   <script src="/admin/ai-query-bar.js"></script>
   <script src="/admin/claude-ai-dropdown.js"></script>
+  <script>
+    // Initialize Claude AI dropdown
+    window.addEventListener('DOMContentLoaded', () => {
+      if (typeof ClaudeAIDropdown !== 'undefined') {
+        new ClaudeAIDropdown();
+      }
+    });
+  </script>
 
   <!-- Email Utils -->
   <script src="/js/email-utils.js"></script>

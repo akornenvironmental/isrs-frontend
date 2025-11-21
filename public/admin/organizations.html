@@ -214,7 +214,23 @@
         return;
       }
       await loadUserPermissions();
-      loadOrganizations();
+      await loadOrganizations();
+
+      // Check for search parameter in URL
+      const urlParams = new URLSearchParams(window.location.search);
+      const searchParam = urlParams.get('search');
+      if (searchParam) {
+        const searchBox = document.getElementById('searchBox');
+        if (searchBox) {
+          searchBox.value = searchParam;
+          // Trigger search
+          const searchTerm = searchParam.toLowerCase();
+          const filteredOrgs = allOrganizations.filter(org =>
+            JSON.stringify(org).toLowerCase().includes(searchTerm)
+          );
+          displayOrganizations(filteredOrgs);
+        }
+      }
     });
 
     async function loadUserPermissions() {
