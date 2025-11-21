@@ -541,10 +541,15 @@
    */
   window.closeFeedbackModal = function() {
     const modal = document.getElementById('isrs-feedback-modal');
-    modal.classList.remove('active');
+    if (modal) {
+      modal.classList.remove('active');
+    }
 
     // Reset form
-    document.getElementById('isrs-feedback-form').reset();
+    const form = document.getElementById('isrs-feedback-form');
+    if (form) {
+      form.reset();
+    }
 
     // Remove keyboard event listener
     document.removeEventListener('keydown', handleModalKeydown);
