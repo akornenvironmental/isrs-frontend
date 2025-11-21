@@ -497,7 +497,10 @@
 
           // Show/hide features based on permissions
           if (!userPermissions.canSendEmails) {
-            document.getElementById('emailBtn').style.display = 'none';
+            const emailBtn = document.getElementById('emailBtn');
+            if (emailBtn) {
+              emailBtn.style.display = 'none';
+            }
           }
 
           // AI Query is now available to all users
