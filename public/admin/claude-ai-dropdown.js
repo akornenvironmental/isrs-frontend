@@ -226,6 +226,7 @@ class ClaudeAIDropdown {
     this.showLoading();
 
     try {
+      const sessionToken = localStorage.getItem('isrs_session');
       const contact_ids = this.getSelectedContactIds();
 
       const response = await fetch(`${API_BASE_URL}/api/claude/find-duplicates`, {
@@ -255,6 +256,7 @@ class ClaudeAIDropdown {
     this.showLoading();
 
     try {
+      const sessionToken = localStorage.getItem('isrs_session');
       const contact_ids = this.getSelectedContactIds();
 
       const response = await fetch(`${API_BASE_URL}/api/claude/review-contacts`, {
@@ -290,6 +292,7 @@ class ClaudeAIDropdown {
     this.showLoading();
 
     try {
+      const sessionToken = localStorage.getItem('isrs_session');
       const response = await fetch(`${API_BASE_URL}/api/claude/enhance-contact`, {
         method: 'POST',
         headers: {
@@ -520,6 +523,7 @@ class ClaudeAIDropdown {
     this.showLoading();
 
     try {
+      const sessionToken = localStorage.getItem('isrs_session');
       // First get merge suggestion
       const suggestionRes = await fetch(`${API_BASE_URL}/api/claude/suggest-merge`, {
         method: 'POST',
@@ -606,6 +610,7 @@ class ClaudeAIDropdown {
       };
 
       // Update via API
+      const sessionToken = localStorage.getItem('isrs_session');
       const response = await fetch(`${API_BASE_URL}/api/contacts/${contactId}`, {
         method: 'PUT',
         headers: {
