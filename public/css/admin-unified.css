@@ -165,9 +165,9 @@
 .admin-toolbar {
   display: flex;
   align-items: center;
-  gap: var(--admin-space-lg);
+  gap: var(--admin-space-md);
   padding: var(--admin-space-lg) var(--admin-space-2xl);
-  background: white;
+  background: var(--admin-gray-50);
   border-bottom: 1px solid var(--admin-gray-200);
   flex-wrap: wrap;
 }
@@ -180,10 +180,17 @@
   flex-wrap: wrap;
 }
 
+.admin-toolbar-left .admin-search {
+  flex: 1;
+  min-width: 200px;
+  max-width: none;
+}
+
 .admin-toolbar-right {
   display: flex;
   align-items: center;
   gap: var(--admin-space-md);
+  flex-shrink: 0;
 }
 
 /* ===========================================

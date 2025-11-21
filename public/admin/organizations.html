@@ -21,6 +21,14 @@
       -webkit-box-orient: vertical;
     }
 
+    /* Data Quality Score */
+    .quality-score { display: inline-flex; align-items: center; gap: 0.25rem; font-size: var(--admin-text-xs); font-weight: 500; }
+    .quality-bar { width: 40px; height: 6px; background: var(--admin-gray-200); border-radius: 3px; overflow: hidden; }
+    .quality-fill { height: 100%; border-radius: 3px; transition: width 0.3s; }
+    .quality-high .quality-fill { background: var(--admin-success); }
+    .quality-medium .quality-fill { background: var(--admin-warning); }
+    .quality-low .quality-fill { background: var(--admin-danger); }
+
     /* AI Modal styles - kept from admin-styles.css */
     .ai-query-btn {
       background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
@@ -200,10 +208,10 @@
         </div>
       </div>
 
-      <div class="admin-toolbar">
-        <div class="admin-toolbar-left">
-          <input type="text" class="admin-input admin-search" id="searchBox" placeholder="Search organizations...">
-        </div>
+      <!-- Filter Toolbar - Full Width -->
+      <div class="admin-toolbar" style="gap: var(--admin-space-md);">
+        <input type="text" class="admin-input" id="searchBox" placeholder="Search organizations..." style="flex: 1; min-width: 200px;">
+        <button class="admin-btn admin-btn-secondary" onclick="resetSearch()" title="Reset search">Reset</button>
       </div>
 
       <div class="admin-table-wrapper">
@@ -337,6 +345,30 @@
       }
     }
 
+    function calculateOrgQuality(org) {
+      let score = 0;
+      let maxScore = 5;
+
+      // Check for presence of key fields
+      if (org.name) score += 1;
+      if (org.type) score += 1;
+      if (org.country) score += 1;
+      if (org.website) score += 1;
+      if (org.notes && org.notes.length > 10) score += 1;
+
+      const percentage = Math.round((score / maxScore) * 100);
+      let level = 'low';
+      if (percentage >= 80) level = 'high';
+      else if (percentage >= 60) level = 'medium';
+
+      return { score, maxScore, percentage, level };
+    }
+
+    function resetSearch() {
+      document.getElementById('searchBox').value = '';
+      displayOrganizations(allOrganizations);
+    }
+
     function displayOrganizations(organizations) {
       if (organizations.length === 0) {
         document.getElementById('tableContent').innerHTML = '<div class="admin-empty"><div class="admin-empty-title">No organizations found</div></div>';
@@ -375,19 +407,28 @@
                 Country <span class="sort-indicator">${getSortIcon('country')}</span>
               </th>
               <th>Website</th>
+              <th title="Data completeness score">Quality</th>
               <th>Notes</th>
             </tr>
           </thead>
           <tbody>
-            ${sortedOrganizations.map(org => `
+            ${sortedOrganizations.map(org => {
+              const quality = calculateOrgQuality(org);
+              return `
               <tr>
                 <td>${org.website ? `<a href="${org.website}" target="_blank" rel="noopener noreferrer">${org.name}</a>` : (org.name || '-')}</td>
                 <td>${org.type || '-'}</td>
                 <td>${org.country || '-'}</td>
                 <td>${org.website ? `<a href="${org.website}" target="_blank">Link</a>` : '-'}</td>
+                <td>
+                  <div class="quality-score quality-${quality.level}" title="${quality.score}/${quality.maxScore} fields complete">
+                    <div class="quality-bar"><div class="quality-fill" style="width: ${quality.percentage}%"></div></div>
+                    <span>${quality.percentage}%</span>
+                  </div>
+                </td>
                 <td class="notes-cell" title="${org.notes || ''}">${org.notes || '-'}</td>
               </tr>
-            `).join('')}
+            `}).join('')}
           </tbody>
         </table>
       `;

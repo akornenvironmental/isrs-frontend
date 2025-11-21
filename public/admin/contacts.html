@@ -39,6 +39,14 @@
     .priority-medium { background: #fef3c7; color: #92400e; }
     .priority-low { background: var(--admin-gray-100); color: var(--admin-gray-500); }
 
+    /* Data Quality Score */
+    .quality-score { display: inline-flex; align-items: center; gap: 0.25rem; font-size: var(--admin-text-xs); font-weight: 500; }
+    .quality-bar { width: 40px; height: 6px; background: var(--admin-gray-200); border-radius: 3px; overflow: hidden; }
+    .quality-fill { height: 100%; border-radius: 3px; transition: width 0.3s; }
+    .quality-high .quality-fill { background: var(--admin-success); }
+    .quality-medium .quality-fill { background: var(--admin-warning); }
+    .quality-low .quality-fill { background: var(--admin-danger); }
+
     /* Bulk actions bar */
     .bulk-actions { background: var(--admin-info-bg); padding: var(--admin-space-lg) var(--admin-space-xl); border-bottom: 1px solid var(--admin-info); display: none; align-items: center; gap: var(--admin-space-lg); }
     .bulk-actions.show { display: flex; }
@@ -115,37 +123,33 @@
         </div>
       </div>
 
-      <!-- Filter Toolbar -->
-      <div class="admin-toolbar">
-        <div class="admin-toolbar-left">
-          <input type="text" class="admin-input admin-search" id="searchBox" placeholder="Search contacts...">
-          <select id="countryFilter" class="admin-select">
-            <option value="">All Countries</option>
-          </select>
-          <select id="typeFilter" class="admin-select">
-            <option value="">All Types</option>
-            <option value="Academic">Academic</option>
-            <option value="Government">Government</option>
-            <option value="Non-Profit">Non-Profit</option>
-            <option value="Private">Private</option>
-            <option value="Tribal">Tribal</option>
-          </select>
-          <select id="priorityFilter" class="admin-select">
-            <option value="">All Priority</option>
-            <option value="High">High</option>
-            <option value="Medium">Medium</option>
-            <option value="Low">Low</option>
-          </select>
-          <select id="pageSizeSelect" class="admin-select" style="width: 90px;">
-            <option value="20">20</option>
-            <option value="50">50</option>
-            <option value="100">100</option>
-            <option value="999999">All</option>
-          </select>
-        </div>
-        <div class="admin-toolbar-right">
-          <button class="admin-btn admin-btn-secondary admin-btn-sm" onclick="handleReset()" title="Reset filters">Reset</button>
-        </div>
+      <!-- Filter Toolbar - Full Width -->
+      <div class="admin-toolbar" style="gap: var(--admin-space-md);">
+        <input type="text" class="admin-input" id="searchBox" placeholder="Search contacts..." style="flex: 1; min-width: 200px;">
+        <select id="countryFilter" class="admin-select" style="min-width: 140px;">
+          <option value="">All Countries</option>
+        </select>
+        <select id="typeFilter" class="admin-select" style="min-width: 120px;">
+          <option value="">All Types</option>
+          <option value="Academic">Academic</option>
+          <option value="Government">Government</option>
+          <option value="Non-Profit">Non-Profit</option>
+          <option value="Private">Private</option>
+          <option value="Tribal">Tribal</option>
+        </select>
+        <select id="priorityFilter" class="admin-select" style="min-width: 120px;">
+          <option value="">All Priority</option>
+          <option value="High">High</option>
+          <option value="Medium">Medium</option>
+          <option value="Low">Low</option>
+        </select>
+        <select id="pageSizeSelect" class="admin-select" style="width: 80px;">
+          <option value="20">20</option>
+          <option value="50">50</option>
+          <option value="100">100</option>
+          <option value="999999">All</option>
+        </select>
+        <button class="admin-btn admin-btn-secondary" onclick="handleReset()" title="Reset filters">Reset</button>
       </div>
 
       <!-- Bulk Actions Bar -->
@@ -503,6 +507,28 @@
       }
     }
 
+    function calculateDataQuality(contact) {
+      let score = 0;
+      let maxScore = 8;
+
+      // Check for presence of key fields
+      if (contact.email) score += 1;
+      if (contact.full_name || (contact.first_name && contact.last_name)) score += 1;
+      if (contact.organization_name) score += 1;
+      if (contact.contact_type) score += 1;
+      if (contact.country) score += 1;
+      if (contact.phone) score += 1;
+      if (contact.title || contact.job_title) score += 1;
+      if (contact.tags && contact.tags.length > 0) score += 1;
+
+      const percentage = Math.round((score / maxScore) * 100);
+      let level = 'low';
+      if (percentage >= 75) level = 'high';
+      else if (percentage >= 50) level = 'medium';
+
+      return { score, maxScore, percentage, level };
+    }
+
     function displayContacts() {
       const html = `
         <table class="admin-table">
@@ -517,11 +543,14 @@
               <th class="sortable col-type" onclick="sortBy('contact_type')">Type <span class="sort-indicator">${currentSort.column === 'contact_type' ? (currentSort.direction === 'asc' ? '&#9650;' : '&#9660;') : '&#8597;'}</span></th>
               <th class="sortable col-priority" onclick="sortBy('priority_level')">Priority <span class="sort-indicator">${currentSort.column === 'priority_level' ? (currentSort.direction === 'asc' ? '&#9650;' : '&#9660;') : '&#8597;'}</span></th>
               <th class="sortable col-country" onclick="sortBy('country')">Country <span class="sort-indicator">${currentSort.column === 'country' ? (currentSort.direction === 'asc' ? '&#9650;' : '&#9660;') : '&#8597;'}</span></th>
+              <th class="col-quality" title="Data completeness score">Quality</th>
               <th class="col-tags">Tags</th>
             </tr>
           </thead>
           <tbody>
-            ${paginatedContacts.map(contact => `
+            ${paginatedContacts.map(contact => {
+              const quality = calculateDataQuality(contact);
+              return `
               <tr>
                 <td class="checkbox-cell">
                   <input type="checkbox" class="contact-checkbox admin-checkbox" value="${contact.email}"
@@ -534,9 +563,15 @@
                 <td class="col-type"><span class="admin-badge type-${(contact.contact_type || '').toLowerCase().replace(/[^a-z]/g, '')}">${contact.contact_type || '-'}</span></td>
                 <td class="col-priority"><span class="admin-badge priority-${(contact.priority_level || '').toLowerCase()}">${contact.priority_level || '-'}</span></td>
                 <td class="col-country">${contact.country || '-'}</td>
+                <td class="col-quality">
+                  <div class="quality-score quality-${quality.level}" title="${quality.score}/${quality.maxScore} fields complete">
+                    <div class="quality-bar"><div class="quality-fill" style="width: ${quality.percentage}%"></div></div>
+                    <span>${quality.percentage}%</span>
+                  </div>
+                </td>
                 <td class="col-tags">${formatTags(contact.tags)}</td>
               </tr>
-            `).join('')}
+            `}).join('')}
           </tbody>
         </table>
       `;
@@ -1172,17 +1207,6 @@
   <!-- Contact Management Features -->
   <script src="/admin/contact-management.js"></script>
 
-  <!-- Claude AI Dropdown (toolbar button only, no floating sidebar) -->
-  <script src="/admin/claude-ai-dropdown.js"></script>
-  <script>
-    // Initialize Claude AI dropdown
-    window.addEventListener('DOMContentLoaded', () => {
-      if (typeof ClaudeAIDropdown !== 'undefined') {
-        new ClaudeAIDropdown();
-      }
-    });
-  </script>
-
   <!-- Email Utils -->
   <script src="/js/email-utils.js"></script>
 
@@ -1192,6 +1216,19 @@
     // Load admin layout on page load
     window.addEventListener('DOMContentLoaded', () => {
       loadAdminLayout('contacts');
+    });
+  </script>
+
+  <!-- Claude AI Dropdown (must load AFTER admin layout) -->
+  <script src="/admin/claude-ai-dropdown.js"></script>
+  <script>
+    // Initialize Claude AI dropdown after a short delay to ensure DOM is ready
+    window.addEventListener('load', () => {
+      setTimeout(() => {
+        if (typeof ClaudeAIDropdown !== 'undefined') {
+          new ClaudeAIDropdown();
+        }
+      }, 100);
     });
   </script>
 
