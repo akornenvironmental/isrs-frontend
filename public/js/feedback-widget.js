@@ -78,34 +78,31 @@
       /* Feedback Button */
       #isrs-feedback-widget {
         position: fixed;
-        right: -45px;
-        top: 50%;
-        transform: translateY(-50%) rotate(-90deg);
-        transform-origin: center center;
+        bottom: 24px;
+        right: 24px;
         z-index: 10000;
         background: linear-gradient(135deg, #2E5A8A 0%, #5BC0BE 100%);
         color: white;
         border: none;
-        padding: 14px 28px;
-        border-radius: 8px 8px 0 0;
+        padding: 12px 20px;
+        border-radius: 8px;
         cursor: pointer;
-        font-size: 15px;
+        font-size: 14px;
         font-weight: 600;
         font-family: 'PT Serif', Georgia, serif;
-        box-shadow: -2px 2px 12px rgba(46, 90, 138, 0.4);
+        box-shadow: 0 4px 12px rgba(46, 90, 138, 0.3);
         transition: all 0.3s ease;
         display: flex;
         align-items: center;
-        gap: 10px;
-        letter-spacing: 0.5px;
+        gap: 8px;
+        letter-spacing: 0.3px;
         white-space: nowrap;
-        min-width: 140px;
       }
 
       #isrs-feedback-widget:hover {
         background: linear-gradient(135deg, #5BC0BE 0%, #2E5A8A 100%);
-        box-shadow: -2px 4px 16px rgba(46, 90, 138, 0.6);
-        right: -35px;
+        box-shadow: 0 6px 16px rgba(46, 90, 138, 0.4);
+        transform: translateY(-2px);
       }
 
       #isrs-feedback-widget:focus {
@@ -114,8 +111,8 @@
       }
 
       #isrs-feedback-widget svg {
-        width: 20px;
-        height: 20px;
+        width: 18px;
+        height: 18px;
       }
 
       /* Modal Overlay */

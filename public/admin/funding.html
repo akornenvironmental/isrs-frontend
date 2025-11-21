@@ -10,11 +10,9 @@
   <link href="https://fonts.googleapis.com/css2?family=Marcellus&family=PT+Serif:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/css/styles.css">
   <link rel="stylesheet" href="/admin/admin-styles.css">
+  <link rel="stylesheet" href="/css/admin-layout.css">
   <style>
-    body { background: var(--light-gray); }
-    .admin-nav { background: var(--white); border-bottom: 1px solid var(--border-color); padding: 1rem 2rem; margin-bottom: 2rem; display: flex; justify-content: space-between; align-items: center; }
-    .admin-nav a { color: var(--primary-blue); text-decoration: none; margin-right: 2rem; font-weight: 600; }
-    .admin-nav a:hover { color: var(--secondary-blue); }
+    body { background: var(--light-gray); margin: 0; }
     .container { max-width: 1400px; margin: 0 auto; padding: 2rem; }
     .data-table { background: var(--white); border-radius: 8px; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05); overflow: hidden; }
     .table-header { padding: 1.5rem; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; }
@@ -78,19 +76,6 @@
   </style>
 </head>
 <body>
-  <div class="admin-nav">
-    <div>
-      <a href="/admin/dashboard.html">Dashboard</a>
-      <a href="/admin/contacts.html">Contacts</a>
-      <a href="/admin/organizations.html">Organizations</a>
-      <a href="/admin/funding.html">Funding</a>
-      <a href="/admin/import.html">Import</a>
-      <a href="/admin/votes.html">Board Votes</a>
-      <a href="/admin/conferences.html">Conferences</a>
-    </div>
-    <button class="btn" onclick="logout()">Logout</button>
-  </div>
-
   <div class="container">
     <div class="data-table">
       <div class="table-header">
@@ -662,6 +647,20 @@
         closeModal();
       }
     });
+  </script>
+
+  <!-- Admin Layout -->
+  <script src="/js/admin-layout.js"></script>
+  <script>
+    window.addEventListener('DOMContentLoaded', () => {
+      loadAdminLayout('funding');
+    });
+  </script>
+
+  <!-- Feedback Widget -->
+  <script src="/js/feedback-widget.js"></script>
+  <script>
+    initFeedbackWidget({ isAdminPortal: true });
   </script>
 </body>
 </html>

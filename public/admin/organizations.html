@@ -10,30 +10,11 @@
   <link href="https://fonts.googleapis.com/css2?family=Marcellus&family=PT+Serif:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/css/styles.css">
   <link rel="stylesheet" href="/admin/admin-styles.css">
+  <link rel="stylesheet" href="/css/admin-layout.css">
   <style>
     body {
       background: var(--light-gray);
-    }
-
-    .admin-nav {
-      background: var(--white);
-      border-bottom: 1px solid var(--border-color);
-      padding: 1rem 2rem;
-      margin-bottom: 2rem;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-
-    .admin-nav a {
-      color: var(--primary-blue);
-      text-decoration: none;
-      margin-right: 2rem;
-      font-weight: 600;
-    }
-
-    .admin-nav a:hover {
-      color: var(--secondary-blue);
+      margin: 0;
     }
 
     .container {
@@ -133,18 +114,6 @@
   </style>
 </head>
 <body>
-  <div class="admin-nav">
-    <div>
-      <a href="/admin/dashboard.html">Dashboard</a>
-      <a href="/admin/contacts.html">Contacts</a>
-      <a href="/admin/organizations.html">Organizations</a>
-      <a href="/admin/votes.html">Board Votes</a>
-      <a href="/admin/conferences.html">Conferences</a>
-      <a href="/admin/funding.html">Funding</a>
-    </div>
-    <button class="btn" onclick="logout()">Logout</button>
-  </div>
-
   <div class="container">
     <div class="data-table">
       <div class="table-header">
@@ -483,6 +452,20 @@
         closeAIModal();
       }
     });
+  </script>
+
+  <!-- Admin Layout -->
+  <script src="/js/admin-layout.js"></script>
+  <script>
+    window.addEventListener('DOMContentLoaded', () => {
+      loadAdminLayout('organizations');
+    });
+  </script>
+
+  <!-- Feedback Widget -->
+  <script src="/js/feedback-widget.js"></script>
+  <script>
+    initFeedbackWidget({ isAdminPortal: true });
   </script>
 </body>
 </html>

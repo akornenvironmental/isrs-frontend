@@ -488,14 +488,23 @@
         if (data.success) {
           userPermissions = data.permissions || {};
           const role = data.role || 'viewer';
-          document.getElementById('userRole').textContent = `Role: ${role.toUpperCase()}`;
+
+          // Update user role in sidebar (if element exists)
+          const userRoleEl = document.getElementById('adminUserRole');
+          if (userRoleEl) {
+            userRoleEl.textContent = role.toUpperCase();
+          }
 
           // Show/hide features based on permissions
           if (!userPermissions.canSendEmails) {
             document.getElementById('emailBtn').style.display = 'none';
           }
+
           // AI Query is now available to all users
-          document.getElementById('aiQueryBtn').style.display = 'inline-flex';
+          const aiQueryBtn = document.getElementById('aiQueryBtn');
+          if (aiQueryBtn) {
+            aiQueryBtn.style.display = 'inline-flex';
+          }
         }
       } catch (error) {
         console.error('Failed to load permissions:', error);
