@@ -122,11 +122,11 @@ class ClaudeAIDropdown {
       </div>
     `;
 
-    // Insert at the toolbar location
-    const toolbar = document.querySelector('.toolbar-right');
-    if (toolbar) {
-      toolbar.insertAdjacentHTML('afterbegin', html);
-      this.container = toolbar.querySelector('.claude-ai-dropdown');
+    // Insert at the container location
+    const container = document.getElementById('claudeAIContainer');
+    if (container) {
+      container.innerHTML = html;
+      this.container = container.querySelector('.claude-ai-dropdown');
     }
   }
 
