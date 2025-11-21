@@ -74,9 +74,14 @@
   box-sizing: border-box;
 }
 
+/* Increase base font size by ~2px for better readability */
+html {
+  font-size: 18px;
+}
+
 body {
   font-family: 'PT Serif', Georgia, serif;
-  font-size: 16px;
+  font-size: 1rem; /* 18px */
   line-height: 1.6;
   color: var(--text-dark);
   background: var(--white);

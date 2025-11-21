@@ -80,7 +80,7 @@
         position: fixed;
         bottom: 24px;
         right: 24px;
-        z-index: 10000;
+        z-index: 10001;
         background: linear-gradient(135deg, #2E5A8A 0%, #5BC0BE 100%);
         color: white;
         border: none;
@@ -92,7 +92,7 @@
         font-family: 'PT Serif', Georgia, serif;
         box-shadow: 0 4px 12px rgba(46, 90, 138, 0.3);
         transition: all 0.3s ease;
-        display: flex;
+        display: flex !important;
         align-items: center;
         gap: 8px;
         letter-spacing: 0.3px;
