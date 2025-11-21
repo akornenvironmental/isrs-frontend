@@ -10,327 +10,270 @@
   <link href="https://fonts.googleapis.com/css2?family=Marcellus&family=PT+Serif:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/css/styles.css">
   <link rel="stylesheet" href="/css/admin-layout.css">
+  <link rel="stylesheet" href="/css/admin-unified.css">
   <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
+    /* Dashboard-specific styles - minimal additions to unified CSS */
 
-    body {
-      font-family: 'PT Serif', Georgia, serif;
-      background: #f8f9fa;
-      color: #1f2937;
-    }
-
-    /* Dashboard uses admin-layout.css for sidebar - no duplicate styles needed */
-
-    /* Main Content - uses admin-main-content from admin-layout.css */
-    .main-content {
-      margin-left: 260px;
-      min-height: 100vh;
-    }
-
-    /* Override admin-main-content if needed */
-    .admin-main-content {
-      margin-left: 260px;
-      min-height: 100vh;
-    }
-
-    .top-bar {
+    /* Top bar header */
+    .dashboard-top-bar {
       background: white;
-      border-bottom: 1px solid #e5e7eb;
-      padding: 1.25rem 2rem;
-      position: sticky;
-      top: 0;
-      z-index: 50;
+      border-bottom: 1px solid var(--admin-gray-200);
+      padding: var(--admin-space-xl) var(--admin-space-2xl);
       display: flex;
       align-items: center;
       justify-content: space-between;
-      gap: 2rem;
+      gap: var(--admin-space-2xl);
     }
 
-    .top-bar h1 {
-      font-family: 'Marcellus', Georgia, serif;
-      font-size: 1.75rem;
-      color: #1f2937;
-      margin-bottom: 0.25rem;
+    .dashboard-top-bar h1 {
+      font-size: var(--admin-text-2xl);
+      margin-bottom: var(--admin-space-xs);
     }
 
-    .top-bar p {
-      color: #6b7280;
-      font-size: 0.95rem;
+    .dashboard-top-bar p {
+      color: var(--admin-gray-500);
+      font-size: var(--admin-text-md);
+      margin: 0;
     }
 
-    /* System Status */
+    /* System Status Indicator */
     .system-status {
       display: flex;
       flex-direction: column;
       align-items: flex-end;
-      gap: 0.5rem;
+      gap: var(--admin-space-sm);
     }
 
     .status-label {
-      font-size: 0.75rem;
+      font-size: var(--admin-text-xs);
       font-weight: 600;
       text-transform: uppercase;
       letter-spacing: 0.05em;
-      color: #9ca3af;
+      color: var(--admin-gray-400);
     }
 
     .status-indicator {
       display: flex;
       align-items: center;
-      gap: 0.5rem;
-      padding: 0.5rem 1rem;
-      background: #f0fdf4;
-      border-radius: 6px;
-      border: 1px solid #86efac;
+      gap: var(--admin-space-sm);
+      padding: var(--admin-space-sm) var(--admin-space-lg);
+      background: var(--admin-success-bg);
+      border-radius: var(--admin-radius-md);
+      border: 1px solid var(--admin-success);
     }
 
     .status-dot {
       width: 8px;
       height: 8px;
       border-radius: 50%;
-      background: #22c55e;
+      background: var(--admin-success);
       animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
     }
 
     @keyframes pulse {
-      0%, 100% {
-        opacity: 1;
-      }
-      50% {
-        opacity: 0.5;
-      }
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.5; }
     }
 
     .status-text {
-      font-size: 0.875rem;
+      font-size: var(--admin-text-sm);
       font-weight: 600;
-      color: #166534;
+      color: var(--admin-success-text);
     }
 
-    .content-wrapper {
-      padding: 2rem;
+    /* Content Wrapper */
+    .dashboard-content {
+      padding: var(--admin-space-2xl);
       max-width: 1400px;
     }
 
     /* Alert Banner */
     .alert-banner {
-      background: linear-gradient(135deg, var(--accent-teal) 0%, #2e8b9e 100%);
+      background: linear-gradient(135deg, var(--admin-accent) 0%, #2e8b9e 100%);
       color: white;
-      padding: 1.5rem 2rem;
-      border-radius: 12px;
-      margin-bottom: 2rem;
+      padding: var(--admin-space-2xl);
+      border-radius: var(--admin-radius-lg);
+      margin-bottom: var(--admin-space-2xl);
       display: flex;
       align-items: center;
       justify-content: space-between;
-      gap: 1.5rem;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      gap: var(--admin-space-2xl);
+      box-shadow: var(--admin-shadow-md);
     }
 
     .alert-content h2 {
-      font-family: 'Marcellus', Georgia, serif;
-      font-size: 1.35rem;
-      margin-bottom: 0.5rem;
+      font-size: var(--admin-text-xl);
+      margin-bottom: var(--admin-space-sm);
+      color: white;
     }
 
     .alert-content p {
-      font-size: 1rem;
+      font-size: var(--admin-text-md);
       opacity: 0.95;
+      margin: 0;
+      color: white;
     }
 
     .alert-actions {
       display: flex;
-      gap: 0.75rem;
+      gap: var(--admin-space-lg);
       flex-shrink: 0;
     }
 
-    .btn {
-      padding: 0.75rem 1.5rem;
-      border-radius: 8px;
-      font-weight: 600;
-      font-size: 0.95rem;
-      text-decoration: none;
-      transition: all 0.2s;
-      cursor: pointer;
-      border: none;
-      font-family: 'PT Serif', Georgia, serif;
-      white-space: nowrap;
-    }
-
-    .btn-primary {
+    .alert-btn-primary {
       background: white;
-      color: var(--primary-blue);
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+      color: var(--admin-primary);
+      padding: var(--admin-space-lg) var(--admin-space-2xl);
+      border-radius: var(--admin-radius-lg);
+      font-weight: 600;
+      font-size: var(--admin-text-md);
+      text-decoration: none;
+      box-shadow: var(--admin-shadow-sm);
+      transition: all var(--admin-transition);
     }
 
-    .btn-primary:hover {
+    .alert-btn-primary:hover {
       transform: translateY(-2px);
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+      box-shadow: var(--admin-shadow-md);
+      text-decoration: none;
     }
 
-    .btn-secondary {
+    .alert-btn-secondary {
       background: rgba(255, 255, 255, 0.2);
       color: white;
+      padding: var(--admin-space-lg) var(--admin-space-2xl);
+      border-radius: var(--admin-radius-lg);
+      font-weight: 600;
+      font-size: var(--admin-text-md);
+      text-decoration: none;
       border: 1px solid rgba(255, 255, 255, 0.3);
+      transition: all var(--admin-transition);
     }
 
-    .btn-secondary:hover {
+    .alert-btn-secondary:hover {
       background: rgba(255, 255, 255, 0.3);
+      text-decoration: none;
+      color: white;
     }
 
-    /* Key Metrics */
-    .metrics-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-      gap: 1.5rem;
-      margin-bottom: 2rem;
-    }
-
-    .metric-card {
-      background: white;
-      padding: 1.75rem;
-      border-radius: 12px;
-      border: 1px solid #e5e7eb;
-      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
-      transition: all 0.3s;
-    }
-
-    .metric-card:hover {
-      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
-      transform: translateY(-2px);
-    }
-
-    .metric-header {
+    /* Extended stat card styles */
+    .admin-stat-card .stat-header {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      margin-bottom: 1rem;
+      margin-bottom: var(--admin-space-lg);
     }
 
-    .metric-title {
-      font-size: 0.875rem;
-      font-weight: 600;
-      color: #6b7280;
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-    }
-
-    .metric-icon {
+    .admin-stat-card .stat-icon {
       width: 48px;
       height: 48px;
-      border-radius: 10px;
+      border-radius: var(--admin-radius-md);
       display: flex;
       align-items: center;
       justify-content: center;
       font-size: 1.5rem;
     }
 
-    .metric-value {
-      font-size: 2.75rem;
-      font-weight: 700;
-      color: #1f2937;
-      margin-bottom: 0.5rem;
-      line-height: 1;
+    .admin-stat-card .stat-icon-blue {
+      background: linear-gradient(135deg, #3b82f6, #2563eb);
+      color: white;
     }
 
-    .metric-description {
-      font-size: 0.875rem;
-      color: #6b7280;
+    .admin-stat-card .stat-icon-purple {
+      background: linear-gradient(135deg, #8b5cf6, #7c3aed);
+      color: white;
     }
 
-    .loading-dots {
-      animation: blink 1.4s infinite;
+    .admin-stat-card .stat-icon-amber {
+      background: linear-gradient(135deg, #f59e0b, #d97706);
+      color: white;
     }
 
-    @keyframes blink {
-      0%, 100% { opacity: 0.3; }
-      50% { opacity: 1; }
+    .admin-stat-card .stat-description {
+      font-size: var(--admin-text-sm);
+      color: var(--admin-gray-500);
+      margin-top: var(--admin-space-sm);
     }
 
-    /* Quick Actions */
-    .section {
-      margin-bottom: 2.5rem;
+    /* Section styles */
+    .dashboard-section {
+      margin-bottom: var(--admin-space-2xl);
     }
 
     .section-header {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      margin-bottom: 1.25rem;
+      margin-bottom: var(--admin-space-xl);
     }
 
     .section-title {
-      font-family: 'Marcellus', Georgia, serif;
-      font-size: 1.5rem;
-      color: #1f2937;
+      font-size: var(--admin-text-xl);
+      color: var(--admin-gray-800);
       display: flex;
       align-items: center;
-      gap: 0.75rem;
+      gap: var(--admin-space-lg);
     }
 
     .section-icon {
       font-size: 1.75rem;
     }
 
+    /* Action Cards Grid */
     .actions-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-      gap: 1.25rem;
+      gap: var(--admin-space-xl);
     }
 
     .action-card {
       background: white;
-      padding: 1.75rem;
-      border-radius: 12px;
-      border: 2px solid #e5e7eb;
+      padding: var(--admin-space-2xl);
+      border-radius: var(--admin-radius-lg);
+      border: 2px solid var(--admin-gray-200);
       text-decoration: none;
       transition: all 0.3s;
       display: flex;
       flex-direction: column;
       align-items: flex-start;
-      gap: 0.75rem;
-      position: relative;
-      overflow: hidden;
+      gap: var(--admin-space-lg);
     }
 
     .action-card:hover {
-      border-color: var(--primary-blue);
-      box-shadow: 0 8px 24px rgba(59, 130, 246, 0.15);
+      border-color: var(--admin-primary);
+      box-shadow: var(--admin-shadow-lg);
       transform: translateY(-4px);
+      text-decoration: none;
     }
 
     .action-card-icon {
       width: 56px;
       height: 56px;
-      border-radius: 12px;
+      border-radius: var(--admin-radius-lg);
       display: flex;
       align-items: center;
       justify-content: center;
       font-size: 1.75rem;
-      background: #f3f4f6;
     }
 
     .action-card-title {
-      font-size: 1.125rem;
+      font-size: var(--admin-text-lg);
       font-weight: 700;
-      color: #1f2937;
+      color: var(--admin-gray-800);
     }
 
     .action-card-description {
-      font-size: 0.875rem;
-      color: #6b7280;
+      font-size: var(--admin-text-sm);
+      color: var(--admin-gray-500);
       line-height: 1.5;
     }
 
     /* Collapsible Section */
     .collapsible-section {
       background: white;
-      border: 1px solid #e5e7eb;
-      border-radius: 12px;
-      margin-bottom: 1.5rem;
+      border: 1px solid var(--admin-gray-200);
+      border-radius: var(--admin-radius-lg);
+      margin-bottom: var(--admin-space-2xl);
       overflow: hidden;
     }
 
@@ -338,27 +281,27 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: 1.5rem 1.75rem;
+      padding: var(--admin-space-2xl);
       cursor: pointer;
-      transition: background 0.2s;
+      transition: background var(--admin-transition);
     }
 
     .collapsible-header:hover {
-      background: #f9fafb;
+      background: var(--admin-gray-50);
     }
 
     .collapsible-title {
       display: flex;
       align-items: center;
-      gap: 0.75rem;
-      font-size: 1.125rem;
+      gap: var(--admin-space-lg);
+      font-size: var(--admin-text-lg);
       font-weight: 700;
-      color: #1f2937;
+      color: var(--admin-gray-800);
     }
 
     .collapsible-toggle {
       font-size: 1.5rem;
-      color: #9ca3af;
+      color: var(--admin-gray-400);
       transition: transform 0.3s;
     }
 
@@ -377,74 +320,83 @@
     }
 
     .collapsible-inner {
-      padding: 0 1.75rem 1.75rem 1.75rem;
+      padding: 0 var(--admin-space-2xl) var(--admin-space-2xl);
     }
 
+    /* Financial Grid */
     .financial-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-      gap: 1.25rem;
+      gap: var(--admin-space-xl);
     }
 
     .financial-item {
-      background: #f9fafb;
-      padding: 1.25rem;
-      border-radius: 8px;
-      border: 1px solid #e5e7eb;
+      background: var(--admin-gray-50);
+      padding: var(--admin-space-xl);
+      border-radius: var(--admin-radius-md);
+      border: 1px solid var(--admin-gray-200);
     }
 
     .financial-header {
       display: flex;
       justify-content: space-between;
       align-items: flex-start;
-      margin-bottom: 0.75rem;
+      margin-bottom: var(--admin-space-lg);
     }
 
     .financial-label {
-      font-size: 0.875rem;
+      font-size: var(--admin-text-sm);
       font-weight: 600;
-      color: #4b5563;
+      color: var(--admin-gray-600);
     }
 
     .financial-account {
-      font-size: 0.75rem;
-      color: #9ca3af;
+      font-size: var(--admin-text-xs);
+      color: var(--admin-gray-400);
     }
 
     .financial-amount {
-      font-size: 1.75rem;
+      font-size: var(--admin-text-2xl);
       font-weight: 700;
-      color: #1f2937;
-      margin-bottom: 0.5rem;
+      color: var(--admin-gray-800);
+      margin-bottom: var(--admin-space-sm);
     }
 
     .financial-note {
-      font-size: 0.75rem;
-      color: #6b7280;
+      font-size: var(--admin-text-xs);
+      color: var(--admin-gray-500);
       line-height: 1.5;
     }
 
+    .financial-tip {
+      margin-top: var(--admin-space-md);
+      background: var(--admin-warning-bg);
+      padding: var(--admin-space-md);
+      border-radius: var(--admin-radius-sm);
+      font-size: var(--admin-text-xs);
+    }
+
+    /* Link List */
     .link-list {
       display: flex;
-      flex-direction: row;
       flex-wrap: wrap;
-      gap: 1rem;
-      margin-top: 1rem;
+      gap: var(--admin-space-lg);
+      margin-top: var(--admin-space-xl);
     }
 
     .link-item {
       display: flex;
       align-items: center;
-      gap: 0.75rem;
-      padding: 1.125rem 1.5rem;
-      background: #f9fafb;
-      border: 1px solid #e5e7eb;
-      border-radius: 8px;
+      gap: var(--admin-space-lg);
+      padding: var(--admin-space-xl) var(--admin-space-2xl);
+      background: var(--admin-gray-50);
+      border: 1px solid var(--admin-gray-200);
+      border-radius: var(--admin-radius-md);
       text-decoration: none;
-      color: var(--primary-blue);
-      font-size: 1.05rem;
+      color: var(--admin-primary);
+      font-size: var(--admin-text-md);
       font-weight: 600;
-      transition: all 0.2s;
+      transition: all var(--admin-transition);
       flex: 1;
       min-width: 200px;
     }
@@ -454,72 +406,304 @@
     }
 
     .link-item:hover {
-      background: #eff6ff;
-      border-color: var(--primary-blue);
+      background: var(--admin-primary-light);
+      border-color: var(--admin-primary);
       transform: translateY(-2px);
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      box-shadow: var(--admin-shadow-md);
+      text-decoration: none;
     }
 
-    @media (max-width: 768px) {
-      .link-list {
-        flex-direction: column;
-      }
-
-      .link-item {
-        flex: none;
-      }
+    /* System Status Card */
+    .system-status-card {
+      background: white;
+      padding: var(--admin-space-2xl);
+      border-radius: var(--admin-radius-lg);
+      border: 1px solid var(--admin-gray-200);
     }
 
-    /* Status Badge */
-    .status-badge {
-      display: inline-flex;
+    .system-status-card .card-content {
+      display: flex;
       align-items: center;
-      gap: 0.5rem;
-      padding: 0.5rem 1rem;
-      background: #d1fae5;
-      color: #065f46;
-      border-radius: 6px;
-      font-size: 0.875rem;
-      font-weight: 600;
+      justify-content: space-between;
     }
 
-    .status-dot {
-      width: 8px;
-      height: 8px;
-      border-radius: 50%;
-      background: #10b981;
+    .system-status-card .card-info {
+      display: flex;
+      align-items: center;
+      gap: var(--admin-space-lg);
+    }
+
+    .system-status-card .card-icon {
+      font-size: 1.5rem;
+    }
+
+    .system-status-card .card-title {
+      font-size: var(--admin-text-lg);
+      font-weight: 700;
+      color: var(--admin-gray-800);
+      margin-bottom: var(--admin-space-xs);
+    }
+
+    .system-status-card .card-subtitle {
+      font-size: var(--admin-text-sm);
+      color: var(--admin-gray-500);
+    }
+
+    /* Loading animation */
+    .loading-dots {
+      animation: blink 1.4s infinite;
+    }
+
+    @keyframes blink {
+      0%, 100% { opacity: 0.3; }
+      50% { opacity: 1; }
+    }
+
+    /* AI Assistant Slide-out Panel */
+    .ai-assistant-container {
+      position: fixed;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      z-index: 1000;
+    }
+
+    .ai-panel {
+      background: white;
+      border-left: 2px solid var(--admin-primary);
+      box-shadow: -4px 0 20px rgba(0, 0, 0, 0.15);
+      height: 100%;
+      width: 450px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .ai-panel-content {
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+    }
+
+    .ai-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: var(--admin-space-2xl);
+      border-bottom: 1px solid var(--admin-gray-200);
+    }
+
+    .ai-header-left {
+      display: flex;
+      align-items: center;
+      gap: var(--admin-space-lg);
+    }
+
+    .ai-icon {
+      width: 40px;
+      height: 40px;
+      background: linear-gradient(135deg, var(--admin-primary) 0%, #8b5cf6 100%);
+      border-radius: var(--admin-radius-md);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.25rem;
+    }
+
+    .ai-header h3 {
+      font-size: var(--admin-text-lg);
+      font-weight: bold;
+      color: var(--admin-gray-900);
+      margin: 0;
+    }
+
+    .ai-subtitle {
+      font-size: var(--admin-text-xs);
+      color: var(--admin-gray-500);
+      margin: 0;
+    }
+
+    .ai-close-btn {
+      color: var(--admin-gray-400);
+      font-size: 2rem;
+      line-height: 1;
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 0;
+      transition: color var(--admin-transition);
+    }
+
+    .ai-close-btn:hover {
+      color: var(--admin-gray-600);
+    }
+
+    .ai-content {
+      flex: 1;
+      overflow-y: auto;
+      padding: var(--admin-space-2xl);
+    }
+
+    .ai-prompt-text {
+      font-size: var(--admin-text-sm);
+      color: var(--admin-gray-600);
+      margin-bottom: var(--admin-space-lg);
+    }
+
+    .ai-examples-list {
+      display: flex;
+      flex-direction: column;
+      gap: var(--admin-space-md);
+    }
+
+    .ai-example-btn {
+      width: 100%;
+      text-align: left;
+      padding: var(--admin-space-lg) var(--admin-space-xl);
+      background: var(--admin-gray-50);
+      border: 1px solid var(--admin-gray-200);
+      border-radius: var(--admin-radius-md);
+      font-size: var(--admin-text-sm);
+      color: var(--admin-gray-700);
+      cursor: pointer;
+      transition: all var(--admin-transition);
+      font-family: var(--admin-font-body);
+    }
+
+    .ai-example-btn:hover {
+      background: var(--admin-primary-light);
+      border-color: var(--admin-primary);
+      color: var(--admin-primary);
+    }
+
+    .ai-example-btn span {
+      color: var(--admin-primary);
+      margin-right: var(--admin-space-md);
+    }
+
+    .ai-loading-state {
+      text-align: center;
+      padding: var(--admin-space-2xl) 0;
+    }
+
+    .ai-loading-state .admin-spinner {
+      width: 48px;
+      height: 48px;
+      border-width: 3px;
+      margin: 0 auto var(--admin-space-lg);
+    }
+
+    .ai-loading-state p {
+      color: var(--admin-gray-500);
+    }
+
+    .ai-input-area {
+      border-top: 1px solid var(--admin-gray-200);
+      padding: var(--admin-space-lg);
+    }
+
+    .ai-input-area form {
+      display: flex;
+      gap: var(--admin-space-md);
+    }
+
+    .ai-input {
+      flex: 1;
+      padding: var(--admin-space-lg) var(--admin-space-xl);
+      border: 1px solid var(--admin-gray-300);
+      border-radius: var(--admin-radius-md);
+      font-size: var(--admin-text-sm);
+      font-family: var(--admin-font-body);
+      transition: border-color var(--admin-transition);
+    }
+
+    .ai-input:focus {
+      outline: none;
+      border-color: var(--admin-primary);
+      box-shadow: 0 0 0 3px rgba(46, 90, 138, 0.1);
+    }
+
+    .ai-submit-btn {
+      padding: var(--admin-space-lg) var(--admin-space-2xl);
+      background: var(--admin-primary);
+      color: white;
+      border: none;
+      border-radius: var(--admin-radius-md);
+      font-family: var(--admin-font-body);
+      font-size: var(--admin-text-sm);
+      font-weight: 600;
+      cursor: pointer;
+      transition: background var(--admin-transition);
+    }
+
+    .ai-submit-btn:hover {
+      background: var(--admin-primary-hover);
+    }
+
+    .ai-submit-btn:disabled {
+      background: var(--admin-gray-300);
+      cursor: not-allowed;
+    }
+
+    .ai-tab {
+      position: absolute;
+      top: 50%;
+      right: 0;
+      transform: translateY(-50%);
+      background: linear-gradient(to bottom, var(--admin-primary), #8b5cf6);
+      color: white;
+      border: none;
+      padding: 20px 12px;
+      border-top-left-radius: var(--admin-radius-md);
+      border-bottom-left-radius: var(--admin-radius-md);
+      cursor: pointer;
+      box-shadow: var(--admin-shadow-lg);
+      writing-mode: vertical-rl;
+      text-orientation: mixed;
+      display: flex;
+      align-items: center;
+      gap: var(--admin-space-md);
+      transition: all 0.3s;
+    }
+
+    .ai-tab:hover {
+      background: linear-gradient(to bottom, var(--admin-primary-hover), #7c3aed);
+      box-shadow: -4px 4px 12px rgba(0, 0, 0, 0.3);
+    }
+
+    .ai-tab-icon {
+      font-size: 1.25rem;
+    }
+
+    .ai-tab-text {
+      font-family: var(--admin-font-body);
+      font-weight: 500;
+      white-space: nowrap;
+    }
+
+    /* AI Response Styles */
+    .ai-response-content .ai-response-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: var(--admin-space-lg);
+    }
+
+    .ai-response-content h4 {
+      font-family: var(--admin-font-display);
+      color: var(--admin-gray-900);
+      margin: 0;
     }
 
     /* Mobile Responsive */
     @media (max-width: 1024px) {
-      .sidebar {
-        transform: translateX(-100%);
-        transition: transform 0.3s;
+      .dashboard-top-bar {
+        flex-direction: column;
+        text-align: center;
+        gap: var(--admin-space-lg);
       }
 
-      .sidebar.mobile-open {
-        transform: translateX(0);
-      }
-
-      .main-content {
-        margin-left: 0;
-      }
-
-      .mobile-menu-btn {
-        display: block;
-        position: fixed;
-        bottom: 1.5rem;
-        right: 1.5rem;
-        width: 56px;
-        height: 56px;
-        border-radius: 50%;
-        background: var(--primary-blue);
-        color: white;
-        border: none;
-        font-size: 1.5rem;
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-        cursor: pointer;
-        z-index: 200;
+      .system-status {
+        align-items: center;
       }
 
       .alert-banner {
@@ -532,109 +716,46 @@
         width: 100%;
       }
 
-      .btn {
+      .alert-btn-primary,
+      .alert-btn-secondary {
         width: 100%;
+        text-align: center;
       }
 
-      .metrics-grid,
+      .admin-stats-grid,
       .actions-grid {
         grid-template-columns: 1fr;
       }
+
+      .ai-panel {
+        width: 100%;
+      }
     }
 
-    @media (max-width: 640px) {
-      .content-wrapper {
-        padding: 1rem;
+    @media (max-width: 768px) {
+      .dashboard-content {
+        padding: var(--admin-space-lg);
       }
 
-      .top-bar {
-        padding: 1rem;
+      .dashboard-top-bar {
+        padding: var(--admin-space-lg);
       }
 
-      .metric-value {
-        font-size: 2rem;
+      .link-list {
+        flex-direction: column;
+      }
+
+      .link-item {
+        flex: none;
       }
     }
   </style>
 </head>
-<body>
-  <!-- Sidebar Navigation -->
-  <aside class="admin-sidebar" id="sidebar">
-    <div class="sidebar-header">
-      <a href="/admin/dashboard.html" class="sidebar-logo">ISRS Admin</a>
-      <div class="sidebar-subtitle" style="font-size: 0.85rem; font-weight: 600;">Management Portal</div>
-    </div>
-
-    <nav class="sidebar-nav">
-      <div class="nav-section">
-        <a href="/" target="_blank" class="nav-item" style="background: #eff6ff; border-left-color: var(--accent-teal);">
-          <span class="nav-icon">🌐</span>
-          <span>View Main Website</span>
-          <span style="margin-left: auto; font-size: 0.875rem;">↗</span>
-        </a>
-      </div>
-
-      <div class="nav-section">
-        <div class="nav-section-title">Overview</div>
-        <a href="/admin/dashboard.html" class="nav-item active">
-          <span class="nav-icon">📊</span>
-          <span>Dashboard</span>
-        </a>
-      </div>
-
-      <div class="nav-section">
-        <div class="nav-section-title">Data Management</div>
-        <a href="/admin/contacts.html" class="nav-item">
-          <span class="nav-icon">👥</span>
-          <span>Contacts</span>
-        </a>
-        <a href="/admin/organizations.html" class="nav-item">
-          <span class="nav-icon">🏢</span>
-          <span>Organizations</span>
-        </a>
-        <a href="/admin/conferences.html" class="nav-item">
-          <span class="nav-icon">📅</span>
-          <span>Conferences</span>
-        </a>
-      </div>
-
-      <div class="nav-section">
-        <div class="nav-section-title">Governance</div>
-        <a href="/admin/votes.html" class="nav-item">
-          <span class="nav-icon">🗳️</span>
-          <span>Board Votes</span>
-        </a>
-        <a href="/admin/funding.html" class="nav-item">
-          <span class="nav-icon">💰</span>
-          <span>Funding</span>
-        </a>
-      </div>
-
-      <div class="nav-section">
-        <div class="nav-section-title">System</div>
-        <a href="/admin/settings.html" class="nav-item">
-          <span class="nav-icon">⚙️</span>
-          <span>Settings</span>
-        </a>
-      </div>
-    </nav>
-
-    <div class="sidebar-footer">
-      <div class="user-profile">
-        <div class="user-avatar" id="userAvatar">A</div>
-        <div class="user-details">
-          <div class="user-email" id="userEmail">Loading...</div>
-          <div class="user-role" id="userRole">Admin</div>
-        </div>
-      </div>
-      <button class="btn-logout" onclick="logout()">Sign Out</button>
-    </div>
-  </aside>
-
+<body class="admin-page">
   <!-- Main Content -->
-  <main class="main-content">
+  <div class="admin-content-padded">
     <!-- Top Bar -->
-    <div class="top-bar">
+    <div class="dashboard-top-bar">
       <div>
         <h1>Dashboard</h1>
         <p>Welcome back! Here's what's happening with ISRS today.</p>
@@ -649,7 +770,7 @@
     </div>
 
     <!-- Content -->
-    <div class="content-wrapper">
+    <div class="dashboard-content">
       <!-- Conference Alert Banner -->
       <div class="alert-banner">
         <div class="alert-content">
@@ -657,43 +778,43 @@
           <p>October 4-8, 2026 | Registration opens December 1, 2025</p>
         </div>
         <div class="alert-actions">
-          <a href="/conference/register.html" target="_blank" class="btn btn-primary">Public Portal</a>
-          <a href="/admin/conferences.html" class="btn btn-secondary">Manage</a>
+          <a href="/conference/register.html" target="_blank" class="alert-btn-primary">Public Portal</a>
+          <a href="/admin/conferences.html" class="alert-btn-secondary">Manage</a>
         </div>
       </div>
 
       <!-- Key Metrics -->
-      <div class="metrics-grid">
-        <div class="metric-card">
-          <div class="metric-header">
-            <div class="metric-title">Total Contacts</div>
-            <div class="metric-icon" style="background: linear-gradient(135deg, #3b82f6, #2563eb); color: white;">👥</div>
+      <div class="admin-stats-grid admin-mb-lg">
+        <div class="admin-stat-card">
+          <div class="stat-header">
+            <div class="admin-stat-label">Total Contacts</div>
+            <div class="stat-icon stat-icon-blue">👥</div>
           </div>
-          <div class="metric-value" id="metricContacts"><span class="loading-dots">...</span></div>
-          <div class="metric-description">Network members worldwide</div>
+          <div class="admin-stat-value" id="metricContacts"><span class="loading-dots">...</span></div>
+          <div class="stat-description">Network members worldwide</div>
         </div>
 
-        <div class="metric-card">
-          <div class="metric-header">
-            <div class="metric-title">Organizations</div>
-            <div class="metric-icon" style="background: linear-gradient(135deg, #8b5cf6, #7c3aed); color: white;">🏢</div>
+        <div class="admin-stat-card">
+          <div class="stat-header">
+            <div class="admin-stat-label">Organizations</div>
+            <div class="stat-icon stat-icon-purple">🏢</div>
           </div>
-          <div class="metric-value" id="metricOrgs"><span class="loading-dots">...</span></div>
-          <div class="metric-description">Partner institutions</div>
+          <div class="admin-stat-value" id="metricOrgs"><span class="loading-dots">...</span></div>
+          <div class="stat-description">Partner institutions</div>
         </div>
 
-        <div class="metric-card">
-          <div class="metric-header">
-            <div class="metric-title">ICSR2026 Registrations</div>
-            <div class="metric-icon" style="background: linear-gradient(135deg, #f59e0b, #d97706); color: white;">📅</div>
+        <div class="admin-stat-card">
+          <div class="stat-header">
+            <div class="admin-stat-label">ICSR2026 Registrations</div>
+            <div class="stat-icon stat-icon-amber">📅</div>
           </div>
-          <div class="metric-value" id="metricRegistrations"><span class="loading-dots">...</span></div>
-          <div class="metric-description">Opens December 2025</div>
+          <div class="admin-stat-value" id="metricRegistrations"><span class="loading-dots">...</span></div>
+          <div class="stat-description">Opens December 2025</div>
         </div>
       </div>
 
       <!-- Quick Actions -->
-      <section class="section">
+      <section class="dashboard-section">
         <div class="section-header">
           <h2 class="section-title">
             <span class="section-icon">⚡</span>
@@ -702,7 +823,7 @@
         </div>
         <div class="actions-grid">
           <a href="/admin/contacts.html" class="action-card">
-            <div class="action-card-icon" style="background: #eff6ff; color: #3b82f6;">👥</div>
+            <div class="action-card-icon" style="background: var(--admin-primary-light); color: #3b82f6;">👥</div>
             <div class="action-card-title">Manage Contacts</div>
             <div class="action-card-description">View and edit network members, add new contacts</div>
           </a>
@@ -714,13 +835,13 @@
           </a>
 
           <a href="/admin/conferences.html" class="action-card">
-            <div class="action-card-icon" style="background: #fef3c7; color: #f59e0b;">📅</div>
+            <div class="action-card-icon" style="background: var(--admin-warning-bg); color: var(--admin-warning);">📅</div>
             <div class="action-card-title">Conference Manager</div>
             <div class="action-card-description">Manage ICSR2026 registrations and details</div>
           </a>
 
           <a href="/admin/votes.html" class="action-card">
-            <div class="action-card-icon" style="background: #dbeafe; color: #0284c7;">🗳️</div>
+            <div class="action-card-icon" style="background: var(--admin-info-bg); color: #0284c7;">🗳️</div>
             <div class="action-card-title">Board Voting</div>
             <div class="action-card-description">Review votes and governance decisions</div>
           </a>
@@ -746,7 +867,7 @@
                 </div>
                 <div class="financial-amount">$8,000.00</div>
                 <div class="financial-note">Available Credit</div>
-                <div class="financial-note" style="margin-top: 0.5rem; background: #fef3c7; padding: 0.5rem; border-radius: 4px;">
+                <div class="financial-tip">
                   💡 Earn 90,000 bonus points with $8,000 spend by Nov 12, 2025
                 </div>
               </div>
@@ -770,8 +891,8 @@
               </div>
             </div>
 
-            <div style="margin-top: 1.5rem; padding-top: 1.5rem; border-top: 1px solid #e5e7eb;">
-              <h4 style="font-size: 1rem; font-weight: 700; color: #1f2937; margin-bottom: 1rem;">Zeffy Fundraising Links</h4>
+            <div class="admin-mt-lg" style="padding-top: var(--admin-space-2xl); border-top: 1px solid var(--admin-gray-200);">
+              <h4 style="font-size: var(--admin-text-md); font-weight: 700; color: var(--admin-gray-800); margin-bottom: var(--admin-space-lg);">Zeffy Fundraising Links</h4>
               <div class="link-list">
                 <a href="https://www.zeffy.com/en-US/ticketing/icsr2026-international-conference-on-shellfish-restoration" target="_blank" class="link-item">
                   <span>🎟️</span>
@@ -788,37 +909,42 @@
               </div>
             </div>
 
-            <div style="margin-top: 1.5rem; text-align: right;">
-              <a href="/admin/funding.html" style="color: var(--primary-blue); font-weight: 600; text-decoration: none; font-size: 0.95rem;">View Full Funding Details →</a>
+            <div class="admin-mt-lg admin-text-right">
+              <a href="/admin/funding.html" style="color: var(--admin-primary); font-weight: 600; text-decoration: none; font-size: var(--admin-text-md);">View Full Funding Details →</a>
             </div>
           </div>
         </div>
       </div>
 
       <!-- System Status -->
-      <div style="background: white; padding: 1.5rem; border-radius: 12px; border: 1px solid #e5e7eb;">
-        <div style="display: flex; align-items: center; justify-content: space-between;">
-          <div style="display: flex; align-items: center; gap: 0.75rem;">
-            <span style="font-size: 1.5rem;">🔒</span>
+      <div class="system-status-card">
+        <div class="card-content">
+          <div class="card-info">
+            <span class="card-icon">🔒</span>
             <div>
-              <h3 style="font-size: 1.125rem; font-weight: 700; color: #1f2937; margin-bottom: 0.25rem;">System Status</h3>
-              <p style="font-size: 0.875rem; color: #6b7280;">All systems operational</p>
+              <h3 class="card-title">System Status</h3>
+              <p class="card-subtitle">All systems operational</p>
             </div>
           </div>
-          <div class="status-badge">
+          <span class="admin-badge admin-badge-success">
             <span class="status-dot"></span>
             Connected
-          </div>
+          </span>
         </div>
       </div>
     </div>
-  </main>
+  </div>
 
-  <!-- Mobile Menu Button -->
-  <button class="mobile-menu-btn" onclick="toggleMobileMenu()" style="display: none;">☰</button>
+  <!-- Admin Layout Script (handles sidebar navigation) -->
+  <script src="/js/admin-layout.js"></script>
 
   <script>
     const API_BASE_URL = 'https://isrs-database-backend.onrender.com';
+
+    // Initialize admin layout with current page indicator
+    document.addEventListener('DOMContentLoaded', () => {
+      loadAdminLayout('dashboard');
+    });
 
     // Format number with commas
     function formatNumber(num) {
@@ -847,12 +973,6 @@
         content.classList.add('open');
         toggle.classList.add('open');
       }
-    }
-
-    // Toggle mobile menu
-    function toggleMobileMenu() {
-      const sidebar = document.getElementById('sidebar');
-      sidebar.classList.toggle('mobile-open');
     }
 
     // Load dashboard metrics
@@ -926,17 +1046,11 @@
           localStorage.clear();
           window.location.href = '/admin/';
         } else {
-          // Get email from API response or fallback to localStorage
-          const email = data.data?.email || userEmail || 'User';
-          const role = data.data?.role || userRole || 'Admin';
-
-          // Display user info
-          document.getElementById('userEmail').textContent = email;
-          document.getElementById('userRole').textContent = role.toUpperCase();
-
-          // Set avatar initial
-          const initial = email.charAt(0).toUpperCase();
-          document.getElementById('userAvatar').textContent = initial;
+          // Store user data for admin-layout.js
+          localStorage.setItem('isrs_user_data', JSON.stringify({
+            email: data.data?.email || userEmail || 'User',
+            role: data.data?.role || userRole || 'Admin'
+          }));
 
           // Load dashboard metrics
           loadDashboardMetrics();
@@ -946,37 +1060,6 @@
         localStorage.clear();
         window.location.href = '/admin/';
       });
-    });
-
-    async function logout() {
-      const sessionToken = localStorage.getItem('isrs_session');
-
-      try {
-        await fetch(`${API_BASE_URL}/api/auth/logout`, {
-          method: 'POST',
-          headers: {
-            'Authorization': `Bearer ${sessionToken}`
-          }
-        });
-      } catch (error) {
-        console.error('Logout error:', error);
-      }
-
-      localStorage.clear();
-      window.location.href = '/admin/';
-    }
-
-    // Close mobile menu when clicking outside
-    document.addEventListener('click', (e) => {
-      const sidebar = document.getElementById('sidebar');
-      const mobileBtn = document.querySelector('.mobile-menu-btn');
-
-      if (window.innerWidth <= 1024 &&
-          sidebar.classList.contains('mobile-open') &&
-          !sidebar.contains(e.target) &&
-          !mobileBtn.contains(e.target)) {
-        sidebar.classList.remove('mobile-open');
-      }
     });
   </script>
 
@@ -1024,7 +1107,7 @@
           </div>
 
           <div id="aiLoading" class="ai-loading-state" style="display: none;">
-            <div class="ai-spinner"></div>
+            <div class="admin-spinner"></div>
             <p>Analyzing your data...</p>
           </div>
 
@@ -1054,243 +1137,6 @@
       <span class="ai-tab-text">AI Assistant</span>
     </button>
   </div>
-
-  <style>
-    /* AI Assistant Styles */
-    .ai-assistant-container {
-      position: fixed;
-      top: 0;
-      right: 0;
-      bottom: 0;
-      z-index: 1000;
-    }
-
-    .ai-panel {
-      background: white;
-      border-left: 2px solid #3b82f6;
-      box-shadow: -4px 0 20px rgba(0, 0, 0, 0.15);
-      height: 100%;
-      width: 450px;
-      display: flex;
-      flex-direction: column;
-    }
-
-    .ai-panel-content {
-      display: flex;
-      flex-direction: column;
-      height: 100%;
-    }
-
-    .ai-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 1.5rem;
-      border-bottom: 1px solid #e5e7eb;
-    }
-
-    .ai-header-left {
-      display: flex;
-      align-items: center;
-      gap: 0.75rem;
-    }
-
-    .ai-icon {
-      width: 40px;
-      height: 40px;
-      background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
-      border-radius: 8px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 1.25rem;
-    }
-
-    .ai-header h3 {
-      font-family: 'Marcellus', Georgia, serif;
-      font-size: 1.125rem;
-      font-weight: bold;
-      color: #111827;
-      margin: 0;
-    }
-
-    .ai-subtitle {
-      font-size: 0.75rem;
-      color: #6b7280;
-      margin: 0;
-    }
-
-    .ai-close-btn {
-      color: #9ca3af;
-      font-size: 2rem;
-      line-height: 1;
-      background: none;
-      border: none;
-      cursor: pointer;
-      padding: 0;
-      transition: color 0.2s;
-    }
-
-    .ai-close-btn:hover {
-      color: #4b5563;
-    }
-
-    .ai-content {
-      flex: 1;
-      overflow-y: auto;
-      padding: 1.5rem;
-    }
-
-    .ai-prompt-text {
-      font-size: 0.875rem;
-      color: #4b5563;
-      margin-bottom: 1rem;
-    }
-
-    .ai-examples-list {
-      display: flex;
-      flex-direction: column;
-      gap: 0.5rem;
-    }
-
-    .ai-example-btn {
-      width: 100%;
-      text-align: left;
-      padding: 0.75rem 1rem;
-      background: #f9fafb;
-      border: 1px solid #e5e7eb;
-      border-radius: 8px;
-      font-size: 0.875rem;
-      color: #374151;
-      cursor: pointer;
-      transition: all 0.2s;
-      font-family: 'PT Serif', Georgia, serif;
-    }
-
-    .ai-example-btn:hover {
-      background: #eff6ff;
-      border-color: #3b82f6;
-      color: #1e40af;
-    }
-
-    .ai-example-btn span {
-      color: #3b82f6;
-      margin-right: 0.5rem;
-    }
-
-    .ai-loading-state {
-      text-align: center;
-      padding: 3rem 0;
-    }
-
-    .ai-spinner {
-      display: inline-block;
-      width: 48px;
-      height: 48px;
-      border: 3px solid #f3f4f6;
-      border-top-color: #3b82f6;
-      border-radius: 50%;
-      animation: spin 1s linear infinite;
-      margin-bottom: 1rem;
-    }
-
-    .ai-loading-state p {
-      color: #6b7280;
-    }
-
-    .ai-response-area {
-      /* Response styles will be added dynamically */
-    }
-
-    .ai-input-area {
-      border-top: 1px solid #e5e7eb;
-      padding: 1rem;
-    }
-
-    .ai-input-area form {
-      display: flex;
-      gap: 0.5rem;
-    }
-
-    .ai-input {
-      flex: 1;
-      padding: 0.75rem 1rem;
-      border: 1px solid #d1d5db;
-      border-radius: 8px;
-      font-size: 0.875rem;
-      font-family: 'PT Serif', Georgia, serif;
-      transition: border-color 0.2s;
-    }
-
-    .ai-input:focus {
-      outline: none;
-      border-color: #3b82f6;
-      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
-    }
-
-    .ai-submit-btn {
-      padding: 0.75rem 1.5rem;
-      background: #3b82f6;
-      color: white;
-      border: none;
-      border-radius: 8px;
-      font-family: 'PT Serif', Georgia, serif;
-      font-size: 0.875rem;
-      font-weight: 600;
-      cursor: pointer;
-      transition: background 0.2s;
-    }
-
-    .ai-submit-btn:hover {
-      background: #2563eb;
-    }
-
-    .ai-submit-btn:disabled {
-      background: #d1d5db;
-      cursor: not-allowed;
-    }
-
-    .ai-tab {
-      position: absolute;
-      top: 50%;
-      right: 0;
-      transform: translateY(-50%);
-      background: linear-gradient(to bottom, #3b82f6, #8b5cf6);
-      color: white;
-      border: none;
-      padding: 20px 12px;
-      border-top-left-radius: 8px;
-      border-bottom-left-radius: 8px;
-      cursor: pointer;
-      box-shadow: -2px 2px 8px rgba(0, 0, 0, 0.2);
-      writing-mode: vertical-rl;
-      text-orientation: mixed;
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-      transition: all 0.3s;
-    }
-
-    .ai-tab:hover {
-      background: linear-gradient(to bottom, #2563eb, #7c3aed);
-      box-shadow: -4px 4px 12px rgba(0, 0, 0, 0.3);
-    }
-
-    .ai-tab-icon {
-      font-size: 1.25rem;
-    }
-
-    .ai-tab-text {
-      font-family: 'PT Serif', Georgia, serif;
-      font-weight: 500;
-      white-space: nowrap;
-    }
-
-    @keyframes spin {
-      from { transform: rotate(0deg); }
-      to { transform: rotate(360deg); }
-    }
-  </style>
 
   <script>
     function toggleAIPanel() {
@@ -1351,51 +1197,51 @@
           response.innerHTML = `
             <div class="ai-response-content">
               <div class="ai-response-header">
-                <h4 style="font-family: 'Marcellus', Georgia, serif; color: #111827; margin: 0 0 1rem 0;">Results</h4>
-                <button onclick="clearAIResponse()" style="color: #3b82f6; font-size: 0.875rem; background: none; border: none; cursor: pointer;">New Query</button>
+                <h4>Results</h4>
+                <button onclick="clearAIResponse()" class="admin-btn admin-btn-ghost admin-btn-sm">New Query</button>
               </div>
 
               ${data.insights ? `
-                <div style="padding: 1rem; background: #eff6ff; border: 1px solid #bfdbfe; border-radius: 8px; margin-bottom: 1rem;">
-                  <p style="margin: 0; font-size: 0.875rem; color: #1e40af;">${data.insights}</p>
+                <div class="admin-alert admin-alert-info admin-mb-lg">
+                  <p style="margin: 0;">${data.insights}</p>
                 </div>
               ` : ''}
 
-              <div style="background: #1a202c; color: #e2e8f0; padding: 1rem; border-radius: 6px; font-family: monospace; font-size: 0.8125rem; overflow-x: auto; margin-bottom: 1rem;">
+              <div style="background: #1a202c; color: #e2e8f0; padding: var(--admin-space-lg); border-radius: var(--admin-radius-md); font-family: var(--admin-font-mono); font-size: var(--admin-text-sm); overflow-x: auto; margin-bottom: var(--admin-space-lg);">
                 ${data.sql}
               </div>
 
-              <p style="font-size: 0.875rem; color: #6b7280; margin-bottom: 0.5rem;"><strong>Results (${data.rowCount} rows):</strong></p>
+              <p class="admin-text-muted admin-mb-md"><strong>Results (${data.rowCount} rows):</strong></p>
 
               ${data.rows && data.rows.length > 0 ? `
-                <div style="border: 1px solid #e5e7eb; border-radius: 8px; overflow: hidden;">
-                  <table style="width: 100%; border-collapse: collapse; font-size: 0.8125rem;">
-                    <thead style="background: #f9fafb;">
+                <div class="admin-table-wrapper">
+                  <table class="admin-table">
+                    <thead>
                       <tr>
                         ${Object.keys(data.rows[0]).map(col => `
-                          <th style="padding: 0.75rem; text-align: left; font-weight: 600; color: #374151; border-bottom: 1px solid #e5e7eb;">${col}</th>
+                          <th>${col}</th>
                         `).join('')}
                       </tr>
                     </thead>
                     <tbody>
                       ${data.rows.map(row => `
-                        <tr style="border-bottom: 1px solid #e5e7eb;">
+                        <tr>
                           ${Object.values(row).map(val => `
-                            <td style="padding: 0.75rem; color: #4b5563;">${val !== null && val !== undefined ? val : '-'}</td>
+                            <td>${val !== null && val !== undefined ? val : '-'}</td>
                           `).join('')}
                         </tr>
                       `).join('')}
                     </tbody>
                   </table>
                 </div>
-              ` : '<p style="text-align: center; color: #6b7280; padding: 2rem;">No results found</p>'}
+              ` : '<p class="admin-text-center admin-text-muted" style="padding: var(--admin-space-2xl);">No results found</p>'}
             </div>
           `;
           response.style.display = 'block';
         } else {
           response.innerHTML = `
-            <div style="padding: 1rem; background: #fef2f2; border: 1px solid #fecaca; border-radius: 8px;">
-              <p style="margin: 0; font-size: 0.875rem; color: #991b1b;">${data.error || 'Query failed'}</p>
+            <div class="admin-alert admin-alert-danger">
+              <p style="margin: 0;">${data.error || 'Query failed'}</p>
             </div>
           `;
           response.style.display = 'block';
@@ -1403,8 +1249,8 @@
       } catch (error) {
         loading.style.display = 'none';
         response.innerHTML = `
-          <div style="padding: 1rem; background: #fef2f2; border: 1px solid #fecaca; border-radius: 8px;">
-            <p style="margin: 0; font-size: 0.875rem; color: #991b1b;">Error: ${error.message}</p>
+          <div class="admin-alert admin-alert-danger">
+            <p style="margin: 0;">Error: ${error.message}</p>
           </div>
         `;
         response.style.display = 'block';

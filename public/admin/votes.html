@@ -9,160 +9,101 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Marcellus&family=PT+Serif:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/css/styles.css">
-  <link rel="stylesheet" href="/admin/admin-styles.css">
   <link rel="stylesheet" href="/css/admin-layout.css">
+  <link rel="stylesheet" href="/css/admin-unified.css">
   <style>
-    body { background: var(--light-gray); margin: 0; }
-    .container { max-width: 1400px; margin: 0 auto; padding: 2rem; }
-    .data-table { background: var(--white); border-radius: 8px; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05); overflow: hidden; }
-    .table-header { padding: 1.5rem; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; }
-    .table-header h1 { font-family: 'Marcellus', Georgia, serif; font-size: 2rem; margin: 0; color: var(--primary-blue); }
-
-    /* Table - SAFMC Compact Spacing */
-    .table-wrapper { overflow-x: auto; }
-    table { width: 100%; border-collapse: collapse; }
-    thead { background: #f9fafb; position: sticky; top: 0; z-index: 10; }
-    th {
-      padding: 0.375rem 0.5rem;
-      text-align: left;
-      font-weight: 500;
-      color: #6b7280;
-      border-bottom: 1px solid #e5e7eb;
+    /* Page-specific styles only */
+    .vote-count {
+      font-size: var(--admin-text-xs);
+      color: var(--admin-gray-600);
       white-space: nowrap;
-      font-size: 0.75rem;
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
     }
-    td {
-      padding: 0.375rem 0.5rem;
-      border-bottom: 1px solid #e5e7eb;
-      font-size: 0.75rem;
-      color: #111827;
+    .vote-count span {
+      margin-right: var(--admin-space-md);
     }
-    tbody { background: white; }
-    tbody tr { border-bottom: 1px solid #e5e7eb; }
-    tbody tr:hover { background: #f9fafb; }
-
-    /* Sortable Headers */
-    th.sortable { cursor: pointer; user-select: none; transition: background 0.2s; }
-    th.sortable:hover { background: #f3f4f6; }
-    th.sortable .sort-indicator { display: inline-block; margin-left: 0.25rem; opacity: 0.3; font-size: 0.7rem; color: #9ca3af; }
-    th.sortable.sort-asc .sort-indicator { opacity: 1; color: #3b82f6; }
-    th.sortable.sort-desc .sort-indicator { opacity: 1; color: #3b82f6; }
-
-    /* Loading States */
-    .loading { text-align: center; padding: 3rem; color: var(--text-light); }
-    .loading::before { content: ''; display: block; width: 40px; height: 40px; margin: 0 auto 1rem; border: 3px solid #f3f4f6; border-top-color: #3b82f6; border-radius: 50%; animation: spin 1s linear infinite; }
-    @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-    .empty-state { text-align: center; padding: 3rem; color: var(--text-light); }
-
-    .error { background: #f8d7da; color: #721c24; padding: 1rem; border-radius: 4px; margin: 1rem; }
-    .success { background: #d4edda; color: #155724; padding: 1rem; border-radius: 4px; margin: 1rem; }
-    /* Buttons - Compact SAFMC Style */
-    .btn { padding: 0.375rem 0.75rem; background: var(--primary-blue); color: white; border: none; border-radius: 4px; cursor: pointer; margin-right: 0.5rem; font-size: 0.75rem; font-weight: 500; }
-    .btn-success { background: #10b981; }
-    .btn-danger { background: #ef4444; }
-    .btn:disabled { opacity: 0.6; cursor: not-allowed; }
-
-    /* Status Badges - Updated for Board Votes */
-    .status-badge { display: inline-flex; padding: 0.25rem 0.5rem; border-radius: 9999px; font-size: 0.75rem; font-weight: 600; }
-    .status-passed, .status-carried { background: #d4edda; color: #155724; }
-    .status-failed { background: #fee2e2; color: #991b1b; }
-    .status-pending, .status-no-decision { background: #fef3c7; color: #92400e; }
-
-    /* Vote Count Badge */
-    .vote-count { font-size: 0.75rem; color: #666; white-space: nowrap; }
-    .vote-count span { margin-right: 0.5rem; }
-
-    /* Stats Bar */
-    .stats-bar { padding: 1rem 1.5rem; background: #f8f9fa; display: flex; justify-content: space-between; align-items: center; font-size: 0.875rem; border-top: 1px solid var(--border-color); }
-
-    /* Modal Styles */
-    .modal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); }
-    .modal.show { display: flex; align-items: center; justify-content: center; }
-    .modal-content { background: white; padding: 2rem; border-radius: 8px; max-width: 600px; width: 90%; max-height: 90vh; overflow-y: auto; }
-    .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; }
-    .modal-header h2 { margin: 0; font-family: 'Marcellus', Georgia, serif; color: var(--primary-blue); }
-    .close-btn { font-size: 1.5rem; cursor: pointer; border: none; background: none; color: var(--text-light); }
-    .form-group { margin-bottom: 1rem; }
-    .form-group label { display: block; margin-bottom: 0.5rem; font-weight: 600; font-size: 0.875rem; }
-    .form-group input, .form-group select, .form-group textarea { width: 100%; padding: 0.375rem 0.5rem; border: 1px solid #d1d5db; border-radius: 4px; font-family: inherit; font-size: 0.75rem; }
-    .form-group textarea { min-height: 100px; resize: vertical; }
-    .form-actions { display: flex; justify-content: flex-end; gap: 0.5rem; margin-top: 1.5rem; }
-    .checkbox-group { display: flex; align-items: center; gap: 0.5rem; }
-    .checkbox-group input[type="checkbox"] { width: auto; }
+    .motion-cell {
+      max-width: 400px;
+    }
   </style>
 </head>
-<body>
-  <div class="container">
-    <div class="data-table">
-      <div class="table-header">
+<body class="admin-page">
+  <div class="admin-content-padded">
+    <div class="admin-card">
+      <div class="admin-page-header">
         <h1>Board Votes</h1>
-        <button class="btn btn-success" onclick="showAddForm()">+ Add New Vote</button>
-      </div>
-      <div class="table-wrapper">
-        <div id="tableContent">
-          <div class="loading">Loading board votes...</div>
+        <div class="admin-page-header-actions">
+          <button class="admin-btn admin-btn-success" onclick="showAddForm()">+ Add New Vote</button>
         </div>
       </div>
-      <div class="stats-bar" id="statsBar" style="display: none;">
+      <div class="admin-table-wrapper">
+        <div id="tableContent">
+          <div class="admin-loading">
+            <span class="admin-spinner"></span>
+            Loading board votes...
+          </div>
+        </div>
+      </div>
+      <div class="admin-card-footer" id="statsBar" style="display: none;">
         <span>Total Votes: <strong id="totalCount">0</strong></span>
       </div>
     </div>
   </div>
 
   <!-- Modal for Add/Edit -->
-  <div id="voteModal" class="modal">
-    <div class="modal-content">
-      <div class="modal-header">
+  <div id="voteModal" class="admin-modal-overlay">
+    <div class="admin-modal">
+      <div class="admin-modal-header">
         <h2 id="modalTitle">Add Board Vote</h2>
-        <button class="close-btn" onclick="closeModal()">&times;</button>
+        <button class="admin-modal-close" onclick="closeModal()">&times;</button>
       </div>
       <form id="voteForm" onsubmit="handleSubmit(event)">
-        <input type="hidden" id="voteId" name="id">
+        <div class="admin-modal-body">
+          <input type="hidden" id="voteId" name="id">
 
-        <div class="form-group">
-          <label for="motion">Motion *</label>
-          <textarea id="motion" name="motion" required></textarea>
+          <div class="admin-form-group">
+            <label class="admin-form-label" for="motion">Motion *</label>
+            <textarea class="admin-textarea" id="motion" name="motion" required style="width: 100%;"></textarea>
+          </div>
+
+          <div class="admin-form-group">
+            <label class="admin-form-label" for="vote_date">Vote Date *</label>
+            <input type="date" class="admin-input" id="vote_date" name="vote_date" required style="width: 100%;">
+          </div>
+
+          <div class="admin-form-group">
+            <label class="admin-form-label" for="yes_count">Yes Votes *</label>
+            <input type="number" class="admin-input" id="yes_count" name="yes_count" min="0" required style="width: 100%;">
+          </div>
+
+          <div class="admin-form-group">
+            <label class="admin-form-label" for="no_count">No Votes *</label>
+            <input type="number" class="admin-input" id="no_count" name="no_count" min="0" required style="width: 100%;">
+          </div>
+
+          <div class="admin-form-group">
+            <label class="admin-form-label" for="abstain_count">Abstain Votes *</label>
+            <input type="number" class="admin-input" id="abstain_count" name="abstain_count" min="0" required style="width: 100%;">
+          </div>
+
+          <div class="admin-form-group">
+            <div class="admin-checkbox-group">
+              <input type="checkbox" class="admin-checkbox" id="quorum_met" name="quorum_met">
+              <label for="quorum_met">Quorum Met</label>
+            </div>
+          </div>
+
+          <div class="admin-form-group">
+            <label class="admin-form-label" for="status">Status *</label>
+            <select class="admin-select" id="status" name="status" required style="width: 100%;">
+              <option value="pending">Pending</option>
+              <option value="passed">Passed</option>
+              <option value="failed">Failed</option>
+            </select>
+          </div>
         </div>
-
-        <div class="form-group">
-          <label for="vote_date">Vote Date *</label>
-          <input type="date" id="vote_date" name="vote_date" required>
-        </div>
-
-        <div class="form-group">
-          <label for="yes_count">Yes Votes *</label>
-          <input type="number" id="yes_count" name="yes_count" min="0" required>
-        </div>
-
-        <div class="form-group">
-          <label for="no_count">No Votes *</label>
-          <input type="number" id="no_count" name="no_count" min="0" required>
-        </div>
-
-        <div class="form-group">
-          <label for="abstain_count">Abstain Votes *</label>
-          <input type="number" id="abstain_count" name="abstain_count" min="0" required>
-        </div>
-
-        <div class="form-group checkbox-group">
-          <input type="checkbox" id="quorum_met" name="quorum_met">
-          <label for="quorum_met">Quorum Met</label>
-        </div>
-
-        <div class="form-group">
-          <label for="status">Status *</label>
-          <select id="status" name="status" required>
-            <option value="pending">Pending</option>
-            <option value="passed">Passed</option>
-            <option value="failed">Failed</option>
-          </select>
-        </div>
-
-        <div class="form-actions">
-          <button type="button" class="btn" onclick="closeModal()">Cancel</button>
-          <button type="submit" class="btn btn-success" id="submitBtn">Save</button>
+        <div class="admin-modal-footer">
+          <button type="button" class="admin-btn admin-btn-secondary" onclick="closeModal()">Cancel</button>
+          <button type="submit" class="admin-btn admin-btn-success" id="submitBtn">Save</button>
         </div>
       </form>
     </div>
@@ -194,16 +135,16 @@
           allVotes = data.data;
           displayVotes(allVotes);
         } else {
-          document.getElementById('tableContent').innerHTML = `<div class="error">Failed to load votes: ${data.error || 'Unknown error'}</div>`;
+          document.getElementById('tableContent').innerHTML = `<div class="admin-alert admin-alert-danger" style="margin: var(--admin-space-lg);">Failed to load votes: ${data.error || 'Unknown error'}</div>`;
         }
       } catch (error) {
-        document.getElementById('tableContent').innerHTML = `<div class="error">Error: ${error.message}</div>`;
+        document.getElementById('tableContent').innerHTML = `<div class="admin-alert admin-alert-danger" style="margin: var(--admin-space-lg);">Error: ${error.message}</div>`;
       }
     }
 
     function displayVotes(votes) {
       if (votes.length === 0) {
-        document.getElementById('tableContent').innerHTML = '<div class="empty-state">No board votes found</div>';
+        document.getElementById('tableContent').innerHTML = '<div class="admin-empty"><div class="admin-empty-title">No board votes found</div></div>';
         document.getElementById('statsBar').style.display = 'none';
         return;
       }
@@ -230,7 +171,7 @@
       });
 
       const html = `
-        <table>
+        <table class="admin-table">
           <thead>
             <tr>
               <th class="sortable ${sortField === 'motion' ? 'sort-' + sortDirection : ''}" onclick="handleSort('motion')">
@@ -250,19 +191,19 @@
           <tbody>
             ${sortedVotes.map(vote => {
               const statusDisplay = vote.status === 'passed' ? 'Carried' : vote.status === 'failed' ? 'Failed' : 'No Decision';
-              const statusClass = vote.status === 'passed' ? 'status-carried' : vote.status === 'failed' ? 'status-failed' : 'status-no-decision';
+              const badgeClass = vote.status === 'passed' ? 'admin-badge-success' : vote.status === 'failed' ? 'admin-badge-danger' : 'admin-badge-warning';
 
               return `
               <tr>
-                <td style="max-width: 400px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;" title="${vote.motion || '-'}">${vote.motion || '-'}</td>
+                <td class="motion-cell admin-truncate" title="${vote.motion || '-'}">${vote.motion || '-'}</td>
                 <td>${vote.vote_date ? new Date(vote.vote_date).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' }) : '-'}</td>
-                <td><span class="status-badge ${statusClass}">${statusDisplay}</span></td>
+                <td><span class="admin-badge ${badgeClass}">${statusDisplay}</span></td>
                 <td><span class="vote-count"><span>Y:${vote.yes_count || 0}</span><span>N:${vote.no_count || 0}</span><span>A:${vote.abstain_count || 0}</span></span></td>
-                <td>${vote.quorum_met ? '<span style="color: #28a745;">✓</span>' : '<span style="color: #dc3545;">✗</span>'}</td>
+                <td>${vote.quorum_met ? '<span class="admin-text-success">&#10003;</span>' : '<span class="admin-text-danger">&#10007;</span>'}</td>
                 <td>
-                  <div class="action-buttons">
-                    <button class="btn btn-edit" onclick='editVote(${JSON.stringify(vote).replace(/'/g, "&#39;")})'>Edit</button>
-                    <button class="btn btn-delete" onclick="deleteVote('${vote.id}')">Delete</button>
+                  <div class="actions">
+                    <button class="admin-btn admin-btn-secondary admin-btn-xs" onclick='editVote(${JSON.stringify(vote).replace(/'/g, "&#39;")})'>Edit</button>
+                    <button class="admin-btn admin-btn-danger admin-btn-xs" onclick="deleteVote('${vote.id}')">Delete</button>
                   </div>
                 </td>
               </tr>
@@ -286,15 +227,15 @@
     }
 
     function getSortIcon(field) {
-      if (sortField !== field) return '↕';
-      return sortDirection === 'asc' ? '↑' : '↓';
+      if (sortField !== field) return '&#8597;';
+      return sortDirection === 'asc' ? '&#8593;' : '&#8595;';
     }
 
     function showAddForm() {
       document.getElementById('modalTitle').textContent = 'Add Board Vote';
       document.getElementById('voteForm').reset();
       document.getElementById('voteId').value = '';
-      document.getElementById('voteModal').classList.add('show');
+      document.getElementById('voteModal').classList.add('active');
     }
 
     function editVote(vote) {
@@ -307,11 +248,11 @@
       document.getElementById('abstain_count').value = vote.abstain_count || 0;
       document.getElementById('quorum_met').checked = vote.quorum_met || false;
       document.getElementById('status').value = vote.status || 'pending';
-      document.getElementById('voteModal').classList.add('show');
+      document.getElementById('voteModal').classList.add('active');
     }
 
     function closeModal() {
-      document.getElementById('voteModal').classList.remove('show');
+      document.getElementById('voteModal').classList.remove('active');
     }
 
     async function handleSubmit(event) {
@@ -389,8 +330,9 @@
     }
 
     function showMessage(message, type) {
+      const alertClass = type === 'success' ? 'admin-alert-success' : 'admin-alert-danger';
       const messageDiv = document.createElement('div');
-      messageDiv.className = type;
+      messageDiv.className = `admin-alert ${alertClass}`;
       messageDiv.textContent = message;
       messageDiv.style.position = 'fixed';
       messageDiv.style.top = '20px';

@@ -9,154 +9,214 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Marcellus&family=PT+Serif:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/css/styles.css">
-  <link rel="stylesheet" href="/admin/admin-styles.css">
   <link rel="stylesheet" href="/css/admin-layout.css">
+  <link rel="stylesheet" href="/css/admin-unified.css">
   <style>
-    body {
-      background: var(--light-gray);
-      margin: 0;
-    }
-
-    .container {
-      max-width: 1400px;
-      margin: 0 auto;
-      padding: 2rem;
-    }
-
-    .data-table {
-      background: var(--white);
-      border-radius: 8px;
-      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    /* Page-specific: Notes column truncation */
+    .notes-cell {
+      max-width: 300px;
       overflow: hidden;
+      display: -webkit-box;
+      -webkit-line-clamp: 3;
+      -webkit-box-orient: vertical;
     }
 
-    .table-header {
-      padding: 1.5rem;
-      border-bottom: 1px solid var(--border-color);
-    }
-
-    .table-header h1 {
-      font-family: 'Marcellus', Georgia, serif;
-      font-size: 2rem;
-      margin: 0 0 1rem 0;
-      color: var(--primary-blue);
-    }
-
-    .toolbar {
-      display: flex;
-      gap: 1rem;
-      flex-wrap: wrap;
-      align-items: center;
-      justify-content: space-between;
-    }
-
-    .toolbar-left, .toolbar-right {
-      display: flex;
-      gap: 0.5rem;
-      align-items: center;
-      flex-wrap: wrap;
-    }
-
-    .search-box {
-      padding: 0.375rem 0.5rem;
-      border: 1px solid #d1d5db;
-      border-radius: 4px;
-      width: 300px;
-      font-family: inherit;
-      font-size: 0.75rem;
-    }
-
-    /* Table - SAFMC Compact Spacing */
-    .table-wrapper { overflow-x: auto; }
-    table { width: 100%; border-collapse: collapse; }
-    thead { background: #f9fafb; position: sticky; top: 0; z-index: 10; }
-    th {
-      padding: 0.375rem 0.5rem;
-      text-align: left;
-      font-weight: 500;
-      color: #6b7280;
-      border-bottom: 1px solid #e5e7eb;
-      white-space: nowrap;
-      font-size: 0.75rem;
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-    }
-    td {
-      padding: 0.375rem 0.5rem;
-      border-bottom: 1px solid #e5e7eb;
-      font-size: 0.75rem;
-      color: #111827;
-    }
-    tbody { background: white; }
-    tbody tr { border-bottom: 1px solid #e5e7eb; }
-    tbody tr:hover { background: #f9fafb; }
-
-    /* Sortable Headers */
-    th.sortable { cursor: pointer; user-select: none; transition: background 0.2s; }
-    th.sortable:hover { background: #f3f4f6; }
-    th.sortable .sort-indicator { display: inline-block; margin-left: 0.25rem; opacity: 0.3; font-size: 0.7rem; color: #9ca3af; }
-    th.sortable.sort-asc .sort-indicator { opacity: 1; color: #3b82f6; }
-    th.sortable.sort-desc .sort-indicator { opacity: 1; color: #3b82f6; }
-
-    /* Loading States */
-    .loading { text-align: center; padding: 3rem; color: var(--text-light); }
-    .loading::before { content: ''; display: block; width: 40px; height: 40px; margin: 0 auto 1rem; border: 3px solid #f3f4f6; border-top-color: #3b82f6; border-radius: 50%; animation: spin 1s linear infinite; }
-    @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-    .empty-state { text-align: center; padding: 3rem; color: var(--text-light); }
-
-    .error {
-      background: #f8d7da;
-      color: #721c24;
-      padding: 1rem;
-      border-radius: 4px;
-      margin: 1rem;
-    }
-
-    /* Stats Bar */
-    .stats-bar { padding: 1rem 1.5rem; background: #f8f9fa; display: flex; justify-content: space-between; align-items: center; font-size: 0.875rem; border-top: 1px solid var(--border-color); }
-
-    /* Buttons - Compact SAFMC Style */
-    .btn {
-      padding: 0.375rem 0.75rem;
-      background: var(--primary-blue);
+    /* AI Modal styles - kept from admin-styles.css */
+    .ai-query-btn {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
       color: white;
+      padding: 0.5rem 1rem;
       border: none;
-      border-radius: 4px;
+      border-radius: 6px;
       cursor: pointer;
-      font-size: 0.75rem;
       font-weight: 500;
+      font-size: var(--admin-text-sm);
+      transition: all 0.3s;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
     }
-
-    .btn:disabled {
-      opacity: 0.5;
-      cursor: not-allowed;
+    .ai-query-btn:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+    }
+    .ai-modal {
+      display: none;
+      position: fixed;
+      z-index: 1001;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.5);
+      backdrop-filter: blur(4px);
+    }
+    .ai-modal-content {
+      background: white;
+      margin: 5% auto;
+      padding: 2rem;
+      border-radius: 12px;
+      max-width: 700px;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    }
+    .ai-modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.5rem;
+      padding-bottom: 1rem;
+      border-bottom: 2px solid var(--admin-gray-200);
+    }
+    .ai-modal-header h2 {
+      margin: 0;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .ai-close {
+      color: var(--admin-gray-400);
+      font-size: 28px;
+      font-weight: 300;
+      cursor: pointer;
+      transition: color 0.2s;
+      line-height: 1;
+    }
+    .ai-close:hover { color: var(--admin-gray-800); }
+    .ai-query-input {
+      width: 100%;
+      padding: 1rem;
+      border: 2px solid var(--admin-gray-200);
+      border-radius: 8px;
+      font-size: 15px;
+      font-family: var(--admin-font-body);
+      transition: border-color 0.2s;
+      margin-bottom: 1rem;
+    }
+    .ai-query-input:focus {
+      outline: none;
+      border-color: #667eea;
+      box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+    }
+    .ai-examples {
+      margin-bottom: 1rem;
+      padding: 1rem;
+      background: var(--admin-gray-50);
+      border-radius: 8px;
+      font-size: var(--admin-text-sm);
+    }
+    .ai-examples strong {
+      display: block;
+      margin-bottom: 0.5rem;
+      color: var(--admin-gray-800);
+    }
+    .ai-examples code {
+      display: block;
+      padding: 0.25rem 0;
+      color: #667eea;
+      cursor: pointer;
+    }
+    .ai-examples code:hover { text-decoration: underline; }
+    .ai-loading {
+      display: none;
+      text-align: center;
+      padding: 1rem;
+      color: #667eea;
+    }
+    .ai-results {
+      display: none;
+      margin-top: 1.5rem;
+      padding-top: 1.5rem;
+      border-top: 2px solid var(--admin-gray-200);
+    }
+    .ai-results h3 {
+      margin-bottom: 1rem;
+      color: var(--admin-gray-800);
+    }
+    .ai-sql-query {
+      background: #1a202c;
+      color: #e2e8f0;
+      padding: 1rem;
+      border-radius: 6px;
+      font-family: var(--admin-font-mono);
+      font-size: var(--admin-text-sm);
+      overflow-x: auto;
+      margin-bottom: 1rem;
+    }
+    .ai-results-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 1rem;
+      font-size: var(--admin-text-sm);
+      max-height: 400px;
+      overflow-y: auto;
+      display: block;
+    }
+    .ai-results-table thead {
+      background: var(--admin-gray-50);
+      position: sticky;
+      top: 0;
+    }
+    .ai-results-table th,
+    .ai-results-table td {
+      padding: 0.75rem;
+      text-align: left;
+      border-bottom: 1px solid var(--admin-gray-200);
+    }
+    .ai-results-table th {
+      font-weight: 600;
+      color: var(--admin-gray-800);
+    }
+    .ai-results-table tbody tr:hover {
+      background: var(--admin-gray-50);
+    }
+    .ai-error {
+      display: none;
+      padding: 1rem;
+      background: var(--admin-danger-bg);
+      border: 1px solid var(--admin-danger);
+      border-radius: 6px;
+      color: var(--admin-danger-text);
+      margin-top: 1rem;
+    }
+    .ai-insights {
+      margin-top: 1rem;
+      padding: 1rem;
+      background: var(--admin-gray-100);
+      border-left: 4px solid #667eea;
+      border-radius: 4px;
+      font-size: var(--admin-text-md);
+      line-height: 1.6;
     }
   </style>
 </head>
-<body>
-  <div class="container">
-    <div class="data-table">
-      <div class="table-header">
+<body class="admin-page">
+  <div class="admin-content-padded">
+    <div class="admin-card">
+      <div class="admin-page-header">
         <h1>Organizations</h1>
-
-        <div class="toolbar">
-          <div class="toolbar-left">
-            <input type="text" class="search-box" id="searchBox" placeholder="Search organizations...">
-          </div>
-
-          <div class="toolbar-right">
-            <button class="ai-query-btn" onclick="showAIModal()" id="aiQueryBtn" style="display:none;">🤖 AI Query</button>
-          </div>
+        <div class="admin-page-header-actions">
+          <button class="ai-query-btn" onclick="showAIModal()" id="aiQueryBtn" style="display:none;">AI Query</button>
         </div>
       </div>
 
-      <div class="table-wrapper">
+      <div class="admin-toolbar">
+        <div class="admin-toolbar-left">
+          <input type="text" class="admin-input admin-search" id="searchBox" placeholder="Search organizations...">
+        </div>
+      </div>
+
+      <div class="admin-table-wrapper">
         <div id="tableContent">
-          <div class="loading">Loading organizations...</div>
+          <div class="admin-loading">
+            <span class="admin-spinner"></span>
+            Loading organizations...
+          </div>
         </div>
       </div>
-      <div class="stats-bar" id="statsBar" style="display: none;">
-        <span>Total Organizations: <strong id="totalCount">0</strong></span>
+
+      <div class="admin-pagination" id="statsBar" style="display: none;">
+        <span class="admin-pagination-info">Total Organizations: <strong id="totalCount">0</strong></span>
       </div>
     </div>
   </div>
@@ -165,7 +225,7 @@
   <div id="aiModal" class="ai-modal">
     <div class="ai-modal-content">
       <div class="ai-modal-header">
-        <h2>🤖 AI Database Query</h2>
+        <h2>AI Database Query</h2>
         <span class="ai-close" onclick="closeAIModal()">&times;</span>
       </div>
 
@@ -180,7 +240,7 @@
 
       <button class="ai-query-btn" onclick="executeAIQuery()">Execute Query</button>
 
-      <div class="ai-loading" id="aiLoading">⏳ Processing your query...</div>
+      <div class="ai-loading" id="aiLoading">Processing your query...</div>
 
       <div class="ai-error" id="aiError"></div>
 
@@ -267,19 +327,19 @@
           displayOrganizations(allOrganizations);
         } else {
           document.getElementById('tableContent').innerHTML = `
-            <div class="error">Failed to load organizations: ${data.error || 'Unknown error'}</div>
+            <div class="admin-alert admin-alert-danger" style="margin: 1rem;">Failed to load organizations: ${data.error || 'Unknown error'}</div>
           `;
         }
       } catch (error) {
         document.getElementById('tableContent').innerHTML = `
-          <div class="error">Error connecting to server: ${error.message}</div>
+          <div class="admin-alert admin-alert-danger" style="margin: 1rem;">Error connecting to server: ${error.message}</div>
         `;
       }
     }
 
     function displayOrganizations(organizations) {
       if (organizations.length === 0) {
-        document.getElementById('tableContent').innerHTML = '<div class="empty-state">No organizations found</div>';
+        document.getElementById('tableContent').innerHTML = '<div class="admin-empty"><div class="admin-empty-title">No organizations found</div></div>';
         document.getElementById('statsBar').style.display = 'none';
         return;
       }
@@ -302,7 +362,7 @@
       });
 
       const html = `
-        <table>
+        <table class="admin-table">
           <thead>
             <tr>
               <th class="sortable ${sortField === 'name' ? 'sort-' + sortDirection : ''}" onclick="handleSort('name')">
@@ -321,11 +381,11 @@
           <tbody>
             ${sortedOrganizations.map(org => `
               <tr>
-                <td>${org.website ? `<a href="${org.website}" target="_blank" rel="noopener noreferrer" style="color: #2563eb; text-decoration: none;">${org.name}</a>` : (org.name || '-')}</td>
+                <td>${org.website ? `<a href="${org.website}" target="_blank" rel="noopener noreferrer">${org.name}</a>` : (org.name || '-')}</td>
                 <td>${org.type || '-'}</td>
                 <td>${org.country || '-'}</td>
-                <td>${org.website ? `<a href="${org.website}" target="_blank" style="color: #2563eb; text-decoration: none;">🔗 Link</a>` : '-'}</td>
-                <td style="max-width: 300px; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical;" title="${org.notes || ''}">${org.notes || '-'}</td>
+                <td>${org.website ? `<a href="${org.website}" target="_blank">Link</a>` : '-'}</td>
+                <td class="notes-cell" title="${org.notes || ''}">${org.notes || '-'}</td>
               </tr>
             `).join('')}
           </tbody>

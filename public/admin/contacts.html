@@ -9,239 +9,120 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Marcellus&family=PT+Serif:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/css/styles.css">
-  <link rel="stylesheet" href="/admin/admin-styles.css">
   <link rel="stylesheet" href="/css/admin-layout.css">
+  <link rel="stylesheet" href="/css/admin-unified.css">
   <style>
-    body { background: var(--light-gray); margin: 0; }
-    .container { max-width: 1600px; margin: 0 auto; padding: 2rem; }
-    .data-table { background: var(--white); border-radius: 8px; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05); overflow: hidden; }
+    /* Page-specific styles - only those not covered by admin-unified.css */
+    .admin-table-container { max-height: 70vh; overflow-y: auto; }
+    .admin-table { min-width: 1200px; }
 
-    /* Header */
-    .table-header { padding: 1.5rem; border-bottom: 1px solid var(--border-color); }
-    .table-header h1 { font-family: 'Marcellus', Georgia, serif; font-size: 2rem; margin: 0 0 1rem 0; color: var(--primary-blue); }
-
-    /* Toolbar */
-    .toolbar { display: flex; gap: 1rem; flex-wrap: wrap; align-items: center; justify-content: space-between; margin-bottom: 1rem; }
-    .toolbar-left, .toolbar-right { display: flex; gap: 0.5rem; align-items: center; flex-wrap: wrap; }
-    .search-box { padding: 0.375rem 0.5rem; border: 1px solid #d1d5db; border-radius: 4px; width: 300px; font-family: inherit; font-size: 0.75rem; }
-
-    /* Buttons - Compact SAFMC Style */
-    .btn { padding: 0.375rem 0.75rem; background: var(--primary-blue); color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 0.75rem; font-weight: 500; transition: all 0.2s; }
-    .btn:hover { opacity: 0.9; }
-    .btn:disabled { opacity: 0.5; cursor: not-allowed; }
-    .btn-secondary { background: #6b7280; }
-    .btn-success { background: #10b981; }
-    .btn-danger { background: #ef4444; }
-    .btn-sm { padding: 0.25rem 0.5rem; font-size: 0.7rem; }
-
-    /* Bulk Actions Bar */
-    .bulk-actions { background: #e3f2fd; padding: 1rem; border-bottom: 1px solid var(--border-color); display: none; align-items: center; gap: 1rem; }
-    .bulk-actions.show { display: flex; }
-    .bulk-actions-count { font-weight: 600; }
-
-    /* Table - SAFMC Compact Spacing */
-    .table-wrapper { overflow-x: auto; max-height: 70vh; }
-    table { width: 100%; border-collapse: collapse; min-width: 1200px; }
-    thead { background: #f9fafb; position: sticky; top: 0; z-index: 10; }
-    th {
-      padding: 0.375rem 0.5rem;
-      text-align: left;
-      font-weight: 500;
-      color: #6b7280;
-      border-bottom: 1px solid #e5e7eb;
-      white-space: nowrap;
-      cursor: pointer;
-      user-select: none;
-      font-size: 0.75rem;
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-    }
-    th:hover { background: #f3f4f6; }
-    th.sortable::after { content: ' ⇅'; opacity: 0.4; color: #9ca3af; }
-    th.sort-asc::after { content: ' ↑'; opacity: 1; color: #3b82f6; }
-    th.sort-desc::after { content: ' ↓'; opacity: 1; color: #3b82f6; }
-    td {
-      padding: 0.375rem 0.5rem;
-      border-bottom: 1px solid #e5e7eb;
-      color: #111827;
-      vertical-align: middle;
-      font-size: 0.75rem;
-    }
-    tbody { background: white; }
-    tbody tr { transition: background-color 0.15s ease; border-bottom: 1px solid #e5e7eb; }
-    tbody tr:hover { background: #f9fafb; }
+    /* Checkbox column */
     .checkbox-cell { width: 40px; text-align: center; }
 
-    /* Column Visibility */
-    .column-toggle { position: relative; display: inline-block; }
-    .column-toggle-menu { display: none; position: absolute; right: 0; top: 100%; background: white; border: 1px solid var(--border-color); border-radius: 4px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); padding: 0.5rem; min-width: 200px; z-index: 100; }
-    .column-toggle-menu.show { display: block; }
-    .column-toggle-item { padding: 0.5rem; display: flex; align-items: center; gap: 0.5rem; }
-    .column-toggle-item:hover { background: var(--light-gray); }
-    .column-toggle-item input { cursor: pointer; }
+    /* Column widths */
+    .col-tags { max-width: 200px; }
 
-    /* Modal */
-    .modal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); overflow-y: auto; }
-    .modal.show { display: flex; align-items: center; justify-content: center; }
-    .modal-content { background: white; padding: 2rem; border-radius: 8px; max-width: 800px; width: 90%; max-height: 90vh; overflow-y: auto; }
-    .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; }
-    .modal-header h2 { margin: 0; font-family: 'Marcellus', Georgia, serif; color: var(--primary-blue); }
-    .close-btn { font-size: 1.5rem; cursor: pointer; border: none; background: none; color: var(--text-light); }
-    .form-group { margin-bottom: 1rem; }
-    .form-group label { display: block; margin-bottom: 0.5rem; font-weight: 600; }
-    .form-group input, .form-group select, .form-group textarea { width: 100%; padding: 0.75rem; border: 1px solid var(--border-color); border-radius: 4px; font-family: inherit; }
-    .form-group textarea { min-height: 150px; resize: vertical; }
-    .form-actions { display: flex; justify-content: flex-end; gap: 0.5rem; margin-top: 1.5rem; }
+    /* Tags display */
+    .tags-container { display: flex; flex-wrap: wrap; gap: 0.2rem; }
+    .tag { display: inline-block; padding: 0.1rem 0.3rem; background: var(--admin-gray-200); color: var(--admin-gray-700); border-radius: 2px; font-size: var(--admin-text-xs); white-space: nowrap; }
+    .tag-more { background: var(--admin-gray-300); color: var(--admin-gray-600); font-style: italic; }
 
-    /* Stats */
-    .stats-bar { padding: 1rem 1.5rem; background: #f8f9fa; display: flex; justify-content: space-between; align-items: center; font-size: 0.9rem; }
-
-    /* Loading & Messages */
-    .loading { text-align: center; padding: 3rem; color: var(--text-light); }
-    .error { background: #f8d7da; color: #721c24; padding: 1rem; border-radius: 4px; margin: 1rem; }
-    .success { background: #d4edda; color: #155724; padding: 1rem; border-radius: 4px; margin: 1rem; }
-    .message-toast { position: fixed; top: 20px; right: 20px; min-width: 300px; padding: 1rem; border-radius: 4px; box-shadow: 0 4px 6px rgba(0,0,0,0.2); z-index: 2000; animation: slideIn 0.3s; }
-    @keyframes slideIn { from { transform: translateX(400px); } to { transform: translateX(0); } }
-
-    /* Import Modal Styles */
-    .file-upload-area { border: 2px dashed var(--border-color); border-radius: 8px; padding: 3rem; text-align: center; cursor: pointer; transition: all 0.2s; background: #f9f9f9; }
-    .file-upload-area:hover { border-color: var(--primary-blue); background: #f0f7ff; }
-    .file-upload-icon { font-size: 3rem; margin-bottom: 1rem; }
-    .file-upload-text { color: var(--text-light); }
-    .file-info { background: #e8f5e9; border: 1px solid #4caf50; border-radius: 4px; padding: 1rem; margin-top: 1rem; }
-    .error-message { background: #ffebee; border: 1px solid #f44336; border-radius: 4px; padding: 1rem; margin-top: 1rem; color: #c62828; }
-    .loading-message { background: #fff3e0; border: 1px solid #ff9800; border-radius: 4px; padding: 1rem; margin-top: 1rem; color: #e65100; }
-    .warning-box { background: #fff9c4; border: 1px solid #fbc02d; border-radius: 4px; padding: 1rem; margin-top: 1rem; }
-    .field-mapping-row { display: flex; gap: 1rem; align-items: center; margin-bottom: 0.75rem; padding: 0.75rem; background: #f9f9f9; border-radius: 4px; }
-    .field-mapping-row label { flex: 0 0 150px; font-weight: 600; }
-    .field-mapping-row select { flex: 1; }
-    .confidence-indicator { flex: 0 0 80px; text-align: center; font-size: 0.85rem; }
-    .confidence-high { color: #4caf50; }
-    .confidence-medium { color: #ff9800; }
-    .confidence-low { color: #f44336; }
-    .import-step { display: block; }
-    .import-preview-table { max-height: 300px; overflow-y: auto; border: 1px solid var(--border-color); border-radius: 4px; margin-top: 1rem; }
-    .duplicates-summary { background: #fff3e0; padding: 1rem; border-radius: 4px; margin-bottom: 1rem; }
-    .duplicate-group { background: #f9f9f9; padding: 1rem; border: 1px solid var(--border-color); border-radius: 4px; margin-bottom: 1rem; }
-    .duplicate-group-header { font-weight: 600; margin-bottom: 0.5rem; color: var(--primary-blue); }
-    .duplicate-contacts { display: flex; gap: 1rem; }
-    .duplicate-contact { flex: 1; background: white; padding: 1rem; border: 1px solid var(--border-color); border-radius: 4px; }
-    .merge-comparison { display: grid; grid-template-columns: 200px 1fr 1fr; gap: 1rem; margin-top: 1rem; }
-    .merge-field-label { font-weight: 600; padding: 0.5rem; display: flex; align-items: center; }
-    .merge-field-option { padding: 0.5rem; border: 2px solid var(--border-color); border-radius: 4px; cursor: pointer; transition: all 0.2s; }
-    .merge-field-option:hover { border-color: var(--primary-blue); background: #f0f7ff; }
-    .merge-field-option.selected { border-color: var(--primary-blue); background: #e3f2fd; }
-    .merge-field-option input[type="radio"] { margin-right: 0.5rem; }
-
-    /* Export Dropdown */
-    .export-dropdown { position: relative; display: inline-block; }
-    .export-menu { display: none; position: absolute; right: 0; top: 100%; margin-top: 0.5rem; background: white; border: 1px solid var(--border-color); border-radius: 4px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); min-width: 200px; z-index: 100; }
-    .export-menu.show { display: block; }
-    .export-menu-item { display: block; width: 100%; text-align: left; padding: 0.75rem 1rem; border: none; background: none; cursor: pointer; font-size: 0.875rem; color: var(--text-dark); transition: background 0.2s; }
-    .export-menu-item:hover { background: var(--light-gray); }
-
-    /* Pagination */
-    .pagination { display: flex; justify-content: space-between; align-items: center; padding: 1rem 1.5rem; border-top: 1px solid var(--border-color); background: white; }
-    .pagination-info { color: var(--text-light); font-size: 0.9rem; }
-    .pagination-controls { display: flex; gap: 0.5rem; }
-
-    /* SAFMC-Style Filter Bar */
-    .filter-bar {
-      display: flex;
-      gap: 0.5rem;
-      align-items: center;
-      padding: 0.75rem 1rem;
-      background: #f8fafc;
-      border: 1px solid #e2e8f0;
-      border-radius: 6px;
-    }
-    .filter-input {
-      flex: 1;
-      min-width: 200px;
-      max-width: 300px;
-      padding: 0.5rem 0.75rem;
-      border: 1px solid #cbd5e1;
-      border-radius: 4px;
-      font-size: 0.8125rem;
-      font-family: inherit;
-      background: white;
-    }
-    .filter-input:focus {
-      outline: none;
-      border-color: #3b82f6;
-      box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.1);
-    }
-    .filter-select {
-      padding: 0.5rem 0.75rem;
-      border: 1px solid #cbd5e1;
-      border-radius: 4px;
-      font-size: 0.8125rem;
-      font-family: inherit;
-      background: white;
-      min-width: 120px;
-      cursor: pointer;
-    }
-    .filter-select:focus {
-      outline: none;
-      border-color: #3b82f6;
-    }
-
-    /* Contact Type Badges */
-    .type-badge { display: inline-block; padding: 0.15rem 0.4rem; border-radius: 3px; font-size: 0.65rem; font-weight: 500; text-transform: uppercase; }
+    /* Type badges - extending admin-badge */
     .type-academic { background: #dbeafe; color: #1e40af; }
     .type-government { background: #dcfce7; color: #166534; }
     .type-nonprofit { background: #fef3c7; color: #92400e; }
     .type-private { background: #f3e8ff; color: #6b21a8; }
     .type-tribal { background: #ffedd5; color: #9a3412; }
 
-    /* Priority Badges */
-    .priority-badge { display: inline-block; padding: 0.15rem 0.4rem; border-radius: 3px; font-size: 0.65rem; font-weight: 600; text-transform: uppercase; }
+    /* Priority badges - extending admin-badge */
     .priority-high { background: #fee2e2; color: #991b1b; }
     .priority-medium { background: #fef3c7; color: #92400e; }
-    .priority-low { background: #f3f4f6; color: #6b7280; }
+    .priority-low { background: var(--admin-gray-100); color: var(--admin-gray-500); }
 
-    /* Tags */
-    .col-tags { max-width: 200px; }
-    .tags-container { display: flex; flex-wrap: wrap; gap: 0.2rem; }
-    .tag { display: inline-block; padding: 0.1rem 0.3rem; background: #e5e7eb; color: #374151; border-radius: 2px; font-size: 0.6rem; white-space: nowrap; }
-    .tag-more { background: #d1d5db; color: #4b5563; font-style: italic; }
+    /* Bulk actions bar */
+    .bulk-actions { background: var(--admin-info-bg); padding: var(--admin-space-lg) var(--admin-space-xl); border-bottom: 1px solid var(--admin-info); display: none; align-items: center; gap: var(--admin-space-lg); }
+    .bulk-actions.show { display: flex; }
+    .bulk-actions-count { font-weight: 600; color: var(--admin-info-text); }
+
+    /* Stats bar */
+    .stats-bar { padding: var(--admin-space-lg) var(--admin-space-xl); background: var(--admin-gray-50); display: flex; justify-content: space-between; align-items: center; font-size: var(--admin-text-sm); color: var(--admin-gray-600); border-top: 1px solid var(--admin-gray-200); }
+
+    /* Toast notifications */
+    .message-toast { position: fixed; top: 20px; right: 20px; min-width: 300px; padding: var(--admin-space-lg); border-radius: var(--admin-radius-md); box-shadow: var(--admin-shadow-lg); z-index: 2000; animation: slideIn 0.3s; }
+    .message-toast.success { background: var(--admin-success-bg); color: var(--admin-success-text); border: 1px solid var(--admin-success); }
+    .message-toast.error { background: var(--admin-danger-bg); color: var(--admin-danger-text); border: 1px solid var(--admin-danger); }
+    @keyframes slideIn { from { transform: translateX(400px); } to { transform: translateX(0); } }
+
+    /* Import modal specific styles */
+    .file-upload-area { border: 2px dashed var(--admin-gray-300); border-radius: var(--admin-radius-lg); padding: var(--admin-space-2xl); text-align: center; cursor: pointer; transition: all var(--admin-transition); background: var(--admin-gray-50); }
+    .file-upload-area:hover { border-color: var(--admin-primary); background: var(--admin-primary-light); }
+    .file-upload-icon { font-size: 3rem; margin-bottom: var(--admin-space-lg); }
+    .file-upload-text { color: var(--admin-gray-500); }
+    .file-info { background: var(--admin-success-bg); border: 1px solid var(--admin-success); border-radius: var(--admin-radius-md); padding: var(--admin-space-lg); margin-top: var(--admin-space-lg); }
+    .error-message { background: var(--admin-danger-bg); border: 1px solid var(--admin-danger); border-radius: var(--admin-radius-md); padding: var(--admin-space-lg); margin-top: var(--admin-space-lg); color: var(--admin-danger-text); }
+    .loading-message { background: var(--admin-warning-bg); border: 1px solid var(--admin-warning); border-radius: var(--admin-radius-md); padding: var(--admin-space-lg); margin-top: var(--admin-space-lg); color: var(--admin-warning-text); }
+    .warning-box { background: var(--admin-warning-bg); border: 1px solid var(--admin-warning); border-radius: var(--admin-radius-md); padding: var(--admin-space-lg); margin-top: var(--admin-space-lg); }
+    .field-mapping-row { display: flex; gap: var(--admin-space-lg); align-items: center; margin-bottom: var(--admin-space-lg); padding: var(--admin-space-lg); background: var(--admin-gray-50); border-radius: var(--admin-radius-md); }
+    .field-mapping-row label { flex: 0 0 150px; font-weight: 600; }
+    .field-mapping-row select { flex: 1; }
+    .confidence-indicator { flex: 0 0 80px; text-align: center; font-size: var(--admin-text-sm); }
+    .confidence-high { color: var(--admin-success); }
+    .confidence-medium { color: var(--admin-warning); }
+    .confidence-low { color: var(--admin-danger); }
+    .import-step { display: block; }
+    .import-preview-table { max-height: 300px; overflow-y: auto; border: 1px solid var(--admin-gray-200); border-radius: var(--admin-radius-md); margin-top: var(--admin-space-lg); }
+
+    /* Duplicates modal specific */
+    .duplicates-summary { background: var(--admin-warning-bg); padding: var(--admin-space-lg); border-radius: var(--admin-radius-md); margin-bottom: var(--admin-space-lg); }
+    .duplicate-group { background: var(--admin-gray-50); padding: var(--admin-space-lg); border: 1px solid var(--admin-gray-200); border-radius: var(--admin-radius-md); margin-bottom: var(--admin-space-lg); }
+    .duplicate-group-header { font-weight: 600; margin-bottom: var(--admin-space-md); color: var(--admin-primary); }
+    .duplicate-contacts { display: flex; gap: var(--admin-space-lg); }
+    .duplicate-contact { flex: 1; background: white; padding: var(--admin-space-lg); border: 1px solid var(--admin-gray-200); border-radius: var(--admin-radius-md); }
+
+    /* Merge modal specific */
+    .merge-comparison { display: grid; grid-template-columns: 200px 1fr 1fr; gap: var(--admin-space-lg); margin-top: var(--admin-space-lg); }
+    .merge-field-label { font-weight: 600; padding: var(--admin-space-md); display: flex; align-items: center; }
+    .merge-field-option { padding: var(--admin-space-md); border: 2px solid var(--admin-gray-200); border-radius: var(--admin-radius-md); cursor: pointer; transition: all var(--admin-transition); }
+    .merge-field-option:hover { border-color: var(--admin-primary); background: var(--admin-primary-light); }
+    .merge-field-option.selected { border-color: var(--admin-primary); background: var(--admin-info-bg); }
+    .merge-field-option input[type="radio"] { margin-right: var(--admin-space-md); }
   </style>
 
   <!-- Claude AI Dropdown -->
   <link rel="stylesheet" href="/admin/claude-ai-dropdown.css">
 </head>
-<body>
-  <div class="container">
-    <div class="data-table">
-      <div class="table-header">
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
-          <h1 style="margin: 0;">Contacts Management</h1>
-          <!-- Row 1: Action buttons -->
-          <div style="display: flex; gap: 0.375rem; align-items: center;">
-            <div id="claudeAIContainer"></div>
-            <div class="export-dropdown">
-              <button class="btn btn-secondary" onclick="toggleExportMenu()">Export</button>
-              <div class="export-menu" id="exportMenu">
-                <div style="padding: 0.5rem 1rem; border-bottom: 1px solid var(--border-color); font-size: 0.75rem; color: var(--text-light);">
-                  <span id="exportCount"></span>
-                </div>
-                <button onclick="exportToCSV()" class="export-menu-item">CSV Format (.csv)</button>
-                <button onclick="exportToTSV()" class="export-menu-item">TSV Format (.tsv)</button>
-                <button onclick="exportToExcel()" class="export-menu-item">Excel Format (.xls)</button>
-                <button onclick="exportToVCard()" class="export-menu-item">vCard Format (.vcf)</button>
+<body class="admin-page">
+  <div class="admin-content-padded">
+    <div class="admin-card">
+      <!-- Page Header -->
+      <div class="admin-page-header">
+        <h1>Contacts Management</h1>
+        <div class="admin-page-header-actions">
+          <div id="claudeAIContainer"></div>
+          <div class="admin-dropdown">
+            <button class="admin-btn admin-btn-secondary" onclick="toggleExportMenu()">Export</button>
+            <div class="admin-dropdown-menu" id="exportMenu">
+              <div style="padding: var(--admin-space-md) var(--admin-space-lg); border-bottom: 1px solid var(--admin-gray-200); font-size: var(--admin-text-xs); color: var(--admin-gray-500);">
+                <span id="exportCount"></span>
               </div>
+              <button onclick="exportToCSV()" class="admin-dropdown-item">CSV Format (.csv)</button>
+              <button onclick="exportToTSV()" class="admin-dropdown-item">TSV Format (.tsv)</button>
+              <button onclick="exportToExcel()" class="admin-dropdown-item">Excel Format (.xls)</button>
+              <button onclick="exportToVCard()" class="admin-dropdown-item">vCard Format (.vcf)</button>
             </div>
-            <button class="btn btn-primary" onclick="showImportModal()">Import</button>
           </div>
+          <button class="admin-btn admin-btn-primary" onclick="showImportModal()">Import</button>
         </div>
+      </div>
 
-        <!-- Row 2: Search and filters -->
-        <div class="filter-bar">
-          <input type="text" class="filter-input" id="searchBox" placeholder="Search contacts...">
-          <select id="countryFilter" class="filter-select">
+      <!-- Filter Toolbar -->
+      <div class="admin-toolbar">
+        <div class="admin-toolbar-left">
+          <input type="text" class="admin-input admin-search" id="searchBox" placeholder="Search contacts...">
+          <select id="countryFilter" class="admin-select">
             <option value="">All Countries</option>
           </select>
-          <select id="typeFilter" class="filter-select">
+          <select id="typeFilter" class="admin-select">
             <option value="">All Types</option>
             <option value="Academic">Academic</option>
             <option value="Government">Government</option>
@@ -249,255 +130,273 @@
             <option value="Private">Private</option>
             <option value="Tribal">Tribal</option>
           </select>
-          <select id="priorityFilter" class="filter-select">
+          <select id="priorityFilter" class="admin-select">
             <option value="">All Priority</option>
             <option value="High">High</option>
             <option value="Medium">Medium</option>
             <option value="Low">Low</option>
           </select>
-          <select id="pageSizeSelect" class="filter-select" style="width: 90px;">
+          <select id="pageSizeSelect" class="admin-select" style="width: 90px;">
             <option value="20">20</option>
             <option value="50">50</option>
             <option value="100">100</option>
             <option value="999999">All</option>
           </select>
-          <button class="btn btn-secondary btn-sm" onclick="handleReset()" title="Reset filters">Reset</button>
+        </div>
+        <div class="admin-toolbar-right">
+          <button class="admin-btn admin-btn-secondary admin-btn-sm" onclick="handleReset()" title="Reset filters">Reset</button>
         </div>
       </div>
 
-      <div class="bulk-actions" id="bulkActions" style="display: none; padding: 1rem 1.5rem; background: #e3f2fd; border-bottom: 1px solid #90caf9; align-items: center; gap: 1rem;">
-        <span class="bulk-actions-count" style="font-weight: 600; color: #1976d2;"><span id="selectedCount">0</span> selected</span>
-        <button class="btn btn-sm" style="background: #2196f3; color: white;" onclick="showEmailModal()">Send Email</button>
-        <button class="btn btn-sm" style="background: #757575; color: white;" onclick="exportSelected()">Export Selected</button>
-        <button class="btn btn-sm" style="background: #2196f3; color: white;" onclick="showBulkEditModal()">Edit Selected</button>
-        <button class="btn btn-sm" style="background: #f44336; color: white;" onclick="bulkDeleteSelected()">Delete Selected</button>
-        <button class="btn btn-sm" style="background: white; color: #424242; border: 1px solid #bdbdbd;" onclick="clearSelection()">Clear Selection</button>
+      <!-- Bulk Actions Bar -->
+      <div class="bulk-actions" id="bulkActions">
+        <span class="bulk-actions-count"><span id="selectedCount">0</span> selected</span>
+        <button class="admin-btn admin-btn-primary admin-btn-sm" onclick="showEmailModal()">Send Email</button>
+        <button class="admin-btn admin-btn-secondary admin-btn-sm" onclick="exportSelected()">Export Selected</button>
+        <button class="admin-btn admin-btn-primary admin-btn-sm" onclick="showBulkEditModal()">Edit Selected</button>
+        <button class="admin-btn admin-btn-danger admin-btn-sm" onclick="bulkDeleteSelected()">Delete Selected</button>
+        <button class="admin-btn admin-btn-secondary admin-btn-sm" onclick="clearSelection()">Clear Selection</button>
       </div>
 
-      <div class="table-wrapper">
+      <!-- Table Content -->
+      <div class="admin-table-wrapper admin-table-container">
         <div id="tableContent">
-          <div class="loading">Loading contacts...</div>
+          <div class="admin-loading">
+            <div class="admin-spinner"></div>
+            Loading contacts...
+          </div>
         </div>
       </div>
 
+      <!-- Stats Bar -->
       <div class="stats-bar">
         <span>Total: <strong id="totalCount">0</strong> contacts</span>
         <span>Showing: <strong id="filteredCount">0</strong> contacts</span>
       </div>
 
       <!-- Pagination -->
-      <div class="pagination" id="pagination" style="display: none;">
-        <div class="pagination-info">
+      <div class="admin-pagination" id="pagination" style="display: none;">
+        <div class="admin-pagination-info">
           Page <strong id="currentPageNum">1</strong> of <strong id="totalPages">1</strong>
         </div>
-        <div class="pagination-controls">
-          <button class="btn btn-sm" id="prevPageBtn" onclick="previousPage()" disabled>← Previous</button>
-          <button class="btn btn-sm" id="nextPageBtn" onclick="nextPage()" disabled>Next →</button>
+        <div class="admin-pagination-controls">
+          <button class="admin-btn admin-btn-secondary admin-btn-sm" id="prevPageBtn" onclick="previousPage()" disabled>Previous</button>
+          <button class="admin-btn admin-btn-secondary admin-btn-sm" id="nextPageBtn" onclick="nextPage()" disabled>Next</button>
         </div>
       </div>
     </div>
   </div>
 
   <!-- Email Modal -->
-  <div id="emailModal" class="modal">
-    <div class="modal-content">
-      <div class="modal-header">
+  <div id="emailModal" class="admin-modal-overlay">
+    <div class="admin-modal">
+      <div class="admin-modal-header">
         <h2>Send Email</h2>
-        <button class="close-btn" onclick="closeEmailModal()">&times;</button>
+        <button class="admin-modal-close" onclick="closeEmailModal()">&times;</button>
       </div>
-      <form id="emailForm" onsubmit="sendEmail(event)">
-        <div class="form-group">
-          <label for="emailSubject">Subject *</label>
-          <input type="text" id="emailSubject" required>
-        </div>
+      <div class="admin-modal-body">
+        <form id="emailForm" onsubmit="sendEmail(event)">
+          <div class="admin-form-group">
+            <label class="admin-form-label" for="emailSubject">Subject *</label>
+            <input type="text" id="emailSubject" class="admin-input" style="width: 100%;" required>
+          </div>
 
-        <div class="form-group">
-          <label for="emailBody">Message *</label>
-          <textarea id="emailBody" required></textarea>
-        </div>
+          <div class="admin-form-group">
+            <label class="admin-form-label" for="emailBody">Message *</label>
+            <textarea id="emailBody" class="admin-textarea" style="width: 100%; min-height: 150px;" required></textarea>
+          </div>
 
-        <div class="form-group">
-          <label>Recipients: <span id="recipientCount">0</span> contacts</label>
-        </div>
-
-        <div class="form-actions">
-          <button type="button" class="btn btn-secondary" onclick="closeEmailModal()">Cancel</button>
-          <button type="submit" class="btn btn-success" id="sendEmailBtn">Send Email</button>
-        </div>
-      </form>
+          <div class="admin-form-group">
+            <label class="admin-form-label">Recipients: <span id="recipientCount">0</span> contacts</label>
+          </div>
+        </form>
+      </div>
+      <div class="admin-modal-footer">
+        <button type="button" class="admin-btn admin-btn-secondary" onclick="closeEmailModal()">Cancel</button>
+        <button type="submit" form="emailForm" class="admin-btn admin-btn-success" id="sendEmailBtn">Send Email</button>
+      </div>
     </div>
   </div>
 
   <!-- AI Query Modal -->
-  <div id="aiModal" class="ai-modal">
-    <div class="ai-modal-content">
-      <div class="ai-modal-header">
-        <h2>🤖 AI Database Query</h2>
-        <span class="ai-close" onclick="closeAIModal()">&times;</span>
+  <div id="aiModal" class="admin-modal-overlay">
+    <div class="admin-modal" style="max-width: 800px;">
+      <div class="admin-modal-header">
+        <h2>AI Database Query</h2>
+        <button class="admin-modal-close" onclick="closeAIModal()">&times;</button>
       </div>
+      <div class="admin-modal-body">
+        <textarea id="aiQueryInput" class="admin-textarea" style="width: 100%; min-height: 80px;" placeholder="Ask a question in plain English..."></textarea>
 
-      <textarea id="aiQueryInput" class="ai-query-input" placeholder="Ask a question in plain English..." rows="3"></textarea>
+        <div class="admin-mt-md" style="font-size: var(--admin-text-sm); color: var(--admin-gray-600);">
+          <strong>Example questions:</strong>
+          <div class="admin-flex admin-gap-sm" style="flex-wrap: wrap; margin-top: var(--admin-space-sm);">
+            <code onclick="setAIQuery(this.textContent)" style="cursor: pointer; padding: var(--admin-space-xs) var(--admin-space-md); background: var(--admin-gray-100); border-radius: var(--admin-radius-sm);">Show all contacts from universities in the United States</code>
+            <code onclick="setAIQuery(this.textContent)" style="cursor: pointer; padding: var(--admin-space-xs) var(--admin-space-md); background: var(--admin-gray-100); border-radius: var(--admin-radius-sm);">How many board members are there?</code>
+            <code onclick="setAIQuery(this.textContent)" style="cursor: pointer; padding: var(--admin-space-xs) var(--admin-space-md); background: var(--admin-gray-100); border-radius: var(--admin-radius-sm);">List all contacts with expertise in oyster restoration</code>
+          </div>
+        </div>
 
-      <div class="ai-examples">
-        <strong>Example questions:</strong>
-        <code onclick="setAIQuery(this.textContent)">Show all contacts from universities in the United States</code>
-        <code onclick="setAIQuery(this.textContent)">How many board members are there?</code>
-        <code onclick="setAIQuery(this.textContent)">List all contacts with expertise in oyster restoration</code>
-      </div>
+        <button class="admin-btn admin-btn-primary admin-mt-lg" onclick="executeAIQuery()" style="width: 100%;">Execute Query</button>
 
-      <button class="ai-query-btn" onclick="executeAIQuery()">Execute Query</button>
+        <div class="admin-loading admin-mt-lg" id="aiLoading" style="display: none;">
+          <div class="admin-spinner"></div>
+          Processing your query...
+        </div>
 
-      <div class="ai-loading" id="aiLoading">⏳ Processing your query...</div>
+        <div class="admin-alert admin-alert-danger admin-mt-lg" id="aiError" style="display: none;"></div>
 
-      <div class="ai-error" id="aiError"></div>
+        <div id="aiResults" style="display: none;" class="admin-mt-lg">
+          <h3>SQL Query:</h3>
+          <pre id="aiSqlQuery" style="background: var(--admin-gray-100); padding: var(--admin-space-lg); border-radius: var(--admin-radius-md); overflow-x: auto; font-size: var(--admin-text-sm);"></pre>
 
-      <div class="ai-results" id="aiResults">
-        <h3>SQL Query:</h3>
-        <div class="ai-sql-query" id="aiSqlQuery"></div>
+          <div id="aiInsights" class="admin-alert admin-alert-info admin-mt-md" style="display: none;"></div>
 
-        <div id="aiInsights" class="ai-insights" style="display:none;"></div>
-
-        <h3>Results (<span id="aiRowCount">0</span> rows):</h3>
-        <table class="ai-results-table" id="aiResultsTable">
-          <thead id="aiResultsHead"></thead>
-          <tbody id="aiResultsBody"></tbody>
-        </table>
+          <h3 class="admin-mt-lg">Results (<span id="aiRowCount">0</span> rows):</h3>
+          <div class="admin-table-wrapper" style="max-height: 300px; overflow-y: auto;">
+            <table class="admin-table" id="aiResultsTable">
+              <thead id="aiResultsHead"></thead>
+              <tbody id="aiResultsBody"></tbody>
+            </table>
+          </div>
+        </div>
       </div>
     </div>
   </div>
 
   <!-- Import Modal -->
-  <div id="importModal" class="modal">
-    <div class="modal-content" style="max-width: 900px;">
-      <div class="modal-header">
-        <h2>📤 Import Contacts</h2>
-        <button class="close-btn" onclick="closeImportModal()">&times;</button>
+  <div id="importModal" class="admin-modal-overlay">
+    <div class="admin-modal" style="max-width: 900px;">
+      <div class="admin-modal-header">
+        <h2>Import Contacts</h2>
+        <button class="admin-modal-close" onclick="closeImportModal()">&times;</button>
       </div>
+      <div class="admin-modal-body">
+        <div id="importStep1" class="import-step">
+          <h3>Step 1: Upload File</h3>
+          <p>Upload a CSV or Excel file containing contact information.</p>
 
-      <div id="importStep1" class="import-step">
-        <h3>Step 1: Upload File</h3>
-        <p>Upload a CSV or Excel file containing contact information.</p>
-
-        <div class="file-upload-area" id="fileUploadArea" onclick="document.getElementById('fileInput').click()">
-          <div class="file-upload-icon">📁</div>
-          <div class="file-upload-text">
-            <strong>Click to upload</strong> or drag and drop<br>
-            CSV, Excel, PDF, or Word files (max 50MB)
+          <div class="file-upload-area" id="fileUploadArea" onclick="document.getElementById('fileInput').click()">
+            <div class="file-upload-icon">Upload</div>
+            <div class="file-upload-text">
+              <strong>Click to upload</strong> or drag and drop<br>
+              CSV, Excel, PDF, or Word files (max 50MB)
+            </div>
+            <input type="file" id="fileInput" accept=".csv,.xlsx,.xls,.tsv,.pdf,.docx,.doc" style="display: none;" onchange="handleFileUpload(event)">
           </div>
-          <input type="file" id="fileInput" accept=".csv,.xlsx,.xls,.tsv,.pdf,.docx,.doc" style="display: none;" onchange="handleFileUpload(event)">
+
+          <div id="fileInfo" class="file-info" style="display: none;"></div>
+          <div id="uploadError" class="error-message" style="display: none;"></div>
+          <div id="uploadLoading" class="loading-message" style="display: none;">Analyzing file...</div>
         </div>
 
-        <div id="fileInfo" class="file-info" style="display: none;"></div>
-        <div id="uploadError" class="error-message" style="display: none;"></div>
-        <div id="uploadLoading" class="loading-message" style="display: none;">Analyzing file...</div>
-      </div>
+        <div id="importStep2" class="import-step" style="display: none;">
+          <h3>Step 2: Map Fields</h3>
+          <p>Review and adjust the field mappings. AI has suggested mappings based on your column names.</p>
 
-      <div id="importStep2" class="import-step" style="display: none;">
-        <h3>Step 2: Map Fields</h3>
-        <p>Review and adjust the field mappings. AI has suggested mappings based on your column names.</p>
+          <div id="fieldMappingContainer"></div>
 
-        <div id="fieldMappingContainer"></div>
+          <div class="admin-form-group admin-mt-lg">
+            <label class="admin-checkbox-group">
+              <input type="checkbox" id="updateExisting" class="admin-checkbox" checked>
+              <span>Update existing contacts (match by email)</span>
+            </label>
+          </div>
 
-        <div class="form-group">
-          <label>
-            <input type="checkbox" id="updateExisting" checked>
-            Update existing contacts (match by email)
-          </label>
+          <div id="duplicateWarnings" class="warning-box" style="display: none;"></div>
         </div>
 
-        <div id="duplicateWarnings" class="warning-box" style="display: none;"></div>
+        <div id="importStep3" class="import-step" style="display: none;">
+          <h3>Step 3: Review & Import</h3>
+          <div id="importPreview"></div>
+          <div id="importResults" style="display: none;"></div>
+        </div>
       </div>
-
-      <div id="importStep3" class="import-step" style="display: none;">
-        <h3>Step 3: Review & Import</h3>
-        <div id="importPreview"></div>
-        <div id="importResults" style="display: none;"></div>
-      </div>
-
-      <div class="form-actions">
-        <button type="button" class="btn btn-secondary" onclick="closeImportModal()">Cancel</button>
-        <button type="button" class="btn btn-secondary" id="importBackBtn" style="display: none;" onclick="importPrevStep()">Back</button>
-        <button type="button" class="btn btn-primary" id="importNextBtn" style="display: none;" onclick="importNextStep()">Next</button>
-        <button type="button" class="btn btn-success" id="importExecuteBtn" style="display: none;" onclick="executeImport()">Import Contacts</button>
+      <div class="admin-modal-footer">
+        <button type="button" class="admin-btn admin-btn-secondary" onclick="closeImportModal()">Cancel</button>
+        <button type="button" class="admin-btn admin-btn-secondary" id="importBackBtn" style="display: none;" onclick="importPrevStep()">Back</button>
+        <button type="button" class="admin-btn admin-btn-primary" id="importNextBtn" style="display: none;" onclick="importNextStep()">Next</button>
+        <button type="button" class="admin-btn admin-btn-success" id="importExecuteBtn" style="display: none;" onclick="executeImport()">Import Contacts</button>
       </div>
     </div>
   </div>
 
   <!-- Duplicates Modal -->
-  <div id="duplicatesModal" class="modal">
-    <div class="modal-content" style="max-width: 1000px;">
-      <div class="modal-header">
-        <h2>🔍 Duplicate Contacts</h2>
-        <button class="close-btn" onclick="closeDuplicatesModal()">&times;</button>
+  <div id="duplicatesModal" class="admin-modal-overlay">
+    <div class="admin-modal" style="max-width: 1000px;">
+      <div class="admin-modal-header">
+        <h2>Duplicate Contacts</h2>
+        <button class="admin-modal-close" onclick="closeDuplicatesModal()">&times;</button>
       </div>
-
-      <div id="duplicatesLoading" class="loading-message">Scanning for duplicates...</div>
-      <div id="duplicatesContent" style="display: none;">
-        <div class="duplicates-summary"></div>
-        <div class="duplicates-list"></div>
+      <div class="admin-modal-body">
+        <div id="duplicatesLoading" class="loading-message">Scanning for duplicates...</div>
+        <div id="duplicatesContent" style="display: none;">
+          <div class="duplicates-summary"></div>
+          <div class="duplicates-list"></div>
+        </div>
       </div>
     </div>
   </div>
 
   <!-- Bulk Edit Modal -->
-  <div id="bulkEditModal" class="modal">
-    <div class="modal-content">
-      <div class="modal-header">
+  <div id="bulkEditModal" class="admin-modal-overlay">
+    <div class="admin-modal">
+      <div class="admin-modal-header">
         <h2>Edit Selected Contacts</h2>
-        <button class="close-btn" onclick="closeBulkEditModal()">&times;</button>
+        <button class="admin-modal-close" onclick="closeBulkEditModal()">&times;</button>
       </div>
+      <div class="admin-modal-body">
+        <form id="bulkEditForm" onsubmit="executeBulkEdit(event)">
+          <p>Update the following fields for <strong><span id="bulkEditCount">0</span></strong> selected contacts:</p>
 
-      <form id="bulkEditForm" onsubmit="executeBulkEdit(event)">
-        <p>Update the following fields for <strong><span id="bulkEditCount">0</span></strong> selected contacts:</p>
+          <div class="admin-form-group">
+            <label class="admin-form-label" for="bulkCountry">Country</label>
+            <input type="text" id="bulkCountry" class="admin-input" style="width: 100%;" placeholder="Leave blank to keep unchanged">
+          </div>
 
-        <div class="form-group">
-          <label for="bulkCountry">Country</label>
-          <input type="text" id="bulkCountry" class="form-input" placeholder="Leave blank to keep unchanged">
-        </div>
+          <div class="admin-form-group">
+            <label class="admin-form-label" for="bulkMemberType">Member Type</label>
+            <select id="bulkMemberType" class="admin-select" style="width: 100%;">
+              <option value="">Leave unchanged</option>
+              <option value="board">Board</option>
+              <option value="member">Member</option>
+              <option value="affiliate">Affiliate</option>
+              <option value="past_board">Past Board</option>
+              <option value="past_member">Past Member</option>
+            </select>
+          </div>
 
-        <div class="form-group">
-          <label for="bulkMemberType">Member Type</label>
-          <select id="bulkMemberType" class="form-input">
-            <option value="">Leave unchanged</option>
-            <option value="board">Board</option>
-            <option value="member">Member</option>
-            <option value="affiliate">Affiliate</option>
-            <option value="past_board">Past Board</option>
-            <option value="past_member">Past Member</option>
-          </select>
-        </div>
-
-        <div class="form-group">
-          <label for="bulkOrganization">Organization</label>
-          <select id="bulkOrganization" class="form-input">
-            <option value="">Leave unchanged</option>
-          </select>
-        </div>
-
-        <div class="form-actions">
-          <button type="button" class="btn btn-secondary" onclick="closeBulkEditModal()">Cancel</button>
-          <button type="submit" class="btn btn-primary">Update Contacts</button>
-        </div>
-      </form>
+          <div class="admin-form-group">
+            <label class="admin-form-label" for="bulkOrganization">Organization</label>
+            <select id="bulkOrganization" class="admin-select" style="width: 100%;">
+              <option value="">Leave unchanged</option>
+            </select>
+          </div>
+        </form>
+      </div>
+      <div class="admin-modal-footer">
+        <button type="button" class="admin-btn admin-btn-secondary" onclick="closeBulkEditModal()">Cancel</button>
+        <button type="submit" form="bulkEditForm" class="admin-btn admin-btn-primary">Update Contacts</button>
+      </div>
     </div>
   </div>
 
   <!-- Merge Modal -->
-  <div id="mergeModal" class="modal">
-    <div class="modal-content" style="max-width: 900px;">
-      <div class="modal-header">
+  <div id="mergeModal" class="admin-modal-overlay">
+    <div class="admin-modal" style="max-width: 900px;">
+      <div class="admin-modal-header">
         <h2>Merge Contacts</h2>
-        <button class="close-btn" onclick="closeMergeModal()">&times;</button>
+        <button class="admin-modal-close" onclick="closeMergeModal()">&times;</button>
       </div>
-
-      <div id="mergeContent">
-        <p>Select which information to keep from each contact:</p>
-        <div class="merge-comparison"></div>
+      <div class="admin-modal-body">
+        <div id="mergeContent">
+          <p>Select which information to keep from each contact:</p>
+          <div class="merge-comparison"></div>
+        </div>
       </div>
-
-      <div class="form-actions">
-        <button type="button" class="btn btn-secondary" onclick="closeMergeModal()">Cancel</button>
-        <button type="button" class="btn btn-primary" onclick="executeMerge()">Merge Contacts</button>
+      <div class="admin-modal-footer">
+        <button type="button" class="admin-btn admin-btn-secondary" onclick="closeMergeModal()">Cancel</button>
+        <button type="button" class="admin-btn admin-btn-primary" onclick="executeMerge()">Merge Contacts</button>
       </div>
     </div>
   </div>
@@ -606,18 +505,18 @@
 
     function displayContacts() {
       const html = `
-        <table>
+        <table class="admin-table">
           <thead>
             <tr>
               <th class="checkbox-cell">
-                <input type="checkbox" id="selectAll" onchange="toggleSelectAll()">
+                <input type="checkbox" id="selectAll" class="admin-checkbox" onchange="toggleSelectAll()">
               </th>
-              <th class="sortable" onclick="sortBy('full_name')">Name</th>
-              <th class="sortable col-email" onclick="sortBy('email')">Email</th>
-              <th class="sortable col-organization" onclick="sortBy('organization_name')">Organization</th>
-              <th class="sortable col-type" onclick="sortBy('contact_type')">Type</th>
-              <th class="sortable col-priority" onclick="sortBy('priority_level')">Priority</th>
-              <th class="sortable col-country" onclick="sortBy('country')">Country</th>
+              <th class="sortable" onclick="sortBy('full_name')">Name <span class="sort-indicator">${currentSort.column === 'full_name' ? (currentSort.direction === 'asc' ? '&#9650;' : '&#9660;') : '&#8597;'}</span></th>
+              <th class="sortable col-email" onclick="sortBy('email')">Email <span class="sort-indicator">${currentSort.column === 'email' ? (currentSort.direction === 'asc' ? '&#9650;' : '&#9660;') : '&#8597;'}</span></th>
+              <th class="sortable col-organization" onclick="sortBy('organization_name')">Organization <span class="sort-indicator">${currentSort.column === 'organization_name' ? (currentSort.direction === 'asc' ? '&#9650;' : '&#9660;') : '&#8597;'}</span></th>
+              <th class="sortable col-type" onclick="sortBy('contact_type')">Type <span class="sort-indicator">${currentSort.column === 'contact_type' ? (currentSort.direction === 'asc' ? '&#9650;' : '&#9660;') : '&#8597;'}</span></th>
+              <th class="sortable col-priority" onclick="sortBy('priority_level')">Priority <span class="sort-indicator">${currentSort.column === 'priority_level' ? (currentSort.direction === 'asc' ? '&#9650;' : '&#9660;') : '&#8597;'}</span></th>
+              <th class="sortable col-country" onclick="sortBy('country')">Country <span class="sort-indicator">${currentSort.column === 'country' ? (currentSort.direction === 'asc' ? '&#9650;' : '&#9660;') : '&#8597;'}</span></th>
               <th class="col-tags">Tags</th>
             </tr>
           </thead>
@@ -625,15 +524,15 @@
             ${paginatedContacts.map(contact => `
               <tr>
                 <td class="checkbox-cell">
-                  <input type="checkbox" class="contact-checkbox" value="${contact.email}"
+                  <input type="checkbox" class="contact-checkbox admin-checkbox" value="${contact.email}"
                          ${selectedContacts.has(contact.email) ? 'checked' : ''}
                          onchange="toggleContact('${contact.email.replace(/'/g, "\\'")}')">
                 </td>
                 <td>${contact.full_name || ((contact.first_name || '') + ' ' + (contact.last_name || '')).trim() || '-'}</td>
                 <td class="col-email">${contact.email ? contact.email.toLowerCase() : '-'}</td>
-                <td class="col-organization">${contact.organization_name ? `<a href="/admin/organizations.html?search=${encodeURIComponent(contact.organization_name)}" style="color: #2563eb; text-decoration: none; font-weight: 500;">${contact.organization_name}</a>` : '-'}</td>
-                <td class="col-type"><span class="type-badge type-${(contact.contact_type || '').toLowerCase().replace(/[^a-z]/g, '')}">${contact.contact_type || '-'}</span></td>
-                <td class="col-priority"><span class="priority-badge priority-${(contact.priority_level || '').toLowerCase()}">${contact.priority_level || '-'}</span></td>
+                <td class="col-organization">${contact.organization_name ? `<a href="/admin/organizations.html?search=${encodeURIComponent(contact.organization_name)}">${contact.organization_name}</a>` : '-'}</td>
+                <td class="col-type"><span class="admin-badge type-${(contact.contact_type || '').toLowerCase().replace(/[^a-z]/g, '')}">${contact.contact_type || '-'}</span></td>
+                <td class="col-priority"><span class="admin-badge priority-${(contact.priority_level || '').toLowerCase()}">${contact.priority_level || '-'}</span></td>
                 <td class="col-country">${contact.country || '-'}</td>
                 <td class="col-tags">${formatTags(contact.tags)}</td>
               </tr>
@@ -696,10 +595,12 @@
         updatePagination();
       });
 
-      // Close column menu when clicking outside
+      // Close dropdown menus when clicking outside
       document.addEventListener('click', (e) => {
-        if (!e.target.closest('.column-toggle') && !e.target.closest('.toolbar-right button')) {
-          document.getElementById('columnMenu').classList.remove('show');
+        if (!e.target.closest('.admin-dropdown')) {
+          document.querySelectorAll('.admin-dropdown-menu').forEach(menu => {
+            menu.classList.remove('active');
+          });
         }
       });
     }
@@ -736,21 +637,6 @@
 
       currentPage = 1;
       updatePagination();
-      updateSortIndicators();
-    }
-
-    function updateSortIndicators() {
-      document.querySelectorAll('th.sortable').forEach(th => {
-        th.classList.remove('sort-asc', 'sort-desc');
-      });
-      if (currentSort.column) {
-        const ths = document.querySelectorAll('th.sortable');
-        ths.forEach(th => {
-          if (th.textContent.toLowerCase().includes(currentSort.column.split('_')[0])) {
-            th.classList.add(`sort-${currentSort.direction}`);
-          }
-        });
-      }
     }
 
     function toggleSelectAll() {
@@ -780,7 +666,11 @@
 
       const bulkActionsEl = document.getElementById('bulkActions');
       if (bulkActionsEl) {
-        bulkActionsEl.style.display = selectedContacts.size > 0 ? 'flex' : 'none';
+        if (selectedContacts.size > 0) {
+          bulkActionsEl.classList.add('show');
+        } else {
+          bulkActionsEl.classList.remove('show');
+        }
       }
 
       const emailBtn = document.getElementById('emailBtn');
@@ -793,18 +683,6 @@
       selectedContacts.clear();
       document.getElementById('selectAll').checked = false;
       displayContacts();
-    }
-
-    function toggleColumnMenu() {
-      document.getElementById('columnMenu').classList.toggle('show');
-    }
-
-    function toggleColumn(column) {
-      const cells = document.querySelectorAll(`.col-${column}`);
-      const checkbox = document.getElementById(`col-${column}`);
-      cells.forEach(cell => {
-        cell.style.display = checkbox.checked ? '' : 'none';
-      });
     }
 
     function updateStats() {
@@ -830,19 +708,13 @@
       displayContacts();
       updateStats();
       document.getElementById('selectAll').checked = false;
-      document.querySelectorAll('th.sortable').forEach(th => {
-        th.classList.remove('sort-asc', 'sort-desc');
-      });
     }
 
     // Export menu toggle
     function toggleExportMenu() {
       const menu = document.getElementById('exportMenu');
-      menu.classList.toggle('show');
+      menu.classList.toggle('active');
       updateExportCount();
-
-      // Close column menu if open
-      document.getElementById('columnMenu').classList.remove('show');
     }
 
     function updateExportCount() {
@@ -850,13 +722,6 @@
       const text = selectedContacts.size > 0 ? `Export ${count} selected` : `Export all ${count} contacts`;
       document.getElementById('exportCount').textContent = text;
     }
-
-    // Close export menu when clicking outside
-    document.addEventListener('click', (e) => {
-      if (!e.target.closest('.export-dropdown')) {
-        document.getElementById('exportMenu').classList.remove('show');
-      }
-    });
 
     // Pagination functions
     function updatePagination() {
@@ -901,7 +766,7 @@
         filteredContacts;
       const csv = generateCSV(contacts);
       downloadCSV(csv, 'isrs_contacts_' + new Date().toISOString().split('T')[0] + '.csv');
-      document.getElementById('exportMenu').classList.remove('show');
+      document.getElementById('exportMenu').classList.remove('active');
       showToast('Exported ' + contacts.length + ' contacts as CSV', 'success');
     }
 
@@ -927,7 +792,7 @@
       a.download = 'isrs_contacts_' + new Date().toISOString().split('T')[0] + '.tsv';
       a.click();
       window.URL.revokeObjectURL(url);
-      document.getElementById('exportMenu').classList.remove('show');
+      document.getElementById('exportMenu').classList.remove('active');
       showToast('Exported ' + contacts.length + ' contacts as TSV', 'success');
     }
 
@@ -967,7 +832,7 @@
       a.download = 'isrs_contacts_' + new Date().toISOString().split('T')[0] + '.xls';
       a.click();
       window.URL.revokeObjectURL(url);
-      document.getElementById('exportMenu').classList.remove('show');
+      document.getElementById('exportMenu').classList.remove('active');
       showToast('Exported ' + contacts.length + ' contacts as Excel', 'success');
     }
 
@@ -996,7 +861,7 @@
       a.download = 'isrs_contacts_' + new Date().toISOString().split('T')[0] + '.vcf';
       a.click();
       window.URL.revokeObjectURL(url);
-      document.getElementById('exportMenu').classList.remove('show');
+      document.getElementById('exportMenu').classList.remove('active');
       showToast('Exported ' + contacts.length + ' contacts as vCard', 'success');
     }
 
@@ -1089,11 +954,11 @@
         return;
       }
       document.getElementById('recipientCount').textContent = selectedContacts.size;
-      document.getElementById('emailModal').classList.add('show');
+      document.getElementById('emailModal').classList.add('active');
     }
 
     function closeEmailModal() {
-      document.getElementById('emailModal').classList.remove('show');
+      document.getElementById('emailModal').classList.remove('active');
       document.getElementById('emailForm').reset();
     }
 
@@ -1143,7 +1008,7 @@
     }
 
     function showError(message) {
-      document.getElementById('tableContent').innerHTML = `<div class="error">${message}</div>`;
+      document.getElementById('tableContent').innerHTML = `<div class="admin-alert admin-alert-danger">${message}</div>`;
     }
 
     function logout() {
@@ -1153,12 +1018,12 @@
 
     // AI Query Functions
     function showAIModal() {
-      document.getElementById('aiModal').style.display = 'block';
+      document.getElementById('aiModal').classList.add('active');
       document.getElementById('aiQueryInput').focus();
     }
 
     function closeAIModal() {
-      document.getElementById('aiModal').style.display = 'none';
+      document.getElementById('aiModal').classList.remove('active');
       document.getElementById('aiResults').style.display = 'none';
       document.getElementById('aiError').style.display = 'none';
       document.getElementById('aiQueryInput').value = '';
@@ -1179,7 +1044,7 @@
       const error = document.getElementById('aiError');
       const results = document.getElementById('aiResults');
 
-      loading.style.display = 'block';
+      loading.style.display = 'flex';
       error.style.display = 'none';
       results.style.display = 'none';
 
@@ -1253,28 +1118,55 @@
       }
     }
 
-    // Close modal when clicking outside
+    // Modal close handlers
     window.onclick = function(event) {
-      const modal = document.getElementById('aiModal');
-      if (event.target == modal) {
-        closeAIModal();
+      // Close modals when clicking overlay
+      if (event.target.classList.contains('admin-modal-overlay')) {
+        event.target.classList.remove('active');
       }
     }
 
     // ESC key to close modals
     document.addEventListener('keydown', function(event) {
       if (event.key === 'Escape' || event.key === 'Esc') {
-        // Check which modal is visible and close it
-        const emailModal = document.getElementById('emailModal');
-        const aiModal = document.getElementById('aiModal');
-        if (emailModal && emailModal.classList.contains('show')) {
-          closeEmailModal();
-        }
-        if (aiModal && aiModal.style.display === 'block') {
-          closeAIModal();
-        }
+        document.querySelectorAll('.admin-modal-overlay.active').forEach(modal => {
+          modal.classList.remove('active');
+        });
       }
     });
+
+    // Import modal functions
+    function showImportModal() {
+      document.getElementById('importModal').classList.add('active');
+    }
+
+    function closeImportModal() {
+      document.getElementById('importModal').classList.remove('active');
+    }
+
+    // Duplicates modal functions
+    function closeDuplicatesModal() {
+      document.getElementById('duplicatesModal').classList.remove('active');
+    }
+
+    // Bulk edit modal functions
+    function showBulkEditModal() {
+      if (selectedContacts.size === 0) {
+        showToast('Please select contacts first', 'error');
+        return;
+      }
+      document.getElementById('bulkEditCount').textContent = selectedContacts.size;
+      document.getElementById('bulkEditModal').classList.add('active');
+    }
+
+    function closeBulkEditModal() {
+      document.getElementById('bulkEditModal').classList.remove('active');
+    }
+
+    // Merge modal functions
+    function closeMergeModal() {
+      document.getElementById('mergeModal').classList.remove('active');
+    }
   </script>
 
   <!-- Contact Management Features -->
