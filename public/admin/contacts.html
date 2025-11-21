@@ -582,7 +582,7 @@
                          ${selectedContacts.has(contact.email) ? 'checked' : ''}
                          onchange="toggleContact('${contact.email.replace(/'/g, "\\'")}')">
                 </td>
-                <td>${contact.full_name || contact.first_name + ' ' + contact.last_name || '-'}</td>
+                <td>${contact.full_name || ((contact.first_name || '') + ' ' + (contact.last_name || '')).trim() || '-'}</td>
                 <td class="col-email">${contact.email || '-'}</td>
                 <td class="col-organization">${contact.organization_name || '-'}</td>
                 <td class="col-role">${contact.role || '-'}</td>
