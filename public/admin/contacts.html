@@ -924,6 +924,55 @@
       showToast('Exported ' + contacts.length + ' contacts', 'success');
     }
 
+    async function bulkDeleteSelected() {
+      if (selectedContacts.size === 0) {
+        showToast('Please select contacts first', 'error');
+        return;
+      }
+
+      const count = selectedContacts.size;
+      if (!confirm(`Are you sure you want to delete ${count} contact(s)? This action cannot be undone.`)) {
+        return;
+      }
+
+      // Get contact IDs from emails
+      const contactIds = allContacts
+        .filter(c => selectedContacts.has(c.email))
+        .map(c => c.id);
+
+      if (contactIds.length === 0) {
+        showToast('No valid contacts found to delete', 'error');
+        return;
+      }
+
+      try {
+        const sessionToken = localStorage.getItem('isrs_session');
+        const response = await fetch(`${API_BASE_URL}/api/admin/contacts/bulk-delete`, {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${sessionToken}`,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            contactIds: contactIds,
+            confirmed: true
+          })
+        });
+
+        const data = await response.json();
+
+        if (response.ok && data.success) {
+          showToast(`Successfully deleted ${data.deleted} contact(s)`, 'success');
+          clearSelection();
+          await loadContacts(); // Refresh the list
+        } else {
+          showToast('Failed to delete contacts: ' + (data.error || 'Unknown error'), 'error');
+        }
+      } catch (error) {
+        showToast('Error deleting contacts: ' + error.message, 'error');
+      }
+    }
+
     function generateCSV(contacts) {
       const headers = ['Full Name', 'Email', 'Organization', 'Role', 'Country', 'City', 'Phone'];
       const rows = contacts.map(c => [
