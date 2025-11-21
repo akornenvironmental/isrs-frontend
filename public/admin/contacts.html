@@ -144,6 +144,26 @@
     .pagination { display: flex; justify-content: space-between; align-items: center; padding: 1rem 1.5rem; border-top: 1px solid var(--border-color); background: white; }
     .pagination-info { color: var(--text-light); font-size: 0.9rem; }
     .pagination-controls { display: flex; gap: 0.5rem; }
+
+    /* Contact Type Badges */
+    .type-badge { display: inline-block; padding: 0.15rem 0.4rem; border-radius: 3px; font-size: 0.65rem; font-weight: 500; text-transform: uppercase; }
+    .type-academic { background: #dbeafe; color: #1e40af; }
+    .type-government { background: #dcfce7; color: #166534; }
+    .type-nonprofit { background: #fef3c7; color: #92400e; }
+    .type-private { background: #f3e8ff; color: #6b21a8; }
+    .type-tribal { background: #ffedd5; color: #9a3412; }
+
+    /* Priority Badges */
+    .priority-badge { display: inline-block; padding: 0.15rem 0.4rem; border-radius: 3px; font-size: 0.65rem; font-weight: 600; text-transform: uppercase; }
+    .priority-high { background: #fee2e2; color: #991b1b; }
+    .priority-medium { background: #fef3c7; color: #92400e; }
+    .priority-low { background: #f3f4f6; color: #6b7280; }
+
+    /* Tags */
+    .col-tags { max-width: 200px; }
+    .tags-container { display: flex; flex-wrap: wrap; gap: 0.2rem; }
+    .tag { display: inline-block; padding: 0.1rem 0.3rem; background: #e5e7eb; color: #374151; border-radius: 2px; font-size: 0.6rem; white-space: nowrap; }
+    .tag-more { background: #d1d5db; color: #4b5563; font-style: italic; }
   </style>
 
   <!-- AI Query Bar -->
@@ -159,10 +179,24 @@
         <div class="toolbar" style="display: flex; gap: 0.75rem; align-items: center; flex-wrap: wrap;">
           <!-- Left: Search and filters -->
           <input type="text" class="search-box" id="searchBox" placeholder="Search contacts..." style="flex: 1; min-width: 250px; max-width: 400px;">
-          <select id="countryFilter" class="search-box" style="width: 180px;">
+          <select id="countryFilter" class="search-box" style="width: 150px;">
             <option value="">All Countries</option>
           </select>
-          <select id="pageSizeSelect" class="search-box" style="width: 120px;">
+          <select id="typeFilter" class="search-box" style="width: 130px;">
+            <option value="">All Types</option>
+            <option value="Academic">Academic</option>
+            <option value="Government">Government</option>
+            <option value="Non-Profit">Non-Profit</option>
+            <option value="Private">Private</option>
+            <option value="Tribal">Tribal</option>
+          </select>
+          <select id="priorityFilter" class="search-box" style="width: 130px;">
+            <option value="">All Priority</option>
+            <option value="High">High</option>
+            <option value="Medium">Medium</option>
+            <option value="Low">Low</option>
+          </select>
+          <select id="pageSizeSelect" class="search-box" style="width: 100px;">
             <option value="20">Show 20</option>
             <option value="50">Show 50</option>
             <option value="100">Show 100</option>
@@ -467,6 +501,25 @@
     let currentSort = { column: null, direction: 'asc' };
     let userPermissions = null;
     let currentPage = 1;
+
+    // Helper function to format tags for display
+    function formatTags(tags) {
+      if (!tags || !Array.isArray(tags) || tags.length === 0) return '-';
+      // Filter out common/less useful tags
+      const filteredTags = tags.filter(t => !['imported', 'email_list', 'abstract_submission'].includes(t));
+      if (filteredTags.length === 0) return '-';
+      const displayTags = filteredTags.slice(0, 3);
+      const remaining = filteredTags.length - 3;
+      let html = '<div class="tags-container">';
+      displayTags.forEach(tag => {
+        html += '<span class="tag">' + tag.replace(/_/g, ' ') + '</span>';
+      });
+      if (remaining > 0) {
+        html += '<span class="tag tag-more">+' + remaining + '</span>';
+      }
+      html += '</div>';
+      return html;
+    }
     let pageSize = 20;
     let paginatedContacts = [];
 
@@ -553,10 +606,10 @@
               <th class="sortable" onclick="sortBy('full_name')">Name</th>
               <th class="sortable col-email" onclick="sortBy('email')">Email</th>
               <th class="sortable col-organization" onclick="sortBy('organization_name')">Organization</th>
-              <th class="col-role">Role</th>
+              <th class="sortable col-type" onclick="sortBy('contact_type')">Type</th>
+              <th class="sortable col-priority" onclick="sortBy('priority_level')">Priority</th>
               <th class="sortable col-country" onclick="sortBy('country')">Country</th>
-              <th class="col-city">City</th>
-              <th class="col-phone">Phone</th>
+              <th class="col-tags">Tags</th>
             </tr>
           </thead>
           <tbody>
@@ -570,10 +623,10 @@
                 <td>${contact.full_name || ((contact.first_name || '') + ' ' + (contact.last_name || '')).trim() || '-'}</td>
                 <td class="col-email">${contact.email ? contact.email.toLowerCase() : '-'}</td>
                 <td class="col-organization">${contact.organization_name ? `<a href="/admin/organizations.html?search=${encodeURIComponent(contact.organization_name)}" style="color: #2563eb; text-decoration: none; font-weight: 500;">${contact.organization_name}</a>` : '-'}</td>
-                <td class="col-role">${contact.role || '-'}</td>
+                <td class="col-type"><span class="type-badge type-${(contact.contact_type || '').toLowerCase().replace(/[^a-z]/g, '')}">${contact.contact_type || '-'}</span></td>
+                <td class="col-priority"><span class="priority-badge priority-${(contact.priority_level || '').toLowerCase()}">${contact.priority_level || '-'}</span></td>
                 <td class="col-country">${contact.country || '-'}</td>
-                <td class="col-city">${contact.city || '-'}</td>
-                <td class="col-phone">${contact.phone || '-'}</td>
+                <td class="col-tags">${formatTags(contact.tags)}</td>
               </tr>
             `).join('')}
           </tbody>
@@ -583,30 +636,49 @@
       updateBulkActionsBar();
     }
 
-    function setupEventListeners() {
-      // Search
-      document.getElementById('searchBox').addEventListener('input', (e) => {
-        const term = e.target.value.toLowerCase();
-        filteredContacts = allContacts.filter(c =>
-          JSON.stringify(c).toLowerCase().includes(term)
-        );
-        currentPage = 1;
-        updatePagination();
-        updateStats();
+    function applyFilters() {
+      const searchTerm = document.getElementById('searchBox').value.toLowerCase();
+      const country = document.getElementById('countryFilter').value;
+      const type = document.getElementById('typeFilter').value;
+      const priority = document.getElementById('priorityFilter').value;
+
+      filteredContacts = allContacts.filter(c => {
+        // Search filter
+        if (searchTerm && !JSON.stringify(c).toLowerCase().includes(searchTerm)) {
+          return false;
+        }
+        // Country filter
+        if (country && c.country !== country) {
+          return false;
+        }
+        // Type filter
+        if (type && c.contact_type !== type) {
+          return false;
+        }
+        // Priority filter
+        if (priority && c.priority_level !== priority) {
+          return false;
+        }
+        return true;
       });
 
+      currentPage = 1;
+      updatePagination();
+      updateStats();
+    }
+
+    function setupEventListeners() {
+      // Search
+      document.getElementById('searchBox').addEventListener('input', applyFilters);
+
       // Country filter
-      document.getElementById('countryFilter').addEventListener('change', (e) => {
-        const country = e.target.value;
-        if (country) {
-          filteredContacts = allContacts.filter(c => c.country === country);
-        } else {
-          filteredContacts = [...allContacts];
-        }
-        currentPage = 1;
-        updatePagination();
-        updateStats();
-      });
+      document.getElementById('countryFilter').addEventListener('change', applyFilters);
+
+      // Type filter
+      document.getElementById('typeFilter').addEventListener('change', applyFilters);
+
+      // Priority filter
+      document.getElementById('priorityFilter').addEventListener('change', applyFilters);
 
       // Page size selector
       document.getElementById('pageSizeSelect').addEventListener('change', (e) => {
@@ -737,6 +809,8 @@
     function handleReset() {
       document.getElementById('searchBox').value = '';
       document.getElementById('countryFilter').value = '';
+      document.getElementById('typeFilter').value = '';
+      document.getElementById('priorityFilter').value = '';
       document.getElementById('pageSizeSelect').value = '20';
       pageSize = 20;
       currentPage = 1;
