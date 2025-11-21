@@ -1771,8 +1771,10 @@ function updateUserProfileButton() {
       if (user.role === 'admin' || user.role === 'superadmin' || user.role === 'board') {
         // Admin, superadmin, and board members go to admin portal
         profileBtn.href = '/admin/';
-        profileBtn.setAttribute('aria-label', 'Admin Portal');
-        profileBtn.setAttribute('title', 'Admin Portal');
+        profileBtn.setAttribute('target', '_blank');
+        profileBtn.setAttribute('rel', 'noopener noreferrer');
+        profileBtn.setAttribute('aria-label', 'Admin Portal (opens in new window)');
+        profileBtn.setAttribute('title', 'Admin Portal (opens in new window)');
       } else {
         // Advisory and other members go to member portal
         profileBtn.href = '/member/profile.html';
