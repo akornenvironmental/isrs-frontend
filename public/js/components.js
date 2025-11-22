@@ -1689,19 +1689,19 @@ function loadFooter() {
           </ul>
         </div>
         <div class="footer-section">
-          <h4>${t('connect')}</h4>
-          <ul>
-            <li><a href="https://www.zeffy.com/en-US/donation-form/isrs-building-tomorrows-ocean-leaders" target="_blank" rel="noopener noreferrer">${t('donate')}</a></li>
-            <li><a href="/admin/" target="_blank" rel="noopener noreferrer">${t('adminPortal')}</a></li>
-          </ul>
-        </div>
-        <div class="footer-section">
           <h4>Legal</h4>
           <ul>
             <li><a href="/legal/privacy.html">Privacy Policy</a></li>
             <li><a href="/legal/terms.html">Terms of Service</a></li>
             <li><a href="/legal/code-of-conduct.html">Code of Conduct</a></li>
             <li><a href="/legal/accessibility.html">Accessibility</a></li>
+          </ul>
+        </div>
+        <div class="footer-section">
+          <h4>${t('connect')}</h4>
+          <ul>
+            <li><a href="https://www.zeffy.com/en-US/donation-form/isrs-building-tomorrows-ocean-leaders" target="_blank" rel="noopener noreferrer">${t('donate')}</a></li>
+            <li><a href="/admin/" target="_blank" rel="noopener noreferrer">${t('adminPortal')}</a></li>
           </ul>
         </div>
       </div>
