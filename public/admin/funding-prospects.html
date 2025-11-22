@@ -8,32 +8,29 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Marcellus&family=PT+Serif:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/css/styles.css">
-  <link rel="stylesheet" href="/admin/admin-styles.css">
+  <link rel="stylesheet" href="/css/admin-unified.css">
   <link rel="stylesheet" href="/admin/claude-ai-dropdown.css">
   <style>
-    body { background: var(--light-gray); }
-    .admin-nav { background: var(--white); border-bottom: 1px solid var(--border-color); padding: 1rem 2rem; margin-bottom: 2rem; display: flex; justify-content: space-between; align-items: center; }
-    .admin-nav a { color: var(--primary-blue); text-decoration: none; margin-right: 2rem; font-weight: 600; }
-    .admin-nav a.active { color: var(--secondary-blue); border-bottom: 2px solid var(--secondary-blue); }
+    /* Page-specific styles that extend admin-unified.css */
     .container { max-width: 1800px; margin: 0 auto; padding: 2rem; }
-    .data-table { background: var(--white); border-radius: 8px; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05); overflow: hidden; }
-    
-    .table-header { padding: 1.5rem; border-bottom: 1px solid var(--border-color); }
-    .table-header h1 { font-family: 'Marcellus', Georgia, serif; font-size: 2rem; margin: 0 0 1rem 0; color: var(--primary-blue); }
-    
+    .data-table { background: var(--admin-surface); border-radius: 8px; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05); overflow: hidden; border: 1px solid var(--admin-border); }
+
+    .table-header { padding: 1.5rem; border-bottom: 1px solid var(--admin-border); }
+    .table-header h1 { font-family: 'Marcellus', Georgia, serif; font-size: 2rem; margin: 0 0 1rem 0; color: var(--admin-primary); }
+
     .toolbar { display: flex; gap: 1rem; flex-wrap: wrap; align-items: center; justify-content: space-between; margin-bottom: 1rem; }
     .toolbar-left, .toolbar-right { display: flex; gap: 0.5rem; align-items: center; flex-wrap: wrap; }
-    .search-box { padding: 0.75rem; border: 1px solid var(--border-color); border-radius: 4px; width: 300px; font-family: inherit; }
-    
-    /* Modern Button Styles (SAFMC-inspired) */
-    .btn { display: inline-flex; align-items: center; gap: 0.375rem; justify-center: center; padding: 0.375rem 0.75rem; border-radius: 6px; cursor: pointer; font-size: 0.75rem; font-weight: 500; transition: all 0.2s ease; border: 1px solid; box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05); }
+    .search-box { padding: 0.75rem; border: 1px solid var(--admin-border); border-radius: 4px; width: 300px; font-family: inherit; background: var(--admin-surface); color: var(--admin-text); }
+    .search-box:focus { outline: none; border-color: var(--admin-primary); box-shadow: 0 0 0 3px var(--admin-primary-light); }
+
+    /* Modern Button Styles */
+    .btn { display: inline-flex; align-items: center; gap: 0.375rem; justify-content: center; padding: 0.375rem 0.75rem; border-radius: 6px; cursor: pointer; font-size: 0.75rem; font-weight: 500; transition: all 0.2s ease; border: 1px solid; box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05); }
     .btn:hover { box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06); transform: translateY(-1px); }
     .btn:active { transform: translateY(0); }
     .btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
 
-    .btn-reset { background: linear-gradient(to right, #f8fafc, #f1f5f9); border-color: #cbd5e1; color: #475569; }
-    .btn-reset:hover { background: linear-gradient(to right, #f1f5f9, #e2e8f0); border-color: #94a3b8; }
+    .btn-reset { background: var(--admin-surface); border-color: var(--admin-border); color: var(--admin-text-muted); }
+    .btn-reset:hover { background: var(--admin-hover); border-color: var(--admin-text-muted); }
 
     .btn-columns { background: linear-gradient(to right, #eef2ff, #e0e7ff); border-color: #a5b4fc; color: #4f46e5; }
     .btn-columns:hover { background: linear-gradient(to right, #e0e7ff, #c7d2fe); border-color: #818cf8; }
@@ -44,98 +41,123 @@
     .btn-import { background: linear-gradient(to right, #fef3c7, #fde68a); border-color: #fbbf24; color: #92400e; }
     .btn-import:hover { background: linear-gradient(to right, #fde68a, #fcd34d); border-color: #f59e0b; }
 
-    .btn-primary { background: linear-gradient(to right, #2563eb, #1d4ed8); border-color: #2563eb; color: white; }
-    .btn-primary:hover { background: linear-gradient(to right, #1d4ed8, #1e40af); box-shadow: 0 4px 6px -1px rgba(37, 99, 235, 0.3); }
+    .btn-primary { background: var(--admin-primary); border-color: var(--admin-primary); color: white; }
+    .btn-primary:hover { background: var(--admin-primary-dark); box-shadow: 0 4px 6px -1px rgba(37, 99, 235, 0.3); }
 
-    .btn-success { background: linear-gradient(to right, #16a34a, #15803d); border-color: #16a34a; color: white; }
-    .btn-success:hover { background: linear-gradient(to right, #15803d, #166534); }
+    .btn-success { background: var(--admin-success); border-color: var(--admin-success); color: white; }
+    .btn-success:hover { opacity: 0.9; }
 
-    .btn-danger { background: linear-gradient(to right, #dc2626, #b91c1c); border-color: #dc2626; color: white; }
-    .btn-danger:hover { background: linear-gradient(to right, #b91c1c, #991b1b); }
+    .btn-danger { background: var(--admin-danger); border-color: var(--admin-danger); color: white; }
+    .btn-danger:hover { opacity: 0.9; }
 
-    .btn-edit { background: linear-gradient(to right, #16a34a, #15803d); border-color: #16a34a; color: white; }
-    .btn-edit:hover { background: linear-gradient(to right, #15803d, #166534); }
+    .btn-edit { background: var(--admin-success); border-color: var(--admin-success); color: white; }
+    .btn-edit:hover { opacity: 0.9; }
 
     .btn-enhance { background: linear-gradient(to right, #9333ea, #7e22ce); border-color: #a855f7; color: white; }
     .btn-enhance:hover { background: linear-gradient(to right, #7e22ce, #6b21a8); }
 
-    .btn-delete { background: linear-gradient(to right, #dc2626, #b91c1c); border-color: #dc2626; color: white; }
-    .btn-delete:hover { background: linear-gradient(to right, #b91c1c, #991b1b); }
+    .btn-delete { background: var(--admin-danger); border-color: var(--admin-danger); color: white; }
+    .btn-delete:hover { opacity: 0.9; }
+
+    .btn-select-all { background: linear-gradient(to right, #f0fdf4, #dcfce7); border-color: #86efac; color: #166534; }
+    .btn-select-all:hover { background: linear-gradient(to right, #dcfce7, #bbf7d0); border-color: #4ade80; }
+
+    .btn-quick-add { background: linear-gradient(to right, #dbeafe, #bfdbfe); border-color: #60a5fa; color: #1e40af; }
+    .btn-quick-add:hover { background: linear-gradient(to right, #bfdbfe, #93c5fd); border-color: #3b82f6; }
 
     .btn-sm { padding: 0.25rem 0.5rem; font-size: 0.7rem; }
-    
-    .bulk-actions { background: #e3f2fd; padding: 1rem; border-bottom: 1px solid var(--border-color); display: none; align-items: center; gap: 1rem; }
+
+    .bulk-actions { background: var(--admin-info-bg); padding: 1rem; border-bottom: 1px solid var(--admin-border); display: none; align-items: center; gap: 1rem; flex-wrap: wrap; }
     .bulk-actions.show { display: flex; }
-    .bulk-actions-count { font-weight: 600; }
-    
+    .bulk-actions-count { font-weight: 600; color: var(--admin-text); }
+
     .table-wrapper { overflow-x: auto; }
     table { width: 100%; border-collapse: collapse; min-width: 1400px; }
-    thead { background: var(--light-gray); position: sticky; top: 0; z-index: 10; }
-    th { padding: 0.75rem; text-align: left; font-weight: 600; color: var(--text-dark); border-bottom: 2px solid var(--border-color); white-space: nowrap; cursor: pointer; user-select: none; }
-    th:hover { background: #e8e8e8; }
-    th.sortable::after { content: ' ⇅'; opacity: 0.3; }
-    th.sort-asc::after { content: ' ▲'; opacity: 1; }
-    th.sort-desc::after { content: ' ▼'; opacity: 1; }
-    td { padding: 0.75rem; border-bottom: 1px solid var(--border-color); }
-    tr:hover { background: var(--light-gray); }
-    tr.funded { background-color: #d4edda !important; }
-    tr.application_submitted { background-color: #cfe2ff !important; }
-    tr.interested { background-color: #fff3cd !important; }
+    thead { background: var(--admin-gray-100); position: sticky; top: 0; z-index: 10; }
+    th { padding: 0.75rem; text-align: left; font-weight: 600; color: var(--admin-text); border-bottom: 2px solid var(--admin-border); white-space: nowrap; cursor: pointer; user-select: none; }
+    th:hover { background: var(--admin-hover); }
+    th.sortable::after { content: ' \21C5'; opacity: 0.3; }
+    th.sort-asc::after { content: ' \25B2'; opacity: 1; }
+    th.sort-desc::after { content: ' \25BC'; opacity: 1; }
+    td { padding: 0.75rem; border-bottom: 1px solid var(--admin-border); color: var(--admin-text); }
+    tr:hover { background: var(--admin-hover); }
+    tr.funded { background-color: var(--admin-success-bg) !important; }
+    tr.application_submitted { background-color: var(--admin-info-bg) !important; }
+    tr.interested { background-color: var(--admin-warning-bg) !important; }
     .checkbox-cell { width: 40px; text-align: center; }
-    
+
     .status-badge { padding: 0.25rem 0.5rem; border-radius: 4px; font-size: 0.75rem; font-weight: 600; text-transform: uppercase; }
-    .status-prospect { background: #e9ecef; color: #495057; }
-    .status-contacted { background: #cfe2ff; color: #084298; }
-    .status-interested { background: #fff3cd; color: #997404; }
-    .status-application_submitted { background: #d1e7dd; color: #0f5132; }
-    .status-funded { background: #d4edda; color: #0f5132; }
-    .status-declined { background: #f8d7da; color: #842029; }
-    
+    .status-prospect { background: var(--admin-gray-100); color: var(--admin-text-muted); }
+    .status-contacted { background: var(--admin-info-bg); color: var(--admin-info); }
+    .status-interested { background: var(--admin-warning-bg); color: var(--admin-warning); }
+    .status-application_submitted { background: var(--admin-success-bg); color: var(--admin-success); }
+    .status-funded { background: var(--admin-success-bg); color: var(--admin-success); }
+    .status-declined { background: var(--admin-danger-bg); color: var(--admin-danger); }
+
     .tier-badge { padding: 0.25rem 0.5rem; border-radius: 4px; font-size: 0.75rem; font-weight: 600; }
-    .tier-1 { background: #dc3545; color: white; }
-    .tier-2 { background: #ffc107; color: #000; }
-    .tier-3 { background: #6c757d; color: white; }
-    
+    .tier-1 { background: var(--admin-danger); color: white; }
+    .tier-2 { background: var(--admin-warning); color: #000; }
+    .tier-3 { background: var(--admin-text-muted); color: white; }
+
     .flag-icon { cursor: pointer; font-size: 1.2rem; }
-    .flag-icon.flagged { color: #dc3545; }
-    .flag-icon.unflagged { color: #dee2e6; }
-    
+    .flag-icon.flagged { color: var(--admin-danger); }
+    .flag-icon.unflagged { color: var(--admin-border); }
+
     .column-toggle { position: relative; display: inline-block; }
-    .column-toggle-menu { display: none; position: absolute; right: 0; top: 100%; background: white; border: 1px solid var(--border-color); border-radius: 4px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); padding: 0.5rem; min-width: 200px; z-index: 100; max-height: 400px; overflow-y: auto; }
+    .column-toggle-menu { display: none; position: absolute; right: 0; top: 100%; background: var(--admin-surface); border: 1px solid var(--admin-border); border-radius: 4px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); padding: 0.5rem; min-width: 200px; z-index: 100; max-height: 400px; overflow-y: auto; }
     .column-toggle-menu.show { display: block; }
-    .column-toggle-item { padding: 0.5rem; display: flex; align-items: center; gap: 0.5rem; }
-    .column-toggle-item:hover { background: var(--light-gray); }
-    
+    .column-toggle-item { padding: 0.5rem; display: flex; align-items: center; gap: 0.5rem; color: var(--admin-text); }
+    .column-toggle-item:hover { background: var(--admin-hover); }
+
     .export-dropdown { position: relative; display: inline-block; }
-    .export-menu { display: none; position: absolute; right: 0; top: 100%; margin-top: 0.5rem; background: white; border: 1px solid var(--border-color); border-radius: 4px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); min-width: 200px; z-index: 100; }
+    .export-menu { display: none; position: absolute; right: 0; top: 100%; margin-top: 0.5rem; background: var(--admin-surface); border: 1px solid var(--admin-border); border-radius: 4px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); min-width: 200px; z-index: 100; }
     .export-menu.show { display: block; }
-    .export-menu-item { display: block; width: 100%; text-align: left; padding: 0.75rem 1rem; border: none; background: none; cursor: pointer; font-size: 0.875rem; color: var(--text-dark); transition: background 0.2s; }
-    .export-menu-item:hover { background: var(--light-gray); }
-    
-    .stats-bar { padding: 1rem 1.5rem; background: #f8f9fa; display: flex; justify-content: space-between; align-items: center; font-size: 0.9rem; }
-    
-    .pagination { display: flex; justify-content: space-between; align-items: center; padding: 1rem 1.5rem; border-top: 1px solid var(--border-color); background: white; }
-    .pagination-info { color: var(--text-light); font-size: 0.9rem; }
+    .export-menu-item { display: block; width: 100%; text-align: left; padding: 0.75rem 1rem; border: none; background: none; cursor: pointer; font-size: 0.875rem; color: var(--admin-text); transition: background 0.2s; }
+    .export-menu-item:hover { background: var(--admin-hover); }
+
+    .stats-bar { padding: 1rem 1.5rem; background: var(--admin-gray-100); display: flex; justify-content: space-between; align-items: center; font-size: 0.9rem; color: var(--admin-text); flex-wrap: wrap; gap: 1rem; }
+
+    .pagination { display: flex; justify-content: space-between; align-items: center; padding: 1rem 1.5rem; border-top: 1px solid var(--admin-border); background: var(--admin-surface); }
+    .pagination-info { color: var(--admin-text-muted); font-size: 0.9rem; }
     .pagination-controls { display: flex; gap: 0.5rem; }
-    
+
     .modal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); overflow-y: auto; }
     .modal.show { display: flex; align-items: center; justify-content: center; }
-    .modal-content { background: white; padding: 2rem; border-radius: 8px; max-width: 800px; width: 90%; max-height: 90vh; overflow-y: auto; }
+    .modal-content { background: var(--admin-surface); padding: 2rem; border-radius: 8px; max-width: 800px; width: 90%; max-height: 90vh; overflow-y: auto; }
     .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; }
-    .modal-header h2 { margin: 0; font-family: 'Marcellus', Georgia, serif; color: var(--primary-blue); }
-    .close-btn { font-size: 1.5rem; cursor: pointer; border: none; background: none; color: var(--text-light); }
+    .modal-header h2 { margin: 0; font-family: 'Marcellus', Georgia, serif; color: var(--admin-primary); }
+    .close-btn { font-size: 1.5rem; cursor: pointer; border: none; background: none; color: var(--admin-text-muted); }
+    .close-btn:hover { color: var(--admin-text); }
     .form-group { margin-bottom: 1rem; }
-    .form-group label { display: block; margin-bottom: 0.5rem; font-weight: 600; }
-    .form-group input, .form-group select, .form-group textarea { width: 100%; padding: 0.75rem; border: 1px solid var(--border-color); border-radius: 4px; font-family: inherit; }
+    .form-group label { display: block; margin-bottom: 0.5rem; font-weight: 600; color: var(--admin-text); }
+    .form-group input, .form-group select, .form-group textarea { width: 100%; padding: 0.75rem; border: 1px solid var(--admin-border); border-radius: 4px; font-family: inherit; background: var(--admin-surface); color: var(--admin-text); }
+    .form-group input:focus, .form-group select:focus, .form-group textarea:focus { outline: none; border-color: var(--admin-primary); box-shadow: 0 0 0 3px var(--admin-primary-light); }
     .form-group textarea { min-height: 100px; resize: vertical; }
     .form-actions { display: flex; justify-content: flex-end; gap: 0.5rem; margin-top: 1.5rem; }
     .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
-    
-    .loading { text-align: center; padding: 3rem; color: var(--text-light); }
+
+    .loading { text-align: center; padding: 3rem; color: var(--admin-text-muted); }
     .message-toast { position: fixed; top: 20px; right: 20px; min-width: 300px; padding: 1rem; border-radius: 4px; box-shadow: 0 4px 6px rgba(0,0,0,0.2); z-index: 2000; animation: slideIn 0.3s; }
-    .message-toast.success { background: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
-    .message-toast.error { background: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
+    .message-toast.success { background: var(--admin-success-bg); color: var(--admin-success); border: 1px solid var(--admin-success); }
+    .message-toast.error { background: var(--admin-danger-bg); color: var(--admin-danger); border: 1px solid var(--admin-danger); }
     @keyframes slideIn { from { transform: translateX(400px); } to { transform: translateX(0); } }
+
+    /* Keyboard shortcut hints */
+    .kbd { display: inline-block; padding: 0.1rem 0.4rem; font-size: 0.7rem; font-family: monospace; background: var(--admin-gray-100); border: 1px solid var(--admin-border); border-radius: 3px; color: var(--admin-text-muted); margin-left: 0.5rem; }
+
+    /* Quick Add Modal */
+    #quickAddModal .modal-content { max-width: 500px; }
+    #quickAddModal .form-row { grid-template-columns: 1fr; }
+
+    /* Responsive adjustments */
+    @media (max-width: 768px) {
+      .container { padding: 1rem; }
+      .toolbar { flex-direction: column; align-items: stretch; }
+      .toolbar-left, .toolbar-right { flex-wrap: wrap; justify-content: center; }
+      .search-box { width: 100%; }
+      .form-row { grid-template-columns: 1fr; }
+      .col-type, .col-contact, .col-funding-type, .col-assigned, .col-next-followup { display: none; }
+    }
   </style>
 </head>
 <body>
@@ -183,11 +205,17 @@
           </div>
 
           <div class="toolbar-right">
+            <button class="btn btn-select-all" onclick="selectAllVisible()" title="Select all visible prospects (Ctrl+A)">
+              <span style="font-size: 0.9rem;">&#10003;</span> Select All Visible
+            </button>
+            <button class="btn btn-quick-add" onclick="showQuickAddModal()" title="Quick add a new prospect (Ctrl+N)">
+              <span style="font-size: 0.9rem;">+</span> Quick Add
+            </button>
             <button class="btn btn-reset" onclick="handleReset()" title="Reset filters, sorting, and selection">
-              <span style="font-size: 0.9rem;">↻</span> Reset
+              <span style="font-size: 0.9rem;">&#8635;</span> Reset
             </button>
             <button class="btn btn-columns" onclick="toggleColumnMenu()" title="Show/hide table columns">
-              <span style="font-size: 0.9rem;">⚙</span> Columns
+              <span style="font-size: 0.9rem;">&#9881;</span> Columns
             </button>
             <div class="column-toggle">
               <div class="column-toggle-menu" id="columnMenu">
@@ -614,11 +642,28 @@
         }
       });
 
-      // ESC key to close modals
+      // Keyboard shortcuts
       document.addEventListener('keydown', (e) => {
+        // Escape to close modals
         if (e.key === 'Escape') {
           closeProspectModal();
           closeImportModal();
+          closeQuickAddModal();
+        }
+        // Ctrl+F to focus search
+        if ((e.ctrlKey || e.metaKey) && e.key === 'f') {
+          e.preventDefault();
+          document.getElementById('searchBox').focus();
+        }
+        // Ctrl+A to select all visible (when not in input)
+        if ((e.ctrlKey || e.metaKey) && e.key === 'a' && !['INPUT', 'TEXTAREA', 'SELECT'].includes(document.activeElement.tagName)) {
+          e.preventDefault();
+          selectAllVisible();
+        }
+        // Ctrl+N to quick add
+        if ((e.ctrlKey || e.metaKey) && e.key === 'n') {
+          e.preventDefault();
+          showQuickAddModal();
         }
       });
 
@@ -629,6 +674,66 @@
       document.getElementById('importModal').addEventListener('click', (e) => {
         if (e.target.id === 'importModal') closeImportModal();
       });
+      document.getElementById('quickAddModal').addEventListener('click', (e) => {
+        if (e.target.id === 'quickAddModal') closeQuickAddModal();
+      });
+    }
+
+    // Select all visible prospects
+    function selectAllVisible() {
+      paginatedProspects.forEach(p => selectedProspects.add(p.id));
+      displayProspects();
+      showToast(`Selected ${paginatedProspects.length} visible prospects`, 'success');
+    }
+
+    // Quick Add Modal functions
+    function showQuickAddModal() {
+      document.getElementById('quickAddForm').reset();
+      document.getElementById('quickAddModal').classList.add('show');
+      document.getElementById('qapOrgName').focus();
+    }
+
+    function closeQuickAddModal() {
+      document.getElementById('quickAddModal').classList.remove('show');
+    }
+
+    async function executeQuickAdd(event) {
+      event.preventDefault();
+
+      const prospectData = {
+        organization_name: document.getElementById('qapOrgName').value.trim(),
+        prospect_type: document.getElementById('qapType').value,
+        funding_type: document.getElementById('qapFundingType').value || null,
+        estimated_amount: document.getElementById('qapAmount').value || null,
+        status: document.getElementById('qapStatus').value,
+        notes: document.getElementById('qapNotes').value.trim() || null,
+        tier: 2,
+        priority: 'medium'
+      };
+
+      try {
+        const response = await fetch(`${API_BASE_URL}/api/funding-prospects`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${sessionToken}`
+          },
+          body: JSON.stringify(prospectData)
+        });
+
+        const data = await response.json();
+
+        if (data.success) {
+          showToast('Prospect added successfully!', 'success');
+          closeQuickAddModal();
+          await loadProspects();
+        } else {
+          showToast(data.error || 'Failed to add prospect', 'error');
+        }
+      } catch (error) {
+        console.error('Quick add error:', error);
+        showToast('Error adding prospect', 'error');
+      }
     }
 
     function updatePagination() {
@@ -1041,6 +1146,59 @@
       setTimeout(() => toast.remove(), 3000);
     }
   </script>
+
+  <!-- Quick Add Prospect Modal -->
+  <div id="quickAddModal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2>Quick Add Prospect</h2>
+        <button class="close-btn" onclick="closeQuickAddModal()">&times;</button>
+      </div>
+      <form id="quickAddForm" onsubmit="executeQuickAdd(event)">
+        <div class="form-group">
+          <label for="qapOrgName">Organization Name *</label>
+          <input type="text" id="qapOrgName" required placeholder="e.g., National Science Foundation">
+        </div>
+        <div class="form-group">
+          <label for="qapType">Prospect Type</label>
+          <select id="qapType">
+            <option value="organization">Organization</option>
+            <option value="individual">Individual</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="qapFundingType">Funding Type</label>
+          <select id="qapFundingType">
+            <option value="">Select type...</option>
+            <option value="Grant">Grant</option>
+            <option value="Donation">Donation</option>
+            <option value="Sponsorship">Sponsorship</option>
+            <option value="Partnership">Partnership</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="qapAmount">Estimated Amount ($)</label>
+          <input type="number" id="qapAmount" step="0.01" min="0" placeholder="e.g., 50000">
+        </div>
+        <div class="form-group">
+          <label for="qapStatus">Initial Status</label>
+          <select id="qapStatus">
+            <option value="prospect">Prospect</option>
+            <option value="contacted">Contacted</option>
+            <option value="interested">Interested</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="qapNotes">Notes</label>
+          <textarea id="qapNotes" rows="2" placeholder="Brief notes about this prospect..."></textarea>
+        </div>
+        <div class="form-actions">
+          <button type="button" class="btn btn-reset" onclick="closeQuickAddModal()">Cancel</button>
+          <button type="submit" class="btn btn-primary">Add Prospect</button>
+        </div>
+      </form>
+    </div>
+  </div>
 
   <script src="/admin/claude-ai-dropdown.js"></script>
 </body>
