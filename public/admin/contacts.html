@@ -227,12 +227,6 @@
           <option value="Private">Private</option>
           <option value="Tribal">Tribal</option>
         </select>
-        <select id="priorityFilter" class="admin-select" style="min-width: 120px;">
-          <option value="">All Priority</option>
-          <option value="High">High</option>
-          <option value="Medium">Medium</option>
-          <option value="Low">Low</option>
-        </select>
         <select id="pageSizeSelect" class="admin-select" style="width: 100px;">
           <option value="20">Show 20</option>
           <option value="50">Show 50</option>
@@ -600,7 +594,6 @@
       { id: 'email', label: 'Email', visible: true },
       { id: 'organization', label: 'Organization', visible: true },
       { id: 'type', label: 'Type', visible: true },
-      { id: 'priority', label: 'Priority', visible: true },
       { id: 'country', label: 'Country', visible: true },
       { id: 'quality', label: 'Quality', visible: true },
       { id: 'tags', label: 'Tags', visible: true }
@@ -793,7 +786,6 @@
               ${isColumnVisible('email') ? `<th class="sortable col-email" onclick="sortBy('email')">Email <span class="sort-indicator">${currentSort.column === 'email' ? (currentSort.direction === 'asc' ? '&#9650;' : '&#9660;') : '&#8597;'}</span></th>` : ''}
               ${isColumnVisible('organization') ? `<th class="sortable col-organization" onclick="sortBy('organization_name')">Organization <span class="sort-indicator">${currentSort.column === 'organization_name' ? (currentSort.direction === 'asc' ? '&#9650;' : '&#9660;') : '&#8597;'}</span></th>` : ''}
               ${isColumnVisible('type') ? `<th class="sortable col-type" onclick="sortBy('contact_type')">Type <span class="sort-indicator">${currentSort.column === 'contact_type' ? (currentSort.direction === 'asc' ? '&#9650;' : '&#9660;') : '&#8597;'}</span></th>` : ''}
-              ${isColumnVisible('priority') ? `<th class="sortable col-priority" onclick="sortBy('priority_level')">Priority <span class="sort-indicator">${currentSort.column === 'priority_level' ? (currentSort.direction === 'asc' ? '&#9650;' : '&#9660;') : '&#8597;'}</span></th>` : ''}
               ${isColumnVisible('country') ? `<th class="sortable col-country" onclick="sortBy('country')">Country <span class="sort-indicator">${currentSort.column === 'country' ? (currentSort.direction === 'asc' ? '&#9650;' : '&#9660;') : '&#8597;'}</span></th>` : ''}
               ${isColumnVisible('quality') ? `<th class="col-quality" title="Data completeness score">Quality</th>` : ''}
               ${isColumnVisible('tags') ? `<th class="col-tags">Tags</th>` : ''}
@@ -815,7 +807,6 @@
                 ${isColumnVisible('email') ? `<td class="col-email">${contact.email ? contact.email.toLowerCase() : '-'}</td>` : ''}
                 ${isColumnVisible('organization') ? `<td class="col-organization editable-cell" onclick="editCell(this, '${safeEmail}', 'organization_name')" title="Click to edit">${contact.organization_name || '-'}</td>` : ''}
                 ${isColumnVisible('type') ? `<td class="col-type"><span class="admin-badge type-${(contact.contact_type || '').toLowerCase().replace(/[^a-z]/g, '')}">${contact.contact_type || '-'}</span></td>` : ''}
-                ${isColumnVisible('priority') ? `<td class="col-priority"><span class="admin-badge priority-${(contact.priority_level || '').toLowerCase()}">${contact.priority_level || '-'}</span></td>` : ''}
                 ${isColumnVisible('country') ? `<td class="col-country editable-cell" onclick="editCell(this, '${safeEmail}', 'country')" title="Click to edit">${contact.country || '-'}</td>` : ''}
                 ${isColumnVisible('quality') ? `<td class="col-quality">
                   <div class="quality-score quality-${quality.level}" title="${quality.score}/${quality.maxScore} fields complete">
@@ -842,7 +833,6 @@
       const searchTerm = document.getElementById('searchBox').value.toLowerCase();
       const country = document.getElementById('countryFilter').value;
       const type = document.getElementById('typeFilter').value;
-      const priority = document.getElementById('priorityFilter').value;
 
       filteredContacts = allContacts.filter(c => {
         // Search filter
@@ -855,10 +845,6 @@
         }
         // Type filter
         if (type && c.contact_type !== type) {
-          return false;
-        }
-        // Priority filter
-        if (priority && c.priority_level !== priority) {
           return false;
         }
         return true;
@@ -878,9 +864,6 @@
 
       // Type filter
       document.getElementById('typeFilter').addEventListener('change', applyFilters);
-
-      // Priority filter
-      document.getElementById('priorityFilter').addEventListener('change', applyFilters);
 
       // Page size selector
       document.getElementById('pageSizeSelect').addEventListener('change', (e) => {
@@ -991,7 +974,6 @@
       document.getElementById('searchBox').value = '';
       document.getElementById('countryFilter').value = '';
       document.getElementById('typeFilter').value = '';
-      document.getElementById('priorityFilter').value = '';
       document.getElementById('pageSizeSelect').value = '20';
       pageSize = 20;
       currentPage = 1;
