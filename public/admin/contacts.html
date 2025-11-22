@@ -1353,12 +1353,278 @@
     });
 
     // Import modal functions
+    let importData = null;
+    let importMappings = {};
+    let importStep = 1;
+
     function showImportModal() {
       document.getElementById('importModal').classList.add('active');
+      resetImportModal();
     }
 
     function closeImportModal() {
       document.getElementById('importModal').classList.remove('active');
+      resetImportModal();
+    }
+
+    function resetImportModal() {
+      importStep = 1;
+      importData = null;
+      importMappings = {};
+      document.getElementById('importStep1').style.display = 'block';
+      document.getElementById('importStep2').style.display = 'none';
+      document.getElementById('importStep3').style.display = 'none';
+      document.getElementById('importBackBtn').style.display = 'none';
+      document.getElementById('importNextBtn').style.display = 'none';
+      document.getElementById('importExecuteBtn').style.display = 'none';
+      document.getElementById('fileInfo').style.display = 'none';
+      document.getElementById('uploadError').style.display = 'none';
+      document.getElementById('uploadLoading').style.display = 'none';
+      document.getElementById('fileInput').value = '';
+    }
+
+    async function handleFileUpload(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+
+      // Validate file type
+      const validTypes = ['.csv', '.xlsx', '.xls', '.tsv', '.pdf', '.docx', '.doc'];
+      const ext = '.' + file.name.split('.').pop().toLowerCase();
+      if (!validTypes.includes(ext)) {
+        document.getElementById('uploadError').style.display = 'block';
+        document.getElementById('uploadError').textContent = 'Invalid file type. Please upload CSV, Excel, PDF, or Word files.';
+        return;
+      }
+
+      // Validate file size (50MB)
+      if (file.size > 50 * 1024 * 1024) {
+        document.getElementById('uploadError').style.display = 'block';
+        document.getElementById('uploadError').textContent = 'File too large. Maximum size is 50MB.';
+        return;
+      }
+
+      document.getElementById('uploadError').style.display = 'none';
+      document.getElementById('uploadLoading').style.display = 'block';
+      document.getElementById('fileInfo').style.display = 'none';
+
+      const formData = new FormData();
+      formData.append('file', file);
+
+      try {
+        const sessionToken = localStorage.getItem('isrs_session');
+        const response = await fetch(`${API_BASE_URL}/api/import/parse`, {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${sessionToken}`
+          },
+          body: formData
+        });
+
+        const data = await response.json();
+        document.getElementById('uploadLoading').style.display = 'none';
+
+        if (!response.ok || !data.success) {
+          throw new Error(data.error || 'Failed to parse file');
+        }
+
+        importData = data;
+
+        // Show file info
+        document.getElementById('fileInfo').style.display = 'block';
+        document.getElementById('fileInfo').innerHTML = `
+          <strong>File:</strong> ${file.name}<br>
+          <strong>Rows:</strong> ${data.rowCount || data.rows?.length || 0}<br>
+          <strong>Columns detected:</strong> ${data.columns?.length || Object.keys(data.rows?.[0] || {}).length || 0}
+        `;
+
+        // Show next button
+        document.getElementById('importNextBtn').style.display = 'inline-block';
+
+      } catch (error) {
+        document.getElementById('uploadLoading').style.display = 'none';
+        document.getElementById('uploadError').style.display = 'block';
+        document.getElementById('uploadError').textContent = 'Error: ' + error.message;
+      }
+    }
+
+    function importPrevStep() {
+      if (importStep > 1) {
+        importStep--;
+        updateImportStep();
+      }
+    }
+
+    function importNextStep() {
+      if (importStep < 3) {
+        importStep++;
+        updateImportStep();
+      }
+    }
+
+    function updateImportStep() {
+      document.getElementById('importStep1').style.display = importStep === 1 ? 'block' : 'none';
+      document.getElementById('importStep2').style.display = importStep === 2 ? 'block' : 'none';
+      document.getElementById('importStep3').style.display = importStep === 3 ? 'block' : 'none';
+
+      document.getElementById('importBackBtn').style.display = importStep > 1 ? 'inline-block' : 'none';
+      document.getElementById('importNextBtn').style.display = importStep < 3 && importData ? 'inline-block' : 'none';
+      document.getElementById('importExecuteBtn').style.display = importStep === 3 ? 'inline-block' : 'none';
+
+      if (importStep === 2) {
+        renderFieldMappings();
+      } else if (importStep === 3) {
+        renderImportPreview();
+      }
+    }
+
+    function renderFieldMappings() {
+      const container = document.getElementById('fieldMappingContainer');
+      const sourceColumns = importData?.columns || Object.keys(importData?.rows?.[0] || {});
+      const targetFields = [
+        { name: 'full_name', label: 'Full Name' },
+        { name: 'first_name', label: 'First Name' },
+        { name: 'last_name', label: 'Last Name' },
+        { name: 'email', label: 'Email' },
+        { name: 'organization_name', label: 'Organization' },
+        { name: 'title', label: 'Title/Role' },
+        { name: 'phone', label: 'Phone' },
+        { name: 'country', label: 'Country' },
+        { name: 'city', label: 'City' },
+        { name: 'state', label: 'State' },
+        { name: 'contact_type', label: 'Contact Type' }
+      ];
+
+      // Auto-mapping based on column names
+      const autoMap = (source) => {
+        const s = source.toLowerCase();
+        if (s.includes('email')) return 'email';
+        if (s.includes('full') && s.includes('name')) return 'full_name';
+        if (s.includes('first') && s.includes('name')) return 'first_name';
+        if (s.includes('last') && s.includes('name')) return 'last_name';
+        if (s.includes('org')) return 'organization_name';
+        if (s.includes('title') || s.includes('role')) return 'title';
+        if (s.includes('phone')) return 'phone';
+        if (s.includes('country')) return 'country';
+        if (s.includes('city')) return 'city';
+        if (s.includes('state')) return 'state';
+        if (s.includes('type')) return 'contact_type';
+        return '';
+      };
+
+      container.innerHTML = sourceColumns.map(col => {
+        const mapped = autoMap(col);
+        importMappings[col] = mapped;
+        return `
+          <div class="field-mapping-row">
+            <label>${col}</label>
+            <select onchange="importMappings['${col}'] = this.value">
+              <option value="">-- Skip --</option>
+              ${targetFields.map(f => `
+                <option value="${f.name}" ${mapped === f.name ? 'selected' : ''}>${f.label}</option>
+              `).join('')}
+            </select>
+            <span class="confidence-indicator ${mapped ? 'confidence-high' : 'confidence-low'}">
+              ${mapped ? 'Auto-mapped' : 'Manual'}
+            </span>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function renderImportPreview() {
+      const container = document.getElementById('importPreview');
+      const rows = importData?.rows || [];
+      const previewRows = rows.slice(0, 5);
+
+      // Get mapped columns
+      const mappedCols = Object.entries(importMappings).filter(([k, v]) => v);
+
+      container.innerHTML = `
+        <p><strong>${rows.length}</strong> contacts will be imported.</p>
+        <div class="import-preview-table">
+          <table class="admin-table">
+            <thead>
+              <tr>
+                ${mappedCols.map(([src, dest]) => `<th>${dest}</th>`).join('')}
+              </tr>
+            </thead>
+            <tbody>
+              ${previewRows.map(row => `
+                <tr>
+                  ${mappedCols.map(([src, dest]) => `<td>${row[src] || '-'}</td>`).join('')}
+                </tr>
+              `).join('')}
+            </tbody>
+          </table>
+        </div>
+        ${rows.length > 5 ? `<p style="color: var(--admin-gray-500); font-size: var(--admin-text-sm);">...and ${rows.length - 5} more rows</p>` : ''}
+      `;
+    }
+
+    async function executeImport() {
+      const btn = document.getElementById('importExecuteBtn');
+      btn.disabled = true;
+      btn.textContent = 'Importing...';
+
+      const resultsContainer = document.getElementById('importResults');
+      resultsContainer.style.display = 'none';
+
+      try {
+        const sessionToken = localStorage.getItem('isrs_session');
+        const contacts = (importData?.rows || []).map(row => {
+          const contact = {};
+          Object.entries(importMappings).forEach(([src, dest]) => {
+            if (dest && row[src]) {
+              contact[dest] = row[src];
+            }
+          });
+          return contact;
+        }).filter(c => c.email || c.full_name);
+
+        const response = await fetch(`${API_BASE_URL}/api/import/contacts`, {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${sessionToken}`,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            contacts,
+            updateExisting: document.getElementById('updateExisting').checked
+          })
+        });
+
+        const data = await response.json();
+
+        if (!response.ok || !data.success) {
+          throw new Error(data.error || 'Import failed');
+        }
+
+        resultsContainer.style.display = 'block';
+        resultsContainer.innerHTML = `
+          <div class="admin-alert admin-alert-success">
+            <strong>Import Complete!</strong><br>
+            Created: ${data.created || 0} contacts<br>
+            Updated: ${data.updated || 0} contacts<br>
+            Skipped: ${data.skipped || 0} contacts
+          </div>
+        `;
+
+        showToast(`Successfully imported ${data.created + data.updated} contacts`, 'success');
+        await loadContacts();
+
+      } catch (error) {
+        resultsContainer.style.display = 'block';
+        resultsContainer.innerHTML = `
+          <div class="admin-alert admin-alert-danger">
+            <strong>Import Failed</strong><br>
+            ${error.message}
+          </div>
+        `;
+        showToast('Import failed: ' + error.message, 'error');
+      } finally {
+        btn.disabled = false;
+        btn.textContent = 'Import Contacts';
+      }
     }
 
     // Duplicates modal functions

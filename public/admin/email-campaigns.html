@@ -536,7 +536,7 @@ ISRS Team"></textarea>
 
     async function loadCampaigns() {
       try {
-        const token = localStorage.getItem('session_token');
+        const token = localStorage.getItem('isrs_session');
         const response = await fetch(`${API_BASE}/admin/email/campaigns`, {
           headers: { 'Authorization': `Bearer ${token}` }
         });
@@ -560,7 +560,7 @@ ISRS Team"></textarea>
 
     async function loadTemplates() {
       try {
-        const token = localStorage.getItem('session_token');
+        const token = localStorage.getItem('isrs_session');
         const response = await fetch(`${API_BASE}/admin/email/templates`, {
           headers: { 'Authorization': `Bearer ${token}` }
         });
@@ -713,7 +713,7 @@ ISRS Team"></textarea>
       }
 
       try {
-        const token = localStorage.getItem('session_token');
+        const token = localStorage.getItem('isrs_session');
         const response = await fetch(`${API_BASE}/admin/email/audience-count?type=${audience}`, {
           headers: { 'Authorization': `Bearer ${token}` }
         });
@@ -744,7 +744,7 @@ ISRS Team"></textarea>
       }
 
       try {
-        const token = localStorage.getItem('session_token');
+        const token = localStorage.getItem('isrs_session');
         const response = await fetch(`${API_BASE}/admin/email/campaigns`, {
           method: 'POST',
           headers: {
@@ -774,7 +774,7 @@ ISRS Team"></textarea>
 
     async function sendCampaign(id) {
       try {
-        const token = localStorage.getItem('session_token');
+        const token = localStorage.getItem('isrs_session');
         const response = await fetch(`${API_BASE}/admin/email/campaigns/${id}/send`, {
           method: 'POST',
           headers: { 'Authorization': `Bearer ${token}` }
@@ -802,15 +802,15 @@ ISRS Team"></textarea>
     }
 
     function logout() {
-      localStorage.removeItem('session_token');
-      window.location.href = '/admin/login.html';
+      localStorage.removeItem('isrs_session');
+      window.location.href = '/admin/';
     }
 
     // Check auth and load
     window.addEventListener('DOMContentLoaded', () => {
-      const token = localStorage.getItem('session_token');
+      const token = localStorage.getItem('isrs_session');
       if (!token) {
-        window.location.href = '/admin/login.html';
+        window.location.href = '/admin/';
         return;
       }
       loadCampaigns();
