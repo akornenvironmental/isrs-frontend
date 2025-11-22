@@ -1323,18 +1323,60 @@
 /* ===========================================
    RESPONSIVE ADJUSTMENTS
    =========================================== */
+
+/* Tablet breakpoint */
+@media (max-width: 1024px) {
+  .admin-content-padded {
+    padding: var(--admin-space-lg);
+  }
+
+  .admin-page-header {
+    flex-direction: column;
+    gap: var(--admin-space-lg);
+    align-items: flex-start;
+  }
+
+  .admin-page-header-actions {
+    width: 100%;
+    flex-wrap: wrap;
+  }
+
+  .admin-toolbar {
+    flex-wrap: wrap;
+    gap: var(--admin-space-md);
+  }
+
+  .admin-stats-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* Mobile breakpoint */
 @media (max-width: 768px) {
   .admin-page-header {
     padding: var(--admin-space-lg);
   }
 
+  .admin-page-header h1 {
+    font-size: var(--admin-text-xl);
+  }
+
   .admin-toolbar {
     padding: var(--admin-space-md);
+    flex-direction: column;
+    align-items: stretch;
   }
 
   .admin-toolbar-left,
   .admin-toolbar-right {
     width: 100%;
+    flex-wrap: wrap;
+  }
+
+  .admin-toolbar .admin-input,
+  .admin-toolbar .admin-select {
+    width: 100%;
+    min-width: unset;
   }
 
   .admin-stats-grid {
@@ -1345,6 +1387,11 @@
   .admin-modal {
     width: 95%;
     max-height: 95vh;
+    margin: var(--admin-space-md);
+  }
+
+  .admin-modal-body {
+    padding: var(--admin-space-lg);
   }
 
   .admin-table {
@@ -1354,5 +1401,65 @@
   .admin-table th,
   .admin-table td {
     padding: var(--admin-space-xs) var(--admin-space-sm);
+  }
+
+  /* Hide less important columns on mobile */
+  .admin-table .col-priority,
+  .admin-table .col-quality,
+  .admin-table .col-tags {
+    display: none;
+  }
+
+  /* Stack buttons in bulk actions */
+  .bulk-actions {
+    flex-wrap: wrap;
+    gap: var(--admin-space-sm);
+  }
+
+  .bulk-actions .admin-btn {
+    flex: 1 1 auto;
+    min-width: 120px;
+  }
+
+  /* Pagination mobile */
+  .admin-pagination {
+    flex-direction: column;
+    gap: var(--admin-space-md);
+    text-align: center;
+  }
+
+  /* Form rows stack on mobile */
+  .form-row {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Small mobile */
+@media (max-width: 480px) {
+  .admin-content-padded {
+    padding: var(--admin-space-md);
+  }
+
+  .admin-page-header h1 {
+    font-size: var(--admin-text-lg);
+  }
+
+  .admin-btn {
+    padding: var(--admin-space-sm) var(--admin-space-md);
+    font-size: var(--admin-text-xs);
+  }
+
+  .admin-stat-card {
+    padding: var(--admin-space-md);
+  }
+
+  .admin-stat-value {
+    font-size: var(--admin-text-xl);
+  }
+
+  /* Hide even more columns */
+  .admin-table .col-country,
+  .admin-table .col-type {
+    display: none;
   }
 }
