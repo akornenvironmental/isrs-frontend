@@ -252,19 +252,120 @@
 
 /* Dark mode dropdowns */
 .admin-dark-mode .export-dropdown-content,
-.admin-dark-mode .dropdown-content {
-  background: var(--admin-surface);
-  border-color: var(--admin-border);
+.admin-dark-mode .dropdown-content,
+.admin-dark-mode .admin-dropdown-menu {
+  background: #1f2937 !important;
+  border-color: #4b5563 !important;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5) !important;
 }
 
 .admin-dark-mode .export-dropdown-content a,
-.admin-dark-mode .dropdown-content a {
-  color: var(--admin-text);
+.admin-dark-mode .dropdown-content a,
+.admin-dark-mode .admin-dropdown-menu a,
+.admin-dark-mode .admin-dropdown-menu button,
+.admin-dark-mode .admin-dropdown-item {
+  color: #f9fafb !important;
+  background: transparent !important;
 }
 
 .admin-dark-mode .export-dropdown-content a:hover,
-.admin-dark-mode .dropdown-content a:hover {
-  background: var(--admin-gray-100);
+.admin-dark-mode .dropdown-content a:hover,
+.admin-dark-mode .admin-dropdown-menu a:hover,
+.admin-dark-mode .admin-dropdown-menu button:hover,
+.admin-dark-mode .admin-dropdown-item:hover {
+  background: #374151 !important;
+  color: #ffffff !important;
+}
+
+.admin-dark-mode .admin-dropdown-menu div {
+  color: #9ca3af !important;
+  border-bottom-color: #4b5563 !important;
+}
+
+/* Dark mode type badges */
+.admin-dark-mode .type-academic { background: #1e3a5f !important; color: #93c5fd !important; }
+.admin-dark-mode .type-government { background: #064e3b !important; color: #6ee7b7 !important; }
+.admin-dark-mode .type-nonprofit { background: #78350f !important; color: #fcd34d !important; }
+.admin-dark-mode .type-private { background: #4c1d95 !important; color: #c4b5fd !important; }
+.admin-dark-mode .type-tribal { background: #7c2d12 !important; color: #fdba74 !important; }
+
+/* Dark mode priority badges */
+.admin-dark-mode .priority-high { background: #7f1d1d !important; color: #fca5a5 !important; }
+.admin-dark-mode .priority-medium { background: #78350f !important; color: #fcd34d !important; }
+.admin-dark-mode .priority-low { background: #374151 !important; color: #9ca3af !important; }
+
+/* Dark mode tags */
+.admin-dark-mode .tag {
+  background: #374151 !important;
+  color: #e5e7eb !important;
+}
+
+.admin-dark-mode .tag-more {
+  background: #4b5563 !important;
+  color: #9ca3af !important;
+}
+
+/* Dark mode stats bar */
+.admin-dark-mode .stats-bar {
+  background: #1f2937 !important;
+  border-top-color: #4b5563 !important;
+  color: #e5e7eb !important;
+}
+
+/* Dark mode pagination */
+.admin-dark-mode .admin-pagination {
+  background: #1f2937 !important;
+  border-top-color: #4b5563 !important;
+}
+
+.admin-dark-mode .admin-pagination-info {
+  color: #e5e7eb !important;
+}
+
+/* Dark mode bulk actions */
+.admin-dark-mode .bulk-actions {
+  background: #1e3a5f !important;
+  border-bottom-color: #3b82f6 !important;
+}
+
+.admin-dark-mode .bulk-actions-count {
+  color: #93c5fd !important;
+}
+
+/* Dark mode file upload area */
+.admin-dark-mode .file-upload-area {
+  background: #374151 !important;
+  border-color: #4b5563 !important;
+}
+
+.admin-dark-mode .file-upload-area:hover {
+  background: #1e3a5f !important;
+  border-color: #60a5fa !important;
+}
+
+.admin-dark-mode .file-upload-text {
+  color: #9ca3af !important;
+}
+
+/* Dark mode field mapping */
+.admin-dark-mode .field-mapping-row {
+  background: #374151 !important;
+}
+
+/* Dark mode duplicate/merge modals */
+.admin-dark-mode .duplicate-group,
+.admin-dark-mode .duplicate-contact {
+  background: #374151 !important;
+  border-color: #4b5563 !important;
+}
+
+.admin-dark-mode .duplicate-group-header {
+  color: #60a5fa !important;
+}
+
+/* Dark mode Claude AI button */
+.admin-dark-mode .ai-query-btn {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
 }
 
 /* Dark mode modal */
