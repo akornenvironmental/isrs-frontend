@@ -1577,20 +1577,51 @@
           throw new Error(data.error || 'Failed to enhance contact');
         }
 
-        // Update local contact data with enhanced fields
-        if (data.enhanced) {
-          Object.assign(contact, data.enhanced);
+        // Apply suggestions from enhancement to contact
+        let changesCount = 0;
+        const updates = {};
+        if (data.enhancement && data.enhancement.suggestions) {
+          for (const [field, suggestion] of Object.entries(data.enhancement.suggestions)) {
+            if (suggestion.value && suggestion.confidence !== 'low') {
+              updates[field] = suggestion.value;
+              changesCount++;
+            }
+          }
+        }
+
+        // Save changes to database if any
+        if (changesCount > 0) {
+          try {
+            const saveResponse = await fetch(`${API_BASE_URL}/api/admin/contacts/${contact.id}`, {
+              method: 'PUT',
+              headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${sessionToken}`
+              },
+              body: JSON.stringify(updates)
+            });
+            const saveData = await saveResponse.json();
+            if (saveResponse.ok && saveData.success) {
+              // Update local contact with saved data
+              Object.assign(contact, updates);
+            } else {
+              console.error('Failed to save enhancement:', saveData.error);
+            }
+          } catch (saveErr) {
+            console.error('Error saving enhancement:', saveErr);
+          }
         }
 
         // Refresh display
         displayContacts();
 
         // Show success with summary of what was found
-        const changesCount = data.fieldsUpdated || Object.keys(data.enhanced || {}).length;
         if (changesCount > 0) {
           showToast(`Enhanced ${contact.full_name || email}: ${changesCount} fields updated`, 'success');
         } else {
-          showToast(`No additional data found for ${contact.full_name || email}`, 'info');
+          // Show info from enhancement even if no fields updated
+          const info = data.enhancement?.web_findings?.person_info || data.enhancement?.search_summary || 'No additional data found';
+          showToast(`${contact.full_name || email}: ${info.substring(0, 100)}`, 'info');
         }
 
       } catch (error) {
@@ -1679,11 +1710,41 @@
               const data = await response.json();
               console.log('AI enhance response for', contact.email, ':', data);
 
-              if (response.ok && data.success && data.enhanced) {
-                Object.assign(contact, data.enhanced);
-                return { success: true, contact };
+              if (response.ok && data.success && data.enhancement) {
+                // Apply suggestions from enhancement to contact
+                const suggestions = data.enhancement.suggestions || {};
+                const updates = {};
+                let fieldsUpdated = 0;
+                for (const [field, suggestion] of Object.entries(suggestions)) {
+                  if (suggestion.value && suggestion.confidence !== 'low') {
+                    updates[field] = suggestion.value;
+                    fieldsUpdated++;
+                  }
+                }
+
+                // Save to database if we have updates
+                if (fieldsUpdated > 0) {
+                  try {
+                    const saveResponse = await fetch(`${API_BASE_URL}/api/admin/contacts/${contact.id}`, {
+                      method: 'PUT',
+                      headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${sessionToken}`
+                      },
+                      body: JSON.stringify(updates)
+                    });
+                    const saveData = await saveResponse.json();
+                    if (saveResponse.ok && saveData.success) {
+                      Object.assign(contact, updates);
+                      return { success: true, contact, fieldsUpdated };
+                    }
+                  } catch (saveErr) {
+                    console.error('Error saving enhancement for', contact.email, ':', saveErr);
+                  }
+                }
+                return { success: fieldsUpdated > 0, contact, fieldsUpdated };
               }
-              return { success: false, error: data.error || 'No enhanced data returned' };
+              return { success: false, error: data.error || 'No enhancement suggestions returned' };
             } catch (e) {
               console.error('AI enhance error for', contact.email, ':', e);
               return { success: false, error: e.message };
