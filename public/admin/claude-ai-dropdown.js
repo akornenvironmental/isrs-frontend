@@ -42,29 +42,19 @@ class ClaudeAIDropdown {
           <button class="claude-ai-menu-item" data-action="find-duplicates">
             <div class="menu-item-content">
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <circle cx="12" cy="12" r="10"/>
-                <path d="M12 8v8m-4-4h8"/>
+                <rect x="3" y="3" width="7" height="7"/>
+                <rect x="14" y="3" width="7" height="7"/>
+                <rect x="14" y="14" width="7" height="7"/>
+                <rect x="3" y="14" width="7" height="7"/>
               </svg>
-              <span>Find Duplicates</span>
+              <span>Find/Fix Duplicates</span>
             </div>
             <div class="menu-item-description">
-              Identify potential duplicate contacts
+              Identify and merge duplicate contacts
             </div>
           </button>
 
-          <button class="claude-ai-menu-item" data-action="review-quality">
-            <div class="menu-item-content">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <polyline points="20 6 9 17 4 12"/>
-              </svg>
-              <span>Review Data Quality</span>
-            </div>
-            <div class="menu-item-description">
-              Get AI recommendations for improvements
-            </div>
-          </button>
-
-          <button class="claude-ai-menu-item enhance-contact-btn" data-action="enhance-contact" style="display: none;">
+          <button class="claude-ai-menu-item enhance-contact-btn" data-action="enhance-contact">
             <div class="menu-item-content">
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <circle cx="11" cy="11" r="8"/>
@@ -72,9 +62,9 @@ class ClaudeAIDropdown {
                 <line x1="8" y1="11" x2="14" y2="11"/>
                 <line x1="11" y1="8" x2="11" y2="14"/>
               </svg>
-              <span>Enrich with Web Search</span>
+              <span>Enhance Record</span>
             </div>
-            <div class="menu-item-description">
+            <div class="menu-item-description enhance-description">
               Search the web to fill missing data
             </div>
           </button>
