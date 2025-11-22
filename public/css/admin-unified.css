@@ -86,10 +86,13 @@
   --admin-bg: var(--admin-gray-50);
   --admin-surface: #ffffff;
   --admin-surface-hover: var(--admin-gray-100);
+  --admin-hover: var(--admin-gray-100);
   --admin-border: var(--admin-gray-200);
   --admin-text: var(--admin-gray-900);
   --admin-text-secondary: var(--admin-gray-600);
   --admin-text-muted: var(--admin-gray-500);
+  --admin-text-inverse: #ffffff;
+  --admin-primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
 }
 
 /* Dark Mode Variables */
@@ -132,6 +135,11 @@
   --admin-shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.4);
   --admin-shadow-md: 0 4px 6px rgba(0, 0, 0, 0.5);
   --admin-shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.6);
+
+  /* Additional dark mode variables */
+  --admin-hover: #374151;
+  --admin-text-inverse: #111827;
+  --admin-primary-gradient: linear-gradient(135deg, #60a5fa 0%, #8b5cf6 100%);
 }
 
 /* Dark mode specific overrides for better visibility */
