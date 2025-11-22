@@ -137,14 +137,14 @@
    PAGE HEADER
    =========================================== */
 .admin-page-header {
-  padding: var(--admin-space-xl) var(--admin-space-2xl);
+  padding: var(--admin-space-md) var(--admin-space-xl);
   background: white;
   border-bottom: 1px solid var(--admin-gray-200);
   display: flex;
   justify-content: space-between;
   align-items: center;
   flex-wrap: wrap;
-  gap: var(--admin-space-lg);
+  gap: var(--admin-space-md);
 }
 
 .admin-page-header h1 {
@@ -165,8 +165,8 @@
 .admin-toolbar {
   display: flex;
   align-items: center;
-  gap: var(--admin-space-md);
-  padding: var(--admin-space-lg) var(--admin-space-2xl);
+  gap: var(--admin-space-sm);
+  padding: var(--admin-space-sm) var(--admin-space-xl);
   background: var(--admin-gray-50);
   border-bottom: 1px solid var(--admin-gray-200);
   flex-wrap: wrap;
@@ -175,7 +175,7 @@
 .admin-toolbar-left {
   display: flex;
   align-items: center;
-  gap: var(--admin-space-md);
+  gap: var(--admin-space-sm);
   flex: 1;
   flex-wrap: wrap;
 }
@@ -189,7 +189,7 @@
 .admin-toolbar-right {
   display: flex;
   align-items: center;
-  gap: var(--admin-space-md);
+  gap: var(--admin-space-sm);
   flex-shrink: 0;
 }
 

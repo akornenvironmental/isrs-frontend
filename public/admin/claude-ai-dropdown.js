@@ -67,13 +67,15 @@ class ClaudeAIDropdown {
           <button class="claude-ai-menu-item enhance-contact-btn" data-action="enhance-contact" style="display: none;">
             <div class="menu-item-content">
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M12 2L2 7l10 5 10-5-10-5z"/>
-                <path d="M2 17l10 5 10-5"/>
+                <circle cx="11" cy="11" r="8"/>
+                <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+                <line x1="8" y1="11" x2="14" y2="11"/>
+                <line x1="11" y1="8" x2="11" y2="14"/>
               </svg>
-              <span>Enhance Selected Contact</span>
+              <span>Enrich with Web Search</span>
             </div>
             <div class="menu-item-description">
-              Get AI suggestions for this contact
+              Search the web to fill missing data
             </div>
           </button>
 
@@ -88,8 +90,8 @@ class ClaudeAIDropdown {
         <div class="claude-ai-loading-content">
           <div class="claude-ai-spinner"></div>
           <div class="claude-ai-loading-text">
-            <h3>Claude AI is analyzing...</h3>
-            <p>This may take a moment</p>
+            <h3 class="loading-title">Claude AI is analyzing...</h3>
+            <p class="loading-subtitle">This may take a moment</p>
           </div>
         </div>
       </div>
@@ -289,7 +291,7 @@ class ClaudeAIDropdown {
       return;
     }
 
-    this.showLoading();
+    this.showLoading('Searching the web and analyzing...', 'Finding information about this contact');
 
     try {
       const sessionToken = localStorage.getItem('isrs_session');
@@ -299,7 +301,7 @@ class ClaudeAIDropdown {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${sessionToken}`
         },
-        body: JSON.stringify({ contact_id: contact_ids[0] })
+        body: JSON.stringify({ contact_id: contact_ids[0], useWebSearch: true })
       });
 
       const data = await response.json();
@@ -330,9 +332,14 @@ class ClaudeAIDropdown {
     return contacts.map(c => c.id).filter(Boolean);
   }
 
-  showLoading() {
+  showLoading(title = 'Claude AI is analyzing...', subtitle = 'This may take a moment') {
     this.loading = true;
     const modal = document.querySelector('.claude-ai-loading-modal');
+    const titleEl = modal?.querySelector('.loading-title');
+    const subtitleEl = modal?.querySelector('.loading-subtitle');
+
+    if (titleEl) titleEl.textContent = title;
+    if (subtitleEl) subtitleEl.textContent = subtitle;
     if (modal) modal.style.display = 'flex';
   }
 
@@ -436,49 +443,144 @@ class ClaudeAIDropdown {
     const contact = data.contact;
     const enhancement = data.enhancement;
 
+    // Check if suggestions have the new format with confidence
+    const hasSuggestions = enhancement.suggestions && Object.keys(enhancement.suggestions).length > 0;
+    const hasWebFindings = enhancement.web_findings && (
+      enhancement.web_findings.person_info ||
+      enhancement.web_findings.org_info ||
+      enhancement.web_findings.relevant_publications
+    );
+
+    // Build suggestions for apply button (handle both old and new format)
+    const suggestionsForApply = {};
+    if (hasSuggestions) {
+      Object.entries(enhancement.suggestions).forEach(([field, val]) => {
+        // Handle new format { value, confidence, source } or old format (just value)
+        suggestionsForApply[field] = typeof val === 'object' ? val.value : val;
+      });
+    }
+
     const html = `
-      <h3>Contact Enhancement Suggestions</h3>
+      <h3>Web Search Enrichment Results</h3>
+
+      ${enhancement.enhancement_metadata?.web_search_performed ? `
+        <div style="background: #dbeafe; color: #1e40af; padding: 0.75rem; border-radius: 6px; margin-bottom: 1rem; font-size: 0.875rem;">
+          🔍 Web search performed - ${enhancement.enhancement_metadata.search_results_count || 0} results found
+        </div>
+      ` : ''}
 
       <div class="current-contact-card">
         <h4>Current Contact</h4>
         <div style="color: #1f2937; font-size: 0.875rem;">
-          <div><strong>Name:</strong> ${this.escapeHtml(contact.full_name || '(empty)')}</div>
-          <div><strong>Organization:</strong> ${this.escapeHtml(contact.organization || '(empty)')}</div>
-          <div><strong>Role:</strong> ${this.escapeHtml(contact.role || '(empty)')}</div>
-          <div><strong>Phone:</strong> ${this.escapeHtml(contact.phone || '(empty)')}</div>
+          <div><strong>Name:</strong> ${this.escapeHtml(contact.full_name || contact.first_name + ' ' + contact.last_name || '(empty)')}</div>
+          <div><strong>Email:</strong> ${this.escapeHtml(contact.email || '(empty)')}</div>
+          <div><strong>Organization:</strong> ${this.escapeHtml(contact.organization_name || contact.organization || '(empty)')}</div>
+          <div><strong>Role/Title:</strong> ${this.escapeHtml(contact.role || contact.title || '(empty)')}</div>
+          <div><strong>Country:</strong> ${this.escapeHtml(contact.country || '(empty)')}</div>
         </div>
       </div>
 
-      <div class="quality-score-badge">
-        Quality Score: ${enhancement.quality_score}/100
+      <div style="display: flex; gap: 1rem; margin: 1rem 0;">
+        <div class="quality-score-badge" style="flex: 1;">
+          Quality: ${enhancement.quality_score}/100
+        </div>
+        ${enhancement.relevance_score !== undefined ? `
+          <div class="quality-score-badge" style="flex: 1; background: linear-gradient(135deg, #10b981, #059669);">
+            Relevance: ${enhancement.relevance_score}/10
+          </div>
+        ` : ''}
       </div>
+
+      ${enhancement.search_summary ? `
+        <div style="background: #f0fdf4; border: 1px solid #22c55e; padding: 1rem; border-radius: 6px; margin: 1rem 0;">
+          <h4 style="margin: 0 0 0.5rem 0; color: #166534;">🌐 Web Search Summary</h4>
+          <p style="margin: 0; color: #166534; font-size: 0.875rem;">${this.escapeHtml(enhancement.search_summary)}</p>
+        </div>
+      ` : ''}
+
+      ${hasWebFindings ? `
+        <div class="web-findings-section" style="background: #faf5ff; border: 1px solid #9333ea; padding: 1rem; border-radius: 6px; margin: 1rem 0;">
+          <h4 style="margin: 0 0 0.75rem 0; color: #7e22ce;">📋 Discovered Information</h4>
+          ${enhancement.web_findings.person_info ? `
+            <div style="margin-bottom: 0.5rem;">
+              <strong style="color: #6b21a8;">Person:</strong>
+              <span style="color: #581c87; font-size: 0.875rem;">${this.escapeHtml(enhancement.web_findings.person_info)}</span>
+            </div>
+          ` : ''}
+          ${enhancement.web_findings.org_info ? `
+            <div style="margin-bottom: 0.5rem;">
+              <strong style="color: #6b21a8;">Organization:</strong>
+              <span style="color: #581c87; font-size: 0.875rem;">${this.escapeHtml(enhancement.web_findings.org_info)}</span>
+            </div>
+          ` : ''}
+          ${enhancement.web_findings.relevant_publications ? `
+            <div style="margin-bottom: 0.5rem;">
+              <strong style="color: #6b21a8;">Publications/Projects:</strong>
+              <span style="color: #581c87; font-size: 0.875rem;">${this.escapeHtml(enhancement.web_findings.relevant_publications)}</span>
+            </div>
+          ` : ''}
+          ${enhancement.web_findings.social_profiles ? `
+            <div>
+              <strong style="color: #6b21a8;">Profiles:</strong>
+              <span style="color: #581c87; font-size: 0.875rem;">${this.escapeHtml(enhancement.web_findings.social_profiles)}</span>
+            </div>
+          ` : ''}
+        </div>
+      ` : ''}
 
       ${enhancement.issues && enhancement.issues.length > 0 ? `
         <div class="issues-section">
-          <h4>Issues Found</h4>
+          <h4>⚠️ Issues Found</h4>
           <ul>
             ${enhancement.issues.map(issue => `<li>${this.escapeHtml(issue)}</li>`).join('')}
           </ul>
         </div>
       ` : ''}
 
-      ${enhancement.suggestions && Object.keys(enhancement.suggestions).length > 0 ? `
+      ${hasSuggestions ? `
         <div class="suggestions-section">
-          <h4>AI Suggestions</h4>
+          <h4>✨ Suggested Updates</h4>
           <div class="suggestions-table">
-            ${Object.entries(enhancement.suggestions).map(([field, value]) => `
-              <div class="suggestion-row">
+            ${Object.entries(enhancement.suggestions).map(([field, val]) => {
+              const isNewFormat = typeof val === 'object';
+              const value = isNewFormat ? val.value : val;
+              const confidence = isNewFormat ? val.confidence : 'medium';
+              const source = isNewFormat ? val.source : 'AI inference';
+
+              const confidenceColor = confidence === 'high' ? '#22c55e' : confidence === 'medium' ? '#f59e0b' : '#ef4444';
+              const confidenceLabel = confidence === 'high' ? '●●●' : confidence === 'medium' ? '●●○' : '●○○';
+
+              return `
+              <div class="suggestion-row" style="border-left: 3px solid ${confidenceColor};">
                 <div class="suggestion-field">${this.formatFieldName(field)}:</div>
-                <div class="suggestion-value">${this.escapeHtml(String(value))}</div>
+                <div class="suggestion-value">
+                  ${this.escapeHtml(String(value))}
+                  <span style="font-size: 0.7rem; color: ${confidenceColor}; margin-left: 0.5rem;" title="${confidence} confidence - ${source}">
+                    ${confidenceLabel}
+                  </span>
+                </div>
               </div>
-            `).join('')}
+            `}).join('')}
           </div>
-          <button class="apply-suggestions-btn" onclick="window.claudeAI.applyEnhancements(${contact.id}, ${JSON.stringify(enhancement.suggestions).replace(/"/g, '&quot;')})">
-            ✓ Apply AI Suggestions to Contact
+          <button class="apply-suggestions-btn" onclick="window.claudeAI.applyEnhancements(${contact.id}, ${JSON.stringify(suggestionsForApply).replace(/"/g, '&quot;')})">
+            ✓ Apply Suggestions to Contact
           </button>
           <p style="text-align: center; color: #6b7280; font-size: 0.75rem; margin-top: 0.5rem;">
-            This will update the contact with the suggested values above
+            Legend: <span style="color: #22c55e;">●●●</span> High confidence &nbsp;
+            <span style="color: #f59e0b;">●●○</span> Medium &nbsp;
+            <span style="color: #ef4444;">●○○</span> Low
           </p>
+        </div>
+      ` : `
+        <div style="text-align: center; padding: 1rem; color: #6b7280;">
+          No specific field updates suggested. The contact data looks complete!
+        </div>
+      `}
+
+      ${enhancement.relevance_notes ? `
+        <div style="background: #fef3c7; border: 1px solid #f59e0b; padding: 1rem; border-radius: 6px; margin: 1rem 0;">
+          <h4 style="margin: 0 0 0.5rem 0; color: #92400e;">🐚 Relevance to Shellfish Restoration</h4>
+          <p style="margin: 0; color: #92400e; font-size: 0.875rem;">${this.escapeHtml(enhancement.relevance_notes)}</p>
         </div>
       ` : ''}
 
