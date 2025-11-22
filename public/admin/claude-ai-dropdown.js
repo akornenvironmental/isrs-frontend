@@ -62,7 +62,7 @@ class ClaudeAIDropdown {
                 <line x1="8" y1="11" x2="14" y2="11"/>
                 <line x1="11" y1="8" x2="11" y2="14"/>
               </svg>
-              <span>Enhance Record</span>
+              <span class="enhance-btn-text">Enhance Records</span>
             </div>
             <div class="menu-item-description enhance-description">
               Search the web to fill missing data
@@ -187,14 +187,25 @@ class ClaudeAIDropdown {
     const selectedCount = window.selectedContacts?.size || 0;
     const countSpan = this.container?.querySelector('.selected-count');
     const enhanceBtn = this.container?.querySelector('.enhance-contact-btn');
+    const enhanceBtnText = this.container?.querySelector('.enhance-btn-text');
+    const enhanceDescription = this.container?.querySelector('.enhance-description');
 
     if (countSpan) {
       countSpan.textContent = selectedCount > 0 ? `(${selectedCount} selected)` : '';
     }
 
-    // Show "Enhance Selected Contact" only when exactly 1 contact is selected
-    if (enhanceBtn) {
-      enhanceBtn.style.display = selectedCount === 1 ? 'block' : 'none';
+    // Update enhance button text based on selection
+    if (enhanceBtn && enhanceBtnText && enhanceDescription) {
+      if (selectedCount === 0) {
+        enhanceBtnText.textContent = 'Enhance All Records';
+        enhanceDescription.textContent = 'Search web to fill missing data (batch)';
+      } else if (selectedCount === 1) {
+        enhanceBtnText.textContent = 'Enhance Record';
+        enhanceDescription.textContent = 'Search web to fill missing data';
+      } else {
+        enhanceBtnText.textContent = `Enhance ${selectedCount} Records`;
+        enhanceDescription.textContent = 'Search web to fill missing data (batch)';
+      }
     }
   }
 
@@ -275,36 +286,159 @@ class ClaudeAIDropdown {
   }
 
   async enhanceContact() {
-    const contact_ids = this.getSelectedContactIds();
-    if (!contact_ids || contact_ids.length !== 1) {
-      this.showError('Please select exactly one contact');
-      return;
+    let contact_ids = this.getSelectedContactIds();
+
+    // If no contacts selected, get a batch of contacts to enhance
+    if (!contact_ids || contact_ids.length === 0) {
+      // Get contacts with low quality scores or missing data
+      const lowQualityContacts = window.allContacts?.filter(c =>
+        !c.organization_name || !c.country || !c.role
+      ).slice(0, 10);
+
+      if (lowQualityContacts && lowQualityContacts.length > 0) {
+        contact_ids = lowQualityContacts.map(c => c.id);
+      } else {
+        this.showError('No contacts with missing data found to enhance');
+        return;
+      }
     }
 
-    this.showLoading('Searching the web and analyzing...', 'Finding information about this contact');
+    // For single contact, use the detailed enhancement
+    if (contact_ids.length === 1) {
+      this.showLoading('Searching the web and analyzing...', 'Finding information about this contact');
 
-    try {
-      const sessionToken = localStorage.getItem('isrs_session');
-      const response = await fetch(`${API_BASE_URL}/api/claude/enhance-contact`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${sessionToken}`
-        },
-        body: JSON.stringify({ contact_id: contact_ids[0], useWebSearch: true })
-      });
+      try {
+        const sessionToken = localStorage.getItem('isrs_session');
+        const response = await fetch(`${API_BASE_URL}/api/claude/enhance-contact`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${sessionToken}`
+          },
+          body: JSON.stringify({ contact_id: contact_ids[0], useWebSearch: true })
+        });
 
-      const data = await response.json();
+        const data = await response.json();
 
-      if (!response.ok || !data.success) {
-        throw new Error(data.error || 'Failed to enhance contact');
+        if (!response.ok || !data.success) {
+          throw new Error(data.error || 'Failed to enhance contact');
+        }
+
+        this.hideLoading();
+        this.showEnhancementResults(data);
+      } catch (error) {
+        this.hideLoading();
+        this.showError(error.message);
+      }
+    } else {
+      // Batch enhancement
+      await this.batchEnhanceContacts(contact_ids);
+    }
+  }
+
+  async batchEnhanceContacts(contact_ids) {
+    this.showLoading(`Enhancing ${contact_ids.length} contacts...`, 'This may take a few minutes');
+
+    const results = [];
+    const errors = [];
+    const sessionToken = localStorage.getItem('isrs_session');
+
+    for (let i = 0; i < contact_ids.length; i++) {
+      try {
+        // Update progress
+        this.showLoading(`Enhancing contact ${i + 1} of ${contact_ids.length}...`, 'Searching web for information');
+
+        const response = await fetch(`${API_BASE_URL}/api/claude/enhance-contact`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${sessionToken}`
+          },
+          body: JSON.stringify({ contact_id: contact_ids[i], useWebSearch: true })
+        });
+
+        const data = await response.json();
+
+        if (response.ok && data.success) {
+          results.push({
+            contact: data.contact,
+            enhancement: data.enhancement
+          });
+        } else {
+          errors.push({ id: contact_ids[i], error: data.error || 'Unknown error' });
+        }
+      } catch (error) {
+        errors.push({ id: contact_ids[i], error: error.message });
       }
 
-      this.hideLoading();
-      this.showEnhancementResults(data);
-    } catch (error) {
-      this.hideLoading();
-      this.showError(error.message);
+      // Small delay between requests to avoid rate limiting
+      if (i < contact_ids.length - 1) {
+        await new Promise(r => setTimeout(r, 500));
+      }
+    }
+
+    this.hideLoading();
+    this.showBatchEnhancementResults(results, errors);
+  }
+
+  showBatchEnhancementResults(results, errors) {
+    const successCount = results.length;
+    const errorCount = errors.length;
+
+    const html = `
+      <h3>Batch Enhancement Complete</h3>
+
+      <div style="display: flex; gap: 1rem; margin: 1rem 0;">
+        <div style="flex: 1; background: #f0fdf4; border: 1px solid #22c55e; border-radius: 8px; padding: 1rem; text-align: center;">
+          <div style="font-size: 2rem; font-weight: 700; color: #16a34a;">${successCount}</div>
+          <div style="color: #166534;">Successfully Enhanced</div>
+        </div>
+        ${errorCount > 0 ? `
+          <div style="flex: 1; background: #fef2f2; border: 1px solid #ef4444; border-radius: 8px; padding: 1rem; text-align: center;">
+            <div style="font-size: 2rem; font-weight: 700; color: #dc2626;">${errorCount}</div>
+            <div style="color: #991b1b;">Errors</div>
+          </div>
+        ` : ''}
+      </div>
+
+      ${results.length > 0 ? `
+        <h4>Enhanced Contacts</h4>
+        <div style="max-height: 300px; overflow-y: auto; border: 1px solid #e5e7eb; border-radius: 8px;">
+          ${results.map(r => {
+            const name = r.contact.full_name || r.contact.first_name + ' ' + r.contact.last_name;
+            const suggestionCount = r.enhancement.suggestions ? Object.keys(r.enhancement.suggestions).length : 0;
+            return `
+              <div style="padding: 0.75rem; border-bottom: 1px solid #e5e7eb; display: flex; justify-content: space-between; align-items: center;">
+                <div>
+                  <div style="font-weight: 600;">${this.escapeHtml(name)}</div>
+                  <div style="color: #6b7280; font-size: 0.875rem;">${this.escapeHtml(r.contact.email || '')}</div>
+                </div>
+                <div style="text-align: right;">
+                  <span style="background: #dbeafe; color: #1e40af; padding: 0.25rem 0.5rem; border-radius: 4px; font-size: 0.75rem;">
+                    ${suggestionCount} suggestions
+                  </span>
+                </div>
+              </div>
+            `;
+          }).join('')}
+        </div>
+      ` : ''}
+
+      ${errors.length > 0 ? `
+        <h4 style="color: #dc2626;">Errors</h4>
+        <div style="background: #fef2f2; border-radius: 8px; padding: 1rem;">
+          ${errors.map(e => `<div style="color: #991b1b; font-size: 0.875rem;">ID ${e.id}: ${this.escapeHtml(e.error)}</div>`).join('')}
+        </div>
+      ` : ''}
+
+      <button class="claude-ai-close-results">Close</button>
+    `;
+
+    this.showResultsModal(html);
+
+    // Reload contacts to show updates
+    if (typeof window.loadContacts === 'function') {
+      setTimeout(() => window.loadContacts(), 1000);
     }
   }
 
@@ -371,9 +505,9 @@ class ClaudeAIDropdown {
               <div class="duplicate-contacts-grid">
                 ${group.contacts.map(contact => `
                   <div class="duplicate-contact-card">
-                    <div style="font-weight: 600;">${this.escapeHtml(contact.full_name || contact.name)}</div>
+                    <div style="font-weight: 600;">${this.escapeHtml(contact.full_name || contact.name || (contact.first_name && contact.last_name ? contact.first_name + ' ' + contact.last_name : contact.first_name || contact.last_name || 'Unknown'))}</div>
                     <div style="color: #6b7280; font-size: 0.875rem;">${this.escapeHtml(contact.email || '')}</div>
-                    <div style="color: #6b7280; font-size: 0.875rem;">${this.escapeHtml(contact.organization || '')}</div>
+                    <div style="color: #6b7280; font-size: 0.875rem;">${this.escapeHtml(contact.organization_name || contact.organization || '')}</div>
                   </div>
                 `).join('')}
               </div>

@@ -497,7 +497,7 @@
           allContacts = data.data;
           filteredContacts = [...allContacts];
           populateCountryFilter();
-          displayContacts();
+          updatePagination(); // This will call displayContacts() after setting paginatedContacts
           updateStats();
         } else {
           showError('Failed to load contacts: ' + (data.error || 'Unknown error'));
@@ -722,7 +722,7 @@
 
     function updateStats() {
       document.getElementById('totalCount').textContent = allContacts.length;
-      document.getElementById('filteredCount').textContent = paginatedContacts.length;
+      document.getElementById('filteredCount').textContent = filteredContacts.length;
     }
 
     // Enhanced Table Features
