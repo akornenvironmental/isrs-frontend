@@ -248,6 +248,7 @@
       <div class="admin-page-header">
         <h1>Organizations</h1>
         <div class="admin-page-header-actions">
+          <button class="admin-btn admin-btn-success" onclick="showQuickAddOrgModal()">+ Quick Add</button>
           <button class="admin-btn admin-btn-secondary" onclick="exportOrganizations()">Export CSV</button>
           <button class="ai-query-btn" onclick="showAIModal()" id="aiQueryBtn" style="display:none;">AI Query</button>
         </div>
@@ -344,6 +345,58 @@
           <thead id="aiResultsHead"></thead>
           <tbody id="aiResultsBody"></tbody>
         </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- Quick Add Organization Modal -->
+  <div id="quickAddOrgModal" class="admin-modal-overlay">
+    <div class="admin-modal" style="max-width: 600px;">
+      <div class="admin-modal-header">
+        <h2>Quick Add Organization</h2>
+        <button class="admin-modal-close" onclick="closeQuickAddOrgModal()">&times;</button>
+      </div>
+      <div class="admin-modal-body">
+        <form id="quickAddOrgForm" onsubmit="executeQuickAddOrg(event)">
+          <div class="admin-form-group">
+            <label class="admin-form-label" for="qaoName">Organization Name *</label>
+            <input type="text" id="qaoName" class="admin-input" style="width: 100%;" required>
+          </div>
+
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--admin-space-lg);">
+            <div class="admin-form-group">
+              <label class="admin-form-label" for="qaoType">Type</label>
+              <select id="qaoType" class="admin-select" style="width: 100%;">
+                <option value="">Select type...</option>
+                <option value="university">University</option>
+                <option value="government">Government</option>
+                <option value="ngo">NGO/Non-profit</option>
+                <option value="company">Company</option>
+                <option value="foundation">Foundation</option>
+                <option value="research">Research Institute</option>
+                <option value="other">Other</option>
+              </select>
+            </div>
+            <div class="admin-form-group">
+              <label class="admin-form-label" for="qaoCountry">Country</label>
+              <input type="text" id="qaoCountry" class="admin-input" style="width: 100%;" value="United States">
+            </div>
+          </div>
+
+          <div class="admin-form-group">
+            <label class="admin-form-label" for="qaoWebsite">Website</label>
+            <input type="url" id="qaoWebsite" class="admin-input" style="width: 100%;" placeholder="https://">
+          </div>
+
+          <div class="admin-form-group">
+            <label class="admin-form-label" for="qaoNotes">Notes</label>
+            <textarea id="qaoNotes" class="admin-textarea" style="width: 100%; min-height: 80px;"></textarea>
+          </div>
+        </form>
+      </div>
+      <div class="admin-modal-footer">
+        <button type="button" class="admin-btn admin-btn-secondary" onclick="closeQuickAddOrgModal()">Cancel</button>
+        <button type="submit" form="quickAddOrgForm" class="admin-btn admin-btn-success" id="quickAddOrgBtn">Add Organization</button>
       </div>
     </div>
   </div>
@@ -831,12 +884,91 @@
       }
     }
 
-    // ESC key to close modal
+    // ESC key to close modal and keyboard shortcuts
     document.addEventListener('keydown', function(event) {
       if (event.key === 'Escape' || event.key === 'Esc') {
         closeAIModal();
+        closeQuickAddOrgModal();
+      }
+      // Ctrl/Cmd + F to focus search
+      if ((event.ctrlKey || event.metaKey) && event.key === 'f') {
+        event.preventDefault();
+        document.getElementById('searchBox').focus();
+      }
+      // Ctrl/Cmd + N for quick add (when not in input)
+      if ((event.ctrlKey || event.metaKey) && event.key === 'n' && document.activeElement.tagName !== 'INPUT' && document.activeElement.tagName !== 'TEXTAREA') {
+        event.preventDefault();
+        showQuickAddOrgModal();
       }
     });
+
+    // Quick Add Organization Modal functions
+    function showQuickAddOrgModal() {
+      document.getElementById('quickAddOrgModal').classList.add('active');
+      document.getElementById('qaoName').focus();
+    }
+
+    function closeQuickAddOrgModal() {
+      document.getElementById('quickAddOrgModal').classList.remove('active');
+      document.getElementById('quickAddOrgForm').reset();
+      document.getElementById('qaoCountry').value = 'United States';
+    }
+
+    async function executeQuickAddOrg(event) {
+      event.preventDefault();
+
+      const btn = document.getElementById('quickAddOrgBtn');
+      btn.disabled = true;
+      btn.textContent = 'Adding...';
+
+      const orgData = {
+        name: document.getElementById('qaoName').value.trim(),
+        organization_type: document.getElementById('qaoType').value,
+        country: document.getElementById('qaoCountry').value.trim(),
+        website: document.getElementById('qaoWebsite').value.trim(),
+        notes: document.getElementById('qaoNotes').value.trim()
+      };
+
+      try {
+        const sessionToken = localStorage.getItem('isrs_session');
+        const response = await fetch(`${API_BASE_URL}/api/admin/organizations`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${sessionToken}`
+          },
+          body: JSON.stringify(orgData)
+        });
+
+        const data = await response.json();
+
+        if (!response.ok || !data.success) {
+          throw new Error(data.error || 'Failed to add organization');
+        }
+
+        showToast('Organization added successfully!', 'success');
+        closeQuickAddOrgModal();
+        await loadOrganizations();
+
+      } catch (error) {
+        showToast('Error: ' + error.message, 'error');
+      } finally {
+        btn.disabled = false;
+        btn.textContent = 'Add Organization';
+      }
+    }
+
+    function showToast(message, type) {
+      // Check if toast function exists in global scope
+      const toast = document.createElement('div');
+      toast.className = `message-toast ${type}`;
+      toast.style.cssText = `position: fixed; top: 20px; right: 20px; min-width: 300px; padding: 1rem; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.15); z-index: 2000; animation: slideIn 0.3s;`;
+      toast.style.background = type === 'success' ? '#d1fae5' : type === 'error' ? '#fee2e2' : '#dbeafe';
+      toast.style.color = type === 'success' ? '#065f46' : type === 'error' ? '#991b1b' : '#1e40af';
+      toast.textContent = message;
+      document.body.appendChild(toast);
+      setTimeout(() => toast.remove(), 5000);
+    }
   </script>
 
   <!-- Email Utils -->
