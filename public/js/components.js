@@ -32,7 +32,7 @@ const translations = {
 
     // Homepage - Latest News
     latestNews: 'Latest News',
-    news1Title: 'Registration Opens Soon for ICSR 2026',
+    news1Title: 'Registration Opens Early 2026 for ICSR 2026',
     news1Text: 'Mark your calendar for the next International Conference on Shellfish Restoration in Puget Sound.',
     news1Button: 'Get Updates',
 
@@ -536,7 +536,7 @@ const translations = {
 
     // Página de inicio - Últimas Noticias
     latestNews: 'Últimas Noticias',
-    news1Title: 'Pronto se Abrirá el Registro para ICSR 2026',
+    news1Title: 'El Registro Abre a Principios de 2026 para ICSR 2026',
     news1Text: 'Marque su calendario para la próxima Conferencia Internacional sobre Restauración de Moluscos en Puget Sound.',
     news1Button: 'Recibir Actualizaciones',
 
@@ -1037,7 +1037,7 @@ const translations = {
 
     // Page d'accueil - Dernières Nouvelles
     latestNews: 'Dernières Nouvelles',
-    news1Title: 'Les Inscriptions Ouvrent Bientôt pour ICSR 2026',
+    news1Title: 'Les Inscriptions Ouvrent Début 2026 pour ICSR 2026',
     news1Text: 'Marquez votre calendrier pour la prochaine Conférence Internationale sur la Restauration des Mollusques à Puget Sound.',
     news1Button: 'Recevoir les Mises à Jour',
 
