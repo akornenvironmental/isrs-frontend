@@ -53,10 +53,31 @@
       <div class="admin-page-header">
         <h1>Funding Prospects</h1>
         <div class="admin-page-header-actions">
+          <button class="admin-btn admin-btn-secondary" onclick="exportFunding()">Export CSV</button>
           <a href="/admin/import.html" class="admin-btn admin-btn-warning">Import</a>
           <button class="admin-btn admin-btn-success" onclick="showAddForm()">Add New Prospect</button>
         </div>
       </div>
+
+      <!-- Toolbar -->
+      <div class="admin-toolbar">
+        <input type="text" class="admin-input" id="searchInput" placeholder="Search organizations, contacts..." style="flex: 1; max-width: 400px;" oninput="filterFunding()">
+        <select class="admin-select" id="statusFilter" onchange="filterFunding()" style="width: 150px;">
+          <option value="">All Statuses</option>
+          <option value="pending">Pending</option>
+          <option value="contacted">Contacted</option>
+          <option value="committed">Committed</option>
+          <option value="received">Received</option>
+          <option value="declined">Declined</option>
+        </select>
+        <select class="admin-select" id="icsrFilter" onchange="filterFunding()" style="width: 160px;">
+          <option value="">All ICSR History</option>
+          <option value="true">Past ICSR Funders</option>
+          <option value="false">New Prospects</option>
+        </select>
+        <button class="admin-btn admin-btn-secondary" onclick="resetFilters()">Reset</button>
+      </div>
+
       <div class="admin-table-wrapper">
         <div id="tableContent">
           <div class="admin-loading">
@@ -364,12 +385,74 @@
         sortField = field;
         sortDirection = 'asc';
       }
-      displayFunding(allProspects);
+      filterFunding();
     }
 
     function getSortIcon(field) {
       if (sortField !== field) return '\u21C5';
       return sortDirection === 'asc' ? '\u2191' : '\u2193';
+    }
+
+    function filterFunding() {
+      const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+      const statusFilter = document.getElementById('statusFilter').value;
+      const icsrFilter = document.getElementById('icsrFilter').value;
+
+      let filtered = allProspects.filter(prospect => {
+        // Search filter
+        if (searchTerm) {
+          const searchFields = [
+            prospect.organization_name || '',
+            prospect.contact_person || '',
+            prospect.notes || ''
+          ].join(' ').toLowerCase();
+          if (!searchFields.includes(searchTerm)) return false;
+        }
+        // Status filter
+        if (statusFilter && prospect.status !== statusFilter) return false;
+        // ICSR filter
+        if (icsrFilter !== '') {
+          const icsrBool = icsrFilter === 'true';
+          if (prospect.has_funded_icsr !== icsrBool) return false;
+        }
+        return true;
+      });
+
+      displayFunding(filtered);
+    }
+
+    function resetFilters() {
+      document.getElementById('searchInput').value = '';
+      document.getElementById('statusFilter').value = '';
+      document.getElementById('icsrFilter').value = '';
+      displayFunding(allProspects);
+    }
+
+    function exportFunding() {
+      if (allProspects.length === 0) {
+        showMessage('No prospects to export', 'error');
+        return;
+      }
+
+      const headers = ['Organization', 'Contact Person', 'Amount', 'Status', 'Date Contacted', 'ICSR Funder', 'ICSR Years', 'Notes'];
+      const rows = allProspects.map(p => [
+        `"${(p.organization_name || '').replace(/"/g, '""')}"`,
+        `"${(p.contact_person || '').replace(/"/g, '""')}"`,
+        p.amount || '',
+        p.status || '',
+        p.date_contacted ? new Date(p.date_contacted).toLocaleDateString() : '',
+        p.has_funded_icsr ? 'Yes' : 'No',
+        p.icsr_funding_years ? p.icsr_funding_years.join('; ') : '',
+        `"${(p.notes || '').replace(/"/g, '""')}"`
+      ]);
+
+      const csvContent = [headers.join(','), ...rows.map(r => r.join(','))].join('\n');
+      const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+      const link = document.createElement('a');
+      link.href = URL.createObjectURL(blob);
+      link.download = `funding-prospects-${new Date().toISOString().split('T')[0]}.csv`;
+      link.click();
+      showMessage('Export complete!', 'success');
     }
 
     function showAddForm() {

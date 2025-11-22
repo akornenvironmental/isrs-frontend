@@ -89,24 +89,80 @@ function loadAdminLayout(currentPage) {
 
         <div class="nav-section">
           <div class="nav-section-title">System</div>
+          <a href="/admin/import.html" class="nav-item ${currentPage === 'import' ? 'active' : ''}">
+            <span class="nav-icon">📥</span>
+            <span>Import Data</span>
+          </a>
           <a href="/admin/settings.html" class="nav-item ${currentPage === 'settings' ? 'active' : ''}">
             <span class="nav-icon">⚙️</span>
             <span>Settings</span>
           </a>
         </div>
+
+        <div class="nav-section">
+          <div class="nav-section-title">Help</div>
+          <a href="/admin/workflows.html" class="nav-item ${currentPage === 'workflows' ? 'active' : ''}">
+            <span class="nav-icon">📖</span>
+            <span>User Workflows</span>
+          </a>
+        </div>
       </nav>
 
       <div class="sidebar-footer">
-        <div class="user-profile">
+        <div class="user-profile" onclick="openProfilePopup()" style="cursor: pointer;" title="Edit Profile">
           <div class="user-avatar" id="adminUserAvatar">A</div>
           <div class="user-details">
             <div class="user-email" id="adminUserEmail">Loading...</div>
             <div class="user-role" id="adminUserRole">Admin</div>
           </div>
+          <span style="margin-left: auto; color: var(--admin-text-muted, #9ca3af); font-size: 0.75rem;">✎</span>
         </div>
         <button class="btn-logout" onclick="logout()">Sign Out</button>
       </div>
     </aside>
+
+    <!-- Profile Edit Popup -->
+    <div id="profilePopup" class="profile-popup-overlay">
+      <div class="profile-popup">
+        <div class="profile-popup-header">
+          <h3>Edit Profile</h3>
+          <button class="profile-popup-close" onclick="closeProfilePopup()">&times;</button>
+        </div>
+        <div class="profile-popup-body">
+          <div class="profile-avatar-section">
+            <div class="profile-avatar-large" id="profileAvatarLarge">A</div>
+          </div>
+          <div class="profile-form-group">
+            <label>First Name</label>
+            <input type="text" id="profileFirstName" class="profile-input" placeholder="First name">
+          </div>
+          <div class="profile-form-group">
+            <label>Last Name</label>
+            <input type="text" id="profileLastName" class="profile-input" placeholder="Last name">
+          </div>
+          <div class="profile-form-group">
+            <label>Email</label>
+            <input type="email" id="profileEmail" class="profile-input" disabled>
+          </div>
+          <div class="profile-form-group">
+            <label>Role</label>
+            <input type="text" id="profileRole" class="profile-input" disabled>
+          </div>
+          <div class="profile-form-group">
+            <label>Organization</label>
+            <input type="text" id="profileOrganization" class="profile-input" placeholder="Your organization">
+          </div>
+          <div class="profile-form-group">
+            <label>Phone</label>
+            <input type="tel" id="profilePhone" class="profile-input" placeholder="Phone number">
+          </div>
+          <div class="profile-save-indicator" id="profileSaveIndicator">
+            <span class="save-icon"></span>
+            <span class="save-text">All changes saved</span>
+          </div>
+        </div>
+      </div>
+    </div>
 
     <!-- Main Content Area -->
     <main class="admin-main-content" id="admin-main-content">
@@ -202,7 +258,161 @@ function initAdminDarkMode() {
 // Initialize dark mode after layout loads
 setTimeout(initAdminDarkMode, 0);
 
+// Profile Popup Functions
+let profileSaveTimeout = null;
+let currentUserData = null;
+
+function openProfilePopup() {
+  const popup = document.getElementById('profilePopup');
+  if (!popup) return;
+
+  // Load current user data
+  try {
+    const userData = localStorage.getItem('isrs_user_data');
+    if (userData) {
+      currentUserData = JSON.parse(userData);
+
+      // Populate form fields
+      document.getElementById('profileFirstName').value = currentUserData.first_name || '';
+      document.getElementById('profileLastName').value = currentUserData.last_name || '';
+      document.getElementById('profileEmail').value = currentUserData.email || '';
+      document.getElementById('profileRole').value = (currentUserData.role || 'user').toUpperCase();
+      document.getElementById('profileOrganization').value = currentUserData.organization || '';
+      document.getElementById('profilePhone').value = currentUserData.phone || '';
+
+      // Update large avatar
+      const avatarLarge = document.getElementById('profileAvatarLarge');
+      if (avatarLarge && currentUserData.first_name) {
+        avatarLarge.textContent = currentUserData.first_name.charAt(0).toUpperCase();
+      } else if (avatarLarge && currentUserData.email) {
+        avatarLarge.textContent = currentUserData.email.charAt(0).toUpperCase();
+      }
+    }
+  } catch (error) {
+    console.error('Error loading profile data:', error);
+  }
+
+  popup.classList.add('active');
+
+  // Add input listeners for auto-save
+  const inputs = popup.querySelectorAll('.profile-input:not([disabled])');
+  inputs.forEach(input => {
+    input.removeEventListener('input', handleProfileInput);
+    input.addEventListener('input', handleProfileInput);
+  });
+}
+
+function closeProfilePopup() {
+  const popup = document.getElementById('profilePopup');
+  if (popup) {
+    popup.classList.remove('active');
+  }
+}
+
+function handleProfileInput() {
+  // Show saving indicator
+  const indicator = document.getElementById('profileSaveIndicator');
+  if (indicator) {
+    indicator.classList.add('saving');
+    indicator.querySelector('.save-text').textContent = 'Saving...';
+  }
+
+  // Debounce save
+  if (profileSaveTimeout) {
+    clearTimeout(profileSaveTimeout);
+  }
+
+  profileSaveTimeout = setTimeout(() => {
+    saveProfile();
+  }, 500);
+}
+
+async function saveProfile() {
+  const indicator = document.getElementById('profileSaveIndicator');
+
+  // Gather form data
+  const profileData = {
+    first_name: document.getElementById('profileFirstName').value,
+    last_name: document.getElementById('profileLastName').value,
+    organization: document.getElementById('profileOrganization').value,
+    phone: document.getElementById('profilePhone').value
+  };
+
+  // Update local storage immediately for responsive UI
+  if (currentUserData) {
+    currentUserData = { ...currentUserData, ...profileData };
+    localStorage.setItem('isrs_user_data', JSON.stringify(currentUserData));
+
+    // Update sidebar display
+    const emailEl = document.getElementById('adminUserEmail');
+    if (emailEl && currentUserData.first_name && currentUserData.last_name) {
+      emailEl.textContent = `${currentUserData.first_name} ${currentUserData.last_name}`;
+    }
+
+    const avatarEl = document.getElementById('adminUserAvatar');
+    if (avatarEl && currentUserData.first_name) {
+      avatarEl.textContent = currentUserData.first_name.charAt(0).toUpperCase();
+    }
+  }
+
+  // Try to save to server
+  try {
+    const sessionToken = localStorage.getItem('isrs_session');
+    if (sessionToken) {
+      const response = await fetch('https://isrs-database-backend.onrender.com/api/auth/profile', {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${sessionToken}`
+        },
+        body: JSON.stringify(profileData)
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to save profile');
+      }
+    }
+
+    // Show saved indicator
+    if (indicator) {
+      indicator.classList.remove('saving');
+      indicator.classList.add('saved');
+      indicator.querySelector('.save-text').textContent = 'All changes saved';
+
+      setTimeout(() => {
+        indicator.classList.remove('saved');
+      }, 2000);
+    }
+  } catch (error) {
+    console.error('Error saving profile:', error);
+
+    // Still show as saved since local storage is updated
+    if (indicator) {
+      indicator.classList.remove('saving');
+      indicator.classList.add('saved');
+      indicator.querySelector('.save-text').textContent = 'Saved locally';
+    }
+  }
+}
+
+// Close popup when clicking outside
+document.addEventListener('click', function(event) {
+  const popup = document.getElementById('profilePopup');
+  if (popup && event.target === popup) {
+    closeProfilePopup();
+  }
+});
+
+// Close popup with ESC key
+document.addEventListener('keydown', function(event) {
+  if (event.key === 'Escape') {
+    closeProfilePopup();
+  }
+});
+
 // Export for use in other scripts
 window.loadAdminLayout = loadAdminLayout;
 window.logout = logout;
 window.toggleAdminDarkMode = toggleAdminDarkMode;
+window.openProfilePopup = openProfilePopup;
+window.closeProfilePopup = closeProfilePopup;

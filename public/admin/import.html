@@ -4,389 +4,262 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Import Data - ISRS Admin</title>
+  <link rel="icon" type="image/png" href="/images/favicon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Marcellus&family=PT+Serif:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/styles.css">
+  <link rel="stylesheet" href="/css/admin-layout.css">
+  <link rel="stylesheet" href="/css/admin-unified.css">
   <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-
-    :root {
-      --primary-blue: #2563eb;
-      --primary-blue-dark: #1d4ed8;
-      --success-green: #059669;
-      --success-green-dark: #047857;
-      --warning-amber: #d97706;
-      --warning-amber-dark: #b45309;
-      --danger-red: #dc2626;
-      --danger-red-dark: #b91c1c;
-      --gray-50: #f9fafb;
-      --gray-100: #f3f4f6;
-      --gray-200: #e5e7eb;
-      --gray-300: #d1d5db;
-      --gray-700: #374151;
-      --gray-800: #1f2937;
-      --gray-900: #111827;
-    }
-
-    body {
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-      min-height: 100vh;
-      padding: 2rem;
-    }
-
-    .container {
-      max-width: 1200px;
-      margin: 0 auto;
-    }
-
-    .header {
-      background: white;
-      padding: 1.5rem 2rem;
-      border-radius: 8px;
-      margin-bottom: 2rem;
-      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-    }
-
-    .header h1 {
-      color: var(--gray-900);
-      font-size: 1.75rem;
-      margin-bottom: 0.5rem;
-    }
-
-    .header p {
-      color: var(--gray-700);
-      font-size: 0.95rem;
-    }
-
     .import-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-      gap: 1.5rem;
-      margin-bottom: 2rem;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: var(--admin-space-lg);
+      margin-bottom: var(--admin-space-xl);
     }
-
     .import-card {
-      background: white;
+      background: var(--admin-surface);
+      border: 1px solid var(--admin-border);
       border-radius: 8px;
-      padding: 1.5rem;
-      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+      padding: var(--admin-space-xl);
     }
-
     .import-card h2 {
-      color: var(--gray-900);
-      font-size: 1.25rem;
-      margin-bottom: 1rem;
+      font-size: var(--admin-text-lg);
+      color: var(--admin-text);
+      margin-bottom: var(--admin-space-md);
       display: flex;
       align-items: center;
-      gap: 0.5rem;
+      gap: var(--admin-space-sm);
     }
-
     .import-card h2::before {
-      content: '📁';
-      font-size: 1.5rem;
+      font-size: 1.25rem;
     }
-
+    .import-card.contacts h2::before { content: '👥'; }
+    .import-card.organizations h2::before { content: '🏢'; }
+    .import-card.funding h2::before { content: '💰'; }
+    .supported-formats {
+      font-size: var(--admin-text-xs);
+      color: var(--admin-text-muted);
+      background: var(--admin-gray-50);
+      padding: var(--admin-space-sm) var(--admin-space-md);
+      border-radius: 4px;
+      margin-bottom: var(--admin-space-lg);
+    }
     .file-input-wrapper {
       position: relative;
-      margin-bottom: 1rem;
+      margin-bottom: var(--admin-space-md);
     }
-
     .file-input {
       display: none;
     }
-
     .file-label {
       display: block;
-      padding: 0.75rem 1rem;
-      background: var(--gray-100);
-      border: 2px dashed var(--gray-300);
+      padding: var(--admin-space-lg);
+      background: var(--admin-gray-50);
+      border: 2px dashed var(--admin-border);
       border-radius: 6px;
       text-align: center;
       cursor: pointer;
       transition: all 0.2s;
+      color: var(--admin-text-secondary);
     }
-
     .file-label:hover {
-      background: var(--gray-200);
-      border-color: var(--primary-blue);
+      background: var(--admin-surface-hover);
+      border-color: var(--admin-primary);
     }
-
     .file-label.has-file {
-      background: linear-gradient(to right, #dbeafe, #bfdbfe);
-      border-color: var(--primary-blue);
+      background: var(--admin-primary-light);
+      border-color: var(--admin-primary);
       border-style: solid;
+      color: var(--admin-primary);
     }
-
     .file-info {
-      margin-top: 0.5rem;
-      font-size: 0.875rem;
-      color: var(--gray-700);
+      margin-top: var(--admin-space-sm);
+      font-size: var(--admin-text-xs);
+      color: var(--admin-text-muted);
     }
-
-    .supported-formats {
-      font-size: 0.8rem;
-      color: var(--gray-700);
-      margin-bottom: 1rem;
-      padding: 0.5rem;
-      background: var(--gray-50);
-      border-radius: 4px;
-    }
-
-    .btn {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 0.5rem;
-      padding: 0.625rem 1.25rem;
-      border-radius: 6px;
-      font-size: 0.875rem;
-      font-weight: 500;
-      border: none;
-      cursor: pointer;
-      transition: all 0.2s ease;
-      width: 100%;
-    }
-
-    .btn:disabled {
-      opacity: 0.5;
-      cursor: not-allowed;
-    }
-
-    .btn-primary {
-      background: linear-gradient(to right, #3b82f6, #2563eb);
-      color: white;
-      box-shadow: 0 1px 2px rgba(0,0,0,0.05);
-    }
-
-    .btn-primary:hover:not(:disabled) {
-      background: linear-gradient(to right, #2563eb, #1d4ed8);
-      box-shadow: 0 4px 6px rgba(37, 99, 235, 0.3);
-      transform: translateY(-1px);
-    }
-
     .progress-bar {
       width: 100%;
       height: 8px;
-      background: var(--gray-200);
+      background: var(--admin-gray-200);
       border-radius: 4px;
       overflow: hidden;
-      margin: 1rem 0;
+      margin: var(--admin-space-md) 0;
       display: none;
     }
-
     .progress-bar.active {
       display: block;
     }
-
     .progress-fill {
       height: 100%;
-      background: linear-gradient(to right, var(--primary-blue), var(--success-green));
+      background: linear-gradient(to right, var(--admin-primary), var(--admin-success-text));
       transition: width 0.3s ease;
       width: 0%;
     }
-
     .results {
-      margin-top: 1rem;
-      padding: 1rem;
+      margin-top: var(--admin-space-md);
+      padding: var(--admin-space-md);
       border-radius: 6px;
-      font-size: 0.875rem;
+      font-size: var(--admin-text-sm);
       display: none;
     }
-
     .results.active {
       display: block;
     }
-
     .results.success {
-      background: #d1fae5;
-      border: 1px solid var(--success-green);
-      color: #065f46;
+      background: var(--admin-success-bg);
+      border: 1px solid var(--admin-success-text);
+      color: var(--admin-success-text);
     }
-
     .results.error {
-      background: #fee2e2;
-      border: 1px solid var(--danger-red);
-      color: #991b1b;
+      background: var(--admin-danger-bg);
+      border: 1px solid var(--admin-danger-text);
+      color: var(--admin-danger-text);
     }
-
     .results-summary {
       font-weight: 600;
-      margin-bottom: 0.5rem;
+      margin-bottom: var(--admin-space-sm);
     }
-
     .results-details {
-      font-size: 0.8rem;
-      margin-top: 0.5rem;
+      font-size: var(--admin-text-xs);
     }
-
-    .history-section {
-      background: white;
-      border-radius: 8px;
-      padding: 1.5rem;
-      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-    }
-
-    .history-section h2 {
-      color: var(--gray-900);
-      font-size: 1.25rem;
-      margin-bottom: 1rem;
-    }
-
     .history-table {
       width: 100%;
       border-collapse: collapse;
-      font-size: 0.875rem;
+      font-size: var(--admin-text-sm);
     }
-
     .history-table th {
-      background: var(--gray-100);
-      padding: 0.75rem;
+      background: var(--admin-gray-50);
+      padding: var(--admin-space-md);
       text-align: left;
       font-weight: 600;
-      color: var(--gray-700);
-      border-bottom: 2px solid var(--gray-300);
+      color: var(--admin-text-secondary);
+      border-bottom: 2px solid var(--admin-border);
     }
-
     .history-table td {
-      padding: 0.75rem;
-      border-bottom: 1px solid var(--gray-200);
+      padding: var(--admin-space-md);
+      border-bottom: 1px solid var(--admin-border);
     }
-
     .history-table tr:hover {
-      background: var(--gray-50);
+      background: var(--admin-surface-hover);
     }
-
-    .status-badge {
-      display: inline-block;
-      padding: 0.25rem 0.625rem;
-      border-radius: 12px;
-      font-size: 0.75rem;
-      font-weight: 600;
-    }
-
-    .status-completed {
-      background: #d1fae5;
-      color: #065f46;
-    }
-
-    .status-failed {
-      background: #fee2e2;
-      color: #991b1b;
-    }
-
-    .loading {
+    .spinner {
       display: inline-block;
       width: 1rem;
       height: 1rem;
-      border: 2px solid var(--gray-300);
-      border-top-color: var(--primary-blue);
+      border: 2px solid var(--admin-gray-300);
+      border-top-color: var(--admin-primary);
       border-radius: 50%;
       animation: spin 0.6s linear infinite;
     }
-
     @keyframes spin {
       to { transform: rotate(360deg); }
     }
   </style>
 </head>
-<body>
-  <div class="container">
-    <div class="header">
-      <h1>Import Data</h1>
-      <p>Upload Excel, CSV, or PDF files to import contacts, organizations, and funding prospects</p>
-    </div>
-
-    <div class="import-grid">
-      <!-- Contacts Import -->
-      <div class="import-card">
-        <h2>Import Contacts</h2>
-        <div class="supported-formats">
-          Supported: .xlsx, .xls, .csv, .tsv, .docx, .pdf
-        </div>
-        <div class="file-input-wrapper">
-          <input type="file" id="contacts-file" class="file-input" accept=".xlsx,.xls,.csv,.tsv,.docx,.pdf">
-          <label for="contacts-file" class="file-label" id="contacts-label">
-            📤 Click to select file or drag here
-          </label>
-          <div class="file-info" id="contacts-info"></div>
-        </div>
-        <div class="progress-bar" id="contacts-progress">
-          <div class="progress-fill" id="contacts-progress-fill"></div>
-        </div>
-        <button class="btn btn-primary" id="contacts-import-btn" disabled>
-          <span>Import Contacts</span>
-        </button>
-        <div class="results" id="contacts-results"></div>
+<body class="admin-page">
+  <div class="admin-content-padded">
+    <div class="admin-card">
+      <div class="admin-page-header">
+        <h1>Import Data</h1>
       </div>
+      <p style="color: var(--admin-text-secondary); margin-bottom: var(--admin-space-xl);">Upload Excel, CSV, or PDF files to import contacts, organizations, and funding prospects.</p>
 
-      <!-- Organizations Import -->
-      <div class="import-card">
-        <h2>Import Organizations</h2>
-        <div class="supported-formats">
-          Supported: .xlsx, .xls, .csv, .tsv, .docx, .pdf
+      <div class="import-grid">
+        <!-- Contacts Import -->
+        <div class="import-card contacts">
+          <h2>Import Contacts</h2>
+          <div class="supported-formats">
+            Supported: .xlsx, .xls, .csv, .tsv, .docx, .pdf
+          </div>
+          <div class="file-input-wrapper">
+            <input type="file" id="contacts-file" class="file-input" accept=".xlsx,.xls,.csv,.tsv,.docx,.pdf">
+            <label for="contacts-file" class="file-label" id="contacts-label">
+              Click to select file or drag here
+            </label>
+            <div class="file-info" id="contacts-info"></div>
+          </div>
+          <div class="progress-bar" id="contacts-progress">
+            <div class="progress-fill" id="contacts-progress-fill"></div>
+          </div>
+          <button class="admin-btn admin-btn-success" id="contacts-import-btn" disabled style="width: 100%;">
+            Import Contacts
+          </button>
+          <div class="results" id="contacts-results"></div>
         </div>
-        <div class="file-input-wrapper">
-          <input type="file" id="organizations-file" class="file-input" accept=".xlsx,.xls,.csv,.tsv,.docx,.pdf">
-          <label for="organizations-file" class="file-label" id="organizations-label">
-            📤 Click to select file or drag here
-          </label>
-          <div class="file-info" id="organizations-info"></div>
-        </div>
-        <div class="progress-bar" id="organizations-progress">
-          <div class="progress-fill" id="organizations-progress-fill"></div>
-        </div>
-        <button class="btn btn-primary" id="organizations-import-btn" disabled>
-          <span>Import Organizations</span>
-        </button>
-        <div class="results" id="organizations-results"></div>
-      </div>
 
-      <!-- Funding Prospects Import -->
-      <div class="import-card">
-        <h2>Import Funding Prospects</h2>
-        <div class="supported-formats">
-          Supported: .xlsx, .xls, .csv, .tsv, .docx, .pdf
+        <!-- Organizations Import -->
+        <div class="import-card organizations">
+          <h2>Import Organizations</h2>
+          <div class="supported-formats">
+            Supported: .xlsx, .xls, .csv, .tsv, .docx, .pdf
+          </div>
+          <div class="file-input-wrapper">
+            <input type="file" id="organizations-file" class="file-input" accept=".xlsx,.xls,.csv,.tsv,.docx,.pdf">
+            <label for="organizations-file" class="file-label" id="organizations-label">
+              Click to select file or drag here
+            </label>
+            <div class="file-info" id="organizations-info"></div>
+          </div>
+          <div class="progress-bar" id="organizations-progress">
+            <div class="progress-fill" id="organizations-progress-fill"></div>
+          </div>
+          <button class="admin-btn admin-btn-success" id="organizations-import-btn" disabled style="width: 100%;">
+            Import Organizations
+          </button>
+          <div class="results" id="organizations-results"></div>
         </div>
-        <div class="file-input-wrapper">
-          <input type="file" id="funding-file" class="file-input" accept=".xlsx,.xls,.csv,.tsv,.docx,.pdf">
-          <label for="funding-file" class="file-label" id="funding-label">
-            📤 Click to select file or drag here
-          </label>
-          <div class="file-info" id="funding-info"></div>
+
+        <!-- Funding Prospects Import -->
+        <div class="import-card funding">
+          <h2>Import Funding Prospects</h2>
+          <div class="supported-formats">
+            Supported: .xlsx, .xls, .csv, .tsv, .docx, .pdf
+          </div>
+          <div class="file-input-wrapper">
+            <input type="file" id="funding-file" class="file-input" accept=".xlsx,.xls,.csv,.tsv,.docx,.pdf">
+            <label for="funding-file" class="file-label" id="funding-label">
+              Click to select file or drag here
+            </label>
+            <div class="file-info" id="funding-info"></div>
+          </div>
+          <div class="progress-bar" id="funding-progress">
+            <div class="progress-fill" id="funding-progress-fill"></div>
+          </div>
+          <button class="admin-btn admin-btn-success" id="funding-import-btn" disabled style="width: 100%;">
+            Import Funding Prospects
+          </button>
+          <div class="results" id="funding-results"></div>
         </div>
-        <div class="progress-bar" id="funding-progress">
-          <div class="progress-fill" id="funding-progress-fill"></div>
-        </div>
-        <button class="btn btn-primary" id="funding-import-btn" disabled>
-          <span>Import Funding Prospects</span>
-        </button>
-        <div class="results" id="funding-results"></div>
       </div>
     </div>
 
     <!-- Import History -->
-    <div class="history-section">
-      <h2>Recent Imports</h2>
-      <table class="history-table">
-        <thead>
-          <tr>
-            <th>Date</th>
-            <th>Type</th>
-            <th>File Name</th>
-            <th>Records</th>
-            <th>Status</th>
-          </tr>
-        </thead>
-        <tbody id="history-tbody">
-          <tr>
-            <td colspan="5" style="text-align: center; padding: 2rem; color: var(--gray-700);">
-              Loading import history...
-            </td>
-          </tr>
-        </tbody>
-      </table>
+    <div class="admin-card">
+      <div class="admin-page-header">
+        <h2 style="font-size: var(--admin-text-lg);">Recent Imports</h2>
+      </div>
+      <div class="admin-table-wrapper">
+        <table class="history-table">
+          <thead>
+            <tr>
+              <th>Date</th>
+              <th>Type</th>
+              <th>File Name</th>
+              <th>Records</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody id="history-tbody">
+            <tr>
+              <td colspan="5" style="text-align: center; padding: var(--admin-space-xl); color: var(--admin-text-muted);">
+                Loading import history...
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
     </div>
   </div>
 
@@ -417,12 +290,12 @@
         const file = e.target.files[0];
         if (file) {
           label.classList.add('has-file');
-          label.innerHTML = `✅ ${file.name}`;
+          label.innerHTML = `${file.name}`;
           info.innerHTML = `Size: ${(file.size / 1024).toFixed(2)} KB`;
           btn.disabled = false;
         } else {
           label.classList.remove('has-file');
-          label.innerHTML = '📤 Click to select file or drag here';
+          label.innerHTML = 'Click to select file or drag here';
           info.innerHTML = '';
           btn.disabled = true;
         }
@@ -447,6 +320,7 @@
     async function importData(type, file) {
       if (!file) return;
 
+      const sessionToken = localStorage.getItem('isrs_session');
       const btn = importButtons[type];
       const progress = document.getElementById(`${type}-progress`);
       const progressFill = document.getElementById(`${type}-progress-fill`);
@@ -457,7 +331,7 @@
       progress.classList.add('active');
       progressFill.style.width = '0%';
       btn.disabled = true;
-      btn.innerHTML = '<span class="loading"></span> <span>Uploading...</span>';
+      btn.innerHTML = '<span class="spinner"></span> Uploading...';
 
       try {
         // Step 1: Upload file
@@ -468,7 +342,7 @@
         const uploadResponse = await fetch(`${API_BASE}/import/upload`, {
           method: 'POST',
           headers: {
-            'Authorization': `Bearer ${localStorage.getItem('session_token')}`
+            'Authorization': `Bearer ${sessionToken}`
           },
           body: formData
         });
@@ -482,7 +356,7 @@
 
         // Step 2: Save to database
         progressFill.style.width = '60%';
-        btn.innerHTML = '<span class="loading"></span> <span>Saving to database...</span>';
+        btn.innerHTML = '<span class="spinner"></span> Saving...';
 
         let saveEndpoint;
         let savePayload;
@@ -499,14 +373,13 @@
         } else if (type === 'organizations') {
           saveEndpoint = `${API_BASE}/import/save-organizations`;
           savePayload = {
-            organizations: uploadData.contacts, // Parser returns contacts array for now
+            organizations: uploadData.contacts,
             import_log_id: uploadData.import_log_id,
             source_provider: 'file_upload',
             source_date: new Date().toISOString(),
             source_description: `Imported from ${file.name}`
           };
         } else if (type === 'funding') {
-          // For funding prospects, convert contacts to funding prospects format
           const fundingProspects = uploadData.contacts.map(contact => ({
             prospect_type: contact.organization ? 'organization' : 'individual',
             organization_name: contact.organization,
@@ -518,8 +391,6 @@
           }));
 
           saveEndpoint = `${API_BASE}/funding-prospects`;
-          // We'll need to save each one individually since there's no bulk endpoint yet
-          // For now, let's use the import/save endpoint
           savePayload = {
             contacts: uploadData.contacts,
             import_log_id: uploadData.import_log_id
@@ -530,7 +401,7 @@
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
-            'Authorization': `Bearer ${localStorage.getItem('session_token')}`
+            'Authorization': `Bearer ${sessionToken}`
           },
           body: JSON.stringify(savePayload)
         });
@@ -548,7 +419,7 @@
           progress.classList.remove('active');
           results.classList.add('active', 'success');
           results.innerHTML = `
-            <div class="results-summary">✅ Import Successful!</div>
+            <div class="results-summary">Import Successful!</div>
             <div class="results-details">
               Created: ${saveData.results?.created || 0} |
               Updated: ${saveData.results?.updated || 0} |
@@ -559,9 +430,9 @@
           // Reset form
           fileInputs[type].value = '';
           document.getElementById(`${type}-label`).classList.remove('has-file');
-          document.getElementById(`${type}-label`).innerHTML = '📤 Click to select file or drag here';
+          document.getElementById(`${type}-label`).innerHTML = 'Click to select file or drag here';
           document.getElementById(`${type}-info`).innerHTML = '';
-          btn.innerHTML = '<span>Import ' + type.charAt(0).toUpperCase() + type.slice(1) + '</span>';
+          btn.innerHTML = 'Import ' + type.charAt(0).toUpperCase() + type.slice(1);
           btn.disabled = true;
 
           // Refresh history
@@ -573,20 +444,21 @@
         progress.classList.remove('active');
         results.classList.add('active', 'error');
         results.innerHTML = `
-          <div class="results-summary">❌ Import Failed</div>
+          <div class="results-summary">Import Failed</div>
           <div class="results-details">${error.message}</div>
         `;
-        btn.innerHTML = '<span>Import ' + type.charAt(0).toUpperCase() + type.slice(1) + '</span>';
+        btn.innerHTML = 'Import ' + type.charAt(0).toUpperCase() + type.slice(1);
         btn.disabled = false;
       }
     }
 
     // Load import history
     async function loadImportHistory() {
+      const sessionToken = localStorage.getItem('isrs_session');
       try {
         const response = await fetch(`${API_BASE}/import/logs?limit=10`, {
           headers: {
-            'Authorization': `Bearer ${localStorage.getItem('session_token')}`
+            'Authorization': `Bearer ${sessionToken}`
           }
         });
 
@@ -598,7 +470,7 @@
         if (!data.logs || data.logs.length === 0) {
           tbody.innerHTML = `
             <tr>
-              <td colspan="5" style="text-align: center; padding: 2rem; color: var(--gray-700);">
+              <td colspan="5" style="text-align: center; padding: var(--admin-space-xl); color: var(--admin-text-muted);">
                 No import history yet
               </td>
             </tr>
@@ -606,25 +478,23 @@
           return;
         }
 
-        tbody.innerHTML = data.logs.map(log => `
+        tbody.innerHTML = data.logs.map(log => {
+          const statusClass = log.status === 'completed' ? 'admin-badge-success' : 'admin-badge-danger';
+          return `
           <tr>
             <td>${new Date(log.created_at).toLocaleDateString()} ${new Date(log.created_at).toLocaleTimeString()}</td>
             <td>${log.import_type}</td>
             <td>${log.file_name || 'N/A'}</td>
             <td>${log.records_processed || 0}</td>
-            <td>
-              <span class="status-badge status-${log.status}">
-                ${log.status}
-              </span>
-            </td>
+            <td><span class="admin-badge ${statusClass}">${log.status}</span></td>
           </tr>
-        `).join('');
+        `}).join('');
 
       } catch (error) {
         console.error('Failed to load import history:', error);
         document.getElementById('history-tbody').innerHTML = `
           <tr>
-            <td colspan="5" style="text-align: center; padding: 2rem; color: var(--danger-red);">
+            <td colspan="5" style="text-align: center; padding: var(--admin-space-xl); color: var(--admin-danger-text);">
               Failed to load import history
             </td>
           </tr>
@@ -634,6 +504,25 @@
 
     // Load history on page load
     loadImportHistory();
+  </script>
+
+  <!-- Admin Layout -->
+  <script src="/js/admin-layout.js"></script>
+  <script>
+    window.addEventListener('DOMContentLoaded', () => {
+      const sessionToken = localStorage.getItem('isrs_session');
+      if (!sessionToken) {
+        window.location.href = '/admin/';
+        return;
+      }
+      loadAdminLayout('import');
+    });
+  </script>
+
+  <!-- Feedback Widget -->
+  <script src="/js/feedback-widget.js"></script>
+  <script>
+    initFeedbackWidget({ isAdminPortal: true });
   </script>
 </body>
 </html>

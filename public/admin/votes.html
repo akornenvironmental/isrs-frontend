@@ -32,9 +32,28 @@
       <div class="admin-page-header">
         <h1>Board Votes</h1>
         <div class="admin-page-header-actions">
+          <button class="admin-btn admin-btn-secondary" onclick="exportVotes()">Export CSV</button>
           <button class="admin-btn admin-btn-success" onclick="showAddForm()">+ Add New Vote</button>
         </div>
       </div>
+
+      <!-- Toolbar -->
+      <div class="admin-toolbar">
+        <input type="text" class="admin-input" id="searchInput" placeholder="Search motions..." style="flex: 1; max-width: 400px;" oninput="filterVotes()">
+        <select class="admin-select" id="statusFilter" onchange="filterVotes()" style="width: 150px;">
+          <option value="">All Results</option>
+          <option value="passed">Carried</option>
+          <option value="failed">Failed</option>
+          <option value="pending">Pending</option>
+        </select>
+        <select class="admin-select" id="quorumFilter" onchange="filterVotes()" style="width: 150px;">
+          <option value="">All Quorum</option>
+          <option value="true">Quorum Met</option>
+          <option value="false">No Quorum</option>
+        </select>
+        <button class="admin-btn admin-btn-secondary" onclick="resetFilters()">Reset</button>
+      </div>
+
       <div class="admin-table-wrapper">
         <div id="tableContent">
           <div class="admin-loading">
@@ -223,7 +242,67 @@
         sortField = field;
         sortDirection = 'asc';
       }
+      filterVotes();
+    }
+
+    function filterVotes() {
+      const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+      const statusFilter = document.getElementById('statusFilter').value;
+      const quorumFilter = document.getElementById('quorumFilter').value;
+
+      let filtered = allVotes.filter(vote => {
+        // Search filter
+        if (searchTerm && !(vote.motion || '').toLowerCase().includes(searchTerm)) {
+          return false;
+        }
+        // Status filter
+        if (statusFilter && vote.status !== statusFilter) {
+          return false;
+        }
+        // Quorum filter
+        if (quorumFilter !== '') {
+          const quorumBool = quorumFilter === 'true';
+          if (vote.quorum_met !== quorumBool) {
+            return false;
+          }
+        }
+        return true;
+      });
+
+      displayVotes(filtered);
+    }
+
+    function resetFilters() {
+      document.getElementById('searchInput').value = '';
+      document.getElementById('statusFilter').value = '';
+      document.getElementById('quorumFilter').value = '';
       displayVotes(allVotes);
+    }
+
+    function exportVotes() {
+      if (allVotes.length === 0) {
+        showMessage('No votes to export', 'error');
+        return;
+      }
+
+      const headers = ['Motion', 'Vote Date', 'Status', 'Yes Votes', 'No Votes', 'Abstain', 'Quorum Met'];
+      const rows = allVotes.map(vote => [
+        `"${(vote.motion || '').replace(/"/g, '""')}"`,
+        vote.vote_date ? new Date(vote.vote_date).toLocaleDateString() : '',
+        vote.status || '',
+        vote.yes_count || 0,
+        vote.no_count || 0,
+        vote.abstain_count || 0,
+        vote.quorum_met ? 'Yes' : 'No'
+      ]);
+
+      const csvContent = [headers.join(','), ...rows.map(r => r.join(','))].join('\n');
+      const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+      const link = document.createElement('a');
+      link.href = URL.createObjectURL(blob);
+      link.download = `board-votes-${new Date().toISOString().split('T')[0]}.csv`;
+      link.click();
+      showMessage('Export complete!', 'success');
     }
 
     function getSortIcon(field) {

@@ -204,14 +204,28 @@
       <div class="admin-page-header">
         <h1>Organizations</h1>
         <div class="admin-page-header-actions">
+          <button class="admin-btn admin-btn-secondary" onclick="exportOrganizations()">Export CSV</button>
           <button class="ai-query-btn" onclick="showAIModal()" id="aiQueryBtn" style="display:none;">AI Query</button>
         </div>
       </div>
 
       <!-- Filter Toolbar - Full Width -->
       <div class="admin-toolbar" style="gap: var(--admin-space-md);">
-        <input type="text" class="admin-input" id="searchBox" placeholder="Search organizations..." style="flex: 1; min-width: 200px;">
-        <button class="admin-btn admin-btn-secondary" onclick="resetSearch()" title="Reset search">Reset</button>
+        <input type="text" class="admin-input" id="searchBox" placeholder="Search organizations..." style="flex: 1; max-width: 400px;" oninput="filterOrganizations()">
+        <select class="admin-select" id="typeFilter" onchange="filterOrganizations()" style="width: 180px;">
+          <option value="">All Types</option>
+          <option value="university">University</option>
+          <option value="government">Government</option>
+          <option value="ngo">NGO/Non-profit</option>
+          <option value="company">Company</option>
+          <option value="foundation">Foundation</option>
+          <option value="research">Research Institute</option>
+          <option value="other">Other</option>
+        </select>
+        <select class="admin-select" id="countryFilter" onchange="filterOrganizations()" style="width: 180px;">
+          <option value="">All Countries</option>
+        </select>
+        <button class="admin-btn admin-btn-secondary" onclick="resetFilters()">Reset</button>
       </div>
 
       <div class="admin-table-wrapper">
@@ -332,6 +346,7 @@
 
         if (response.ok && data.success) {
           allOrganizations = data.data;
+          populateCountryFilter();
           displayOrganizations(allOrganizations);
         } else {
           document.getElementById('tableContent').innerHTML = `
@@ -367,6 +382,86 @@
     function resetSearch() {
       document.getElementById('searchBox').value = '';
       displayOrganizations(allOrganizations);
+    }
+
+    function populateCountryFilter() {
+      const countrySelect = document.getElementById('countryFilter');
+      const countries = [...new Set(allOrganizations.map(org => org.country).filter(Boolean))].sort();
+      countrySelect.innerHTML = '<option value="">All Countries</option>';
+      countries.forEach(country => {
+        countrySelect.innerHTML += `<option value="${country}">${country}</option>`;
+      });
+    }
+
+    function filterOrganizations() {
+      const searchTerm = document.getElementById('searchBox').value.toLowerCase();
+      const typeFilter = document.getElementById('typeFilter').value;
+      const countryFilter = document.getElementById('countryFilter').value;
+
+      let filtered = allOrganizations.filter(org => {
+        // Search filter
+        if (searchTerm) {
+          const searchFields = [
+            org.name || '',
+            org.type || '',
+            org.country || '',
+            org.notes || ''
+          ].join(' ').toLowerCase();
+          if (!searchFields.includes(searchTerm)) return false;
+        }
+        // Type filter
+        if (typeFilter && (org.type || '').toLowerCase() !== typeFilter.toLowerCase()) return false;
+        // Country filter
+        if (countryFilter && org.country !== countryFilter) return false;
+        return true;
+      });
+
+      displayOrganizations(filtered);
+    }
+
+    function resetFilters() {
+      document.getElementById('searchBox').value = '';
+      document.getElementById('typeFilter').value = '';
+      document.getElementById('countryFilter').value = '';
+      displayOrganizations(allOrganizations);
+    }
+
+    function exportOrganizations() {
+      if (allOrganizations.length === 0) {
+        showMessage('No organizations to export', 'error');
+        return;
+      }
+
+      const headers = ['Name', 'Type', 'Country', 'Website', 'Notes'];
+      const rows = allOrganizations.map(org => [
+        `"${(org.name || '').replace(/"/g, '""')}"`,
+        `"${(org.type || '').replace(/"/g, '""')}"`,
+        `"${(org.country || '').replace(/"/g, '""')}"`,
+        `"${(org.website || '').replace(/"/g, '""')}"`,
+        `"${(org.notes || '').replace(/"/g, '""')}"`
+      ]);
+
+      const csvContent = [headers.join(','), ...rows.map(r => r.join(','))].join('\n');
+      const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+      const link = document.createElement('a');
+      link.href = URL.createObjectURL(blob);
+      link.download = `organizations-${new Date().toISOString().split('T')[0]}.csv`;
+      link.click();
+      showMessage('Export complete!', 'success');
+    }
+
+    function showMessage(message, type) {
+      const alertClass = type === 'success' ? 'admin-alert-success' : 'admin-alert-danger';
+      const messageDiv = document.createElement('div');
+      messageDiv.className = `admin-alert ${alertClass}`;
+      messageDiv.textContent = message;
+      messageDiv.style.position = 'fixed';
+      messageDiv.style.top = '20px';
+      messageDiv.style.right = '20px';
+      messageDiv.style.zIndex = '2000';
+      messageDiv.style.minWidth = '300px';
+      document.body.appendChild(messageDiv);
+      setTimeout(() => messageDiv.remove(), 5000);
     }
 
     function displayOrganizations(organizations) {

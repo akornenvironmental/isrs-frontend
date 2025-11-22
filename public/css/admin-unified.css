@@ -94,38 +94,202 @@
 
 /* Dark Mode Variables */
 .admin-dark-mode {
-  --admin-bg: #0f1419;
-  --admin-surface: #1a1f26;
-  --admin-surface-hover: #242b35;
-  --admin-border: #2d3640;
-  --admin-text: #e7e9ea;
-  --admin-text-secondary: #a8b3bc;
-  --admin-text-muted: #71767b;
+  --admin-bg: #111827;
+  --admin-surface: #1f2937;
+  --admin-surface-hover: #374151;
+  --admin-border: #4b5563;
+  --admin-text: #f9fafb;
+  --admin-text-secondary: #e5e7eb;
+  --admin-text-muted: #9ca3af;
 
-  --admin-gray-50: #1a1f26;
-  --admin-gray-100: #242b35;
-  --admin-gray-200: #2d3640;
-  --admin-gray-300: #3d4654;
-  --admin-gray-400: #71767b;
-  --admin-gray-500: #a8b3bc;
-  --admin-gray-600: #c4cdd6;
-  --admin-gray-700: #d9e1e8;
-  --admin-gray-800: #e7e9ea;
-  --admin-gray-900: #f7f9fa;
+  /* Inverted gray scale for dark mode */
+  --admin-gray-50: #1f2937;
+  --admin-gray-100: #374151;
+  --admin-gray-200: #4b5563;
+  --admin-gray-300: #6b7280;
+  --admin-gray-400: #9ca3af;
+  --admin-gray-500: #d1d5db;
+  --admin-gray-600: #e5e7eb;
+  --admin-gray-700: #f3f4f6;
+  --admin-gray-800: #f9fafb;
+  --admin-gray-900: #ffffff;
 
-  --admin-primary-light: #1d3a5c;
-  --admin-success-bg: #0d3027;
-  --admin-success-text: #4ade80;
-  --admin-warning-bg: #3d2f0a;
-  --admin-warning-text: #fbbf24;
-  --admin-danger-bg: #3d1515;
-  --admin-danger-text: #f87171;
-  --admin-info-bg: #1e3a5f;
-  --admin-info-text: #60a5fa;
+  /* Primary colors for dark mode */
+  --admin-primary: #60a5fa;
+  --admin-primary-hover: #93c5fd;
+  --admin-primary-light: #1e3a5f;
 
-  --admin-shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.3);
-  --admin-shadow-md: 0 4px 6px rgba(0, 0, 0, 0.4);
-  --admin-shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.5);
+  /* Semantic colors with better contrast for dark mode */
+  --admin-success-bg: #064e3b;
+  --admin-success-text: #6ee7b7;
+  --admin-warning-bg: #78350f;
+  --admin-warning-text: #fcd34d;
+  --admin-danger-bg: #7f1d1d;
+  --admin-danger-text: #fca5a5;
+  --admin-info-bg: #1e3a8a;
+  --admin-info-text: #93c5fd;
+
+  --admin-shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.4);
+  --admin-shadow-md: 0 4px 6px rgba(0, 0, 0, 0.5);
+  --admin-shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.6);
+}
+
+/* Dark mode specific overrides for better visibility */
+.admin-dark-mode .admin-table th {
+  color: var(--admin-text-muted);
+  background: var(--admin-gray-100);
+  border-bottom-color: var(--admin-border);
+}
+
+.admin-dark-mode .admin-table td {
+  color: var(--admin-text);
+  border-bottom-color: var(--admin-border);
+}
+
+.admin-dark-mode .admin-table tbody tr:hover {
+  background: var(--admin-gray-100);
+}
+
+.admin-dark-mode .admin-input,
+.admin-dark-mode .admin-select,
+.admin-dark-mode .admin-textarea {
+  background: var(--admin-gray-100);
+  border-color: var(--admin-border);
+  color: var(--admin-text);
+}
+
+.admin-dark-mode .admin-input:focus,
+.admin-dark-mode .admin-select:focus,
+.admin-dark-mode .admin-textarea:focus {
+  border-color: var(--admin-primary);
+  box-shadow: 0 0 0 3px rgba(96, 165, 250, 0.3);
+}
+
+.admin-dark-mode .admin-input::placeholder {
+  color: var(--admin-text-muted);
+}
+
+/* Dark mode badges with better visibility */
+.admin-dark-mode .admin-badge-success,
+.admin-dark-mode .admin-badge-active,
+.admin-dark-mode .admin-badge-paid,
+.admin-dark-mode .admin-badge-passed {
+  background: #065f46;
+  color: #6ee7b7;
+}
+
+.admin-dark-mode .admin-badge-warning,
+.admin-dark-mode .admin-badge-pending,
+.admin-dark-mode .admin-badge-in-progress,
+.admin-dark-mode .admin-badge-contacted {
+  background: #78350f;
+  color: #fcd34d;
+}
+
+.admin-dark-mode .admin-badge-danger,
+.admin-dark-mode .admin-badge-inactive,
+.admin-dark-mode .admin-badge-failed,
+.admin-dark-mode .admin-badge-declined {
+  background: #7f1d1d;
+  color: #fca5a5;
+}
+
+.admin-dark-mode .admin-badge-info,
+.admin-dark-mode .admin-badge-committed,
+.admin-dark-mode .admin-badge-new {
+  background: #1e3a8a;
+  color: #93c5fd;
+}
+
+.admin-dark-mode .admin-badge-neutral,
+.admin-dark-mode .admin-badge-draft {
+  background: var(--admin-gray-200);
+  color: var(--admin-text);
+}
+
+/* Dark mode buttons */
+.admin-dark-mode .admin-btn-secondary {
+  background: var(--admin-gray-100);
+  border-color: var(--admin-border);
+  color: var(--admin-text);
+}
+
+.admin-dark-mode .admin-btn-secondary:hover {
+  background: var(--admin-gray-200);
+}
+
+/* Dark mode links */
+.admin-dark-mode a {
+  color: var(--admin-primary);
+}
+
+.admin-dark-mode a:hover {
+  color: var(--admin-primary-hover);
+}
+
+/* Dark mode page header */
+.admin-dark-mode .admin-page-header h1 {
+  color: var(--admin-text);
+}
+
+/* Dark mode card footer/stats */
+.admin-dark-mode .admin-card-footer {
+  background: var(--admin-gray-100);
+  border-top-color: var(--admin-border);
+}
+
+/* Dark mode checkbox */
+.admin-dark-mode .admin-checkbox {
+  border-color: var(--admin-border);
+  background: var(--admin-gray-100);
+}
+
+/* Dark mode toolbar */
+.admin-dark-mode .admin-toolbar {
+  background: var(--admin-surface);
+  border-bottom-color: var(--admin-border);
+}
+
+/* Dark mode dropdowns */
+.admin-dark-mode .export-dropdown-content,
+.admin-dark-mode .dropdown-content {
+  background: var(--admin-surface);
+  border-color: var(--admin-border);
+}
+
+.admin-dark-mode .export-dropdown-content a,
+.admin-dark-mode .dropdown-content a {
+  color: var(--admin-text);
+}
+
+.admin-dark-mode .export-dropdown-content a:hover,
+.admin-dark-mode .dropdown-content a:hover {
+  background: var(--admin-gray-100);
+}
+
+/* Dark mode modal */
+.admin-dark-mode .admin-modal {
+  background: var(--admin-surface);
+}
+
+.admin-dark-mode .admin-modal-header {
+  border-bottom-color: var(--admin-border);
+}
+
+.admin-dark-mode .admin-modal-footer {
+  background: var(--admin-gray-100);
+  border-top-color: var(--admin-border);
+}
+
+/* Dark mode quality bar */
+.admin-dark-mode .quality-bar {
+  background: var(--admin-gray-200);
+}
+
+/* Dark mode tags */
+.admin-dark-mode .tag {
+  background: var(--admin-gray-200);
+  color: var(--admin-text);
 }
 
 /* ===========================================
