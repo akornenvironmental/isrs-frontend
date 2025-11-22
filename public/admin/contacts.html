@@ -193,6 +193,7 @@
         <h1>Contacts Management</h1>
         <div class="admin-page-header-actions">
           <div id="claudeAIContainer"></div>
+          <button class="admin-btn admin-btn-success" onclick="showQuickAddModal()">+ Quick Add</button>
           <div class="admin-dropdown">
             <button class="admin-btn admin-btn-secondary" onclick="toggleExportMenu()">Export</button>
             <div class="admin-dropdown-menu" id="exportMenu">
@@ -261,8 +262,10 @@
         <button class="admin-btn admin-btn-primary admin-btn-sm" onclick="showEmailModal()">Send Email</button>
         <button class="admin-btn admin-btn-secondary admin-btn-sm" onclick="exportSelected()">Export Selected</button>
         <button class="admin-btn admin-btn-primary admin-btn-sm" onclick="showBulkEditModal()">Edit Selected</button>
+        <button class="admin-btn admin-btn-sm" style="background: linear-gradient(135deg, #9333ea 0%, #7e22ce 100%); color: white;" onclick="bulkEnhanceSelected()">AI Enhance Selected</button>
         <button class="admin-btn admin-btn-danger admin-btn-sm" onclick="bulkDeleteSelected()">Delete Selected</button>
-        <button class="admin-btn admin-btn-secondary admin-btn-sm" onclick="clearSelection()">Clear Selection</button>
+        <button class="admin-btn admin-btn-secondary admin-btn-sm" onclick="clearSelection()">Clear</button>
+        <button class="admin-btn admin-btn-secondary admin-btn-sm" onclick="selectAllFiltered()">Select All Visible</button>
       </div>
 
       <!-- Table Content -->
@@ -504,6 +507,75 @@
       <div class="admin-modal-footer">
         <button type="button" class="admin-btn admin-btn-secondary" onclick="closeMergeModal()">Cancel</button>
         <button type="button" class="admin-btn admin-btn-primary" onclick="executeMerge()">Merge Contacts</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Quick Add Contact Modal -->
+  <div id="quickAddModal" class="admin-modal-overlay">
+    <div class="admin-modal" style="max-width: 600px;">
+      <div class="admin-modal-header">
+        <h2>Quick Add Contact</h2>
+        <button class="admin-modal-close" onclick="closeQuickAddModal()">&times;</button>
+      </div>
+      <div class="admin-modal-body">
+        <form id="quickAddForm" onsubmit="executeQuickAdd(event)">
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--admin-space-lg);">
+            <div class="admin-form-group">
+              <label class="admin-form-label" for="qaFirstName">First Name</label>
+              <input type="text" id="qaFirstName" class="admin-input" style="width: 100%;">
+            </div>
+            <div class="admin-form-group">
+              <label class="admin-form-label" for="qaLastName">Last Name</label>
+              <input type="text" id="qaLastName" class="admin-input" style="width: 100%;">
+            </div>
+          </div>
+
+          <div class="admin-form-group">
+            <label class="admin-form-label" for="qaEmail">Email *</label>
+            <input type="email" id="qaEmail" class="admin-input" style="width: 100%;" required>
+          </div>
+
+          <div class="admin-form-group">
+            <label class="admin-form-label" for="qaOrganization">Organization</label>
+            <input type="text" id="qaOrganization" class="admin-input" style="width: 100%;" list="orgSuggestions" autocomplete="off">
+            <datalist id="orgSuggestions"></datalist>
+          </div>
+
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--admin-space-lg);">
+            <div class="admin-form-group">
+              <label class="admin-form-label" for="qaTitle">Title/Role</label>
+              <input type="text" id="qaTitle" class="admin-input" style="width: 100%;">
+            </div>
+            <div class="admin-form-group">
+              <label class="admin-form-label" for="qaCountry">Country</label>
+              <input type="text" id="qaCountry" class="admin-input" style="width: 100%;" value="United States">
+            </div>
+          </div>
+
+          <div class="admin-form-group">
+            <label class="admin-form-label" for="qaType">Contact Type</label>
+            <select id="qaType" class="admin-select" style="width: 100%;">
+              <option value="">Select type...</option>
+              <option value="Academic">Academic</option>
+              <option value="Government">Government</option>
+              <option value="Non-Profit">Non-Profit</option>
+              <option value="Private">Private</option>
+              <option value="Tribal">Tribal</option>
+            </select>
+          </div>
+
+          <div class="admin-form-group">
+            <label class="admin-checkbox-group">
+              <input type="checkbox" id="qaEnhanceAI" class="admin-checkbox" checked>
+              <span>Auto-enhance with AI after saving</span>
+            </label>
+          </div>
+        </form>
+      </div>
+      <div class="admin-modal-footer">
+        <button type="button" class="admin-btn admin-btn-secondary" onclick="closeQuickAddModal()">Cancel</button>
+        <button type="submit" form="quickAddForm" class="admin-btn admin-btn-success" id="quickAddBtn">Add Contact</button>
       </div>
     </div>
   </div>
@@ -1779,6 +1851,224 @@
 
       } catch (error) {
         showToast('AI enhancement failed: ' + error.message, 'error');
+      }
+    }
+
+    // Select all visible/filtered contacts
+    function selectAllFiltered() {
+      paginatedContacts.forEach(c => selectedContacts.add(c.email));
+      displayContacts();
+      showToast(`Selected ${paginatedContacts.length} contacts on this page`, 'success');
+    }
+
+    // Bulk AI enhance selected contacts
+    async function bulkEnhanceSelected() {
+      if (selectedContacts.size === 0) {
+        showToast('Please select contacts first', 'error');
+        return;
+      }
+
+      const count = selectedContacts.size;
+      if (count > 20) {
+        if (!confirm(`You are about to AI enhance ${count} contacts. This may take several minutes. Continue?`)) {
+          return;
+        }
+      }
+
+      // Get selected contact IDs
+      const contactsToEnhance = allContacts.filter(c => selectedContacts.has(c.email));
+      let processed = 0;
+      let enhanced = 0;
+      let failed = 0;
+
+      // Show progress toast
+      showToast(`Starting AI enhancement of ${count} contacts...`, 'info');
+
+      // Process in batches of 3 to avoid overwhelming the API
+      const batchSize = 3;
+      for (let i = 0; i < contactsToEnhance.length; i += batchSize) {
+        const batch = contactsToEnhance.slice(i, i + batchSize);
+
+        // Process batch in parallel
+        const results = await Promise.allSettled(
+          batch.map(async (contact) => {
+            try {
+              const sessionToken = localStorage.getItem('isrs_session');
+              const response = await fetch(`${API_BASE_URL}/api/claude/enhance-contact`, {
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/json',
+                  'Authorization': `Bearer ${sessionToken}`
+                },
+                body: JSON.stringify({ contact_id: contact.id, useWebSearch: true })
+              });
+
+              const data = await response.json();
+              if (response.ok && data.success && data.enhanced) {
+                Object.assign(contact, data.enhanced);
+                return { success: true, contact };
+              }
+              return { success: false };
+            } catch (e) {
+              return { success: false, error: e.message };
+            }
+          })
+        );
+
+        results.forEach(r => {
+          processed++;
+          if (r.status === 'fulfilled' && r.value.success) {
+            enhanced++;
+          } else {
+            failed++;
+          }
+        });
+
+        // Update progress
+        if (processed % 10 === 0 || processed === count) {
+          showToast(`Processed ${processed}/${count} contacts...`, 'info');
+        }
+
+        // Small delay between batches
+        if (i + batchSize < contactsToEnhance.length) {
+          await new Promise(resolve => setTimeout(resolve, 500));
+        }
+      }
+
+      // Refresh display
+      displayContacts();
+
+      // Final summary
+      showToast(`AI enhancement complete: ${enhanced} enhanced, ${failed} failed`, enhanced > 0 ? 'success' : 'error');
+    }
+
+    // Quick search with keyboard shortcut
+    document.addEventListener('keydown', (e) => {
+      // Ctrl/Cmd + F to focus search
+      if ((e.ctrlKey || e.metaKey) && e.key === 'f') {
+        e.preventDefault();
+        document.getElementById('searchBox').focus();
+      }
+      // Escape to clear search
+      if (e.key === 'Escape') {
+        const searchBox = document.getElementById('searchBox');
+        if (document.activeElement === searchBox && searchBox.value) {
+          searchBox.value = '';
+          applyFilters();
+        }
+      }
+      // Ctrl/Cmd + A to select all visible (when not in input)
+      if ((e.ctrlKey || e.metaKey) && e.key === 'a' && document.activeElement.tagName !== 'INPUT' && document.activeElement.tagName !== 'TEXTAREA') {
+        e.preventDefault();
+        selectAllFiltered();
+      }
+      // Ctrl/Cmd + N for quick add (when not in input)
+      if ((e.ctrlKey || e.metaKey) && e.key === 'n' && document.activeElement.tagName !== 'INPUT' && document.activeElement.tagName !== 'TEXTAREA') {
+        e.preventDefault();
+        showQuickAddModal();
+      }
+    });
+
+    // Quick Add Contact functions
+    let orgNames = [];
+
+    function showQuickAddModal() {
+      document.getElementById('quickAddModal').classList.add('active');
+      document.getElementById('qaEmail').focus();
+      // Populate org suggestions
+      populateOrgSuggestions();
+    }
+
+    function closeQuickAddModal() {
+      document.getElementById('quickAddModal').classList.remove('active');
+      document.getElementById('quickAddForm').reset();
+      document.getElementById('qaCountry').value = 'United States';
+    }
+
+    function populateOrgSuggestions() {
+      // Get unique org names from contacts
+      const orgs = [...new Set(allContacts.map(c => c.organization_name).filter(Boolean))].sort();
+      const datalist = document.getElementById('orgSuggestions');
+      datalist.innerHTML = orgs.map(o => `<option value="${o}">`).join('');
+    }
+
+    async function executeQuickAdd(event) {
+      event.preventDefault();
+
+      const btn = document.getElementById('quickAddBtn');
+      btn.disabled = true;
+      btn.textContent = 'Adding...';
+
+      const firstName = document.getElementById('qaFirstName').value.trim();
+      const lastName = document.getElementById('qaLastName').value.trim();
+      const email = document.getElementById('qaEmail').value.trim();
+      const organization = document.getElementById('qaOrganization').value.trim();
+      const title = document.getElementById('qaTitle').value.trim();
+      const country = document.getElementById('qaCountry').value.trim();
+      const contactType = document.getElementById('qaType').value;
+      const enhanceAI = document.getElementById('qaEnhanceAI').checked;
+
+      const contactData = {
+        email,
+        first_name: firstName,
+        last_name: lastName,
+        full_name: firstName && lastName ? `${firstName} ${lastName}` : firstName || lastName,
+        organization_name: organization,
+        title: title,
+        country: country,
+        contact_type: contactType
+      };
+
+      try {
+        const sessionToken = localStorage.getItem('isrs_session');
+        const response = await fetch(`${API_BASE_URL}/api/admin/contacts`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${sessionToken}`
+          },
+          body: JSON.stringify(contactData)
+        });
+
+        const data = await response.json();
+
+        if (!response.ok || !data.success) {
+          throw new Error(data.error || 'Failed to add contact');
+        }
+
+        showToast('Contact added successfully!', 'success');
+        closeQuickAddModal();
+
+        // Reload contacts
+        await loadContacts();
+
+        // Auto-enhance if checkbox was checked
+        if (enhanceAI && data.contact?.id) {
+          showToast('Starting AI enhancement...', 'info');
+          try {
+            const enhanceResponse = await fetch(`${API_BASE_URL}/api/claude/enhance-contact`, {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${sessionToken}`
+              },
+              body: JSON.stringify({ contact_id: data.contact.id, useWebSearch: true })
+            });
+            const enhanceData = await enhanceResponse.json();
+            if (enhanceResponse.ok && enhanceData.success) {
+              showToast('Contact enhanced with AI data!', 'success');
+              await loadContacts();
+            }
+          } catch (e) {
+            console.error('AI enhancement failed:', e);
+          }
+        }
+
+      } catch (error) {
+        showToast('Error: ' + error.message, 'error');
+      } finally {
+        btn.disabled = false;
+        btn.textContent = 'Add Contact';
       }
     }
   </script>
