@@ -1695,9 +1695,19 @@ function loadFooter() {
             <li><a href="/admin/" target="_blank" rel="noopener noreferrer">${t('adminPortal')}</a></li>
           </ul>
         </div>
+        <div class="footer-section">
+          <h4>Legal</h4>
+          <ul>
+            <li><a href="/legal/privacy.html">Privacy Policy</a></li>
+            <li><a href="/legal/terms.html">Terms of Service</a></li>
+            <li><a href="/legal/code-of-conduct.html">Code of Conduct</a></li>
+            <li><a href="/legal/accessibility.html">Accessibility</a></li>
+          </ul>
+        </div>
       </div>
       <div class="footer-bottom">
         <p>${t('copyright')}</p>
+        <p class="footer-legal-note">ISRS is a 501(c)(3) nonprofit organization. Donations are tax-deductible to the extent allowed by law.</p>
       </div>
     </div>
   `;
