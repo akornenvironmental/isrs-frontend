@@ -21,6 +21,50 @@
       -webkit-box-orient: vertical;
     }
 
+    /* Column Picker */
+    .column-picker {
+      position: absolute;
+      top: 100%;
+      right: 0;
+      margin-top: 0.25rem;
+      background: var(--admin-surface, white);
+      border: 1px solid var(--admin-border, #e5e7eb);
+      border-radius: var(--admin-radius-md);
+      box-shadow: var(--admin-shadow-lg);
+      z-index: 100;
+      min-width: 200px;
+    }
+    .column-picker-header {
+      padding: 0.75rem 1rem;
+      font-weight: 600;
+      font-size: var(--admin-text-sm);
+      border-bottom: 1px solid var(--admin-border, #e5e7eb);
+      color: var(--admin-text-secondary);
+    }
+    .column-picker-options {
+      padding: 0.5rem 0;
+      max-height: 300px;
+      overflow-y: auto;
+    }
+    .column-picker-option {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.5rem 1rem;
+      cursor: pointer;
+      font-size: var(--admin-text-sm);
+      transition: background 0.15s;
+    }
+    .column-picker-option:hover {
+      background: var(--admin-gray-50, #f9fafb);
+    }
+    .column-picker-option input {
+      margin: 0;
+    }
+
+    /* Toolbar container for dropdown positioning */
+    .admin-toolbar { position: relative; }
+
     /* Data Quality Score */
     .quality-score { display: inline-flex; align-items: center; gap: 0.25rem; font-size: var(--admin-text-xs); font-weight: 500; }
     .quality-bar { width: 40px; height: 6px; background: var(--admin-gray-200); border-radius: 3px; overflow: hidden; }
@@ -225,7 +269,30 @@
         <select class="admin-select" id="countryFilter" onchange="filterOrganizations()" style="width: 180px;">
           <option value="">All Countries</option>
         </select>
+        <select id="pageSizeSelect" class="admin-select" style="width: 100px;" onchange="handlePageSizeChange()">
+          <option value="20">Show 20</option>
+          <option value="50">Show 50</option>
+          <option value="100">Show 100</option>
+          <option value="999999" selected>Show All</option>
+        </select>
+        <button class="admin-btn admin-btn-secondary" onclick="toggleColumnPicker()" title="Show/hide columns">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="3" y="3" width="7" height="7"></rect>
+            <rect x="14" y="3" width="7" height="7"></rect>
+            <rect x="14" y="14" width="7" height="7"></rect>
+            <rect x="3" y="14" width="7" height="7"></rect>
+          </svg>
+          Columns
+        </button>
         <button class="admin-btn admin-btn-secondary" onclick="resetFilters()">Reset</button>
+      </div>
+
+      <!-- Column Picker Dropdown -->
+      <div id="columnPicker" class="column-picker" style="display: none;">
+        <div class="column-picker-header">Show/Hide Columns</div>
+        <div class="column-picker-options" id="columnPickerOptions">
+          <!-- Options will be populated by JS -->
+        </div>
       </div>
 
       <div class="admin-table-wrapper">
@@ -285,8 +352,87 @@
     const API_BASE_URL = 'https://isrs-database-backend.onrender.com';
     let userPermissions = null;
     let allOrganizations = [];
+    let filteredOrganizations = [];
     let sortField = 'name';
     let sortDirection = 'asc';
+    let pageSize = 999999;
+    let currentPage = 1;
+
+    // Column visibility configuration
+    const columnConfig = [
+      { id: 'name', label: 'Name', visible: true, required: true },
+      { id: 'type', label: 'Type', visible: true },
+      { id: 'country', label: 'Country', visible: true },
+      { id: 'website', label: 'Website', visible: true },
+      { id: 'quality', label: 'Quality', visible: true },
+      { id: 'notes', label: 'Notes', visible: true }
+    ];
+
+    // Load saved column preferences
+    const savedColumns = localStorage.getItem('isrs_organizations_columns');
+    if (savedColumns) {
+      try {
+        const saved = JSON.parse(savedColumns);
+        columnConfig.forEach(col => {
+          if (!col.required && saved[col.id] !== undefined) {
+            col.visible = saved[col.id];
+          }
+        });
+      } catch (e) {}
+    }
+
+    function toggleColumnPicker() {
+      const picker = document.getElementById('columnPicker');
+      const isVisible = picker.style.display !== 'none';
+      picker.style.display = isVisible ? 'none' : 'block';
+
+      if (!isVisible) {
+        renderColumnPickerOptions();
+      }
+    }
+
+    function renderColumnPickerOptions() {
+      const container = document.getElementById('columnPickerOptions');
+      container.innerHTML = columnConfig.map(col => `
+        <label class="column-picker-option">
+          <input type="checkbox" ${col.visible ? 'checked' : ''} ${col.required ? 'disabled' : ''}
+                 onchange="toggleColumn('${col.id}', this.checked)">
+          ${col.label}
+        </label>
+      `).join('');
+    }
+
+    function toggleColumn(columnId, visible) {
+      const col = columnConfig.find(c => c.id === columnId);
+      if (col && !col.required) {
+        col.visible = visible;
+        // Save preferences
+        const prefs = {};
+        columnConfig.forEach(c => prefs[c.id] = c.visible);
+        localStorage.setItem('isrs_organizations_columns', JSON.stringify(prefs));
+        displayOrganizations(filteredOrganizations.length ? filteredOrganizations : allOrganizations);
+      }
+    }
+
+    function isColumnVisible(columnId) {
+      const col = columnConfig.find(c => c.id === columnId);
+      return col ? col.visible : true;
+    }
+
+    function handlePageSizeChange() {
+      pageSize = parseInt(document.getElementById('pageSizeSelect').value);
+      currentPage = 1;
+      displayOrganizations(filteredOrganizations.length ? filteredOrganizations : allOrganizations);
+    }
+
+    // Close column picker when clicking outside
+    document.addEventListener('click', (e) => {
+      const picker = document.getElementById('columnPicker');
+      const btn = e.target.closest('[onclick*="toggleColumnPicker"]');
+      if (picker && picker.style.display !== 'none' && !picker.contains(e.target) && !btn) {
+        picker.style.display = 'none';
+      }
+    });
 
     // Check auth
     window.addEventListener('DOMContentLoaded', async () => {
@@ -465,6 +611,9 @@
     }
 
     function displayOrganizations(organizations) {
+      // Store filtered for later use
+      filteredOrganizations = organizations;
+
       if (organizations.length === 0) {
         document.getElementById('tableContent').innerHTML = '<div class="admin-empty"><div class="admin-empty-title">No organizations found</div></div>';
         document.getElementById('statsBar').style.display = 'none';
@@ -488,40 +637,44 @@
         }
       });
 
+      // Apply pagination
+      const startIdx = (currentPage - 1) * pageSize;
+      const paginatedOrganizations = sortedOrganizations.slice(startIdx, startIdx + pageSize);
+
       const html = `
         <table class="admin-table">
           <thead>
             <tr>
-              <th class="sortable ${sortField === 'name' ? 'sort-' + sortDirection : ''}" onclick="handleSort('name')">
+              ${isColumnVisible('name') ? `<th class="sortable ${sortField === 'name' ? 'sort-' + sortDirection : ''}" onclick="handleSort('name')">
                 Name <span class="sort-indicator">${getSortIcon('name')}</span>
-              </th>
-              <th class="sortable ${sortField === 'type' ? 'sort-' + sortDirection : ''}" onclick="handleSort('type')">
+              </th>` : ''}
+              ${isColumnVisible('type') ? `<th class="sortable ${sortField === 'type' ? 'sort-' + sortDirection : ''}" onclick="handleSort('type')">
                 Type <span class="sort-indicator">${getSortIcon('type')}</span>
-              </th>
-              <th class="sortable ${sortField === 'country' ? 'sort-' + sortDirection : ''}" onclick="handleSort('country')">
+              </th>` : ''}
+              ${isColumnVisible('country') ? `<th class="sortable ${sortField === 'country' ? 'sort-' + sortDirection : ''}" onclick="handleSort('country')">
                 Country <span class="sort-indicator">${getSortIcon('country')}</span>
-              </th>
-              <th>Website</th>
-              <th title="Data completeness score">Quality</th>
-              <th>Notes</th>
+              </th>` : ''}
+              ${isColumnVisible('website') ? `<th>Website</th>` : ''}
+              ${isColumnVisible('quality') ? `<th title="Data completeness score">Quality</th>` : ''}
+              ${isColumnVisible('notes') ? `<th>Notes</th>` : ''}
             </tr>
           </thead>
           <tbody>
-            ${sortedOrganizations.map(org => {
+            ${paginatedOrganizations.map(org => {
               const quality = calculateOrgQuality(org);
               return `
               <tr>
-                <td>${org.website ? `<a href="${org.website}" target="_blank" rel="noopener noreferrer">${org.name}</a>` : (org.name || '-')}</td>
-                <td>${org.type || '-'}</td>
-                <td>${org.country || '-'}</td>
-                <td>${org.website ? `<a href="${org.website}" target="_blank">Link</a>` : '-'}</td>
-                <td>
+                ${isColumnVisible('name') ? `<td>${org.website ? `<a href="${org.website}" target="_blank" rel="noopener noreferrer">${org.name}</a>` : (org.name || '-')}</td>` : ''}
+                ${isColumnVisible('type') ? `<td>${org.type || '-'}</td>` : ''}
+                ${isColumnVisible('country') ? `<td>${org.country || '-'}</td>` : ''}
+                ${isColumnVisible('website') ? `<td>${org.website ? `<a href="${org.website}" target="_blank">Link</a>` : '-'}</td>` : ''}
+                ${isColumnVisible('quality') ? `<td>
                   <div class="quality-score quality-${quality.level}" title="${quality.score}/${quality.maxScore} fields complete">
                     <div class="quality-bar"><div class="quality-fill" style="width: ${quality.percentage}%"></div></div>
                     <span>${quality.percentage}%</span>
                   </div>
-                </td>
-                <td class="notes-cell" title="${org.notes || ''}">${org.notes || '-'}</td>
+                </td>` : ''}
+                ${isColumnVisible('notes') ? `<td class="notes-cell" title="${(org.notes || '').replace(/"/g, '&quot;')}">${org.notes || '-'}</td>` : ''}
               </tr>
             `}).join('')}
           </tbody>
@@ -540,7 +693,7 @@
         sortField = field;
         sortDirection = 'asc';
       }
-      displayOrganizations(allOrganizations);
+      displayOrganizations(filteredOrganizations.length ? filteredOrganizations : allOrganizations);
     }
 
     function getSortIcon(field) {
