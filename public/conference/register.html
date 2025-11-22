@@ -579,7 +579,7 @@
   <main id="main-content">
   <div class="registration-container">
     <div class="registration-header">
-      <a href="#" class="back-button" id="backButton" onclick="goBack(event)">
+      <a href="/conference/" class="back-button" id="backButton">
         <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
         </svg>
@@ -1182,25 +1182,6 @@
     let conferenceData = null;
     let profileId = null;
 
-    // Back button functionality
-    function goBack(event) {
-      event.preventDefault();
-
-      // If opened in new window, close window and return to opener
-      if (window.opener && !window.opener.closed) {
-        window.close();
-        return;
-      }
-
-      // If there's a referrer, go back in history
-      if (document.referrer) {
-        window.history.back();
-        return;
-      }
-
-      // Otherwise, navigate to conference page
-      window.location.href = '/conference';
-    }
     let registrationId = null;
 
     // Fee structure (Early Bird Period)
