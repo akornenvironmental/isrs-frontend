@@ -11,12 +11,12 @@ let mergeContactsData = null;
 // ========== IMPORT FUNCTIONS ==========
 
 function showImportModal() {
-  document.getElementById('importModal').classList.add('show');
+  document.getElementById('importModal').classList.add('active');
   resetImportModal();
 }
 
 function closeImportModal() {
-  document.getElementById('importModal').classList.remove('show');
+  document.getElementById('importModal').classList.remove('active');
   resetImportModal();
 }
 

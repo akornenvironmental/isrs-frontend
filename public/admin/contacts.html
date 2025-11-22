@@ -134,9 +134,10 @@
     .quality-low .quality-fill { background: var(--admin-danger); }
 
     /* Bulk actions bar */
-    .bulk-actions { background: var(--admin-info-bg); padding: var(--admin-space-lg) var(--admin-space-xl); border-bottom: 1px solid var(--admin-info); display: none; align-items: center; gap: var(--admin-space-lg); }
+    .bulk-actions { background: var(--admin-info-bg); padding: var(--admin-space-lg) var(--admin-space-xl); border-bottom: 1px solid var(--admin-info); display: none; align-items: center; justify-content: space-between; }
     .bulk-actions.show { display: flex; }
     .bulk-actions-count { font-weight: 600; color: var(--admin-info-text); }
+    .bulk-actions-buttons { display: flex; gap: var(--admin-space-md); flex-wrap: wrap; }
 
     /* Stats bar */
     .stats-bar { padding: var(--admin-space-lg) var(--admin-space-xl); background: var(--admin-gray-50); display: flex; justify-content: space-between; align-items: center; font-size: var(--admin-text-sm); color: var(--admin-gray-600); border-top: 1px solid var(--admin-gray-200); }
@@ -145,7 +146,9 @@
     .message-toast { position: fixed; top: 20px; right: 20px; min-width: 300px; padding: var(--admin-space-lg); border-radius: var(--admin-radius-md); box-shadow: var(--admin-shadow-lg); z-index: 2000; animation: slideIn 0.3s; }
     .message-toast.success { background: var(--admin-success-bg); color: var(--admin-success-text); border: 1px solid var(--admin-success); }
     .message-toast.error { background: var(--admin-danger-bg); color: var(--admin-danger-text); border: 1px solid var(--admin-danger); }
+    .message-toast.info { background: var(--admin-info-bg); color: var(--admin-info-text, var(--admin-info)); border: 1px solid var(--admin-info); }
     @keyframes slideIn { from { transform: translateX(400px); } to { transform: translateX(0); } }
+    @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
 
     /* Import modal specific styles */
     .file-upload-area { border: 2px dashed var(--admin-gray-300); border-radius: var(--admin-radius-lg); padding: var(--admin-space-2xl); text-align: center; cursor: pointer; transition: all var(--admin-transition); background: var(--admin-gray-50); }
@@ -259,13 +262,15 @@
       <!-- Bulk Actions Bar -->
       <div class="bulk-actions" id="bulkActions">
         <span class="bulk-actions-count"><span id="selectedCount">0</span> selected</span>
-        <button class="admin-btn admin-btn-primary admin-btn-sm" onclick="showEmailModal()">Send Email</button>
-        <button class="admin-btn admin-btn-secondary admin-btn-sm" onclick="exportSelected()">Export Selected</button>
-        <button class="admin-btn admin-btn-primary admin-btn-sm" onclick="showBulkEditModal()">Edit Selected</button>
-        <button class="admin-btn admin-btn-sm" style="background: linear-gradient(135deg, #9333ea 0%, #7e22ce 100%); color: white;" onclick="bulkEnhanceSelected()">AI Enhance Selected</button>
-        <button class="admin-btn admin-btn-danger admin-btn-sm" onclick="bulkDeleteSelected()">Delete Selected</button>
-        <button class="admin-btn admin-btn-secondary admin-btn-sm" onclick="clearSelection()">Clear</button>
-        <button class="admin-btn admin-btn-secondary admin-btn-sm" onclick="selectAllFiltered()">Select All Visible</button>
+        <div class="bulk-actions-buttons">
+          <button class="admin-btn admin-btn-secondary admin-btn-sm" onclick="selectAllFiltered()">Select All Visible</button>
+          <button class="admin-btn admin-btn-primary admin-btn-sm" onclick="showEmailModal()">Send Email</button>
+          <button class="admin-btn admin-btn-secondary admin-btn-sm" onclick="exportSelected()">Export Selected</button>
+          <button class="admin-btn admin-btn-primary admin-btn-sm" onclick="showBulkEditModal()">Edit Selected</button>
+          <button class="admin-btn admin-btn-sm" style="background: linear-gradient(135deg, #9333ea 0%, #7e22ce 100%); color: white;" onclick="bulkEnhanceSelected()">AI Enhance Selected</button>
+          <button class="admin-btn admin-btn-danger admin-btn-sm" onclick="bulkDeleteSelected()">Delete Selected</button>
+          <button class="admin-btn admin-btn-secondary admin-btn-sm" onclick="clearSelection()">Clear</button>
+        </div>
       </div>
 
       <!-- Table Content -->
@@ -1424,280 +1429,9 @@
       }
     });
 
-    // Import modal functions
-    let importData = null;
-    let importMappings = {};
-    let importStep = 1;
-
-    function showImportModal() {
-      document.getElementById('importModal').classList.add('active');
-      resetImportModal();
-    }
-
-    function closeImportModal() {
-      document.getElementById('importModal').classList.remove('active');
-      resetImportModal();
-    }
-
-    function resetImportModal() {
-      importStep = 1;
-      importData = null;
-      importMappings = {};
-      document.getElementById('importStep1').style.display = 'block';
-      document.getElementById('importStep2').style.display = 'none';
-      document.getElementById('importStep3').style.display = 'none';
-      document.getElementById('importBackBtn').style.display = 'none';
-      document.getElementById('importNextBtn').style.display = 'none';
-      document.getElementById('importExecuteBtn').style.display = 'none';
-      document.getElementById('fileInfo').style.display = 'none';
-      document.getElementById('uploadError').style.display = 'none';
-      document.getElementById('uploadLoading').style.display = 'none';
-      document.getElementById('fileInput').value = '';
-    }
-
-    async function handleFileUpload(event) {
-      const file = event.target.files[0];
-      if (!file) return;
-
-      // Validate file type
-      const validTypes = ['.csv', '.xlsx', '.xls', '.tsv', '.pdf', '.docx', '.doc'];
-      const ext = '.' + file.name.split('.').pop().toLowerCase();
-      if (!validTypes.includes(ext)) {
-        document.getElementById('uploadError').style.display = 'block';
-        document.getElementById('uploadError').textContent = 'Invalid file type. Please upload CSV, Excel, PDF, or Word files.';
-        return;
-      }
-
-      // Validate file size (50MB)
-      if (file.size > 50 * 1024 * 1024) {
-        document.getElementById('uploadError').style.display = 'block';
-        document.getElementById('uploadError').textContent = 'File too large. Maximum size is 50MB.';
-        return;
-      }
-
-      document.getElementById('uploadError').style.display = 'none';
-      document.getElementById('uploadLoading').style.display = 'block';
-      document.getElementById('fileInfo').style.display = 'none';
-
-      const formData = new FormData();
-      formData.append('file', file);
-
-      try {
-        const sessionToken = localStorage.getItem('isrs_session');
-        const response = await fetch(`${API_BASE_URL}/api/import/parse`, {
-          method: 'POST',
-          headers: {
-            'Authorization': `Bearer ${sessionToken}`
-          },
-          body: formData
-        });
-
-        const data = await response.json();
-        document.getElementById('uploadLoading').style.display = 'none';
-
-        if (!response.ok || !data.success) {
-          throw new Error(data.error || 'Failed to parse file');
-        }
-
-        importData = data;
-
-        // Show file info
-        document.getElementById('fileInfo').style.display = 'block';
-        document.getElementById('fileInfo').innerHTML = `
-          <strong>File:</strong> ${file.name}<br>
-          <strong>Rows:</strong> ${data.rowCount || data.rows?.length || 0}<br>
-          <strong>Columns detected:</strong> ${data.columns?.length || Object.keys(data.rows?.[0] || {}).length || 0}
-        `;
-
-        // Show next button
-        document.getElementById('importNextBtn').style.display = 'inline-block';
-
-      } catch (error) {
-        document.getElementById('uploadLoading').style.display = 'none';
-        document.getElementById('uploadError').style.display = 'block';
-        document.getElementById('uploadError').textContent = 'Error: ' + error.message;
-      }
-    }
-
-    function importPrevStep() {
-      if (importStep > 1) {
-        importStep--;
-        updateImportStep();
-      }
-    }
-
-    function importNextStep() {
-      if (importStep < 3) {
-        importStep++;
-        updateImportStep();
-      }
-    }
-
-    function updateImportStep() {
-      document.getElementById('importStep1').style.display = importStep === 1 ? 'block' : 'none';
-      document.getElementById('importStep2').style.display = importStep === 2 ? 'block' : 'none';
-      document.getElementById('importStep3').style.display = importStep === 3 ? 'block' : 'none';
-
-      document.getElementById('importBackBtn').style.display = importStep > 1 ? 'inline-block' : 'none';
-      document.getElementById('importNextBtn').style.display = importStep < 3 && importData ? 'inline-block' : 'none';
-      document.getElementById('importExecuteBtn').style.display = importStep === 3 ? 'inline-block' : 'none';
-
-      if (importStep === 2) {
-        renderFieldMappings();
-      } else if (importStep === 3) {
-        renderImportPreview();
-      }
-    }
-
-    function renderFieldMappings() {
-      const container = document.getElementById('fieldMappingContainer');
-      const sourceColumns = importData?.columns || Object.keys(importData?.rows?.[0] || {});
-      const targetFields = [
-        { name: 'full_name', label: 'Full Name' },
-        { name: 'first_name', label: 'First Name' },
-        { name: 'last_name', label: 'Last Name' },
-        { name: 'email', label: 'Email' },
-        { name: 'organization_name', label: 'Organization' },
-        { name: 'title', label: 'Title/Role' },
-        { name: 'phone', label: 'Phone' },
-        { name: 'country', label: 'Country' },
-        { name: 'city', label: 'City' },
-        { name: 'state', label: 'State' },
-        { name: 'contact_type', label: 'Contact Type' }
-      ];
-
-      // Auto-mapping based on column names
-      const autoMap = (source) => {
-        const s = source.toLowerCase();
-        if (s.includes('email')) return 'email';
-        if (s.includes('full') && s.includes('name')) return 'full_name';
-        if (s.includes('first') && s.includes('name')) return 'first_name';
-        if (s.includes('last') && s.includes('name')) return 'last_name';
-        if (s.includes('org')) return 'organization_name';
-        if (s.includes('title') || s.includes('role')) return 'title';
-        if (s.includes('phone')) return 'phone';
-        if (s.includes('country')) return 'country';
-        if (s.includes('city')) return 'city';
-        if (s.includes('state')) return 'state';
-        if (s.includes('type')) return 'contact_type';
-        return '';
-      };
-
-      container.innerHTML = sourceColumns.map(col => {
-        const mapped = autoMap(col);
-        importMappings[col] = mapped;
-        return `
-          <div class="field-mapping-row">
-            <label>${col}</label>
-            <select onchange="importMappings['${col}'] = this.value">
-              <option value="">-- Skip --</option>
-              ${targetFields.map(f => `
-                <option value="${f.name}" ${mapped === f.name ? 'selected' : ''}>${f.label}</option>
-              `).join('')}
-            </select>
-            <span class="confidence-indicator ${mapped ? 'confidence-high' : 'confidence-low'}">
-              ${mapped ? 'Auto-mapped' : 'Manual'}
-            </span>
-          </div>
-        `;
-      }).join('');
-    }
-
-    function renderImportPreview() {
-      const container = document.getElementById('importPreview');
-      const rows = importData?.rows || [];
-      const previewRows = rows.slice(0, 5);
-
-      // Get mapped columns
-      const mappedCols = Object.entries(importMappings).filter(([k, v]) => v);
-
-      container.innerHTML = `
-        <p><strong>${rows.length}</strong> contacts will be imported.</p>
-        <div class="import-preview-table">
-          <table class="admin-table">
-            <thead>
-              <tr>
-                ${mappedCols.map(([src, dest]) => `<th>${dest}</th>`).join('')}
-              </tr>
-            </thead>
-            <tbody>
-              ${previewRows.map(row => `
-                <tr>
-                  ${mappedCols.map(([src, dest]) => `<td>${row[src] || '-'}</td>`).join('')}
-                </tr>
-              `).join('')}
-            </tbody>
-          </table>
-        </div>
-        ${rows.length > 5 ? `<p style="color: var(--admin-gray-500); font-size: var(--admin-text-sm);">...and ${rows.length - 5} more rows</p>` : ''}
-      `;
-    }
-
-    async function executeImport() {
-      const btn = document.getElementById('importExecuteBtn');
-      btn.disabled = true;
-      btn.textContent = 'Importing...';
-
-      const resultsContainer = document.getElementById('importResults');
-      resultsContainer.style.display = 'none';
-
-      try {
-        const sessionToken = localStorage.getItem('isrs_session');
-        const contacts = (importData?.rows || []).map(row => {
-          const contact = {};
-          Object.entries(importMappings).forEach(([src, dest]) => {
-            if (dest && row[src]) {
-              contact[dest] = row[src];
-            }
-          });
-          return contact;
-        }).filter(c => c.email || c.full_name);
-
-        const response = await fetch(`${API_BASE_URL}/api/import/contacts`, {
-          method: 'POST',
-          headers: {
-            'Authorization': `Bearer ${sessionToken}`,
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({
-            contacts,
-            updateExisting: document.getElementById('updateExisting').checked
-          })
-        });
-
-        const data = await response.json();
-
-        if (!response.ok || !data.success) {
-          throw new Error(data.error || 'Import failed');
-        }
-
-        resultsContainer.style.display = 'block';
-        resultsContainer.innerHTML = `
-          <div class="admin-alert admin-alert-success">
-            <strong>Import Complete!</strong><br>
-            Created: ${data.created || 0} contacts<br>
-            Updated: ${data.updated || 0} contacts<br>
-            Skipped: ${data.skipped || 0} contacts
-          </div>
-        `;
-
-        showToast(`Successfully imported ${data.created + data.updated} contacts`, 'success');
-        await loadContacts();
-
-      } catch (error) {
-        resultsContainer.style.display = 'block';
-        resultsContainer.innerHTML = `
-          <div class="admin-alert admin-alert-danger">
-            <strong>Import Failed</strong><br>
-            ${error.message}
-          </div>
-        `;
-        showToast('Import failed: ' + error.message, 'error');
-      } finally {
-        btn.disabled = false;
-        btn.textContent = 'Import Contacts';
-      }
-    }
+    // Import functions are defined in contact-management.js
+    // (showImportModal, closeImportModal, resetImportModal, handleFileUpload,
+    //  importNextStep, importPrevStep, showImportPreview, executeImport)
 
     // Duplicates modal functions
     function closeDuplicatesModal() {
@@ -1813,7 +1547,16 @@
         return;
       }
 
-      // Show loading toast
+      // Find the button and show loading state
+      const row = document.querySelector(`tr[data-email="${email.replace(/"/g, '\\"')}"]`);
+      const btn = row?.querySelector('.ai-btn');
+      const originalBtn = btn?.innerHTML;
+      if (btn) {
+        btn.innerHTML = '<span style="animation: spin 1s linear infinite; display: inline-block;">&#10024;</span>';
+        btn.disabled = true;
+      }
+
+      // Also show toast
       showToast(`Enhancing ${contact.full_name || email} with AI...`, 'info');
 
       try {
@@ -1828,6 +1571,7 @@
         });
 
         const data = await response.json();
+        console.log('AI enhance response for', email, ':', data);
 
         if (!response.ok || !data.success) {
           throw new Error(data.error || 'Failed to enhance contact');
@@ -1850,7 +1594,13 @@
         }
 
       } catch (error) {
+        console.error('AI enhancement error:', error);
         showToast('AI enhancement failed: ' + error.message, 'error');
+        // Restore button
+        if (btn) {
+          btn.innerHTML = originalBtn || '&#10024;';
+          btn.disabled = false;
+        }
       }
     }
 
@@ -1880,9 +1630,32 @@
       let processed = 0;
       let enhanced = 0;
       let failed = 0;
+      let errors = [];
 
-      // Show progress toast
-      showToast(`Starting AI enhancement of ${count} contacts...`, 'info');
+      // Create progress modal
+      const progressModal = document.createElement('div');
+      progressModal.id = 'aiProgressModal';
+      progressModal.innerHTML = `
+        <div style="position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); z-index: 3000; display: flex; align-items: center; justify-content: center;">
+          <div style="background: var(--admin-surface, white); padding: 2rem; border-radius: 12px; max-width: 400px; width: 90%; text-align: center; box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1);">
+            <div style="font-size: 2rem; margin-bottom: 1rem;">&#10024;</div>
+            <h3 style="margin: 0 0 1rem 0; color: var(--admin-text, #333);">AI Enhancement in Progress</h3>
+            <p id="aiProgressText" style="color: var(--admin-text-muted, #666); margin-bottom: 1rem;">Enhancing contact 0/${count}...</p>
+            <div style="background: var(--admin-gray-200, #e5e7eb); border-radius: 9999px; height: 8px; overflow: hidden;">
+              <div id="aiProgressBar" style="background: linear-gradient(135deg, #9333ea 0%, #7e22ce 100%); height: 100%; width: 0%; transition: width 0.3s;"></div>
+            </div>
+            <p id="aiProgressStatus" style="font-size: 0.875rem; color: var(--admin-text-muted, #666); margin-top: 0.5rem;">Starting...</p>
+          </div>
+        </div>
+      `;
+      document.body.appendChild(progressModal);
+
+      const updateProgress = (current, total, status) => {
+        const pct = Math.round((current / total) * 100);
+        document.getElementById('aiProgressText').textContent = `Enhancing contact ${current}/${total}...`;
+        document.getElementById('aiProgressBar').style.width = `${pct}%`;
+        document.getElementById('aiProgressStatus').textContent = status || `${enhanced} enhanced, ${failed} failed`;
+      };
 
       // Process in batches of 3 to avoid overwhelming the API
       const batchSize = 3;
@@ -1904,12 +1677,15 @@
               });
 
               const data = await response.json();
+              console.log('AI enhance response for', contact.email, ':', data);
+
               if (response.ok && data.success && data.enhanced) {
                 Object.assign(contact, data.enhanced);
                 return { success: true, contact };
               }
-              return { success: false };
+              return { success: false, error: data.error || 'No enhanced data returned' };
             } catch (e) {
+              console.error('AI enhance error for', contact.email, ':', e);
               return { success: false, error: e.message };
             }
           })
@@ -1921,13 +1697,13 @@
             enhanced++;
           } else {
             failed++;
+            const err = r.status === 'fulfilled' ? r.value.error : r.reason;
+            if (err && errors.length < 5) errors.push(err);
           }
         });
 
-        // Update progress
-        if (processed % 10 === 0 || processed === count) {
-          showToast(`Processed ${processed}/${count} contacts...`, 'info');
-        }
+        // Update progress modal
+        updateProgress(processed, count);
 
         // Small delay between batches
         if (i + batchSize < contactsToEnhance.length) {
@@ -1935,11 +1711,17 @@
         }
       }
 
+      // Remove progress modal
+      progressModal.remove();
+
       // Refresh display
       displayContacts();
 
-      // Final summary
-      showToast(`AI enhancement complete: ${enhanced} enhanced, ${failed} failed`, enhanced > 0 ? 'success' : 'error');
+      // Final summary with error details
+      if (errors.length > 0) {
+        console.log('AI enhancement errors:', errors);
+      }
+      showToast(`AI enhancement complete: ${enhanced} enhanced, ${failed} failed${errors.length > 0 ? ' - check console for errors' : ''}`, enhanced > 0 ? 'success' : 'error');
     }
 
     // Quick search with keyboard shortcut
