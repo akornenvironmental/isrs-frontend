@@ -35,11 +35,20 @@ function loadAdminLayout(currentPage) {
 
       <nav class="sidebar-nav">
         <div class="nav-section">
-          <a href="/" target="_blank" class="nav-item nav-item-external" style="background: #eff6ff; border-left-color: var(--accent-teal);">
+          <a href="/" target="_blank" class="nav-item nav-item-external" style="background: var(--admin-primary-light, #eff6ff); border-left-color: var(--accent-teal);">
             <span class="nav-icon">🌐</span>
             <span>View Main Website</span>
             <span style="margin-left: auto; font-size: 0.875rem;">↗</span>
           </a>
+        </div>
+
+        <!-- Dark Mode Toggle -->
+        <div class="dark-mode-toggle" onclick="toggleAdminDarkMode()">
+          <span class="dark-mode-toggle-label">
+            <span id="darkModeIcon">🌙</span>
+            <span id="darkModeText">Dark Mode</span>
+          </span>
+          <div class="dark-mode-toggle-switch"></div>
         </div>
 
         <div class="nav-section">
@@ -156,6 +165,44 @@ function logout() {
   window.location.href = '/admin/';
 }
 
+// Dark Mode Functions
+function toggleAdminDarkMode() {
+  const body = document.body;
+  const isDark = body.classList.toggle('admin-dark-mode');
+
+  // Save preference
+  localStorage.setItem('isrs_admin_dark_mode', isDark ? 'true' : 'false');
+
+  // Update toggle text/icon
+  updateDarkModeUI(isDark);
+}
+
+function updateDarkModeUI(isDark) {
+  const icon = document.getElementById('darkModeIcon');
+  const text = document.getElementById('darkModeText');
+
+  if (icon) icon.textContent = isDark ? '☀️' : '🌙';
+  if (text) text.textContent = isDark ? 'Light Mode' : 'Dark Mode';
+}
+
+function initAdminDarkMode() {
+  const savedPref = localStorage.getItem('isrs_admin_dark_mode');
+  const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+
+  // Use saved preference, or system preference
+  const isDark = savedPref === 'true' || (savedPref === null && prefersDark);
+
+  if (isDark) {
+    document.body.classList.add('admin-dark-mode');
+  }
+
+  updateDarkModeUI(isDark);
+}
+
+// Initialize dark mode after layout loads
+setTimeout(initAdminDarkMode, 0);
+
 // Export for use in other scripts
 window.loadAdminLayout = loadAdminLayout;
 window.logout = logout;
+window.toggleAdminDarkMode = toggleAdminDarkMode;

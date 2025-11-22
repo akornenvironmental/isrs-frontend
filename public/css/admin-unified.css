@@ -81,6 +81,51 @@
 
   /* Transitions */
   --admin-transition: 0.2s ease;
+
+  /* Background & Surface Colors (Light Mode) */
+  --admin-bg: var(--admin-gray-50);
+  --admin-surface: #ffffff;
+  --admin-surface-hover: var(--admin-gray-100);
+  --admin-border: var(--admin-gray-200);
+  --admin-text: var(--admin-gray-900);
+  --admin-text-secondary: var(--admin-gray-600);
+  --admin-text-muted: var(--admin-gray-500);
+}
+
+/* Dark Mode Variables */
+.admin-dark-mode {
+  --admin-bg: #0f1419;
+  --admin-surface: #1a1f26;
+  --admin-surface-hover: #242b35;
+  --admin-border: #2d3640;
+  --admin-text: #e7e9ea;
+  --admin-text-secondary: #a8b3bc;
+  --admin-text-muted: #71767b;
+
+  --admin-gray-50: #1a1f26;
+  --admin-gray-100: #242b35;
+  --admin-gray-200: #2d3640;
+  --admin-gray-300: #3d4654;
+  --admin-gray-400: #71767b;
+  --admin-gray-500: #a8b3bc;
+  --admin-gray-600: #c4cdd6;
+  --admin-gray-700: #d9e1e8;
+  --admin-gray-800: #e7e9ea;
+  --admin-gray-900: #f7f9fa;
+
+  --admin-primary-light: #1d3a5c;
+  --admin-success-bg: #0d3027;
+  --admin-success-text: #4ade80;
+  --admin-warning-bg: #3d2f0a;
+  --admin-warning-text: #fbbf24;
+  --admin-danger-bg: #3d1515;
+  --admin-danger-text: #f87171;
+  --admin-info-bg: #1e3a5f;
+  --admin-info-text: #60a5fa;
+
+  --admin-shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.3);
+  --admin-shadow-md: 0 4px 6px rgba(0, 0, 0, 0.4);
+  --admin-shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.5);
 }
 
 /* ===========================================
@@ -94,8 +139,9 @@
   font-family: var(--admin-font-body);
   font-size: var(--admin-text-base);
   line-height: 1.5;
-  color: var(--admin-gray-900);
-  background: var(--admin-gray-50);
+  color: var(--admin-text);
+  background: var(--admin-bg);
+  transition: background 0.3s, color 0.3s;
 }
 
 /* ===========================================
@@ -138,8 +184,8 @@
    =========================================== */
 .admin-page-header {
   padding: var(--admin-space-md) var(--admin-space-xl);
-  background: white;
-  border-bottom: 1px solid var(--admin-gray-200);
+  background: var(--admin-surface);
+  border-bottom: 1px solid var(--admin-border);
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -150,6 +196,7 @@
 .admin-page-header h1 {
   font-size: var(--admin-text-2xl);
   margin: 0;
+  color: var(--admin-text);
 }
 
 .admin-page-header-actions {
@@ -167,8 +214,8 @@
   align-items: center;
   gap: var(--admin-space-sm);
   padding: var(--admin-space-sm) var(--admin-space-xl);
-  background: var(--admin-gray-50);
-  border-bottom: 1px solid var(--admin-gray-200);
+  background: var(--admin-surface-hover);
+  border-bottom: 1px solid var(--admin-border);
   flex-wrap: wrap;
 }
 
@@ -318,10 +365,10 @@
   font-family: var(--admin-font-body);
   font-size: var(--admin-text-sm);
   padding: var(--admin-space-sm) var(--admin-space-md);
-  border: 1px solid var(--admin-gray-300);
+  border: 1px solid var(--admin-border);
   border-radius: var(--admin-radius-sm);
-  background: white;
-  color: var(--admin-gray-900);
+  background: var(--admin-surface);
+  color: var(--admin-text);
   transition: border-color var(--admin-transition), box-shadow var(--admin-transition);
 }
 
@@ -395,9 +442,10 @@
    =========================================== */
 .admin-table-wrapper {
   overflow-x: auto;
-  background: white;
+  background: var(--admin-surface);
   border-radius: var(--admin-radius-md);
   box-shadow: var(--admin-shadow-sm);
+  border: 1px solid var(--admin-border);
 }
 
 .admin-table {
@@ -428,8 +476,8 @@
 
 .admin-table td {
   padding: var(--admin-space-sm) var(--admin-space-md);
-  border-bottom: 1px solid var(--admin-gray-200);
-  color: var(--admin-gray-900);
+  border-bottom: 1px solid var(--admin-border);
+  color: var(--admin-text);
   vertical-align: middle;
 }
 
@@ -534,15 +582,16 @@
    CARDS
    =========================================== */
 .admin-card {
-  background: white;
+  background: var(--admin-surface);
   border-radius: var(--admin-radius-md);
   box-shadow: var(--admin-shadow-sm);
   overflow: hidden;
+  border: 1px solid var(--admin-border);
 }
 
 .admin-card-header {
   padding: var(--admin-space-lg) var(--admin-space-xl);
-  border-bottom: 1px solid var(--admin-gray-200);
+  border-bottom: 1px solid var(--admin-border);
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -551,6 +600,7 @@
 .admin-card-header h2,
 .admin-card-header h3 {
   margin: 0;
+  color: var(--admin-text);
 }
 
 .admin-card-body {
@@ -559,8 +609,8 @@
 
 .admin-card-footer {
   padding: var(--admin-space-lg) var(--admin-space-xl);
-  border-top: 1px solid var(--admin-gray-200);
-  background: var(--admin-gray-50);
+  border-top: 1px solid var(--admin-border);
+  background: var(--admin-surface-hover);
 }
 
 /* ===========================================
