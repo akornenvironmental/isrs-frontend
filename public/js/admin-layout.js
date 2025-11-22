@@ -29,8 +29,28 @@ function loadAdminLayout(currentPage) {
     <!-- Sidebar Navigation -->
     <aside class="admin-sidebar" id="admin-sidebar">
       <div class="sidebar-header">
-        <a href="/admin/dashboard.html" class="sidebar-logo">ISRS Admin</a>
-        <div class="sidebar-subtitle">Management Portal</div>
+        <div class="sidebar-header-row">
+          <div class="sidebar-header-text">
+            <a href="/admin/dashboard.html" class="sidebar-logo">ISRS Admin</a>
+            <div class="sidebar-subtitle">Management Portal</div>
+          </div>
+          <button class="theme-toggle-btn" onclick="toggleAdminDarkMode()" title="Toggle dark mode">
+            <svg id="sunIcon" class="theme-icon sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="12" cy="12" r="5"></circle>
+              <line x1="12" y1="1" x2="12" y2="3"></line>
+              <line x1="12" y1="21" x2="12" y2="23"></line>
+              <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+              <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+              <line x1="1" y1="12" x2="3" y2="12"></line>
+              <line x1="21" y1="12" x2="23" y2="12"></line>
+              <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+              <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+            </svg>
+            <svg id="moonIcon" class="theme-icon moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+            </svg>
+          </button>
+        </div>
       </div>
 
       <nav class="sidebar-nav">
@@ -40,15 +60,6 @@ function loadAdminLayout(currentPage) {
             <span>View Main Website</span>
             <span style="margin-left: auto; font-size: 0.875rem;">↗</span>
           </a>
-        </div>
-
-        <!-- Dark Mode Toggle -->
-        <div class="dark-mode-toggle" onclick="toggleAdminDarkMode()">
-          <span class="dark-mode-toggle-label">
-            <span id="darkModeIcon">🌙</span>
-            <span id="darkModeText">Dark Mode</span>
-          </span>
-          <div class="dark-mode-toggle-switch"></div>
         </div>
 
         <div class="nav-section">
@@ -234,11 +245,15 @@ function toggleAdminDarkMode() {
 }
 
 function updateDarkModeUI(isDark) {
-  const icon = document.getElementById('darkModeIcon');
-  const text = document.getElementById('darkModeText');
+  const sunIcon = document.getElementById('sunIcon');
+  const moonIcon = document.getElementById('moonIcon');
 
-  if (icon) icon.textContent = isDark ? '☀️' : '🌙';
-  if (text) text.textContent = isDark ? 'Light Mode' : 'Dark Mode';
+  if (sunIcon && moonIcon) {
+    // Show sun icon in dark mode (click to go light)
+    // Show moon icon in light mode (click to go dark)
+    sunIcon.style.display = isDark ? 'block' : 'none';
+    moonIcon.style.display = isDark ? 'none' : 'block';
+  }
 }
 
 function initAdminDarkMode() {

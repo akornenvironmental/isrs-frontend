@@ -30,6 +30,18 @@
   border-bottom: 1px solid var(--admin-border, #e5e7eb);
 }
 
+.sidebar-header-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+
+.sidebar-header-text {
+  flex: 1;
+  min-width: 0;
+}
+
 .sidebar-logo {
   font-family: 'Marcellus', Georgia, serif;
   font-size: 1.25rem;
@@ -45,6 +57,43 @@
   font-weight: 600;
   color: var(--admin-text-muted, #6b7280);
   margin-top: 0.125rem;
+}
+
+/* Theme Toggle Button (Sun/Moon) */
+.theme-toggle-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border: none;
+  background: var(--admin-surface-hover, #f3f4f6);
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s;
+  flex-shrink: 0;
+}
+
+.theme-toggle-btn:hover {
+  background: var(--admin-border, #e5e7eb);
+  transform: scale(1.05);
+}
+
+.theme-icon {
+  width: 18px;
+  height: 18px;
+  color: var(--admin-text-secondary, #4b5563);
+  transition: color 0.2s;
+}
+
+.theme-icon.sun {
+  display: none;
+  color: #f59e0b;
+}
+
+.theme-icon.moon {
+  display: block;
+  color: #6366f1;
 }
 
 .sidebar-nav {
@@ -209,59 +258,13 @@
   }
 }
 
-/* Dark Mode Toggle */
-.dark-mode-toggle {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 0.5rem 1rem;
-  margin: 0.5rem 0.75rem;
-  background: var(--admin-surface-hover, #f3f4f6);
-  border-radius: 6px;
-  cursor: pointer;
-  transition: all 0.2s;
+/* Dark Mode Theme Toggle Button overrides */
+.admin-dark-mode .theme-toggle-btn {
+  background: #374151;
 }
 
-.dark-mode-toggle:hover {
-  background: var(--admin-border, #e5e7eb);
-}
-
-.dark-mode-toggle-label {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  font-size: 0.8125rem;
-  color: var(--admin-text-secondary, #4b5563);
-}
-
-.dark-mode-toggle-switch {
-  position: relative;
-  width: 36px;
-  height: 20px;
-  background: var(--admin-gray-300, #d1d5db);
-  border-radius: 10px;
-  transition: background 0.3s;
-}
-
-.dark-mode-toggle-switch::after {
-  content: '';
-  position: absolute;
-  top: 2px;
-  left: 2px;
-  width: 16px;
-  height: 16px;
-  background: white;
-  border-radius: 50%;
-  transition: transform 0.3s;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.2);
-}
-
-.admin-dark-mode .dark-mode-toggle-switch {
-  background: var(--admin-primary, #60a5fa);
-}
-
-.admin-dark-mode .dark-mode-toggle-switch::after {
-  transform: translateX(16px);
+.admin-dark-mode .theme-toggle-btn:hover {
+  background: #4b5563;
 }
 
 /* Dark mode sidebar overrides */
@@ -324,18 +327,6 @@
 .admin-dark-mode .btn-logout:hover {
   background: #4b5563;
   color: #f9fafb;
-}
-
-.admin-dark-mode .dark-mode-toggle {
-  background: #374151;
-}
-
-.admin-dark-mode .dark-mode-toggle:hover {
-  background: #4b5563;
-}
-
-.admin-dark-mode .dark-mode-toggle-label {
-  color: #e5e7eb;
 }
 
 /* Profile Popup */
