@@ -16,8 +16,53 @@
     .admin-table-container { max-height: 70vh; overflow-y: auto; }
     .admin-table { min-width: 1200px; }
 
-    /* Checkbox column */
-    .checkbox-cell { width: 40px; text-align: center; }
+    /* Checkbox column - aligned with toolbar left edge */
+    .checkbox-cell { width: 48px; text-align: center; padding-left: var(--admin-space-lg, 1rem) !important; }
+    .admin-table thead th.checkbox-cell { padding-left: var(--admin-space-lg, 1rem) !important; }
+
+    /* Column Picker */
+    .column-picker {
+      position: absolute;
+      top: 100%;
+      right: 0;
+      margin-top: 0.25rem;
+      background: var(--admin-surface, white);
+      border: 1px solid var(--admin-border, #e5e7eb);
+      border-radius: var(--admin-radius-md);
+      box-shadow: var(--admin-shadow-lg);
+      z-index: 100;
+      min-width: 200px;
+    }
+    .column-picker-header {
+      padding: 0.75rem 1rem;
+      font-weight: 600;
+      font-size: var(--admin-text-sm);
+      border-bottom: 1px solid var(--admin-border, #e5e7eb);
+      color: var(--admin-text-secondary);
+    }
+    .column-picker-options {
+      padding: 0.5rem 0;
+      max-height: 300px;
+      overflow-y: auto;
+    }
+    .column-picker-option {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.5rem 1rem;
+      cursor: pointer;
+      font-size: var(--admin-text-sm);
+      transition: background 0.15s;
+    }
+    .column-picker-option:hover {
+      background: var(--admin-gray-50, #f9fafb);
+    }
+    .column-picker-option input {
+      margin: 0;
+    }
+
+    /* Toolbar container for dropdown positioning */
+    .admin-toolbar { position: relative; }
 
     /* Column widths */
     .col-tags { max-width: 200px; }
@@ -143,13 +188,30 @@
           <option value="Medium">Medium</option>
           <option value="Low">Low</option>
         </select>
-        <select id="pageSizeSelect" class="admin-select" style="width: 80px;">
-          <option value="20">20</option>
-          <option value="50">50</option>
-          <option value="100">100</option>
-          <option value="999999">All</option>
+        <select id="pageSizeSelect" class="admin-select" style="width: 100px;">
+          <option value="20">Show 20</option>
+          <option value="50">Show 50</option>
+          <option value="100">Show 100</option>
+          <option value="999999">Show All</option>
         </select>
+        <button class="admin-btn admin-btn-secondary" onclick="toggleColumnPicker()" title="Show/hide columns">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="3" y="3" width="7" height="7"></rect>
+            <rect x="14" y="3" width="7" height="7"></rect>
+            <rect x="14" y="14" width="7" height="7"></rect>
+            <rect x="3" y="14" width="7" height="7"></rect>
+          </svg>
+          Columns
+        </button>
         <button class="admin-btn admin-btn-secondary" onclick="handleReset()" title="Reset filters">Reset</button>
+      </div>
+
+      <!-- Column Picker Dropdown -->
+      <div id="columnPicker" class="column-picker" style="display: none;">
+        <div class="column-picker-header">Show/Hide Columns</div>
+        <div class="column-picker-options" id="columnPickerOptions">
+          <!-- Options will be populated by JS -->
+        </div>
       </div>
 
       <!-- Bulk Actions Bar -->
@@ -414,6 +476,78 @@
     let userPermissions = null;
     let currentPage = 1;
 
+    // Column visibility configuration
+    const columnConfig = [
+      { id: 'name', label: 'Name', visible: true, required: true },
+      { id: 'email', label: 'Email', visible: true },
+      { id: 'organization', label: 'Organization', visible: true },
+      { id: 'type', label: 'Type', visible: true },
+      { id: 'priority', label: 'Priority', visible: true },
+      { id: 'country', label: 'Country', visible: true },
+      { id: 'quality', label: 'Quality', visible: true },
+      { id: 'tags', label: 'Tags', visible: true }
+    ];
+
+    // Load saved column preferences
+    const savedColumns = localStorage.getItem('isrs_contacts_columns');
+    if (savedColumns) {
+      try {
+        const saved = JSON.parse(savedColumns);
+        columnConfig.forEach(col => {
+          if (!col.required && saved[col.id] !== undefined) {
+            col.visible = saved[col.id];
+          }
+        });
+      } catch (e) {}
+    }
+
+    function toggleColumnPicker() {
+      const picker = document.getElementById('columnPicker');
+      const isVisible = picker.style.display !== 'none';
+      picker.style.display = isVisible ? 'none' : 'block';
+
+      if (!isVisible) {
+        renderColumnPickerOptions();
+      }
+    }
+
+    function renderColumnPickerOptions() {
+      const container = document.getElementById('columnPickerOptions');
+      container.innerHTML = columnConfig.map(col => `
+        <label class="column-picker-option">
+          <input type="checkbox" ${col.visible ? 'checked' : ''} ${col.required ? 'disabled' : ''}
+                 onchange="toggleColumn('${col.id}', this.checked)">
+          ${col.label}
+        </label>
+      `).join('');
+    }
+
+    function toggleColumn(columnId, visible) {
+      const col = columnConfig.find(c => c.id === columnId);
+      if (col && !col.required) {
+        col.visible = visible;
+        // Save preferences
+        const prefs = {};
+        columnConfig.forEach(c => prefs[c.id] = c.visible);
+        localStorage.setItem('isrs_contacts_columns', JSON.stringify(prefs));
+        displayContacts();
+      }
+    }
+
+    function isColumnVisible(columnId) {
+      const col = columnConfig.find(c => c.id === columnId);
+      return col ? col.visible : true;
+    }
+
+    // Close column picker when clicking outside
+    document.addEventListener('click', (e) => {
+      const picker = document.getElementById('columnPicker');
+      const btn = e.target.closest('[onclick*="toggleColumnPicker"]');
+      if (picker && picker.style.display !== 'none' && !picker.contains(e.target) && !btn) {
+        picker.style.display = 'none';
+      }
+    });
+
     // Helper function to format tags for display
     function formatTags(tags) {
       if (!tags || !Array.isArray(tags) || tags.length === 0) return '-';
@@ -537,14 +671,14 @@
               <th class="checkbox-cell">
                 <input type="checkbox" id="selectAll" class="admin-checkbox" onchange="toggleSelectAll()">
               </th>
-              <th class="sortable" onclick="sortBy('full_name')">Name <span class="sort-indicator">${currentSort.column === 'full_name' ? (currentSort.direction === 'asc' ? '&#9650;' : '&#9660;') : '&#8597;'}</span></th>
-              <th class="sortable col-email" onclick="sortBy('email')">Email <span class="sort-indicator">${currentSort.column === 'email' ? (currentSort.direction === 'asc' ? '&#9650;' : '&#9660;') : '&#8597;'}</span></th>
-              <th class="sortable col-organization" onclick="sortBy('organization_name')">Organization <span class="sort-indicator">${currentSort.column === 'organization_name' ? (currentSort.direction === 'asc' ? '&#9650;' : '&#9660;') : '&#8597;'}</span></th>
-              <th class="sortable col-type" onclick="sortBy('contact_type')">Type <span class="sort-indicator">${currentSort.column === 'contact_type' ? (currentSort.direction === 'asc' ? '&#9650;' : '&#9660;') : '&#8597;'}</span></th>
-              <th class="sortable col-priority" onclick="sortBy('priority_level')">Priority <span class="sort-indicator">${currentSort.column === 'priority_level' ? (currentSort.direction === 'asc' ? '&#9650;' : '&#9660;') : '&#8597;'}</span></th>
-              <th class="sortable col-country" onclick="sortBy('country')">Country <span class="sort-indicator">${currentSort.column === 'country' ? (currentSort.direction === 'asc' ? '&#9650;' : '&#9660;') : '&#8597;'}</span></th>
-              <th class="col-quality" title="Data completeness score">Quality</th>
-              <th class="col-tags">Tags</th>
+              ${isColumnVisible('name') ? `<th class="sortable" onclick="sortBy('full_name')">Name <span class="sort-indicator">${currentSort.column === 'full_name' ? (currentSort.direction === 'asc' ? '&#9650;' : '&#9660;') : '&#8597;'}</span></th>` : ''}
+              ${isColumnVisible('email') ? `<th class="sortable col-email" onclick="sortBy('email')">Email <span class="sort-indicator">${currentSort.column === 'email' ? (currentSort.direction === 'asc' ? '&#9650;' : '&#9660;') : '&#8597;'}</span></th>` : ''}
+              ${isColumnVisible('organization') ? `<th class="sortable col-organization" onclick="sortBy('organization_name')">Organization <span class="sort-indicator">${currentSort.column === 'organization_name' ? (currentSort.direction === 'asc' ? '&#9650;' : '&#9660;') : '&#8597;'}</span></th>` : ''}
+              ${isColumnVisible('type') ? `<th class="sortable col-type" onclick="sortBy('contact_type')">Type <span class="sort-indicator">${currentSort.column === 'contact_type' ? (currentSort.direction === 'asc' ? '&#9650;' : '&#9660;') : '&#8597;'}</span></th>` : ''}
+              ${isColumnVisible('priority') ? `<th class="sortable col-priority" onclick="sortBy('priority_level')">Priority <span class="sort-indicator">${currentSort.column === 'priority_level' ? (currentSort.direction === 'asc' ? '&#9650;' : '&#9660;') : '&#8597;'}</span></th>` : ''}
+              ${isColumnVisible('country') ? `<th class="sortable col-country" onclick="sortBy('country')">Country <span class="sort-indicator">${currentSort.column === 'country' ? (currentSort.direction === 'asc' ? '&#9650;' : '&#9660;') : '&#8597;'}</span></th>` : ''}
+              ${isColumnVisible('quality') ? `<th class="col-quality" title="Data completeness score">Quality</th>` : ''}
+              ${isColumnVisible('tags') ? `<th class="col-tags">Tags</th>` : ''}
             </tr>
           </thead>
           <tbody>
@@ -557,19 +691,19 @@
                          ${selectedContacts.has(contact.email) ? 'checked' : ''}
                          onchange="toggleContact('${contact.email.replace(/'/g, "\\'")}')">
                 </td>
-                <td>${contact.full_name || ((contact.first_name || '') + ' ' + (contact.last_name || '')).trim() || '-'}</td>
-                <td class="col-email">${contact.email ? contact.email.toLowerCase() : '-'}</td>
-                <td class="col-organization">${contact.organization_name ? `<a href="/admin/organizations.html?search=${encodeURIComponent(contact.organization_name)}">${contact.organization_name}</a>` : '-'}</td>
-                <td class="col-type"><span class="admin-badge type-${(contact.contact_type || '').toLowerCase().replace(/[^a-z]/g, '')}">${contact.contact_type || '-'}</span></td>
-                <td class="col-priority"><span class="admin-badge priority-${(contact.priority_level || '').toLowerCase()}">${contact.priority_level || '-'}</span></td>
-                <td class="col-country">${contact.country || '-'}</td>
-                <td class="col-quality">
+                ${isColumnVisible('name') ? `<td>${contact.full_name || ((contact.first_name || '') + ' ' + (contact.last_name || '')).trim() || '-'}</td>` : ''}
+                ${isColumnVisible('email') ? `<td class="col-email">${contact.email ? contact.email.toLowerCase() : '-'}</td>` : ''}
+                ${isColumnVisible('organization') ? `<td class="col-organization">${contact.organization_name ? `<a href="/admin/organizations.html?search=${encodeURIComponent(contact.organization_name)}">${contact.organization_name}</a>` : '-'}</td>` : ''}
+                ${isColumnVisible('type') ? `<td class="col-type"><span class="admin-badge type-${(contact.contact_type || '').toLowerCase().replace(/[^a-z]/g, '')}">${contact.contact_type || '-'}</span></td>` : ''}
+                ${isColumnVisible('priority') ? `<td class="col-priority"><span class="admin-badge priority-${(contact.priority_level || '').toLowerCase()}">${contact.priority_level || '-'}</span></td>` : ''}
+                ${isColumnVisible('country') ? `<td class="col-country">${contact.country || '-'}</td>` : ''}
+                ${isColumnVisible('quality') ? `<td class="col-quality">
                   <div class="quality-score quality-${quality.level}" title="${quality.score}/${quality.maxScore} fields complete">
                     <div class="quality-bar"><div class="quality-fill" style="width: ${quality.percentage}%"></div></div>
                     <span>${quality.percentage}%</span>
                   </div>
-                </td>
-                <td class="col-tags">${formatTags(contact.tags)}</td>
+                </td>` : ''}
+                ${isColumnVisible('tags') ? `<td class="col-tags">${formatTags(contact.tags)}</td>` : ''}
               </tr>
             `}).join('')}
           </tbody>
