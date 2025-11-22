@@ -1589,16 +1589,19 @@
           }
         }
 
-        // Save changes to database if any
+        // Save changes to database if any (use bulk-update endpoint which accepts dynamic fields)
         if (changesCount > 0) {
           try {
-            const saveResponse = await fetch(`${API_BASE_URL}/api/admin/contacts/${contact.id}`, {
-              method: 'PUT',
+            const saveResponse = await fetch(`${API_BASE_URL}/api/admin/contacts/bulk-update`, {
+              method: 'POST',
               headers: {
                 'Content-Type': 'application/json',
                 'Authorization': `Bearer ${sessionToken}`
               },
-              body: JSON.stringify(updates)
+              body: JSON.stringify({
+                contactIds: [contact.id],
+                updates: updates
+              })
             });
             const saveData = await saveResponse.json();
             if (saveResponse.ok && saveData.success) {
@@ -1722,16 +1725,19 @@
                   }
                 }
 
-                // Save to database if we have updates
+                // Save to database if we have updates (use bulk-update endpoint which accepts dynamic fields)
                 if (fieldsUpdated > 0) {
                   try {
-                    const saveResponse = await fetch(`${API_BASE_URL}/api/admin/contacts/${contact.id}`, {
-                      method: 'PUT',
+                    const saveResponse = await fetch(`${API_BASE_URL}/api/admin/contacts/bulk-update`, {
+                      method: 'POST',
                       headers: {
                         'Content-Type': 'application/json',
                         'Authorization': `Bearer ${sessionToken}`
                       },
-                      body: JSON.stringify(updates)
+                      body: JSON.stringify({
+                        contactIds: [contact.id],
+                        updates: updates
+                      })
                     });
                     const saveData = await saveResponse.json();
                     if (saveResponse.ok && saveData.success) {
