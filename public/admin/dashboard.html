@@ -16,8 +16,8 @@
 
     /* Top bar header */
     .dashboard-top-bar {
-      background: white;
-      border-bottom: 1px solid var(--admin-gray-200);
+      background: var(--admin-surface);
+      border-bottom: 1px solid var(--admin-border);
       padding: var(--admin-space-xl) var(--admin-space-2xl);
       display: flex;
       align-items: center;
@@ -31,7 +31,7 @@
     }
 
     .dashboard-top-bar p {
-      color: var(--admin-gray-500);
+      color: var(--admin-text-muted);
       font-size: var(--admin-text-md);
       margin: 0;
     }
@@ -209,7 +209,7 @@
 
     .section-title {
       font-size: var(--admin-text-xl);
-      color: var(--admin-gray-800);
+      color: var(--admin-text);
       display: flex;
       align-items: center;
       gap: var(--admin-space-lg);
@@ -227,10 +227,10 @@
     }
 
     .action-card {
-      background: white;
+      background: var(--admin-surface);
       padding: var(--admin-space-2xl);
       border-radius: var(--admin-radius-lg);
-      border: 2px solid var(--admin-gray-200);
+      border: 2px solid var(--admin-border);
       text-decoration: none;
       transition: all 0.3s;
       display: flex;
@@ -259,19 +259,19 @@
     .action-card-title {
       font-size: var(--admin-text-lg);
       font-weight: 700;
-      color: var(--admin-gray-800);
+      color: var(--admin-text);
     }
 
     .action-card-description {
       font-size: var(--admin-text-sm);
-      color: var(--admin-gray-500);
+      color: var(--admin-text-muted);
       line-height: 1.5;
     }
 
     /* Collapsible Section */
     .collapsible-section {
-      background: white;
-      border: 1px solid var(--admin-gray-200);
+      background: var(--admin-surface);
+      border: 1px solid var(--admin-border);
       border-radius: var(--admin-radius-lg);
       margin-bottom: var(--admin-space-2xl);
       overflow: hidden;
@@ -287,7 +287,7 @@
     }
 
     .collapsible-header:hover {
-      background: var(--admin-gray-50);
+      background: var(--admin-surface-hover);
     }
 
     .collapsible-title {
@@ -296,12 +296,12 @@
       gap: var(--admin-space-lg);
       font-size: var(--admin-text-lg);
       font-weight: 700;
-      color: var(--admin-gray-800);
+      color: var(--admin-text);
     }
 
     .collapsible-toggle {
       font-size: 1.5rem;
-      color: var(--admin-gray-400);
+      color: var(--admin-text-muted);
       transition: transform 0.3s;
     }
 
@@ -331,10 +331,10 @@
     }
 
     .financial-item {
-      background: var(--admin-gray-50);
+      background: var(--admin-surface-hover);
       padding: var(--admin-space-xl);
       border-radius: var(--admin-radius-md);
-      border: 1px solid var(--admin-gray-200);
+      border: 1px solid var(--admin-border);
     }
 
     .financial-header {
@@ -347,24 +347,24 @@
     .financial-label {
       font-size: var(--admin-text-sm);
       font-weight: 600;
-      color: var(--admin-gray-600);
+      color: var(--admin-text-secondary);
     }
 
     .financial-account {
       font-size: var(--admin-text-xs);
-      color: var(--admin-gray-400);
+      color: var(--admin-text-muted);
     }
 
     .financial-amount {
       font-size: var(--admin-text-2xl);
       font-weight: 700;
-      color: var(--admin-gray-800);
+      color: var(--admin-text);
       margin-bottom: var(--admin-space-sm);
     }
 
     .financial-note {
       font-size: var(--admin-text-xs);
-      color: var(--admin-gray-500);
+      color: var(--admin-text-muted);
       line-height: 1.5;
     }
 
@@ -389,8 +389,8 @@
       align-items: center;
       gap: var(--admin-space-lg);
       padding: var(--admin-space-xl) var(--admin-space-2xl);
-      background: var(--admin-gray-50);
-      border: 1px solid var(--admin-gray-200);
+      background: var(--admin-surface-hover);
+      border: 1px solid var(--admin-border);
       border-radius: var(--admin-radius-md);
       text-decoration: none;
       color: var(--admin-primary);
@@ -415,10 +415,10 @@
 
     /* System Status Card */
     .system-status-card {
-      background: white;
+      background: var(--admin-surface);
       padding: var(--admin-space-2xl);
       border-radius: var(--admin-radius-lg);
-      border: 1px solid var(--admin-gray-200);
+      border: 1px solid var(--admin-border);
     }
 
     .system-status-card .card-content {
@@ -440,13 +440,13 @@
     .system-status-card .card-title {
       font-size: var(--admin-text-lg);
       font-weight: 700;
-      color: var(--admin-gray-800);
+      color: var(--admin-text);
       margin-bottom: var(--admin-space-xs);
     }
 
     .system-status-card .card-subtitle {
       font-size: var(--admin-text-sm);
-      color: var(--admin-gray-500);
+      color: var(--admin-text-muted);
     }
 
     /* Loading animation */
@@ -469,7 +469,7 @@
     }
 
     .ai-panel {
-      background: white;
+      background: var(--admin-surface);
       border-left: 2px solid var(--admin-primary);
       box-shadow: -4px 0 20px rgba(0, 0, 0, 0.15);
       height: 100%;
@@ -559,11 +559,11 @@
       width: 100%;
       text-align: left;
       padding: var(--admin-space-lg) var(--admin-space-xl);
-      background: var(--admin-gray-50);
-      border: 1px solid var(--admin-gray-200);
+      background: var(--admin-surface-hover);
+      border: 1px solid var(--admin-border);
       border-radius: var(--admin-radius-md);
       font-size: var(--admin-text-sm);
-      color: var(--admin-gray-700);
+      color: var(--admin-text-secondary);
       cursor: pointer;
       transition: all var(--admin-transition);
       font-family: var(--admin-font-body);
@@ -593,11 +593,11 @@
     }
 
     .ai-loading-state p {
-      color: var(--admin-gray-500);
+      color: var(--admin-text-muted);
     }
 
     .ai-input-area {
-      border-top: 1px solid var(--admin-gray-200);
+      border-top: 1px solid var(--admin-border);
       padding: var(--admin-space-lg);
     }
 
@@ -749,6 +749,8 @@
         flex: none;
       }
     }
+
+    /* Dark mode is now handled automatically via CSS variables in admin-unified.css */
   </style>
 </head>
 <body class="admin-page">

@@ -67,10 +67,51 @@
     /* Column widths */
     .col-tags { max-width: 200px; }
 
-    /* Tags display */
-    .tags-container { display: flex; flex-wrap: wrap; gap: 0.2rem; }
-    .tag { display: inline-block; padding: 0.1rem 0.3rem; background: var(--admin-gray-200); color: var(--admin-gray-700); border-radius: 2px; font-size: var(--admin-text-xs); white-space: nowrap; }
-    .tag-more { background: var(--admin-gray-300); color: var(--admin-gray-600); font-style: italic; }
+    /* Tags display - single line */
+    .tags-container { display: flex; flex-wrap: nowrap; gap: 0.2rem; overflow: hidden; }
+    .tag { display: inline-block; padding: 0.1rem 0.3rem; background: var(--admin-gray-200); color: var(--admin-text-secondary); border-radius: 2px; font-size: var(--admin-text-xs); white-space: nowrap; }
+    .tag-more { background: var(--admin-gray-300); color: var(--admin-text-muted); font-style: italic; }
+
+    /* Single line rows */
+    .admin-table td { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 200px; vertical-align: middle; }
+    .admin-table td.checkbox-cell { max-width: none; overflow: visible; }
+    .admin-table td.col-tags { max-width: 180px; }
+    .admin-table td.col-email { max-width: 220px; }
+    .admin-table td.col-organization { max-width: 180px; }
+    .admin-table td.row-actions-cell { max-width: none; overflow: visible; width: 50px; }
+
+    /* Inline editing */
+    .editable-cell { cursor: pointer; position: relative; }
+    .editable-cell:hover { background: var(--admin-primary-light); }
+    .editable-cell input, .editable-cell select {
+      width: 100%;
+      padding: 0.25rem 0.5rem;
+      border: 2px solid var(--admin-primary);
+      border-radius: var(--admin-radius-sm);
+      font-size: inherit;
+      background: var(--admin-surface);
+      color: var(--admin-text);
+    }
+    .editable-cell input:focus, .editable-cell select:focus {
+      outline: none;
+      box-shadow: 0 0 0 2px var(--admin-primary-light);
+    }
+
+    /* Row actions - AI enhance per row - always visible */
+    .row-actions { display: flex; gap: 0.25rem; justify-content: center; }
+    .row-action-btn {
+      padding: 0.25rem 0.5rem;
+      font-size: var(--admin-text-xs);
+      border: none;
+      border-radius: var(--admin-radius-sm);
+      cursor: pointer;
+      background: var(--admin-gray-100);
+      color: var(--admin-text-secondary);
+      transition: all 0.15s;
+    }
+    .row-action-btn:hover { background: var(--admin-primary); color: white; }
+    .row-action-btn.ai-btn { background: linear-gradient(135deg, #9333ea 0%, #7e22ce 100%); color: white; opacity: 0.9; }
+    .row-action-btn.ai-btn:hover { transform: scale(1.05); opacity: 1; }
 
     /* Type badges - extending admin-badge */
     .type-academic { background: #dbeafe; color: #1e40af; }
@@ -679,24 +720,26 @@
               ${isColumnVisible('country') ? `<th class="sortable col-country" onclick="sortBy('country')">Country <span class="sort-indicator">${currentSort.column === 'country' ? (currentSort.direction === 'asc' ? '&#9650;' : '&#9660;') : '&#8597;'}</span></th>` : ''}
               ${isColumnVisible('quality') ? `<th class="col-quality" title="Data completeness score">Quality</th>` : ''}
               ${isColumnVisible('tags') ? `<th class="col-tags">Tags</th>` : ''}
+              <th style="width: 50px; text-align: center;">AI</th>
             </tr>
           </thead>
           <tbody>
             ${paginatedContacts.map(contact => {
               const quality = calculateDataQuality(contact);
+              const safeEmail = (contact.email || '').replace(/'/g, "\\'").replace(/"/g, '&quot;');
               return `
-              <tr>
+              <tr data-email="${safeEmail}">
                 <td class="checkbox-cell">
                   <input type="checkbox" class="contact-checkbox admin-checkbox" value="${contact.email}"
                          ${selectedContacts.has(contact.email) ? 'checked' : ''}
-                         onchange="toggleContact('${contact.email.replace(/'/g, "\\'")}')">
+                         onchange="toggleContact('${safeEmail}')">
                 </td>
-                ${isColumnVisible('name') ? `<td>${contact.full_name || ((contact.first_name || '') + ' ' + (contact.last_name || '')).trim() || '-'}</td>` : ''}
+                ${isColumnVisible('name') ? `<td class="editable-cell" onclick="editCell(this, '${safeEmail}', 'full_name')" title="Click to edit">${contact.full_name || ((contact.first_name || '') + ' ' + (contact.last_name || '')).trim() || '-'}</td>` : ''}
                 ${isColumnVisible('email') ? `<td class="col-email">${contact.email ? contact.email.toLowerCase() : '-'}</td>` : ''}
-                ${isColumnVisible('organization') ? `<td class="col-organization">${contact.organization_name ? `<a href="/admin/organizations.html?search=${encodeURIComponent(contact.organization_name)}">${contact.organization_name}</a>` : '-'}</td>` : ''}
+                ${isColumnVisible('organization') ? `<td class="col-organization editable-cell" onclick="editCell(this, '${safeEmail}', 'organization_name')" title="Click to edit">${contact.organization_name || '-'}</td>` : ''}
                 ${isColumnVisible('type') ? `<td class="col-type"><span class="admin-badge type-${(contact.contact_type || '').toLowerCase().replace(/[^a-z]/g, '')}">${contact.contact_type || '-'}</span></td>` : ''}
                 ${isColumnVisible('priority') ? `<td class="col-priority"><span class="admin-badge priority-${(contact.priority_level || '').toLowerCase()}">${contact.priority_level || '-'}</span></td>` : ''}
-                ${isColumnVisible('country') ? `<td class="col-country">${contact.country || '-'}</td>` : ''}
+                ${isColumnVisible('country') ? `<td class="col-country editable-cell" onclick="editCell(this, '${safeEmail}', 'country')" title="Click to edit">${contact.country || '-'}</td>` : ''}
                 ${isColumnVisible('quality') ? `<td class="col-quality">
                   <div class="quality-score quality-${quality.level}" title="${quality.score}/${quality.maxScore} fields complete">
                     <div class="quality-bar"><div class="quality-fill" style="width: ${quality.percentage}%"></div></div>
@@ -704,6 +747,11 @@
                   </div>
                 </td>` : ''}
                 ${isColumnVisible('tags') ? `<td class="col-tags">${formatTags(contact.tags)}</td>` : ''}
+                <td class="row-actions-cell">
+                  <div class="row-actions">
+                    <button class="row-action-btn ai-btn" onclick="enhanceSingleContact('${safeEmail}')" title="AI Enhance">✨</button>
+                  </div>
+                </td>
               </tr>
             `}).join('')}
           </tbody>
@@ -1335,6 +1383,137 @@
     // Merge modal functions
     function closeMergeModal() {
       document.getElementById('mergeModal').classList.remove('active');
+    }
+
+    // Inline cell editing
+    function editCell(cell, email, field) {
+      // Prevent double editing
+      if (cell.querySelector('input, select')) return;
+
+      const currentValue = cell.textContent.trim() === '-' ? '' : cell.textContent.trim();
+      const contact = allContacts.find(c => c.email === email);
+      if (!contact) return;
+
+      // Store original value
+      cell.setAttribute('data-original', currentValue);
+
+      // Create input element
+      const input = document.createElement('input');
+      input.type = 'text';
+      input.value = currentValue;
+      input.style.width = '100%';
+      input.style.padding = '4px 8px';
+      input.style.border = '2px solid var(--admin-primary)';
+      input.style.borderRadius = '4px';
+      input.style.fontSize = 'inherit';
+
+      // Clear cell and add input
+      cell.textContent = '';
+      cell.appendChild(input);
+      input.focus();
+      input.select();
+
+      // Handle save on blur or enter
+      const saveEdit = async () => {
+        const newValue = input.value.trim();
+        const originalValue = cell.getAttribute('data-original');
+
+        // If no change, restore original
+        if (newValue === originalValue) {
+          cell.textContent = originalValue || '-';
+          return;
+        }
+
+        // Show saving state
+        cell.innerHTML = '<span style="color: var(--admin-primary);">Saving...</span>';
+
+        try {
+          const sessionToken = localStorage.getItem('isrs_session');
+          const response = await fetch(`${API_BASE_URL}/api/admin/contacts/${contact.id}`, {
+            method: 'PUT',
+            headers: {
+              'Authorization': `Bearer ${sessionToken}`,
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ [field]: newValue })
+          });
+
+          const data = await response.json();
+
+          if (response.ok && data.success) {
+            // Update local data
+            contact[field] = newValue;
+            cell.textContent = newValue || '-';
+            showToast('Field updated successfully', 'success');
+          } else {
+            cell.textContent = originalValue || '-';
+            showToast('Failed to update: ' + (data.error || 'Unknown error'), 'error');
+          }
+        } catch (error) {
+          cell.textContent = originalValue || '-';
+          showToast('Error updating field: ' + error.message, 'error');
+        }
+      };
+
+      input.addEventListener('blur', saveEdit);
+      input.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') {
+          e.preventDefault();
+          input.blur();
+        }
+        if (e.key === 'Escape') {
+          cell.textContent = cell.getAttribute('data-original') || '-';
+        }
+      });
+    }
+
+    // Single contact AI enhance
+    async function enhanceSingleContact(email) {
+      const contact = allContacts.find(c => c.email === email);
+      if (!contact) {
+        showToast('Contact not found', 'error');
+        return;
+      }
+
+      // Show loading toast
+      showToast(`Enhancing ${contact.full_name || email} with AI...`, 'info');
+
+      try {
+        const sessionToken = localStorage.getItem('isrs_session');
+        const response = await fetch(`${API_BASE_URL}/api/claude/enhance-contact`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${sessionToken}`
+          },
+          body: JSON.stringify({ contact_id: contact.id, useWebSearch: true })
+        });
+
+        const data = await response.json();
+
+        if (!response.ok || !data.success) {
+          throw new Error(data.error || 'Failed to enhance contact');
+        }
+
+        // Update local contact data with enhanced fields
+        if (data.enhanced) {
+          Object.assign(contact, data.enhanced);
+        }
+
+        // Refresh display
+        displayContacts();
+
+        // Show success with summary of what was found
+        const changesCount = data.fieldsUpdated || Object.keys(data.enhanced || {}).length;
+        if (changesCount > 0) {
+          showToast(`Enhanced ${contact.full_name || email}: ${changesCount} fields updated`, 'success');
+        } else {
+          showToast(`No additional data found for ${contact.full_name || email}`, 'info');
+        }
+
+      } catch (error) {
+        showToast('AI enhancement failed: ' + error.message, 'error');
+      }
     }
   </script>
 
