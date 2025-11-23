@@ -133,6 +133,95 @@
     .do-list li, .dont-list li {
       margin-bottom: 0.4rem;
     }
+    /* Stats Grid */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 1.5rem;
+      margin-top: 1.5rem;
+    }
+    .stat-card {
+      background: var(--card-bg, #f8f9fa);
+      border: 1px solid var(--border-color, #e1e1e1);
+      border-radius: 8px;
+      padding: 1.5rem;
+      text-align: center;
+    }
+    .stat-number {
+      font-size: 2.5rem;
+      font-weight: 700;
+      color: var(--primary-blue, #2e5a8a);
+      line-height: 1;
+      margin-bottom: 0.5rem;
+    }
+    .stat-label {
+      font-size: 0.85rem;
+      color: #666;
+      line-height: 1.3;
+    }
+    /* Testimonials */
+    .testimonials {
+      display: grid;
+      gap: 1.5rem;
+      margin-top: 1.5rem;
+    }
+    .testimonial {
+      background: var(--card-bg, #f8f9fa);
+      border-left: 4px solid var(--primary-blue, #2e5a8a);
+      padding: 1.5rem;
+      margin: 0;
+      border-radius: 0 8px 8px 0;
+    }
+    .testimonial p {
+      font-size: 1.05rem;
+      font-style: italic;
+      line-height: 1.6;
+      margin-bottom: 1rem;
+      color: #333;
+    }
+    .testimonial cite {
+      font-style: normal;
+      font-size: 0.9rem;
+      color: #666;
+    }
+    .testimonial cite strong {
+      color: var(--primary-blue, #2e5a8a);
+      display: block;
+      margin-bottom: 0.25rem;
+    }
+    /* Leadership */
+    .leadership-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 1.5rem;
+      margin-top: 1.5rem;
+    }
+    .leader-card {
+      background: var(--card-bg, #f8f9fa);
+      border: 1px solid var(--border-color, #e1e1e1);
+      border-radius: 8px;
+      padding: 1.5rem;
+    }
+    .leader-card h4 {
+      font-size: 1.1rem;
+      margin-bottom: 0.25rem;
+      color: var(--primary-blue, #2e5a8a);
+    }
+    .leader-title {
+      font-weight: 600;
+      font-size: 0.9rem;
+      margin-bottom: 0.25rem;
+    }
+    .leader-org {
+      font-size: 0.85rem;
+      color: #666;
+      margin-bottom: 0.75rem;
+    }
+    .leader-bio {
+      font-size: 0.9rem;
+      line-height: 1.5;
+      color: #444;
+    }
     .fact-box {
       background: linear-gradient(135deg, var(--primary-blue, #2e5a8a), var(--accent-teal, #546d7d));
       color: white;
@@ -372,6 +461,77 @@
       </div>
     </section>
 
+    <!-- Impact Stats -->
+    <section class="press-kit-section">
+      <h2>Impact by the Numbers</h2>
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-number">50</div>
+          <div class="stat-label">Gallons of water filtered daily by a single oyster</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-number">85%</div>
+          <div class="stat-label">Of global shellfish populations lost</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-number">300+</div>
+          <div class="stat-label">Practitioners at each ICSR conference</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-number">20+</div>
+          <div class="stat-label">Countries represented in our network</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-number">1996</div>
+          <div class="stat-label">Year ICSR was founded</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-number">6</div>
+          <div class="stat-label">Continents with active restoration projects</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Testimonials -->
+    <section class="press-kit-section">
+      <h2>What Leaders Are Saying</h2>
+      <div class="testimonials">
+        <blockquote class="testimonial">
+          <p>"ISRS is the community that gets the work done. Restoration needs input from a wide diversity of backgrounds and ICSR is where the people who want to work together to actually restore shellfish habitats meet. There is real excitement in building that momentum."</p>
+          <cite>
+            <strong>Boze Hancock, Ph.D.</strong><br>
+            Senior Marine Restoration Scientist, The Nature Conservancy Global Oceans Team
+          </cite>
+        </blockquote>
+        <blockquote class="testimonial">
+          <p>"The ICSR is the single best place to exchange information on shellfish restoration. The global community created by ISRS drives innovation and advances the science of restoring shellfish systems that result in safe food and cleaner water at a global scale."</p>
+          <cite>
+            <strong>Dr. Mark Risse</strong><br>
+            Director, UGA Marine Extension and Georgia Sea Grant
+          </cite>
+        </blockquote>
+      </div>
+    </section>
+
+    <!-- Leadership -->
+    <section class="press-kit-section">
+      <h2>Leadership</h2>
+      <div class="leadership-grid">
+        <div class="leader-card">
+          <h4>Dorothy L. Leonard</h4>
+          <p class="leader-title">Board Chair</p>
+          <p class="leader-org">Ocean Equities, LLC</p>
+          <p class="leader-bio">Internationally recognized shellfish aquaculture and restoration expert with 20 years at the National Ocean Service and National Marine Fisheries Service. Former Maryland Director of Fisheries where she developed the Oyster Restoration Program for Chesapeake Bay. Co-author of "Best Management Practices for Shellfish Restoration" and chair of ICSR for 28 years.</p>
+        </div>
+        <div class="leader-card">
+          <h4>Aaron Kornbluth</h4>
+          <p class="leader-title">Interim Executive Director</p>
+          <p class="leader-org">akorn environmental</p>
+          <p class="leader-bio">Environmental consultant and technologist specializing in marine conservation data systems. Provides strategic and operational support for ISRS programs and manages the organization's digital infrastructure and communications.</p>
+        </div>
+      </div>
+    </section>
+
     <!-- Media Contact -->
     <section class="press-kit-section">
       <h2>Media Contact</h2>
@@ -380,8 +540,9 @@
       <div class="contact-card">
         <h3>Media Inquiries</h3>
         <p>Aaron Kornbluth</p>
-        <p>Executive Director</p>
+        <p>Interim Executive Director</p>
         <a href="mailto:aaron.kornbluth@gmail.com">aaron.kornbluth@gmail.com</a>
+        <p style="margin-top: 0.5rem; font-size: 0.9rem;">(603) 953-4040</p>
       </div>
 
       <p style="text-align: center; color: #666; font-size: 0.9rem;">We aim to respond to all media inquiries within 24-48 hours.</p>

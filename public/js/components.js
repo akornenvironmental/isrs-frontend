@@ -1596,6 +1596,7 @@ function loadHeader() {
             <li role="none"><a href="/icsr2026.html" role="menuitem">ICSR2026</a></li>
           </ul>
         </li>
+        <li><a href="/support.html">Support</a></li>
         <li><a href="https://www.zeffy.com/en-US/donation-form/isrs-building-tomorrows-ocean-leaders" target="_blank" rel="noopener noreferrer" class="btn-donate">${t('donate')}</a></li>
       </ul>
       <div class="header-controls">
@@ -1700,6 +1701,7 @@ function loadFooter() {
         <div class="footer-section">
           <h4>${t('connect')}</h4>
           <ul>
+            <li><a href="/support.html">Support ISRS</a></li>
             <li><a href="https://www.zeffy.com/en-US/donation-form/isrs-building-tomorrows-ocean-leaders" target="_blank" rel="noopener noreferrer">${t('donate')}</a></li>
             <li><a href="/press-kit.html">Press Kit</a></li>
             <li><a href="/admin/" target="_blank" rel="noopener noreferrer">${t('adminPortal')}</a></li>
