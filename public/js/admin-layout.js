@@ -116,6 +116,10 @@ function loadAdminLayout(currentPage) {
             <span class="nav-icon">📖</span>
             <span>User Workflows</span>
           </a>
+          <a href="/admin/press-kit.html" class="nav-item ${currentPage === 'press-kit' ? 'active' : ''}">
+            <span class="nav-icon">📰</span>
+            <span>Press Kit</span>
+          </a>
         </div>
       </nav>
 
