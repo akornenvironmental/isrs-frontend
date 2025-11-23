@@ -160,6 +160,12 @@
   align-items: center;
   gap: 0.75rem;
   margin-bottom: 1rem;
+  /* Always have padding to prevent jump on hover */
+  padding: 0.5rem;
+  margin-left: -0.5rem;
+  margin-right: -0.5rem;
+  border-radius: 6px;
+  transition: background-color 0.15s ease;
 }
 
 .user-avatar {
@@ -507,9 +513,6 @@
 /* User profile hover effect */
 .user-profile:hover {
   background: var(--admin-surface, white);
-  border-radius: 6px;
-  margin: -0.5rem;
-  padding: 0.5rem;
 }
 
 .user-profile:hover .user-email {
