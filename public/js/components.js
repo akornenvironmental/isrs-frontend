@@ -1701,6 +1701,7 @@ function loadFooter() {
           <h4>${t('connect')}</h4>
           <ul>
             <li><a href="https://www.zeffy.com/en-US/donation-form/isrs-building-tomorrows-ocean-leaders" target="_blank" rel="noopener noreferrer">${t('donate')}</a></li>
+            <li><a href="/press-kit.html">Press Kit</a></li>
             <li><a href="/admin/" target="_blank" rel="noopener noreferrer">${t('adminPortal')}</a></li>
           </ul>
         </div>
