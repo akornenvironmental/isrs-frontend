@@ -35,8 +35,9 @@
     }
     .logo-card img {
       max-width: 180px;
-      max-height: 80px;
+      max-height: 100px;
       margin-bottom: 1rem;
+      object-fit: contain;
     }
     .logo-card.dark-bg {
       background: #2c3e50;
@@ -44,6 +45,15 @@
     .logo-card h4 {
       font-size: 0.9rem;
       margin-bottom: 0.5rem;
+    }
+    .logo-card .logo-description {
+      font-size: 0.8rem;
+      color: #666;
+      margin-bottom: 0.75rem;
+      line-height: 1.4;
+    }
+    .logo-card.dark-bg .logo-description {
+      color: #ccc;
     }
     .logo-card .download-links {
       display: flex;
@@ -61,6 +71,67 @@
     }
     .logo-card .download-links a:hover {
       background: var(--secondary-blue, #4a7ab5);
+    }
+    .usage-guidelines {
+      background: var(--card-bg, #f8f9fa);
+      border: 1px solid var(--border-color, #e1e1e1);
+      border-radius: 8px;
+      padding: 1.5rem;
+      margin-top: 2rem;
+    }
+    .usage-guidelines h3 {
+      font-size: 1.1rem;
+      margin-bottom: 1rem;
+      color: var(--primary-blue, #2e5a8a);
+    }
+    .usage-guidelines ul {
+      margin: 0;
+      padding-left: 1.5rem;
+    }
+    .usage-guidelines li {
+      margin-bottom: 0.5rem;
+      font-size: 0.9rem;
+    }
+    .do-dont {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.5rem;
+      margin-top: 1rem;
+    }
+    @media (max-width: 600px) {
+      .do-dont {
+        grid-template-columns: 1fr;
+      }
+    }
+    .do-list, .dont-list {
+      padding: 1rem;
+      border-radius: 8px;
+    }
+    .do-list {
+      background: #e8f5e9;
+      border: 1px solid #4caf50;
+    }
+    .dont-list {
+      background: #ffebee;
+      border: 1px solid #f44336;
+    }
+    .do-list h4, .dont-list h4 {
+      font-size: 0.9rem;
+      margin-bottom: 0.75rem;
+    }
+    .do-list h4 {
+      color: #2e7d32;
+    }
+    .dont-list h4 {
+      color: #c62828;
+    }
+    .do-list ul, .dont-list ul {
+      margin: 0;
+      padding-left: 1.25rem;
+      font-size: 0.85rem;
+    }
+    .do-list li, .dont-list li {
+      margin-bottom: 0.4rem;
     }
     .fact-box {
       background: linear-gradient(135deg, var(--primary-blue, #2e5a8a), var(--accent-teal, #546d7d));
@@ -173,37 +244,86 @@
     <!-- Logo Downloads -->
     <section class="press-kit-section">
       <h2>Logo & Brand Assets</h2>
-      <p>Please use these official logos when referencing ISRS in publications, presentations, or media coverage. Do not alter, distort, or recolor the logos.</p>
+      <p>Download official ISRS and ICSR logos for use in publications, presentations, websites, and media coverage. All logos are provided in SVG format for high-quality reproduction at any size.</p>
 
+      <h3 style="margin-top: 2rem; margin-bottom: 1rem;">ISRS Logos</h3>
       <div class="logo-grid">
         <div class="logo-card">
-          <img src="/images/logo-wide-blue.png" alt="ISRS Logo - Blue">
-          <h4>Primary Logo (Blue)</h4>
-          <p style="font-size: 0.8rem; color: #666;">For light backgrounds</p>
+          <img src="/images/press-kit/logo-isrs-wide-blue.svg" alt="ISRS Wide Logo - Blue">
+          <h4>ISRS Wide Logo (Blue)</h4>
+          <p class="logo-description">Primary horizontal logo for light backgrounds. Best for headers, letterheads, and wide format applications.</p>
           <div class="download-links">
-            <a href="/images/logo-wide-blue.png" download>PNG</a>
-            <a href="/images/logo-wide-blue.svg" download>SVG</a>
+            <a href="/images/press-kit/logo-isrs-wide-blue.svg" download="ISRS-Logo-Wide-Blue.svg">SVG</a>
           </div>
         </div>
 
         <div class="logo-card dark-bg">
-          <img src="/images/logo-wide-white.svg" alt="ISRS Logo - White">
-          <h4 style="color: white;">Primary Logo (White)</h4>
-          <p style="font-size: 0.8rem; color: #ccc;">For dark backgrounds</p>
+          <img src="/images/press-kit/logo-isrs-wide-white.svg" alt="ISRS Wide Logo - White">
+          <h4 style="color: white;">ISRS Wide Logo (White)</h4>
+          <p class="logo-description">Primary horizontal logo for dark backgrounds. Use on photos, colored backgrounds, or dark themes.</p>
           <div class="download-links">
-            <a href="/images/logo-wide-white.png" download>PNG</a>
-            <a href="/images/logo-wide-white.svg" download>SVG</a>
+            <a href="/images/press-kit/logo-isrs-wide-white.svg" download="ISRS-Logo-Wide-White.svg">SVG</a>
           </div>
         </div>
 
         <div class="logo-card">
-          <img src="/images/favicon.png" alt="ISRS Icon" style="max-width: 60px;">
-          <h4>Icon Mark</h4>
-          <p style="font-size: 0.8rem; color: #666;">For small spaces</p>
+          <img src="/images/press-kit/logo-isrs-round-blue.svg" alt="ISRS Round Logo" style="max-width: 100px;">
+          <h4>ISRS Round Logo</h4>
+          <p class="logo-description">Circular badge format. Ideal for social media profiles, app icons, and square format applications.</p>
           <div class="download-links">
-            <a href="/images/favicon.png" download>PNG</a>
+            <a href="/images/press-kit/logo-isrs-round-blue.svg" download="ISRS-Logo-Round-Blue.svg">SVG</a>
           </div>
         </div>
+
+        <div class="logo-card">
+          <img src="/images/press-kit/favicon-isrs.svg" alt="ISRS Favicon" style="max-width: 60px;">
+          <h4>ISRS Icon / Favicon</h4>
+          <p class="logo-description">Simplified mark for very small applications. Use for browser favicons or tiny UI elements.</p>
+          <div class="download-links">
+            <a href="/images/press-kit/favicon-isrs.svg" download="ISRS-Favicon.svg">SVG</a>
+          </div>
+        </div>
+      </div>
+
+      <h3 style="margin-top: 2rem; margin-bottom: 1rem;">ICSR Conference Logo</h3>
+      <div class="logo-grid">
+        <div class="logo-card">
+          <img src="/images/press-kit/logo-icsr-inset.svg" alt="ICSR Conference Logo" style="max-width: 120px;">
+          <h4>ICSR Conference Logo</h4>
+          <p class="logo-description">Official logo for the International Conference on Shellfish Restoration. Use when promoting or referencing ICSR events.</p>
+          <div class="download-links">
+            <a href="/images/press-kit/logo-icsr-inset.svg" download="ICSR-Logo.svg">SVG</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="usage-guidelines">
+        <h3>Logo Usage Guidelines</h3>
+        <div class="do-dont">
+          <div class="do-list">
+            <h4>Do</h4>
+            <ul>
+              <li>Use the blue logo on light or white backgrounds</li>
+              <li>Use the white logo on dark or colored backgrounds</li>
+              <li>Maintain adequate clear space around the logo</li>
+              <li>Scale the logo proportionally</li>
+              <li>Use the SVG format for print and large displays</li>
+              <li>Link to shellfishrestoration.org when possible</li>
+            </ul>
+          </div>
+          <div class="dont-list">
+            <h4>Don't</h4>
+            <ul>
+              <li>Alter the logo colors</li>
+              <li>Stretch or distort the proportions</li>
+              <li>Add effects (shadows, outlines, gradients)</li>
+              <li>Place on busy or low-contrast backgrounds</li>
+              <li>Recreate or modify the logo design</li>
+              <li>Use outdated versions of the logo</li>
+            </ul>
+          </div>
+        </div>
+        <p style="margin-top: 1rem; font-size: 0.85rem; color: #666;">For questions about logo usage or to request additional formats, please contact <a href="mailto:aaron.kornbluth@gmail.com">aaron.kornbluth@gmail.com</a>.</p>
       </div>
     </section>
 
