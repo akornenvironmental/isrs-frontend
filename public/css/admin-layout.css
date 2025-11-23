@@ -150,7 +150,7 @@
 
 /* Sidebar Footer */
 .sidebar-footer {
-  padding: 1.25rem;
+  padding: 0.75rem 1rem;
   border-top: 1px solid var(--admin-border, #e5e7eb);
   background: var(--admin-surface-hover, #f9fafb);
 }
@@ -158,19 +158,19 @@
 .user-profile {
   display: flex;
   align-items: center;
-  gap: 0.75rem;
-  margin-bottom: 1rem;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
   /* Always have padding to prevent jump on hover */
-  padding: 0.5rem;
-  margin-left: -0.5rem;
-  margin-right: -0.5rem;
+  padding: 0.35rem;
+  margin-left: -0.35rem;
+  margin-right: -0.35rem;
   border-radius: 6px;
   transition: background-color 0.15s ease;
 }
 
 .user-avatar {
-  width: 2.5rem;
-  height: 2.5rem;
+  width: 2rem;
+  height: 2rem;
   border-radius: 50%;
   background: linear-gradient(135deg, var(--primary-blue, #2E5A8A), var(--accent-teal, #5BC0BE));
   color: white;
@@ -226,6 +226,7 @@
   margin-left: 260px;
   flex: 1;
   min-height: 100vh;
+  padding: 2rem;
 }
 
 /* Responsive */
