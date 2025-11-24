@@ -21,18 +21,20 @@
       -webkit-box-orient: vertical;
     }
 
-    /* Column Picker */
+    /* Column Picker - fixed to viewport to prevent cutoff */
     .column-picker {
-      position: absolute;
-      top: 100%;
-      right: 0;
+      position: fixed;
+      top: auto;
+      right: auto;
       margin-top: 0.25rem;
       background: var(--admin-surface, white);
       border: 1px solid var(--admin-border, #e5e7eb);
       border-radius: var(--admin-radius-md);
       box-shadow: var(--admin-shadow-lg);
-      z-index: 100;
-      min-width: 200px;
+      z-index: 1000;
+      min-width: 220px;
+      max-height: 70vh;
+      overflow-y: auto;
     }
     .column-picker-header {
       padding: 0.75rem 1rem;
@@ -277,7 +279,7 @@
           <option value="999999" selected>Show All</option>
         </select>
         <div style="position: relative;">
-          <button class="admin-btn admin-btn-secondary" onclick="toggleColumnPicker()" title="Show/hide columns">
+          <button class="admin-btn admin-btn-secondary" onclick="toggleColumnPicker(event)" title="Show/hide columns">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <rect x="3" y="3" width="7" height="7"></rect>
               <rect x="14" y="3" width="7" height="7"></rect>
@@ -435,12 +437,21 @@
       } catch (e) {}
     }
 
-    function toggleColumnPicker() {
+    function toggleColumnPicker(event) {
       const picker = document.getElementById('columnPicker');
       const isVisible = picker.style.display !== 'none';
-      picker.style.display = isVisible ? 'none' : 'block';
 
-      if (!isVisible) {
+      if (isVisible) {
+        picker.style.display = 'none';
+      } else {
+        // Position the dropdown relative to the button
+        const btn = event ? event.target.closest('button') : document.querySelector('[onclick*="toggleColumnPicker"]');
+        if (btn) {
+          const rect = btn.getBoundingClientRect();
+          picker.style.top = (rect.bottom + 4) + 'px';
+          picker.style.right = (window.innerWidth - rect.right) + 'px';
+        }
+        picker.style.display = 'block';
         renderColumnPickerOptions();
       }
     }
