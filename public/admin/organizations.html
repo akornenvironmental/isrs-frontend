@@ -73,25 +73,18 @@
     .quality-medium .quality-fill { background: var(--admin-warning); }
     .quality-low .quality-fill { background: var(--admin-danger); }
 
-    /* AI Modal styles - kept from admin-styles.css */
-    .ai-query-btn {
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-      color: white;
-      padding: 0.5rem 1rem;
-      border: none;
-      border-radius: 6px;
-      cursor: pointer;
-      font-weight: 500;
-      font-size: var(--admin-text-sm);
-      transition: all 0.3s;
-      display: inline-flex;
-      align-items: center;
-      gap: 0.5rem;
+    /* AI Button style - matches Contacts page */
+    .admin-btn-ai {
+      background: linear-gradient(135deg, #9333ea 0%, #7e22ce 100%) !important;
+      color: white !important;
+      border: none !important;
     }
-    .ai-query-btn:hover {
-      transform: translateY(-1px);
-      box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+    .admin-btn-ai:hover {
+      background: linear-gradient(135deg, #7e22ce 0%, #6b21a8 100%) !important;
+      box-shadow: 0 2px 4px rgba(147, 51, 234, 0.3);
     }
+
+    /* AI Modal styles */
     .ai-modal {
       display: none;
       position: fixed;
@@ -250,7 +243,14 @@
         <div class="admin-page-header-actions">
           <button class="admin-btn admin-btn-success" onclick="showQuickAddOrgModal()">+ Quick Add</button>
           <button class="admin-btn admin-btn-secondary" onclick="exportOrganizations()">Export CSV</button>
-          <button class="ai-query-btn" onclick="showAIModal()" id="aiQueryBtn" style="display:none;">AI Query</button>
+          <button class="admin-btn admin-btn-ai" onclick="showAIModal()" id="aiQueryBtn" style="display:none;">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M12 2L2 7l10 5 10-5-10-5z"></path>
+              <path d="M2 17l10 5 10-5"></path>
+              <path d="M2 12l10 5 10-5"></path>
+            </svg>
+            AI Query
+          </button>
         </div>
       </div>
 
@@ -276,24 +276,25 @@
           <option value="100">Show 100</option>
           <option value="999999" selected>Show All</option>
         </select>
-        <button class="admin-btn admin-btn-secondary" onclick="toggleColumnPicker()" title="Show/hide columns">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <rect x="3" y="3" width="7" height="7"></rect>
-            <rect x="14" y="3" width="7" height="7"></rect>
-            <rect x="14" y="14" width="7" height="7"></rect>
-            <rect x="3" y="14" width="7" height="7"></rect>
-          </svg>
-          Columns
-        </button>
-        <button class="admin-btn admin-btn-secondary" onclick="resetFilters()">Reset</button>
-      </div>
-
-      <!-- Column Picker Dropdown -->
-      <div id="columnPicker" class="column-picker" style="display: none;">
-        <div class="column-picker-header">Show/Hide Columns</div>
-        <div class="column-picker-options" id="columnPickerOptions">
-          <!-- Options will be populated by JS -->
+        <div style="position: relative;">
+          <button class="admin-btn admin-btn-secondary" onclick="toggleColumnPicker()" title="Show/hide columns">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <rect x="3" y="3" width="7" height="7"></rect>
+              <rect x="14" y="3" width="7" height="7"></rect>
+              <rect x="14" y="14" width="7" height="7"></rect>
+              <rect x="3" y="14" width="7" height="7"></rect>
+            </svg>
+            Columns
+          </button>
+          <!-- Column Picker Dropdown -->
+          <div id="columnPicker" class="column-picker" style="display: none;">
+            <div class="column-picker-header">Show/Hide Columns</div>
+            <div class="column-picker-options" id="columnPickerOptions">
+              <!-- Options will be populated by JS -->
+            </div>
+          </div>
         </div>
+        <button class="admin-btn admin-btn-secondary" onclick="resetFilters()">Reset</button>
       </div>
 
       <div class="admin-table-wrapper">
