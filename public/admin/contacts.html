@@ -263,7 +263,7 @@
         </select>
         <select id="pageSizeSelect" class="admin-select" style="width: 100px;">
           <option value="20">Show 20</option>
-          <option value="50">Show 50</option>
+          <option value="50" selected>Show 50</option>
           <option value="100">Show 100</option>
           <option value="999999">Show All</option>
         </select>
@@ -752,7 +752,7 @@
       html += '</div>';
       return html;
     }
-    let pageSize = 20;
+    let pageSize = 50;
     let paginatedContacts = [];
 
     // Initialize
@@ -948,6 +948,21 @@
       `;
       document.getElementById('tableContent').innerHTML = html;
       updateBulkActionsBar();
+      updateSelectAllCheckbox();
+    }
+
+    // Update the header checkbox state based on current page selection
+    function updateSelectAllCheckbox() {
+      const selectAllCheckbox = document.getElementById('selectAll');
+      if (selectAllCheckbox && paginatedContacts.length > 0) {
+        // Check if all contacts on current page are selected
+        const allPageSelected = paginatedContacts.every(c => c.email && selectedContacts.has(c.email));
+        // Check if some (but not all) contacts on current page are selected
+        const somePageSelected = paginatedContacts.some(c => c.email && selectedContacts.has(c.email));
+
+        selectAllCheckbox.checked = allPageSelected;
+        selectAllCheckbox.indeterminate = somePageSelected && !allPageSelected;
+      }
     }
 
     // Helper function to format expertise array
@@ -1095,12 +1110,21 @@
     }
 
     function toggleSelectAll() {
-      const checked = document.getElementById('selectAll').checked;
+      const checkbox = document.getElementById('selectAll');
+      const checked = checkbox.checked;
+
+      // FIXED v2: Only select/deselect contacts on CURRENT PAGE
       if (checked) {
-        filteredContacts.forEach(c => selectedContacts.add(c.email));
+        paginatedContacts.forEach(c => {
+          if (c.email) selectedContacts.add(c.email);
+        });
       } else {
-        selectedContacts.clear();
+        paginatedContacts.forEach(c => {
+          if (c.email) selectedContacts.delete(c.email);
+        });
       }
+
+      updateBulkActionsBar();
       displayContacts();
     }
 
@@ -1136,7 +1160,6 @@
 
     function clearSelection() {
       selectedContacts.clear();
-      document.getElementById('selectAll').checked = false;
       displayContacts();
     }
 
@@ -1152,16 +1175,15 @@
       document.getElementById('searchBox').value = '';
       document.getElementById('countryFilter').value = '';
       document.getElementById('typeFilter').value = '';
-      document.getElementById('pageSizeSelect').value = '20';
-      pageSize = 20;
+      document.getElementById('pageSizeSelect').value = '50';
+      pageSize = 50;
       currentPage = 1;
       currentSort = { column: null, direction: 'asc' };
       selectedContacts.clear();
       filteredContacts = [...allContacts];
       updatePagination();
-      displayContacts();
       updateStats();
-      document.getElementById('selectAll').checked = false;
+      // updateSelectAllCheckbox is called by displayContacts (via updatePagination)
     }
 
     // Export menu toggle

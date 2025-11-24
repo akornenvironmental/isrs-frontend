@@ -107,6 +107,10 @@ function loadAdminLayout(currentPage) {
 
         <div class="nav-section">
           <div class="nav-section-title">Governance</div>
+          <a href="/admin/board-documents.html" class="nav-item ${currentPage === 'board-documents' ? 'active' : ''}">
+            <span class="nav-icon">📁</span>
+            <span>Board Documents</span>
+          </a>
           <a href="/admin/votes.html" class="nav-item ${currentPage === 'votes' ? 'active' : ''}">
             <span class="nav-icon">🗳️</span>
             <span>Board Votes</span>
@@ -119,6 +123,10 @@ function loadAdminLayout(currentPage) {
 
         <div class="nav-section">
           <div class="nav-section-title">System</div>
+          <a href="/admin/feedback.html" class="nav-item ${currentPage === 'feedback' ? 'active' : ''}">
+            <span class="nav-icon">💬</span>
+            <span>User Feedback</span>
+          </a>
           <a href="/admin/import.html" class="nav-item ${currentPage === 'import' ? 'active' : ''}">
             <span class="nav-icon">📥</span>
             <span>Import Data</span>
@@ -229,10 +237,16 @@ function loadAdminUserInfo() {
     if (userData) {
       const user = JSON.parse(userData);
 
-      // Update email
+      // Update name (show first name, or email if no name available)
       const emailEl = document.getElementById('adminUserEmail');
-      if (emailEl && user.email) {
-        emailEl.textContent = user.email;
+      if (emailEl) {
+        if (user.first_name) {
+          emailEl.textContent = user.first_name;
+        } else if (user.firstName) {
+          emailEl.textContent = user.firstName;
+        } else if (user.email) {
+          emailEl.textContent = user.email;
+        }
       }
 
       // Update role
@@ -241,10 +255,16 @@ function loadAdminUserInfo() {
         roleEl.textContent = user.role.toUpperCase();
       }
 
-      // Update avatar
+      // Update avatar (use first letter of first name, or email)
       const avatarEl = document.getElementById('adminUserAvatar');
-      if (avatarEl && user.email) {
-        avatarEl.textContent = user.email.charAt(0).toUpperCase();
+      if (avatarEl) {
+        if (user.first_name) {
+          avatarEl.textContent = user.first_name.charAt(0).toUpperCase();
+        } else if (user.firstName) {
+          avatarEl.textContent = user.firstName.charAt(0).toUpperCase();
+        } else if (user.email) {
+          avatarEl.textContent = user.email.charAt(0).toUpperCase();
+        }
       }
     }
   } catch (error) {

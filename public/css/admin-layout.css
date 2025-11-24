@@ -16,7 +16,7 @@
   left: 0;
   top: 0;
   bottom: 0;
-  width: 260px;
+  width: 220px;
   background: var(--admin-surface, white);
   border-right: 1px solid var(--admin-border, #e5e7eb);
   display: flex;
@@ -321,10 +321,10 @@
 
 /* Main Content */
 .admin-main-content {
-  margin-left: 260px;
+  margin-left: 220px;
   flex: 1;
   min-height: 100vh;
-  padding: 2rem;
+  padding: 1rem;
   transition: margin-left 0.3s ease;
 }
 
