@@ -409,9 +409,11 @@
     let userPermissions = null;
     let allOrganizations = [];
     let filteredOrganizations = [];
+    let paginatedOrganizations = [];
+    let selectedOrganizations = new Set();
     let sortField = 'name';
     let sortDirection = 'asc';
-    let pageSize = 999999;
+    let pageSize = 50;
     let currentPage = 1;
 
     // Column visibility configuration
@@ -704,12 +706,16 @@
 
       // Apply pagination
       const startIdx = (currentPage - 1) * pageSize;
-      const paginatedOrganizations = sortedOrganizations.slice(startIdx, startIdx + pageSize);
+      const endIdx = pageSize >= 999999 ? sortedOrganizations.length : startIdx + pageSize;
+      paginatedOrganizations = sortedOrganizations.slice(startIdx, endIdx);
 
       const html = `
         <table class="admin-table">
           <thead>
             <tr>
+              <th class="checkbox-cell" style="width: 56px; text-align: center; padding-left: var(--admin-space-xl, 1.5rem) !important;">
+                <input type="checkbox" id="selectAll" class="admin-checkbox" onchange="toggleSelectAll()">
+              </th>
               ${isColumnVisible('name') ? `<th class="sortable ${sortField === 'name' ? 'sort-' + sortDirection : ''}" onclick="handleSort('name')">
                 Name <span class="sort-indicator">${getSortIcon('name')}</span>
               </th>` : ''}
@@ -727,8 +733,14 @@
           <tbody>
             ${paginatedOrganizations.map(org => {
               const quality = calculateOrgQuality(org);
+              const safeId = org.id ? org.id.toString().replace(/'/g, "\\'") : '';
               return `
               <tr>
+                <td class="checkbox-cell" style="text-align: center;">
+                  <input type="checkbox" class="org-checkbox admin-checkbox" value="${org.id}"
+                         ${selectedOrganizations.has(org.id) ? 'checked' : ''}
+                         onchange="toggleOrganization('${safeId}')">
+                </td>
                 ${isColumnVisible('name') ? `<td>${org.website ? `<a href="${org.website}" target="_blank" rel="noopener noreferrer">${org.name}</a>` : (org.name || '-')}</td>` : ''}
                 ${isColumnVisible('type') ? `<td>${org.type || '-'}</td>` : ''}
                 ${isColumnVisible('country') ? `<td>${org.country || '-'}</td>` : ''}
@@ -749,6 +761,8 @@
       document.getElementById('tableContent').innerHTML = html;
       document.getElementById('totalCount').textContent = organizations.length;
       document.getElementById('statsBar').style.display = 'flex';
+      updateSelectAllCheckbox();
+      updateBulkActionsBar();
     }
 
     function handleSort(field) {
@@ -980,6 +994,58 @@
       toast.textContent = message;
       document.body.appendChild(toast);
       setTimeout(() => toast.remove(), 5000);
+    }
+
+    // Selection functions
+    function toggleSelectAll() {
+      const checkbox = document.getElementById('selectAll');
+      const checked = checkbox.checked;
+
+      if (checked) {
+        paginatedOrganizations.forEach(org => {
+          if (org.id) selectedOrganizations.add(org.id);
+        });
+      } else {
+        paginatedOrganizations.forEach(org => {
+          if (org.id) selectedOrganizations.delete(org.id);
+        });
+      }
+
+      updateBulkActionsBar();
+      displayOrganizations(filteredOrganizations.length ? filteredOrganizations : allOrganizations);
+    }
+
+    function toggleOrganization(id) {
+      if (selectedOrganizations.has(id)) {
+        selectedOrganizations.delete(id);
+      } else {
+        selectedOrganizations.add(id);
+      }
+      updateBulkActionsBar();
+      updateSelectAllCheckbox();
+    }
+
+    function updateSelectAllCheckbox() {
+      const selectAllCheckbox = document.getElementById('selectAll');
+      if (selectAllCheckbox && paginatedOrganizations.length > 0) {
+        const allPageSelected = paginatedOrganizations.every(org => org.id && selectedOrganizations.has(org.id));
+        const somePageSelected = paginatedOrganizations.some(org => org.id && selectedOrganizations.has(org.id));
+
+        selectAllCheckbox.checked = allPageSelected;
+        selectAllCheckbox.indeterminate = somePageSelected && !allPageSelected;
+      }
+    }
+
+    function updateBulkActionsBar() {
+      // For now, just log selection count
+      if (selectedOrganizations.size > 0) {
+        console.log(`${selectedOrganizations.size} organizations selected`);
+      }
+    }
+
+    function clearSelection() {
+      selectedOrganizations.clear();
+      displayOrganizations(filteredOrganizations.length ? filteredOrganizations : allOrganizations);
     }
   </script>
 
