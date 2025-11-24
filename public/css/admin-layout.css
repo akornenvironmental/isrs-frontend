@@ -32,10 +32,15 @@
 
 .admin-sidebar.collapsed .sidebar-header-text,
 .admin-sidebar.collapsed .nav-section-title,
-.admin-sidebar.collapsed .nav-item span,
+.admin-sidebar.collapsed .nav-item span:not(.nav-icon),
 .admin-sidebar.collapsed .user-details,
 .admin-sidebar.collapsed .btn-logout span {
   display: none;
+}
+
+/* Keep nav icons visible when collapsed */
+.admin-sidebar.collapsed .nav-item .nav-icon {
+  display: inline-block !important;
 }
 
 .admin-sidebar.collapsed .sidebar-header {
