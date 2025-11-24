@@ -113,6 +113,17 @@
     .row-action-btn.ai-btn { background: linear-gradient(135deg, #9333ea 0%, #7e22ce 100%); color: white; opacity: 0.9; }
     .row-action-btn.ai-btn:hover { transform: scale(1.05); opacity: 1; }
 
+    /* AI button style for bulk actions */
+    .admin-btn-ai {
+      background: linear-gradient(135deg, #9333ea 0%, #7e22ce 100%) !important;
+      color: white !important;
+      border: none !important;
+    }
+    .admin-btn-ai:hover {
+      background: linear-gradient(135deg, #7e22ce 0%, #6b21a8 100%) !important;
+      box-shadow: 0 2px 4px rgba(147, 51, 234, 0.3);
+    }
+
     /* Type badges - extending admin-badge */
     .type-academic { background: #dbeafe; color: #1e40af; }
     .type-government { background: #dcfce7; color: #166534; }
@@ -233,24 +244,25 @@
           <option value="100">Show 100</option>
           <option value="999999">Show All</option>
         </select>
-        <button class="admin-btn admin-btn-secondary" onclick="toggleColumnPicker()" title="Show/hide columns">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <rect x="3" y="3" width="7" height="7"></rect>
-            <rect x="14" y="3" width="7" height="7"></rect>
-            <rect x="14" y="14" width="7" height="7"></rect>
-            <rect x="3" y="14" width="7" height="7"></rect>
-          </svg>
-          Columns
-        </button>
-        <button class="admin-btn admin-btn-secondary" onclick="handleReset()" title="Reset filters">Reset</button>
-      </div>
-
-      <!-- Column Picker Dropdown -->
-      <div id="columnPicker" class="column-picker" style="display: none;">
-        <div class="column-picker-header">Show/Hide Columns</div>
-        <div class="column-picker-options" id="columnPickerOptions">
-          <!-- Options will be populated by JS -->
+        <div style="position: relative;">
+          <button class="admin-btn admin-btn-secondary" onclick="toggleColumnPicker()" title="Show/hide columns">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <rect x="3" y="3" width="7" height="7"></rect>
+              <rect x="14" y="3" width="7" height="7"></rect>
+              <rect x="14" y="14" width="7" height="7"></rect>
+              <rect x="3" y="14" width="7" height="7"></rect>
+            </svg>
+            Columns
+          </button>
+          <!-- Column Picker Dropdown -->
+          <div id="columnPicker" class="column-picker" style="display: none;">
+            <div class="column-picker-header">Show/Hide Columns</div>
+            <div class="column-picker-options" id="columnPickerOptions">
+              <!-- Options will be populated by JS -->
+            </div>
+          </div>
         </div>
+        <button class="admin-btn admin-btn-secondary" onclick="handleReset()" title="Reset filters">Reset</button>
       </div>
 
       <!-- Bulk Actions Bar -->
@@ -261,7 +273,7 @@
           <button class="admin-btn admin-btn-primary admin-btn-sm" onclick="showEmailModal()">Send Email</button>
           <button class="admin-btn admin-btn-secondary admin-btn-sm" onclick="exportSelected()">Export Selected</button>
           <button class="admin-btn admin-btn-primary admin-btn-sm" onclick="showBulkEditModal()">Edit Selected</button>
-          <button class="admin-btn admin-btn-sm" style="background: linear-gradient(135deg, #9333ea 0%, #7e22ce 100%); color: white;" onclick="bulkEnhanceSelected()">AI Enhance Selected</button>
+          <button class="admin-btn admin-btn-sm admin-btn-ai" onclick="bulkEnhanceSelected()">✨ AI Enhance Selected</button>
           <button class="admin-btn admin-btn-danger admin-btn-sm" onclick="bulkDeleteSelected()">Delete Selected</button>
           <button class="admin-btn admin-btn-secondary admin-btn-sm" onclick="clearSelection()">Clear</button>
         </div>
