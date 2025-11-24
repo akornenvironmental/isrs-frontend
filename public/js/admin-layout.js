@@ -87,6 +87,18 @@ function loadAdminLayout(currentPage) {
         </div>
 
         <div class="nav-section">
+          <div class="nav-section-title">Content</div>
+          <a href="/admin/photos.html" class="nav-item ${currentPage === 'photos' ? 'active' : ''}">
+            <span class="nav-icon">📷</span>
+            <span>Photos</span>
+          </a>
+          <a href="/admin/press-kit.html" class="nav-item ${currentPage === 'press-kit' ? 'active' : ''}">
+            <span class="nav-icon">📰</span>
+            <span>Press Kit</span>
+          </a>
+        </div>
+
+        <div class="nav-section">
           <div class="nav-section-title">Governance</div>
           <a href="/admin/votes.html" class="nav-item ${currentPage === 'votes' ? 'active' : ''}">
             <span class="nav-icon">🗳️</span>
@@ -115,10 +127,6 @@ function loadAdminLayout(currentPage) {
           <a href="/admin/workflows.html" class="nav-item ${currentPage === 'workflows' ? 'active' : ''}">
             <span class="nav-icon">📖</span>
             <span>User Workflows</span>
-          </a>
-          <a href="/admin/press-kit.html" class="nav-item ${currentPage === 'press-kit' ? 'active' : ''}">
-            <span class="nav-icon">📰</span>
-            <span>Press Kit</span>
           </a>
         </div>
       </nav>
