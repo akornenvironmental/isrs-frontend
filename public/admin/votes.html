@@ -177,6 +177,14 @@
         if (sortField === 'vote_date') {
           aVal = new Date(aVal).getTime() || 0;
           bVal = new Date(bVal).getTime() || 0;
+        } else if (sortField === 'vote_total') {
+          // Sort by total vote count (yes + no + abstain)
+          aVal = (a.yes_count || 0) + (a.no_count || 0) + (a.abstain_count || 0);
+          bVal = (b.yes_count || 0) + (b.no_count || 0) + (b.abstain_count || 0);
+        } else if (sortField === 'quorum_met') {
+          // Sort boolean: false (0) before true (1)
+          aVal = a.quorum_met ? 1 : 0;
+          bVal = b.quorum_met ? 1 : 0;
         } else if (typeof aVal === 'string') {
           aVal = aVal.toLowerCase();
           bVal = bVal.toLowerCase();
@@ -202,8 +210,12 @@
               <th class="sortable ${sortField === 'status' ? 'sort-' + sortDirection : ''}" onclick="handleSort('status')">
                 Result <span class="sort-indicator">${getSortIcon('status')}</span>
               </th>
-              <th>Votes</th>
-              <th>Quorum</th>
+              <th class="sortable ${sortField === 'vote_total' ? 'sort-' + sortDirection : ''}" onclick="handleSort('vote_total')">
+                Votes <span class="sort-indicator">${getSortIcon('vote_total')}</span>
+              </th>
+              <th class="sortable ${sortField === 'quorum_met' ? 'sort-' + sortDirection : ''}" onclick="handleSort('quorum_met')">
+                Quorum <span class="sort-indicator">${getSortIcon('quorum_met')}</span>
+              </th>
               <th>Actions</th>
             </tr>
           </thead>

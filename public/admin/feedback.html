@@ -377,6 +377,14 @@
           <option value="true">Admin Portal</option>
           <option value="false">Public Site</option>
         </select>
+        <select id="sortOrder" onchange="loadFeedback()">
+          <option value="date-desc">Newest First</option>
+          <option value="date-asc">Oldest First</option>
+          <option value="user-asc">User (A-Z)</option>
+          <option value="user-desc">User (Z-A)</option>
+          <option value="type-asc">Type (A-Z)</option>
+          <option value="type-desc">Type (Z-A)</option>
+        </select>
       </div>
     </div>
 
@@ -499,14 +507,47 @@
       document.getElementById('statGeneral').textContent = feedback.filter(f => f.feedback_type === 'general').length;
     }
 
+    function sortFeedback(feedbackList) {
+      const sortOrder = document.getElementById('sortOrder')?.value || 'date-desc';
+      const sorted = [...feedbackList];
+
+      sorted.sort((a, b) => {
+        let aVal, bVal;
+
+        switch(sortOrder) {
+          case 'date-desc':
+            aVal = new Date(a.created_at || 0).getTime();
+            bVal = new Date(b.created_at || 0).getTime();
+            return bVal - aVal;
+          case 'date-asc':
+            aVal = new Date(a.created_at || 0).getTime();
+            bVal = new Date(b.created_at || 0).getTime();
+            return aVal - bVal;
+          case 'user-asc':
+            return (a.user_name || a.user_email || '').localeCompare(b.user_name || b.user_email || '');
+          case 'user-desc':
+            return (b.user_name || b.user_email || '').localeCompare(a.user_name || a.user_email || '');
+          case 'type-asc':
+            return (a.feedback_type || '').localeCompare(b.feedback_type || '');
+          case 'type-desc':
+            return (b.feedback_type || '').localeCompare(a.feedback_type || '');
+          default:
+            return 0;
+        }
+      });
+
+      return sorted;
+    }
+
     function renderFeedback() {
       const container = document.getElementById('feedbackContainer');
       const paginationEl = document.getElementById('pagination');
 
+      const sortedFeedback = sortFeedback(allFeedback);
       const startIdx = currentPage * pageSize;
       const endIdx = startIdx + pageSize;
-      const pageData = allFeedback.slice(startIdx, endIdx);
-      const totalPages = Math.ceil(allFeedback.length / pageSize);
+      const pageData = sortedFeedback.slice(startIdx, endIdx);
+      const totalPages = Math.ceil(sortedFeedback.length / pageSize);
 
       if (allFeedback.length === 0) {
         container.innerHTML = `

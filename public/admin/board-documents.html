@@ -225,6 +225,14 @@
         <option value="approved">Approved</option>
         <option value="rejected">Rejected</option>
       </select>
+      <select id="sortOrder" class="admin-select" onchange="filterDocuments()">
+        <option value="date-desc">Date (Newest First)</option>
+        <option value="date-asc">Date (Oldest First)</option>
+        <option value="title-asc">Title (A-Z)</option>
+        <option value="title-desc">Title (Z-A)</option>
+        <option value="category-asc">Category (A-Z)</option>
+        <option value="category-desc">Category (Z-A)</option>
+      </select>
       <button class="admin-btn admin-btn-secondary" onclick="resetFilters()">Reset</button>
     </div>
 
@@ -466,6 +474,38 @@
       document.getElementById('statFinal').textContent = final;
     }
 
+    function sortDocuments(documentList) {
+      const sortOrder = document.getElementById('sortOrder')?.value || 'date-desc';
+      const sorted = [...documentList];
+
+      sorted.sort((a, b) => {
+        let aVal, bVal;
+
+        switch(sortOrder) {
+          case 'date-desc':
+            aVal = new Date(a.created_at || 0).getTime();
+            bVal = new Date(b.created_at || 0).getTime();
+            return bVal - aVal;
+          case 'date-asc':
+            aVal = new Date(a.created_at || 0).getTime();
+            bVal = new Date(b.created_at || 0).getTime();
+            return aVal - bVal;
+          case 'title-asc':
+            return (a.title || '').localeCompare(b.title || '');
+          case 'title-desc':
+            return (b.title || '').localeCompare(a.title || '');
+          case 'category-asc':
+            return (a.category || '').localeCompare(b.category || '');
+          case 'category-desc':
+            return (b.category || '').localeCompare(a.category || '');
+          default:
+            return 0;
+        }
+      });
+
+      return sorted;
+    }
+
     function displayDocuments(documents) {
       const container = document.getElementById('documentsContainer');
 
@@ -483,9 +523,11 @@
         return;
       }
 
+      const sortedDocuments = sortDocuments(documents);
+
       const html = `
         <div class="documents-grid">
-          ${documents.map(doc => renderDocumentCard(doc)).join('')}
+          ${sortedDocuments.map(doc => renderDocumentCard(doc)).join('')}
         </div>
       `;
 
@@ -548,6 +590,7 @@
       document.getElementById('categoryFilter').value = '';
       document.getElementById('statusFilter').value = '';
       document.getElementById('approvalFilter').value = '';
+      document.getElementById('sortOrder').value = 'date-desc';
       loadDocuments();
     }
 

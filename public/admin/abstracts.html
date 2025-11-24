@@ -439,6 +439,21 @@
       </div>
     </div>
 
+    <!-- Sorting Toolbar -->
+    <div style="background: white; padding: 1rem 2rem; border-radius: 8px; margin-bottom: 1rem; box-shadow: 0 2px 8px rgba(0,0,0,0.1); display: flex; gap: 1rem; align-items: center;">
+      <label style="font-weight: 500; color: #374151;">Sort by:</label>
+      <select id="sortOrder" onchange="applySortAndRender()" style="padding: 0.5rem 1rem; border: 1px solid #d1d5db; border-radius: 4px; font-family: inherit; cursor: pointer;">
+        <option value="date-desc">Date (Newest First)</option>
+        <option value="date-asc">Date (Oldest First)</option>
+        <option value="title-asc">Title (A-Z)</option>
+        <option value="title-desc">Title (Z-A)</option>
+        <option value="author-asc">Author (A-Z)</option>
+        <option value="author-desc">Author (Z-A)</option>
+        <option value="score-desc">Score (Highest First)</option>
+        <option value="score-asc">Score (Lowest First)</option>
+      </select>
+    </div>
+
     <div class="tabs">
       <button class="tab active" onclick="switchTab('all')">All Abstracts</button>
       <button class="tab" onclick="switchTab('submitted')">Submitted</button>
@@ -650,6 +665,53 @@
       }
     }
 
+    function sortAbstracts(abstractList) {
+      const sortOrder = document.getElementById('sortOrder')?.value || 'date-desc';
+      const sorted = [...abstractList];
+
+      sorted.sort((a, b) => {
+        let aVal, bVal, result;
+
+        switch(sortOrder) {
+          case 'date-desc':
+            aVal = new Date(a.created_at || 0).getTime();
+            bVal = new Date(b.created_at || 0).getTime();
+            return bVal - aVal;
+          case 'date-asc':
+            aVal = new Date(a.created_at || 0).getTime();
+            bVal = new Date(b.created_at || 0).getTime();
+            return aVal - bVal;
+          case 'title-asc':
+            return (a.title || '').localeCompare(b.title || '');
+          case 'title-desc':
+            return (b.title || '').localeCompare(a.title || '');
+          case 'author-asc':
+            return (a.author_name || '').localeCompare(b.author_name || '');
+          case 'author-desc':
+            return (b.author_name || '').localeCompare(a.author_name || '');
+          case 'score-desc':
+            aVal = parseFloat(a.average_score) || 0;
+            bVal = parseFloat(b.average_score) || 0;
+            return bVal - aVal;
+          case 'score-asc':
+            aVal = parseFloat(a.average_score) || 0;
+            bVal = parseFloat(b.average_score) || 0;
+            return aVal - bVal;
+          default:
+            return 0;
+        }
+      });
+
+      return sorted;
+    }
+
+    function applySortAndRender() {
+      renderAbstracts('all', abstracts);
+      renderAbstracts('submitted', abstracts.filter(a => a.submission_status === 'submitted'));
+      renderAbstracts('under_review', abstracts.filter(a => a.submission_status === 'under_review'));
+      renderAbstracts('accepted', abstracts.filter(a => a.submission_status === 'accepted'));
+    }
+
     function renderAbstracts(containerId, abstractList) {
       const container = document.getElementById(`abstracts-${containerId}`);
       if (!container) return;
@@ -659,7 +721,9 @@
         return;
       }
 
-      container.innerHTML = abstractList.map(abstract => `
+      const sortedList = sortAbstracts(abstractList);
+
+      container.innerHTML = sortedList.map(abstract => `
         <div class="abstract-card" onclick="viewAbstract(${abstract.id})">
           <div class="abstract-header">
             <div class="abstract-title">${abstract.title}</div>
