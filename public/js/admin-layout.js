@@ -28,6 +28,13 @@ function loadAdminLayout(currentPage) {
   wrapper.innerHTML = `
     <!-- Sidebar Navigation -->
     <aside class="admin-sidebar" id="admin-sidebar">
+      <!-- Collapse Toggle Button -->
+      <button class="sidebar-collapse-btn" onclick="toggleSidebarCollapse()" title="Toggle sidebar">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <polyline points="15 18 9 12 15 6"></polyline>
+        </svg>
+      </button>
+
       <div class="sidebar-header">
         <div class="sidebar-header-row">
           <div class="sidebar-header-text">
@@ -140,7 +147,14 @@ function loadAdminLayout(currentPage) {
           </div>
           <span style="margin-left: auto; color: var(--admin-text-muted, #9ca3af); font-size: 0.75rem;">✎</span>
         </div>
-        <button class="btn-logout" onclick="logout()">Sign Out</button>
+        <button class="btn-logout" onclick="logout()">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display: none;">
+            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+            <polyline points="16 17 21 12 16 7"></polyline>
+            <line x1="21" y1="12" x2="9" y2="12"></line>
+          </svg>
+          <span>Sign Out</span>
+        </button>
       </div>
     </aside>
 
@@ -437,9 +451,57 @@ document.addEventListener('keydown', function(event) {
   }
 });
 
+// Sidebar Collapse Functions
+function toggleSidebarCollapse() {
+  const sidebar = document.getElementById('admin-sidebar');
+  const layout = document.querySelector('.admin-layout');
+  const logoutBtn = document.querySelector('.btn-logout');
+
+  if (sidebar && layout) {
+    const isCollapsed = sidebar.classList.toggle('collapsed');
+    layout.classList.toggle('sidebar-collapsed', isCollapsed);
+
+    // Show/hide logout icon vs text
+    if (logoutBtn) {
+      const svg = logoutBtn.querySelector('svg');
+      if (svg) {
+        svg.style.display = isCollapsed ? 'block' : 'none';
+      }
+    }
+
+    // Save preference
+    localStorage.setItem('isrs_sidebar_collapsed', isCollapsed ? 'true' : 'false');
+  }
+}
+
+function initSidebarState() {
+  const savedState = localStorage.getItem('isrs_sidebar_collapsed');
+  if (savedState === 'true') {
+    const sidebar = document.getElementById('admin-sidebar');
+    const layout = document.querySelector('.admin-layout');
+    const logoutBtn = document.querySelector('.btn-logout');
+
+    if (sidebar && layout) {
+      sidebar.classList.add('collapsed');
+      layout.classList.add('sidebar-collapsed');
+
+      if (logoutBtn) {
+        const svg = logoutBtn.querySelector('svg');
+        if (svg) {
+          svg.style.display = 'block';
+        }
+      }
+    }
+  }
+}
+
+// Initialize sidebar state after layout loads
+setTimeout(initSidebarState, 0);
+
 // Export for use in other scripts
 window.loadAdminLayout = loadAdminLayout;
 window.logout = logout;
 window.toggleAdminDarkMode = toggleAdminDarkMode;
 window.openProfilePopup = openProfilePopup;
 window.closeProfilePopup = closeProfilePopup;
+window.toggleSidebarCollapse = toggleSidebarCollapse;

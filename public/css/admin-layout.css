@@ -22,7 +22,96 @@
   display: flex;
   flex-direction: column;
   z-index: 100;
-  transition: background 0.3s, border-color 0.3s;
+  transition: width 0.3s ease, background 0.3s, border-color 0.3s;
+}
+
+/* Collapsed sidebar state */
+.admin-sidebar.collapsed {
+  width: 64px;
+}
+
+.admin-sidebar.collapsed .sidebar-header-text,
+.admin-sidebar.collapsed .nav-section-title,
+.admin-sidebar.collapsed .nav-item span,
+.admin-sidebar.collapsed .user-details,
+.admin-sidebar.collapsed .btn-logout span {
+  display: none;
+}
+
+.admin-sidebar.collapsed .sidebar-header {
+  padding: 0.75rem 0.5rem;
+}
+
+.admin-sidebar.collapsed .sidebar-header-row {
+  justify-content: center;
+}
+
+.admin-sidebar.collapsed .nav-item {
+  justify-content: center;
+  padding: 0.5rem;
+  border-left: none;
+}
+
+.admin-sidebar.collapsed .nav-item:hover,
+.admin-sidebar.collapsed .nav-item.active {
+  border-left: none;
+}
+
+.admin-sidebar.collapsed .nav-icon {
+  font-size: 1.25rem;
+  width: auto;
+}
+
+.admin-sidebar.collapsed .sidebar-footer {
+  padding: 0.75rem 0.5rem;
+}
+
+.admin-sidebar.collapsed .user-profile {
+  justify-content: center;
+  margin: 0;
+  padding: 0.35rem;
+}
+
+.admin-sidebar.collapsed .btn-logout {
+  padding: 0.5rem;
+  display: flex;
+  justify-content: center;
+}
+
+/* Collapse toggle button */
+.sidebar-collapse-btn {
+  position: absolute;
+  top: 50%;
+  right: -12px;
+  transform: translateY(-50%);
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: var(--admin-surface, white);
+  border: 1px solid var(--admin-border, #e5e7eb);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 101;
+  transition: all 0.2s;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.sidebar-collapse-btn:hover {
+  background: var(--admin-primary-light, #eff6ff);
+  border-color: var(--admin-primary, #2E5A8A);
+}
+
+.sidebar-collapse-btn svg {
+  width: 14px;
+  height: 14px;
+  color: var(--admin-text-secondary, #4b5563);
+  transition: transform 0.3s;
+}
+
+.admin-sidebar.collapsed .sidebar-collapse-btn svg {
+  transform: rotate(180deg);
 }
 
 .sidebar-header {
@@ -227,6 +316,12 @@
   flex: 1;
   min-height: 100vh;
   padding: 2rem;
+  transition: margin-left 0.3s ease;
+}
+
+/* Adjust main content when sidebar is collapsed */
+.admin-layout.sidebar-collapsed .admin-main-content {
+  margin-left: 64px;
 }
 
 /* Responsive */
@@ -334,6 +429,21 @@
 .admin-dark-mode .btn-logout:hover {
   background: #4b5563;
   color: #f9fafb;
+}
+
+/* Dark mode collapse button */
+.admin-dark-mode .sidebar-collapse-btn {
+  background: #374151;
+  border-color: #4b5563;
+}
+
+.admin-dark-mode .sidebar-collapse-btn:hover {
+  background: #4b5563;
+  border-color: #60a5fa;
+}
+
+.admin-dark-mode .sidebar-collapse-btn svg {
+  color: #e5e7eb;
 }
 
 /* Profile Popup */
