@@ -653,6 +653,12 @@
       { id: 'priority', label: 'Priority', visible: false },
       { id: 'engagement', label: 'Engagement', visible: false },
       { id: 'membership', label: 'Membership', visible: false },
+      // Organizational roles
+      { id: 'board', label: 'Board', visible: false },
+      { id: 'ap_member', label: 'Advisory Panel', visible: false },
+      { id: 'volunteer', label: 'Volunteer', visible: false },
+      { id: 'funder', label: 'Funder/Sponsor', visible: false },
+      // Quality/display
       { id: 'quality', label: 'Quality', visible: true },
       { id: 'tags', label: 'Tags', visible: true },
       { id: 'notes', label: 'Notes', visible: false },
@@ -871,6 +877,10 @@
               ${isColumnVisible('icsr2026') ? `<th>ICSR2026</th>` : ''}
               ${isColumnVisible('expertise') ? `<th>Expertise</th>` : ''}
               ${isColumnVisible('membership') ? `<th>Membership</th>` : ''}
+              ${isColumnVisible('board') ? `<th>Board</th>` : ''}
+              ${isColumnVisible('ap_member') ? `<th>Advisory Panel</th>` : ''}
+              ${isColumnVisible('volunteer') ? `<th>Volunteer</th>` : ''}
+              ${isColumnVisible('funder') ? `<th>Funder/Sponsor</th>` : ''}
               ${isColumnVisible('status') ? `<th class="sortable" onclick="sortBy('status')">Status <span class="sort-indicator">${currentSort.column === 'status' ? (currentSort.direction === 'asc' ? '&#9650;' : '&#9660;') : '&#8597;'}</span></th>` : ''}
               ${isColumnVisible('priority') ? `<th class="sortable" onclick="sortBy('priority_level')">Priority <span class="sort-indicator">${currentSort.column === 'priority_level' ? (currentSort.direction === 'asc' ? '&#9650;' : '&#9660;') : '&#8597;'}</span></th>` : ''}
               ${isColumnVisible('engagement') ? `<th class="sortable" onclick="sortBy('engagement_score')">Engagement <span class="sort-indicator">${currentSort.column === 'engagement_score' ? (currentSort.direction === 'asc' ? '&#9650;' : '&#9660;') : '&#8597;'}</span></th>` : ''}
@@ -911,6 +921,10 @@
                 ${isColumnVisible('icsr2026') ? `<td>${formatConference(contact, '2026')}</td>` : ''}
                 ${isColumnVisible('expertise') ? `<td>${formatExpertise(contact.expertise)}</td>` : ''}
                 ${isColumnVisible('membership') ? `<td>${contact.membership_status || '-'}</td>` : ''}
+                ${isColumnVisible('board') ? `<td>${formatBoardStatus(contact)}</td>` : ''}
+                ${isColumnVisible('ap_member') ? `<td>${contact.is_ap_member ? (contact.ap_role || '✓ AP Member') : '-'}</td>` : ''}
+                ${isColumnVisible('volunteer') ? `<td>${contact.is_volunteer ? '✓ Volunteer' : '-'}</td>` : ''}
+                ${isColumnVisible('funder') ? `<td>${formatFunderStatus(contact)}</td>` : ''}
                 ${isColumnVisible('status') ? `<td><span class="admin-badge status-${(contact.status || 'unknown').toLowerCase()}">${contact.status || '-'}</span></td>` : ''}
                 ${isColumnVisible('priority') ? `<td><span class="admin-badge priority-${(contact.priority_level || '').toLowerCase()}">${contact.priority_level || '-'}</span></td>` : ''}
                 ${isColumnVisible('engagement') ? `<td>${contact.engagement_score ? contact.engagement_score + '%' : '-'}</td>` : ''}
@@ -966,6 +980,31 @@
         return parts.join(', ');
       }
       return '-';
+    }
+
+    // Helper function to format board status
+    function formatBoardStatus(contact) {
+      if (!contact.is_board_member && !contact.is_past_board_member) return '-';
+      let status = '';
+      if (contact.is_board_member) {
+        status = contact.board_title || '✓ Board Member';
+      } else if (contact.is_past_board_member) {
+        status = '📜 Past Board';
+      }
+      return status;
+    }
+
+    // Helper function to format funder/sponsor status
+    function formatFunderStatus(contact) {
+      if (!contact.is_funder && !contact.is_sponsor) return '-';
+      let parts = [];
+      if (contact.is_funder) {
+        parts.push(contact.funding_type ? `💰 ${contact.funding_type}` : '💰 Funder');
+      }
+      if (contact.is_sponsor) {
+        parts.push(contact.sponsor_level ? `⭐ ${contact.sponsor_level}` : '⭐ Sponsor');
+      }
+      return parts.join(', ');
     }
 
     function applyFilters() {
