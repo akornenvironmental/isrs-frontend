@@ -124,6 +124,27 @@
       box-shadow: 0 2px 4px rgba(147, 51, 234, 0.3);
     }
 
+    /* Status badges */
+    .status-active { background: #dcfce7; color: #166534; }
+    .status-inactive { background: #f3f4f6; color: #6b7280; }
+    .status-pending { background: #fef3c7; color: #92400e; }
+    .status-unknown { background: #f3f4f6; color: #6b7280; }
+
+    /* Priority badges */
+    .priority-high { background: #fee2e2; color: #991b1b; }
+    .priority-medium { background: #fef3c7; color: #92400e; }
+    .priority-low { background: #dbeafe; color: #1e40af; }
+
+    /* Notes cell truncation */
+    .notes-cell {
+      max-width: 200px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      font-size: var(--admin-text-xs);
+      color: var(--admin-text-secondary);
+    }
+
     /* Type badges - extending admin-badge */
     .type-academic { background: #dbeafe; color: #1e40af; }
     .type-government { background: #dcfce7; color: #166534; }
@@ -605,10 +626,22 @@
       { id: 'name', label: 'Name', visible: true, required: true },
       { id: 'email', label: 'Email', visible: true },
       { id: 'organization', label: 'Organization', visible: true },
+      { id: 'title', label: 'Title/Role', visible: false },
       { id: 'type', label: 'Type', visible: true },
+      { id: 'state', label: 'State', visible: true },
       { id: 'country', label: 'Country', visible: true },
+      { id: 'city', label: 'City', visible: false },
+      { id: 'phone', label: 'Phone', visible: false },
+      { id: 'linkedin', label: 'LinkedIn', visible: false },
+      { id: 'website', label: 'Website', visible: false },
+      { id: 'expertise', label: 'Expertise', visible: false },
+      { id: 'status', label: 'Status', visible: false },
+      { id: 'priority', label: 'Priority', visible: false },
+      { id: 'engagement', label: 'Engagement', visible: false },
       { id: 'quality', label: 'Quality', visible: true },
-      { id: 'tags', label: 'Tags', visible: true }
+      { id: 'tags', label: 'Tags', visible: true },
+      { id: 'notes', label: 'Notes', visible: false },
+      { id: 'actions', label: 'Actions', visible: true }
     ];
 
     // Load saved column preferences
@@ -797,11 +830,22 @@
               ${isColumnVisible('name') ? `<th class="sortable" onclick="sortBy('full_name')">Name <span class="sort-indicator">${currentSort.column === 'full_name' ? (currentSort.direction === 'asc' ? '&#9650;' : '&#9660;') : '&#8597;'}</span></th>` : ''}
               ${isColumnVisible('email') ? `<th class="sortable col-email" onclick="sortBy('email')">Email <span class="sort-indicator">${currentSort.column === 'email' ? (currentSort.direction === 'asc' ? '&#9650;' : '&#9660;') : '&#8597;'}</span></th>` : ''}
               ${isColumnVisible('organization') ? `<th class="sortable col-organization" onclick="sortBy('organization_name')">Organization <span class="sort-indicator">${currentSort.column === 'organization_name' ? (currentSort.direction === 'asc' ? '&#9650;' : '&#9660;') : '&#8597;'}</span></th>` : ''}
+              ${isColumnVisible('title') ? `<th class="sortable" onclick="sortBy('title')">Title/Role <span class="sort-indicator">${currentSort.column === 'title' ? (currentSort.direction === 'asc' ? '&#9650;' : '&#9660;') : '&#8597;'}</span></th>` : ''}
               ${isColumnVisible('type') ? `<th class="sortable col-type" onclick="sortBy('contact_type')">Type <span class="sort-indicator">${currentSort.column === 'contact_type' ? (currentSort.direction === 'asc' ? '&#9650;' : '&#9660;') : '&#8597;'}</span></th>` : ''}
+              ${isColumnVisible('state') ? `<th class="sortable" onclick="sortBy('state_province')">State <span class="sort-indicator">${currentSort.column === 'state_province' ? (currentSort.direction === 'asc' ? '&#9650;' : '&#9660;') : '&#8597;'}</span></th>` : ''}
               ${isColumnVisible('country') ? `<th class="sortable col-country" onclick="sortBy('country')">Country <span class="sort-indicator">${currentSort.column === 'country' ? (currentSort.direction === 'asc' ? '&#9650;' : '&#9660;') : '&#8597;'}</span></th>` : ''}
+              ${isColumnVisible('city') ? `<th class="sortable" onclick="sortBy('city')">City <span class="sort-indicator">${currentSort.column === 'city' ? (currentSort.direction === 'asc' ? '&#9650;' : '&#9660;') : '&#8597;'}</span></th>` : ''}
+              ${isColumnVisible('phone') ? `<th>Phone</th>` : ''}
+              ${isColumnVisible('linkedin') ? `<th>LinkedIn</th>` : ''}
+              ${isColumnVisible('website') ? `<th>Website</th>` : ''}
+              ${isColumnVisible('expertise') ? `<th>Expertise</th>` : ''}
+              ${isColumnVisible('status') ? `<th class="sortable" onclick="sortBy('status')">Status <span class="sort-indicator">${currentSort.column === 'status' ? (currentSort.direction === 'asc' ? '&#9650;' : '&#9660;') : '&#8597;'}</span></th>` : ''}
+              ${isColumnVisible('priority') ? `<th class="sortable" onclick="sortBy('priority_level')">Priority <span class="sort-indicator">${currentSort.column === 'priority_level' ? (currentSort.direction === 'asc' ? '&#9650;' : '&#9660;') : '&#8597;'}</span></th>` : ''}
+              ${isColumnVisible('engagement') ? `<th class="sortable" onclick="sortBy('engagement_score')">Engagement <span class="sort-indicator">${currentSort.column === 'engagement_score' ? (currentSort.direction === 'asc' ? '&#9650;' : '&#9660;') : '&#8597;'}</span></th>` : ''}
               ${isColumnVisible('quality') ? `<th class="col-quality" title="Data completeness score">Quality</th>` : ''}
               ${isColumnVisible('tags') ? `<th class="col-tags">Tags</th>` : ''}
-              <th style="width: 50px; text-align: center;">AI</th>
+              ${isColumnVisible('notes') ? `<th>Notes</th>` : ''}
+              ${isColumnVisible('actions') ? `<th style="width: 50px; text-align: center;">AI</th>` : ''}
             </tr>
           </thead>
           <tbody>
@@ -818,8 +862,18 @@
                 ${isColumnVisible('name') ? `<td class="editable-cell" onclick="editCell(this, '${safeEmail}', 'full_name')" title="Click to edit">${contact.full_name || ((contact.first_name || '') + ' ' + (contact.last_name || '')).trim() || '-'}</td>` : ''}
                 ${isColumnVisible('email') ? `<td class="col-email">${contact.email ? contact.email.toLowerCase() : '-'}</td>` : ''}
                 ${isColumnVisible('organization') ? `<td class="col-organization editable-cell" onclick="editCell(this, '${safeEmail}', 'organization_name')" title="Click to edit">${contact.organization_name || '-'}</td>` : ''}
+                ${isColumnVisible('title') ? `<td class="editable-cell" onclick="editCell(this, '${safeEmail}', 'title')" title="Click to edit">${contact.title || contact.job_title || contact.role || '-'}</td>` : ''}
                 ${isColumnVisible('type') ? `<td class="col-type"><span class="admin-badge type-${(contact.contact_type || '').toLowerCase().replace(/[^a-z]/g, '')}">${contact.contact_type || '-'}</span></td>` : ''}
+                ${isColumnVisible('state') ? `<td class="editable-cell" onclick="editCell(this, '${safeEmail}', 'state_province')" title="Click to edit">${contact.state_province || '-'}</td>` : ''}
                 ${isColumnVisible('country') ? `<td class="col-country editable-cell" onclick="editCell(this, '${safeEmail}', 'country')" title="Click to edit">${contact.country || '-'}</td>` : ''}
+                ${isColumnVisible('city') ? `<td class="editable-cell" onclick="editCell(this, '${safeEmail}', 'city')" title="Click to edit">${contact.city || '-'}</td>` : ''}
+                ${isColumnVisible('phone') ? `<td class="editable-cell" onclick="editCell(this, '${safeEmail}', 'phone')" title="Click to edit">${contact.phone || '-'}</td>` : ''}
+                ${isColumnVisible('linkedin') ? `<td>${contact.linkedin ? `<a href="${contact.linkedin}" target="_blank" rel="noopener">Profile</a>` : '-'}</td>` : ''}
+                ${isColumnVisible('website') ? `<td>${contact.website ? `<a href="${contact.website}" target="_blank" rel="noopener">Link</a>` : '-'}</td>` : ''}
+                ${isColumnVisible('expertise') ? `<td>${formatExpertise(contact.expertise)}</td>` : ''}
+                ${isColumnVisible('status') ? `<td><span class="admin-badge status-${(contact.status || 'unknown').toLowerCase()}">${contact.status || '-'}</span></td>` : ''}
+                ${isColumnVisible('priority') ? `<td><span class="admin-badge priority-${(contact.priority_level || '').toLowerCase()}">${contact.priority_level || '-'}</span></td>` : ''}
+                ${isColumnVisible('engagement') ? `<td>${contact.engagement_score ? contact.engagement_score + '%' : '-'}</td>` : ''}
                 ${isColumnVisible('quality') ? `<td class="col-quality">
                   <div class="quality-score quality-${quality.level}" title="${quality.score}/${quality.maxScore} fields complete">
                     <div class="quality-bar"><div class="quality-fill" style="width: ${quality.percentage}%"></div></div>
@@ -827,11 +881,12 @@
                   </div>
                 </td>` : ''}
                 ${isColumnVisible('tags') ? `<td class="col-tags">${formatTags(contact.tags)}</td>` : ''}
-                <td class="row-actions-cell">
+                ${isColumnVisible('notes') ? `<td class="notes-cell" title="${(contact.notes || '').replace(/"/g, '&quot;')}">${contact.notes ? contact.notes.substring(0, 50) + (contact.notes.length > 50 ? '...' : '') : '-'}</td>` : ''}
+                ${isColumnVisible('actions') ? `<td class="row-actions-cell">
                   <div class="row-actions">
                     <button class="row-action-btn ai-btn" onclick="enhanceSingleContact('${safeEmail}')" title="AI Enhance">✨</button>
                   </div>
-                </td>
+                </td>` : ''}
               </tr>
             `}).join('')}
           </tbody>
@@ -839,6 +894,16 @@
       `;
       document.getElementById('tableContent').innerHTML = html;
       updateBulkActionsBar();
+    }
+
+    // Helper function to format expertise array
+    function formatExpertise(expertise) {
+      if (!expertise || !Array.isArray(expertise) || expertise.length === 0) return '-';
+      const displayExpertise = expertise.slice(0, 2);
+      const remaining = expertise.length - 2;
+      let html = displayExpertise.join(', ');
+      if (remaining > 0) html += ` +${remaining}`;
+      return html;
     }
 
     function applyFilters() {
