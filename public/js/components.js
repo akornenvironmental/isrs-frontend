@@ -1696,6 +1696,7 @@ function loadFooter() {
             <li><a href="/legal/terms.html">Terms of Service</a></li>
             <li><a href="/legal/code-of-conduct.html">Code of Conduct</a></li>
             <li><a href="/legal/accessibility.html">Accessibility</a></li>
+            <li><a href="/sitemap.xml">Sitemap</a></li>
           </ul>
         </div>
         <div class="footer-section">
