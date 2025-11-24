@@ -625,21 +625,34 @@
 
     // Column visibility configuration
     const columnConfig = [
+      // Core fields (visible by default)
       { id: 'name', label: 'Name', visible: true, required: true },
       { id: 'email', label: 'Email', visible: true },
       { id: 'organization', label: 'Organization', visible: true },
-      { id: 'title', label: 'Title/Role', visible: false },
       { id: 'type', label: 'Type', visible: true },
       { id: 'state', label: 'State', visible: true },
       { id: 'country', label: 'Country', visible: true },
+      // Contact info
+      { id: 'title', label: 'Title/Role', visible: false },
+      { id: 'department', label: 'Department', visible: false },
       { id: 'city', label: 'City', visible: false },
+      { id: 'postal_code', label: 'Postal Code', visible: false },
+      { id: 'address', label: 'Address', visible: false },
       { id: 'phone', label: 'Phone', visible: false },
+      // Social/web
       { id: 'linkedin', label: 'LinkedIn', visible: false },
+      { id: 'twitter', label: 'Twitter', visible: false },
       { id: 'website', label: 'Website', visible: false },
+      { id: 'orcid', label: 'ORCID', visible: false },
+      // Conference
+      { id: 'icsr2024', label: 'ICSR2024', visible: false },
+      { id: 'icsr2026', label: 'ICSR2026', visible: false },
+      // Status/scoring
       { id: 'expertise', label: 'Expertise', visible: false },
       { id: 'status', label: 'Status', visible: false },
       { id: 'priority', label: 'Priority', visible: false },
       { id: 'engagement', label: 'Engagement', visible: false },
+      { id: 'membership', label: 'Membership', visible: false },
       { id: 'quality', label: 'Quality', visible: true },
       { id: 'tags', label: 'Tags', visible: true },
       { id: 'notes', label: 'Notes', visible: false },
@@ -845,11 +858,19 @@
               ${isColumnVisible('type') ? `<th class="sortable col-type" onclick="sortBy('contact_type')">Type <span class="sort-indicator">${currentSort.column === 'contact_type' ? (currentSort.direction === 'asc' ? '&#9650;' : '&#9660;') : '&#8597;'}</span></th>` : ''}
               ${isColumnVisible('state') ? `<th class="sortable" onclick="sortBy('state_province')">State <span class="sort-indicator">${currentSort.column === 'state_province' ? (currentSort.direction === 'asc' ? '&#9650;' : '&#9660;') : '&#8597;'}</span></th>` : ''}
               ${isColumnVisible('country') ? `<th class="sortable col-country" onclick="sortBy('country')">Country <span class="sort-indicator">${currentSort.column === 'country' ? (currentSort.direction === 'asc' ? '&#9650;' : '&#9660;') : '&#8597;'}</span></th>` : ''}
+              ${isColumnVisible('department') ? `<th>Department</th>` : ''}
               ${isColumnVisible('city') ? `<th class="sortable" onclick="sortBy('city')">City <span class="sort-indicator">${currentSort.column === 'city' ? (currentSort.direction === 'asc' ? '&#9650;' : '&#9660;') : '&#8597;'}</span></th>` : ''}
+              ${isColumnVisible('postal_code') ? `<th>Postal Code</th>` : ''}
+              ${isColumnVisible('address') ? `<th>Address</th>` : ''}
               ${isColumnVisible('phone') ? `<th>Phone</th>` : ''}
               ${isColumnVisible('linkedin') ? `<th>LinkedIn</th>` : ''}
+              ${isColumnVisible('twitter') ? `<th>Twitter</th>` : ''}
               ${isColumnVisible('website') ? `<th>Website</th>` : ''}
+              ${isColumnVisible('orcid') ? `<th>ORCID</th>` : ''}
+              ${isColumnVisible('icsr2024') ? `<th>ICSR2024</th>` : ''}
+              ${isColumnVisible('icsr2026') ? `<th>ICSR2026</th>` : ''}
               ${isColumnVisible('expertise') ? `<th>Expertise</th>` : ''}
+              ${isColumnVisible('membership') ? `<th>Membership</th>` : ''}
               ${isColumnVisible('status') ? `<th class="sortable" onclick="sortBy('status')">Status <span class="sort-indicator">${currentSort.column === 'status' ? (currentSort.direction === 'asc' ? '&#9650;' : '&#9660;') : '&#8597;'}</span></th>` : ''}
               ${isColumnVisible('priority') ? `<th class="sortable" onclick="sortBy('priority_level')">Priority <span class="sort-indicator">${currentSort.column === 'priority_level' ? (currentSort.direction === 'asc' ? '&#9650;' : '&#9660;') : '&#8597;'}</span></th>` : ''}
               ${isColumnVisible('engagement') ? `<th class="sortable" onclick="sortBy('engagement_score')">Engagement <span class="sort-indicator">${currentSort.column === 'engagement_score' ? (currentSort.direction === 'asc' ? '&#9650;' : '&#9660;') : '&#8597;'}</span></th>` : ''}
@@ -877,11 +898,19 @@
                 ${isColumnVisible('type') ? `<td class="col-type"><span class="admin-badge type-${(contact.contact_type || '').toLowerCase().replace(/[^a-z]/g, '')}">${contact.contact_type || '-'}</span></td>` : ''}
                 ${isColumnVisible('state') ? `<td class="editable-cell" onclick="editCell(this, '${safeEmail}', 'state_province')" title="Click to edit">${contact.state_province || '-'}</td>` : ''}
                 ${isColumnVisible('country') ? `<td class="col-country editable-cell" onclick="editCell(this, '${safeEmail}', 'country')" title="Click to edit">${contact.country || '-'}</td>` : ''}
+                ${isColumnVisible('department') ? `<td class="editable-cell" onclick="editCell(this, '${safeEmail}', 'department')" title="Click to edit">${contact.department || '-'}</td>` : ''}
                 ${isColumnVisible('city') ? `<td class="editable-cell" onclick="editCell(this, '${safeEmail}', 'city')" title="Click to edit">${contact.city || '-'}</td>` : ''}
+                ${isColumnVisible('postal_code') ? `<td class="editable-cell" onclick="editCell(this, '${safeEmail}', 'postal_code')" title="Click to edit">${contact.postal_code || '-'}</td>` : ''}
+                ${isColumnVisible('address') ? `<td class="editable-cell" onclick="editCell(this, '${safeEmail}', 'address_line_1')" title="Click to edit">${contact.address_line_1 || '-'}</td>` : ''}
                 ${isColumnVisible('phone') ? `<td class="editable-cell" onclick="editCell(this, '${safeEmail}', 'phone')" title="Click to edit">${contact.phone || '-'}</td>` : ''}
                 ${isColumnVisible('linkedin') ? `<td>${contact.linkedin ? `<a href="${contact.linkedin}" target="_blank" rel="noopener">Profile</a>` : '-'}</td>` : ''}
+                ${isColumnVisible('twitter') ? `<td>${contact.twitter_handle ? `@${contact.twitter_handle}` : '-'}</td>` : ''}
                 ${isColumnVisible('website') ? `<td>${contact.website ? `<a href="${contact.website}" target="_blank" rel="noopener">Link</a>` : '-'}</td>` : ''}
+                ${isColumnVisible('orcid') ? `<td>${contact.orcid ? `<a href="https://orcid.org/${contact.orcid}" target="_blank" rel="noopener">${contact.orcid}</a>` : '-'}</td>` : ''}
+                ${isColumnVisible('icsr2024') ? `<td>${formatConference(contact, '2024')}</td>` : ''}
+                ${isColumnVisible('icsr2026') ? `<td>${formatConference(contact, '2026')}</td>` : ''}
                 ${isColumnVisible('expertise') ? `<td>${formatExpertise(contact.expertise)}</td>` : ''}
+                ${isColumnVisible('membership') ? `<td>${contact.membership_status || '-'}</td>` : ''}
                 ${isColumnVisible('status') ? `<td><span class="admin-badge status-${(contact.status || 'unknown').toLowerCase()}">${contact.status || '-'}</span></td>` : ''}
                 ${isColumnVisible('priority') ? `<td><span class="admin-badge priority-${(contact.priority_level || '').toLowerCase()}">${contact.priority_level || '-'}</span></td>` : ''}
                 ${isColumnVisible('engagement') ? `<td>${contact.engagement_score ? contact.engagement_score + '%' : '-'}</td>` : ''}
@@ -915,6 +944,28 @@
       let html = displayExpertise.join(', ');
       if (remaining > 0) html += ` +${remaining}`;
       return html;
+    }
+
+    // Helper function to format conference attendance
+    function formatConference(contact, year) {
+      if (year === '2024') {
+        const attended = contact.icsr2024_attended;
+        const presented = contact.icsr2024_presented;
+        if (!attended && !presented) return '-';
+        let parts = [];
+        if (attended) parts.push('✓ Attended');
+        if (presented) parts.push('🎤 Presented');
+        return parts.join(', ');
+      } else if (year === '2026') {
+        const registered = contact.icsr2026_registered;
+        const submitted = contact.icsr2026_presentation_submitted;
+        if (!registered && !submitted) return '-';
+        let parts = [];
+        if (registered) parts.push('✓ Registered');
+        if (submitted) parts.push('📝 Submitted');
+        return parts.join(', ');
+      }
+      return '-';
     }
 
     function applyFilters() {
