@@ -68,19 +68,23 @@
 }
 
 .admin-sidebar.collapsed .sidebar-footer {
-  padding: 0.75rem 0.5rem;
+  padding: 0.5rem;
 }
 
+/* Hide user profile section when collapsed - just show logout */
 .admin-sidebar.collapsed .user-profile {
-  justify-content: center;
-  margin: 0;
-  padding: 0.35rem;
+  display: none;
 }
 
 .admin-sidebar.collapsed .btn-logout {
   padding: 0.5rem;
   display: flex;
   justify-content: center;
+  width: 100%;
+}
+
+.admin-sidebar.collapsed .btn-logout svg {
+  display: block !important;
 }
 
 /* Collapse toggle button */
