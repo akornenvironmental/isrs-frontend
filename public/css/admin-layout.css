@@ -648,6 +648,8 @@
   background: var(--admin-surface, white);
   border-top: 1px solid var(--admin-border, #e5e7eb);
   transition: margin-left 0.3s ease, background 0.3s, border-color 0.3s;
+  position: relative;
+  z-index: 10;
 }
 
 .admin-layout.sidebar-collapsed .admin-footer {

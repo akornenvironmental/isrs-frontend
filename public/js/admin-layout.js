@@ -218,24 +218,16 @@ function loadAdminLayout(currentPage) {
     <footer class="admin-footer">
       <div class="admin-footer-content">
         <div class="footer-left">
-          <span class="footer-copyright">&copy; ${new Date().getFullYear()} International Society for Shellfish Restoration</span>
-          <span class="footer-divider">•</span>
-          <span class="footer-version">v2.1.0</span>
+          <span class="footer-copyright">&copy; ${new Date().getFullYear()} International Shellfish Restoration Society. All rights reserved.</span>
         </div>
         <div class="footer-center">
-          <a href="/privacy-policy.html" target="_blank">Privacy</a>
-          <span class="footer-divider">•</span>
-          <a href="/terms-of-service.html" target="_blank">Terms</a>
-          <span class="footer-divider">•</span>
-          <a href="/admin/feedback.html">Feedback</a>
-          <span class="footer-divider">•</span>
-          <a href="https://docs.reefstudies.org" target="_blank">Docs</a>
-        </div>
-        <div class="footer-right">
           <div class="footer-status">
             <span class="status-dot"></span>
             <span>All Systems Operational</span>
           </div>
+        </div>
+        <div class="footer-right">
+          <span class="footer-version">Version 2.1.0</span>
         </div>
       </div>
     </footer>
