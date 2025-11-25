@@ -218,7 +218,7 @@ function loadAdminLayout(currentPage) {
     <footer class="admin-footer">
       <div class="admin-footer-content">
         <div class="footer-left">
-          <span class="footer-copyright">&copy; ${new Date().getFullYear()} International Society for Reef Studies</span>
+          <span class="footer-copyright">&copy; ${new Date().getFullYear()} International Society for Shellfish Restoration</span>
           <span class="footer-divider">•</span>
           <span class="footer-version">v2.1.0</span>
         </div>
