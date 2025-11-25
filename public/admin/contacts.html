@@ -752,7 +752,7 @@
       html += '</div>';
       return html;
     }
-    let pageSize = 50;
+    let pageSize = 20;
     let paginatedContacts = [];
 
     // Initialize
@@ -1175,8 +1175,8 @@
       document.getElementById('searchBox').value = '';
       document.getElementById('countryFilter').value = '';
       document.getElementById('typeFilter').value = '';
-      document.getElementById('pageSizeSelect').value = '50';
-      pageSize = 50;
+      document.getElementById('pageSizeSelect').value = '20';
+      pageSize = 20;
       currentPage = 1;
       currentSort = { column: null, direction: 'asc' };
       selectedContacts.clear();
