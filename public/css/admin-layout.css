@@ -5,6 +5,7 @@
 
 .admin-layout {
   display: flex;
+  flex-direction: column;
   min-height: 100vh;
   background: var(--admin-bg, #f8f9fa);
   transition: background 0.3s;
@@ -323,7 +324,6 @@
 .admin-main-content {
   margin-left: 220px;
   flex: 1;
-  min-height: 100vh;
   padding: 1rem;
   transition: margin-left 0.3s ease;
 }
@@ -647,7 +647,6 @@
   margin-left: 220px;
   background: var(--admin-surface, white);
   border-top: 1px solid var(--admin-border, #e5e7eb);
-  margin-top: auto;
   transition: margin-left 0.3s ease, background 0.3s, border-color 0.3s;
 }
 
