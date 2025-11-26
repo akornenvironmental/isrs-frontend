@@ -216,59 +216,54 @@ function loadAdminLayout(currentPage) {
 
     <!-- Admin Footer -->
     <footer class="admin-footer">
-      <div class="admin-footer-main">
-        <div class="footer-columns">
-          <!-- Column 1: Admin Quick Links & System Status -->
-          <div class="footer-column">
-            <h3 class="footer-heading">Admin Portal</h3>
-            <ul class="footer-links">
-              <li><a href="/admin/dashboard.html">Dashboard</a></li>
-              <li><a href="/admin/contacts.html">Contacts</a></li>
-              <li><a href="/admin/organizations.html">Organizations</a></li>
-              <li><a href="/admin/feedback.html">Feedback</a></li>
-              <li><a href="/admin/settings.html">Settings</a></li>
-              <li><a href="/" target="_blank">View Main Website ↗</a></li>
-            </ul>
-            <div class="footer-status-section">
-              <div class="footer-status">
-                <span class="status-dot"></span>
-                <span>All Systems Operational</span>
-              </div>
-              <div class="footer-version">Version 2.1.0</div>
-            </div>
-          </div>
-
-          <!-- Column 2: Legal -->
-          <div class="footer-column">
-            <h3 class="footer-heading">Legal</h3>
-            <ul class="footer-links">
-              <li><a href="/privacy-policy.html" target="_blank">Privacy Policy</a></li>
-              <li><a href="/terms-of-service.html" target="_blank">Terms of Service</a></li>
-              <li><a href="/code-of-conduct.html" target="_blank">Code of Conduct</a></li>
-              <li><a href="/accessibility.html" target="_blank">Accessibility</a></li>
-              <li><a href="/sitemap.html" target="_blank">Sitemap</a></li>
-            </ul>
-          </div>
-
-          <!-- Column 3: Connect -->
-          <div class="footer-column">
-            <h3 class="footer-heading">Connect</h3>
-            <ul class="footer-links">
-              <li><a href="/about.html" target="_blank">About ISRS</a></li>
-              <li><a href="/photos.html" target="_blank">Photo Gallery</a></li>
-              <li><a href="/support.html" target="_blank">Support ISRS</a></li>
-              <li><a href="/donate.html" target="_blank">Donate</a></li>
-              <li><a href="/press-kit.html" target="_blank">Press Kit</a></li>
-            </ul>
-          </div>
-        </div>
-      </div>
-
-      <!-- Footer Bottom -->
-      <div class="admin-footer-bottom">
-        <div class="footer-bottom-content">
+      <div class="footer-columns">
+        <!-- Column 1: Logo & Organization Info -->
+        <div class="footer-column footer-brand">
+          <div class="footer-logo">ISRS</div>
           <p class="footer-copyright">&copy; ${new Date().getFullYear()} International Shellfish Restoration Society. All rights reserved.</p>
           <p class="footer-tax-id">Tax ID (EIN): 39-2829151</p>
+          <div class="footer-status">
+            <span class="status-dot"></span>
+            <span>All Systems Operational</span>
+          </div>
+          <div class="footer-version">Version 2.1.0</div>
+        </div>
+
+        <!-- Column 2: Admin Portal -->
+        <div class="footer-column">
+          <h3 class="footer-heading">Admin Portal</h3>
+          <ul class="footer-links">
+            <li><a href="/admin/dashboard.html">Dashboard</a></li>
+            <li><a href="/admin/contacts.html">Contacts</a></li>
+            <li><a href="/admin/organizations.html">Organizations</a></li>
+            <li><a href="/admin/feedback.html">Feedback</a></li>
+            <li><a href="/admin/settings.html">Settings</a></li>
+            <li><a href="/" target="_blank">View Main Website ↗</a></li>
+          </ul>
+        </div>
+
+        <!-- Column 3: Legal -->
+        <div class="footer-column">
+          <h3 class="footer-heading">Legal</h3>
+          <ul class="footer-links">
+            <li><a href="/privacy-policy.html" target="_blank">Privacy Policy</a></li>
+            <li><a href="/terms-of-service.html" target="_blank">Terms of Service</a></li>
+            <li><a href="/code-of-conduct.html" target="_blank">Code of Conduct</a></li>
+            <li><a href="/accessibility.html" target="_blank">Accessibility</a></li>
+            <li><a href="/sitemap.html" target="_blank">Sitemap</a></li>
+          </ul>
+        </div>
+
+        <!-- Column 4: Connect -->
+        <div class="footer-column">
+          <h3 class="footer-heading">Connect</h3>
+          <ul class="footer-links">
+            <li><a href="/about.html" target="_blank">About ISRS</a></li>
+            <li><a href="/photos.html" target="_blank">Photo Gallery</a></li>
+            <li><a href="/support.html" target="_blank">Support ISRS</a></li>
+            <li><a href="/donate.html" target="_blank">Donate</a></li>
+            <li><a href="/press-kit.html" target="_blank">Press Kit</a></li>
+          </ul>
         </div>
       </div>
     </footer>
