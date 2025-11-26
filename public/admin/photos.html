@@ -520,6 +520,9 @@
           <div>
             <h1>Photo Management</h1>
             <p>Upload, organize, and manage photos for the ISRS gallery and press kit</p>
+            <div class="admin-alert admin-alert-info" style="margin-top: 1rem; padding: 0.75rem 1rem; border-radius: 6px;">
+              <strong>✨ AI-Powered Features:</strong> Photos are automatically analyzed using Claude AI to generate intelligent titles, descriptions, tags, and categorization. Upload via file or URL, and let AI handle the metadata.
+            </div>
           </div>
           <div class="photo-stats" id="photoStats">
             <div class="photo-stat">
@@ -573,6 +576,22 @@
 
         <!-- Upload Tab -->
         <div class="tab-panel" id="upload-panel">
+          <!-- URL Upload Section -->
+          <div class="admin-card" style="margin-bottom: 2rem;">
+            <div class="admin-card-header">
+              <h3>Upload from URL</h3>
+            </div>
+            <div class="admin-card-body">
+              <p style="margin-bottom: 1rem; color: var(--admin-text-muted);">Enter photo URLs (one per line) to download and upload them to the gallery.</p>
+              <textarea id="urlInput" rows="4" class="admin-input" placeholder="https://example.com/photo1.jpg&#10;https://example.com/photo2.jpg" style="width: 100%; margin-bottom: 1rem; font-family: monospace; font-size: 0.875rem;"></textarea>
+              <button type="button" class="admin-btn admin-btn-primary" id="uploadFromUrlBtn">
+                <span id="urlUploadText">Upload from URLs</span>
+                <span id="urlUploadSpinner" style="display: none;">Processing...</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- File Upload Section -->
           <div id="photo-uploader"></div>
         </div>
       </div>
@@ -651,6 +670,69 @@
           console.error(`Error uploading ${filename}:`, error);
         }
       });
+
+      // Initialize URL upload button
+      const urlUploadBtn = document.getElementById('uploadFromUrlBtn');
+      if (urlUploadBtn) {
+        urlUploadBtn.addEventListener('click', handleUrlUpload);
+      }
+    }
+
+    // Handle URL upload
+    async function handleUrlUpload() {
+      const urlInput = document.getElementById('urlInput');
+      const uploadBtn = document.getElementById('uploadFromUrlBtn');
+      const uploadText = document.getElementById('urlUploadText');
+      const uploadSpinner = document.getElementById('urlUploadSpinner');
+      const sessionToken = localStorage.getItem('isrs_session');
+
+      if (!sessionToken) {
+        alert('Please log in to upload photos');
+        return;
+      }
+
+      const urls = urlInput.value.trim().split('\n').filter(url => url.trim());
+
+      if (urls.length === 0) {
+        alert('Please enter at least one URL');
+        return;
+      }
+
+      // Disable button and show spinner
+      uploadBtn.disabled = true;
+      uploadText.style.display = 'none';
+      uploadSpinner.style.display = 'inline';
+
+      try {
+        const response = await fetch(`${API_BASE_URL}/api/photos/upload-url`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${sessionToken}`
+          },
+          body: JSON.stringify({ urls })
+        });
+
+        const data = await response.json();
+
+        if (data.success) {
+          alert(`Successfully uploaded ${data.data.length} photo(s) from URLs!`);
+          urlInput.value = '';
+          // Switch to gallery tab and reload
+          document.querySelector('[data-tab="gallery"]').click();
+          loadPhotos();
+        } else {
+          throw new Error(data.error || 'Upload failed');
+        }
+      } catch (error) {
+        console.error('URL upload error:', error);
+        alert(`Failed to upload from URLs: ${error.message}`);
+      } finally {
+        // Re-enable button
+        uploadBtn.disabled = false;
+        uploadText.style.display = 'inline';
+        uploadSpinner.style.display = 'none';
+      }
     }
 
     // Load photos from API
