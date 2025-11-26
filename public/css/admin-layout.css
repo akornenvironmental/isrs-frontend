@@ -92,13 +92,13 @@
 .sidebar-collapse-btn {
   position: absolute;
   top: 50%;
-  right: -12px;
+  right: -16px;
   transform: translateY(-50%);
-  width: 24px;
-  height: 24px;
+  width: 32px;
+  height: 32px;
   border-radius: 50%;
   background: var(--admin-surface, white);
-  border: 1px solid var(--admin-border, #e5e7eb);
+  border: 2px solid var(--admin-border, #e5e7eb);
   cursor: pointer;
   display: flex;
   align-items: center;
@@ -114,8 +114,8 @@
 }
 
 .sidebar-collapse-btn svg {
-  width: 14px;
-  height: 14px;
+  width: 18px;
+  height: 18px;
   color: var(--admin-text-secondary, #4b5563);
   transition: transform 0.3s;
 }

@@ -161,6 +161,7 @@
         <table class="admin-table">
           <thead>
             <tr>
+              <th style="width: 40px;"><input type="checkbox" id="selectAll" onchange="toggleSelectAll(this.checked)"></th>
               <th class="sortable" onclick="sortBy('registration_number')">Reg #${getSortIndicator('registration_number')}</th>
               <th class="sortable" onclick="sortBy('name')">Name${getSortIndicator('name')}</th>
               <th class="sortable" onclick="sortBy('user_email')">Email${getSortIndicator('user_email')}</th>
@@ -175,6 +176,7 @@
           <tbody>
             ${regs.map(r => `
               <tr>
+                <td style="text-align: center;"><input type="checkbox" class="row-checkbox" value="${r.id}" onchange="updateSelectAllState()"></td>
                 <td>${r.registration_number}</td>
                 <td>${r.first_name} ${r.last_name}</td>
                 <td>${r.user_email}</td>
@@ -239,6 +241,28 @@
       } else {
         displayRegistrations(sorted);
       }
+    }
+
+    function toggleSelectAll(checked) {
+      const checkboxes = document.querySelectorAll('.row-checkbox');
+      checkboxes.forEach(cb => cb.checked = checked);
+    }
+
+    function updateSelectAllState() {
+      const checkboxes = document.querySelectorAll('.row-checkbox');
+      const selectAll = document.getElementById('selectAll');
+      if (!selectAll) return;
+
+      const allChecked = Array.from(checkboxes).every(cb => cb.checked);
+      const someChecked = Array.from(checkboxes).some(cb => cb.checked);
+
+      selectAll.checked = allChecked;
+      selectAll.indeterminate = someChecked && !allChecked;
+    }
+
+    function getSelectedRegistrations() {
+      const checkboxes = document.querySelectorAll('.row-checkbox:checked');
+      return Array.from(checkboxes).map(cb => parseInt(cb.value));
     }
 
     function exportCSV() {

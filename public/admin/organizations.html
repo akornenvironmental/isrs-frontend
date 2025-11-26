@@ -308,8 +308,15 @@
         </div>
       </div>
 
-      <div class="admin-pagination" id="statsBar" style="display: none;">
-        <span class="admin-pagination-info">Total Organizations: <strong id="totalCount">0</strong></span>
+      <!-- Pagination -->
+      <div class="admin-pagination" id="pagination" style="display: none;">
+        <div class="admin-pagination-info">
+          Page <strong id="currentPageNum">1</strong> of <strong id="totalPages">1</strong> | Total Organizations: <strong id="totalCount">0</strong>
+        </div>
+        <div class="admin-pagination-controls">
+          <button class="admin-btn admin-btn-secondary admin-btn-sm" id="prevPageBtn" onclick="previousPage()" disabled>Previous</button>
+          <button class="admin-btn admin-btn-secondary admin-btn-sm" id="nextPageBtn" onclick="nextPage()" disabled>Next</button>
+        </div>
       </div>
     </div>
   </div>
@@ -683,7 +690,7 @@
 
       if (organizations.length === 0) {
         document.getElementById('tableContent').innerHTML = '<div class="admin-empty"><div class="admin-empty-title">No organizations found</div></div>';
-        document.getElementById('statsBar').style.display = 'none';
+        document.getElementById('pagination').style.display = 'none';
         return;
       }
 
@@ -760,7 +767,8 @@
 
       document.getElementById('tableContent').innerHTML = html;
       document.getElementById('totalCount').textContent = organizations.length;
-      document.getElementById('statsBar').style.display = 'flex';
+      updatePagination(organizations.length);
+      document.getElementById('pagination').style.display = 'flex';
       updateSelectAllCheckbox();
       updateBulkActionsBar();
     }
@@ -778,6 +786,29 @@
     function getSortIcon(field) {
       if (sortField !== field) return '↕';
       return sortDirection === 'asc' ? '↑' : '↓';
+    }
+
+    function updatePagination(totalCount) {
+      const totalPages = Math.ceil(totalCount / pageSize);
+      document.getElementById('currentPageNum').textContent = currentPage;
+      document.getElementById('totalPages').textContent = totalPages;
+      document.getElementById('prevPageBtn').disabled = currentPage === 1;
+      document.getElementById('nextPageBtn').disabled = currentPage >= totalPages;
+    }
+
+    function previousPage() {
+      if (currentPage > 1) {
+        currentPage--;
+        displayOrganizations(filteredOrganizations.length ? filteredOrganizations : allOrganizations);
+      }
+    }
+
+    function nextPage() {
+      const totalPages = Math.ceil((filteredOrganizations.length || allOrganizations.length) / pageSize);
+      if (currentPage < totalPages) {
+        currentPage++;
+        displayOrganizations(filteredOrganizations.length ? filteredOrganizations : allOrganizations);
+      }
     }
 
     function logout() {
