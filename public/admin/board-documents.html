@@ -402,33 +402,21 @@
 
     function checkAuth() {
       const sessionToken = localStorage.getItem('isrs_session');
+      const userRole = localStorage.getItem('isrs_user_role');
+
       if (!sessionToken) {
         window.location.href = '/admin/';
         return;
       }
 
-      fetch(`${API_BASE_URL}/api/auth/session`, {
-        headers: { 'Authorization': `Bearer ${sessionToken}` }
-      })
-      .then(res => res.json())
-      .then(data => {
-        if (!data.success) {
-          localStorage.clear();
-          window.location.href = '/admin/';
-        } else {
-          // Check if user is board member or admin
-          if (!['admin', 'board'].includes(data.user.role)) {
-            showToast('Access denied. Board members only.', 'error');
-            setTimeout(() => window.location.href = '/admin/dashboard.html', 2000);
-            return;
-          }
-          loadDocuments();
-        }
-      })
-      .catch(() => {
-        localStorage.clear();
-        window.location.href = '/admin/';
-      });
+      // Check if user has appropriate role
+      if (userRole && !['admin', 'board'].includes(userRole.toLowerCase())) {
+        showToast('Access denied. Board members and administrators only.', 'error');
+        setTimeout(() => window.location.href = '/admin/dashboard.html', 2000);
+        return;
+      }
+
+      loadDocuments();
     }
 
     async function loadDocuments() {
