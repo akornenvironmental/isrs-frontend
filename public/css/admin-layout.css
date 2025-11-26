@@ -719,7 +719,7 @@
   align-items: center;
   gap: 0.4rem;
   color: #ffffff;
-  font-size: 0.75rem;
+  font-size: 0.8125rem;
   margin-top: 0.25rem;
 }
 
@@ -743,7 +743,7 @@
 
 .footer-version {
   color: #ffffff;
-  font-size: 0.6875rem;
+  font-size: 0.8125rem;
   font-weight: 500;
   opacity: 0.8;
 }
@@ -751,7 +751,7 @@
 /* Copyright and Tax ID in brand column */
 .footer-copyright {
   margin: 0 0 0.5rem 0;
-  font-size: 0.75rem;
+  font-size: 0.8125rem;
   color: #ffffff;
   opacity: 0.9;
   line-height: 1.4;
@@ -759,7 +759,7 @@
 
 .footer-tax-id {
   margin: 0;
-  font-size: 0.75rem;
+  font-size: 0.8125rem;
   color: #ffffff;
   opacity: 0.85;
 }
