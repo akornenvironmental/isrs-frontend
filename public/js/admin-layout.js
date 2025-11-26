@@ -217,16 +217,15 @@ function loadAdminLayout(currentPage) {
     <!-- Admin Footer -->
     <footer class="admin-footer">
       <div class="footer-columns">
-        <!-- Column 1: Logo & Organization Info -->
+        <!-- Column 1: Organization Info -->
         <div class="footer-column footer-brand">
-          <div class="footer-logo">ISRS</div>
           <p class="footer-copyright">&copy; ${new Date().getFullYear()} International Shellfish Restoration Society. All rights reserved.</p>
-          <p class="footer-tax-id">Tax ID (EIN): 39-2829151</p>
           <div class="footer-status">
             <span class="status-dot"></span>
             <span>All Systems Operational</span>
           </div>
           <div class="footer-version">Version 2.1.0</div>
+          <p class="footer-tax-id">Tax ID (EIN): 39-2829151</p>
         </div>
 
         <!-- Column 2: Admin Portal -->

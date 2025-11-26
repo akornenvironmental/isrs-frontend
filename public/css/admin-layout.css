@@ -674,15 +674,7 @@
 
 /* Brand Column (Column 1) */
 .footer-brand {
-  gap: 0.5rem;
-}
-
-.footer-logo {
-  font-size: 1.5rem;
-  font-weight: 700;
-  color: #ffffff;
-  margin-bottom: 0.5rem;
-  letter-spacing: 0.1em;
+  gap: 0.4rem;
 }
 
 .footer-heading {
@@ -758,18 +750,18 @@
 
 /* Copyright and Tax ID in brand column */
 .footer-copyright {
-  margin: 0;
+  margin: 0 0 0.5rem 0;
   font-size: 0.75rem;
   color: #ffffff;
-  opacity: 0.85;
+  opacity: 0.9;
   line-height: 1.4;
 }
 
 .footer-tax-id {
   margin: 0;
-  font-size: 0.6875rem;
+  font-size: 0.75rem;
   color: #ffffff;
-  opacity: 0.75;
+  opacity: 0.85;
 }
 
 /* Dark Mode Footer - Already dark themed, minimal changes needed */
