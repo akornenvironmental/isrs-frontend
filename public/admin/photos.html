@@ -10,6 +10,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Marcellus&family=PT+Serif:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/css/styles.css">
   <link rel="stylesheet" href="/css/admin-layout.css">
+  <link rel="stylesheet" href="/css/admin-unified.css">
   <script src="/js/theme.js"></script>
   <script src="/js/admin-layout.js"></script>
   <script src="/js/photo-uploader.js"></script>
@@ -196,7 +197,7 @@
       text-transform: uppercase;
       letter-spacing: 0.03em;
       border-radius: 4px;
-      color: white;
+      color: var(--admin-surface);
     }
 
     .photo-badge.public {
@@ -249,7 +250,7 @@
 
     .photo-action-btn.delete {
       background: rgba(239, 68, 68, 0.95);
-      color: white;
+      color: var(--admin-surface);
     }
 
     .photo-card-info {
@@ -462,7 +463,7 @@
 
     .btn-primary {
       background: var(--admin-primary, #2E5A8A);
-      color: white;
+      color: var(--admin-surface);
       border: none;
     }
 
@@ -482,7 +483,7 @@
 
     .btn-danger {
       background: #ef4444;
-      color: white;
+      color: var(--admin-surface);
       border: none;
     }
 
@@ -511,12 +512,10 @@
     }
   </style>
 </head>
-<body class="admin-layout">
-  <!-- Sidebar injected by admin-layout.js -->
-
-  <!-- Main Content -->
-  <main class="admin-main-content">
-    <div class="photo-admin-header">
+<body class="admin-page">
+  <div class="admin-content-padded">
+    <div class="admin-card">
+      <div class="photo-admin-header">
       <div>
         <h1>Photo Management</h1>
         <p>Upload, organize, and manage photos for the ISRS gallery and press kit</p>
@@ -575,7 +574,8 @@
     <div class="tab-panel" id="upload-panel">
       <div id="photo-uploader"></div>
     </div>
-  </main>
+    </div>
+  </div>
 
   <!-- Photo Detail Modal -->
   <div class="photo-modal-overlay" id="photoModal">
