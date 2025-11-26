@@ -426,7 +426,7 @@
       const approvalStatus = document.getElementById('approvalFilter').value;
 
       try {
-        let url = `${API_BASE_URL}/api/board-documents?limit=200`;
+        let url = `${API_BASE_URL}/api/admin/board-documents?limit=200`;
         if (category) url += `&category=${encodeURIComponent(category)}`;
         if (status) url += `&status=${status}`;
         if (approvalStatus) url += `&approval_status=${approvalStatus}`;
@@ -635,7 +635,7 @@
       uploadBtn.innerHTML = '<div class="admin-spinner" style="width: 16px; height: 16px; border-width: 2px; margin-right: 0.5rem;"></div> Uploading...';
 
       try {
-        const response = await fetch(`${API_BASE_URL}/api/board-documents`, {
+        const response = await fetch(`${API_BASE_URL}/api/admin/board-documents`, {
           method: 'POST',
           headers: {
             'Authorization': `Bearer ${sessionToken}`
@@ -665,7 +665,7 @@
       const sessionToken = localStorage.getItem('isrs_session');
 
       try {
-        const response = await fetch(`${API_BASE_URL}/api/board-documents/${id}`, {
+        const response = await fetch(`${API_BASE_URL}/api/admin/board-documents/${id}`, {
           headers: { 'Authorization': `Bearer ${sessionToken}` }
         });
 
@@ -736,7 +736,7 @@
 
     async function downloadDocument(id) {
       const sessionToken = localStorage.getItem('isrs_session');
-      window.open(`${API_BASE_URL}/api/board-documents/${id}/download?token=${sessionToken}`, '_blank');
+      window.open(`${API_BASE_URL}/api/admin/board-documents/${id}/download?token=${sessionToken}`, '_blank');
     }
 
     async function approveDocument(id) {
@@ -751,7 +751,7 @@
       const sessionToken = localStorage.getItem('isrs_session');
 
       try {
-        const response = await fetch(`${API_BASE_URL}/api/board-documents/${id}/approval`, {
+        const response = await fetch(`${API_BASE_URL}/api/admin/board-documents/${id}/approval`, {
           method: 'PATCH',
           headers: {
             'Content-Type': 'application/json',
