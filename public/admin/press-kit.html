@@ -146,7 +146,7 @@
       gap: var(--admin-space-sm);
       padding: var(--admin-space-md) var(--admin-space-lg);
       background: var(--admin-primary);
-      color: white;
+      color: var(--admin-surface);
       border-radius: var(--admin-radius-md);
       text-decoration: none;
       font-size: var(--admin-text-sm);
@@ -208,7 +208,7 @@
     }
     .admin-btn-success {
       background: var(--admin-success);
-      color: white;
+      color: var(--admin-surface);
       border: none;
       cursor: pointer;
       border-radius: var(--admin-radius-md);
@@ -218,7 +218,7 @@
     }
     .admin-btn-danger {
       background: var(--admin-danger);
-      color: white;
+      color: var(--admin-surface);
       border: none;
       cursor: pointer;
       border-radius: var(--admin-radius-md);
@@ -228,7 +228,7 @@
     }
     .admin-btn-primary {
       background: var(--admin-primary);
-      color: white;
+      color: var(--admin-surface);
       border: none;
       cursor: pointer;
       padding: var(--admin-space-md) var(--admin-space-lg);
@@ -248,6 +248,25 @@
     }
     .admin-btn-secondary:hover {
       background: var(--admin-gray-200);
+    }
+    .admin-toast {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      padding: 12px 24px;
+      border-radius: 8px;
+      z-index: 9999;
+      font-size: var(--admin-text-sm);
+      font-weight: 500;
+      animation: fadeIn 0.3s;
+    }
+    .admin-toast-success {
+      background: var(--admin-success);
+      color: var(--admin-surface);
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
     }
   </style>
 </head>
@@ -507,9 +526,8 @@
 
     function showToast(message) {
       const toast = document.createElement('div');
-      toast.className = 'message-toast success';
+      toast.className = 'admin-toast admin-toast-success';
       toast.textContent = message;
-      toast.style.cssText = 'position: fixed; bottom: 20px; right: 20px; padding: 12px 24px; background: #22c55e; color: white; border-radius: 8px; z-index: 9999; animation: fadeIn 0.3s;';
       document.body.appendChild(toast);
       setTimeout(() => toast.remove(), 3000);
     }
