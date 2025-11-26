@@ -515,64 +515,66 @@
 <body class="admin-page">
   <div class="admin-content-padded">
     <div class="admin-card">
-      <div class="photo-admin-header">
-        <div>
-          <h1>Photo Management</h1>
-          <p>Upload, organize, and manage photos for the ISRS gallery and press kit</p>
-        </div>
-        <div class="photo-stats" id="photoStats">
-          <div class="photo-stat">
-            <div class="number" id="totalPhotos">-</div>
-            <div class="label">Total Photos</div>
+      <div class="admin-card-body">
+        <div class="photo-admin-header">
+          <div>
+            <h1>Photo Management</h1>
+            <p>Upload, organize, and manage photos for the ISRS gallery and press kit</p>
           </div>
-          <div class="photo-stat">
-            <div class="number" id="publicPhotos">-</div>
-            <div class="label">Public</div>
-          </div>
-          <div class="photo-stat">
-            <div class="number" id="aiAnalyzed">-</div>
-            <div class="label">AI Analyzed</div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Tabs -->
-      <div class="admin-tabs">
-        <button class="admin-tab active" data-tab="gallery">Gallery</button>
-        <button class="admin-tab" data-tab="upload">Upload Photos</button>
-      </div>
-
-      <!-- Gallery Tab -->
-      <div class="tab-panel active" id="gallery-panel">
-        <div class="photos-toolbar">
-          <div class="photos-search">
-            <input type="text" id="searchInput" placeholder="Search photos...">
-          </div>
-          <div class="photos-filters">
-            <select id="visibilityFilter">
-              <option value="">All Photos</option>
-              <option value="public">Public Only</option>
-              <option value="private">Private Only</option>
-            </select>
-            <select id="sortOrder">
-              <option value="newest">Newest First</option>
-              <option value="oldest">Oldest First</option>
-              <option value="name">By Name</option>
-            </select>
+          <div class="photo-stats" id="photoStats">
+            <div class="photo-stat">
+              <div class="number" id="totalPhotos">-</div>
+              <div class="label">Total Photos</div>
+            </div>
+            <div class="photo-stat">
+              <div class="number" id="publicPhotos">-</div>
+              <div class="label">Public</div>
+            </div>
+            <div class="photo-stat">
+              <div class="number" id="aiAnalyzed">-</div>
+              <div class="label">AI Analyzed</div>
+            </div>
           </div>
         </div>
 
-        <div id="photosContainer">
-          <div class="photos-loading">
-            <div class="spinner"></div>
-            <p>Loading photos...</p>
+        <!-- Tabs -->
+        <div class="admin-tabs">
+          <button class="admin-tab active" data-tab="gallery">Gallery</button>
+          <button class="admin-tab" data-tab="upload">Upload Photos</button>
+        </div>
+
+        <!-- Gallery Tab -->
+        <div class="tab-panel active" id="gallery-panel">
+          <div class="photos-toolbar">
+            <div class="photos-search">
+              <input type="text" id="searchInput" placeholder="Search photos...">
+            </div>
+            <div class="photos-filters">
+              <select id="visibilityFilter">
+                <option value="">All Photos</option>
+                <option value="public">Public Only</option>
+                <option value="private">Private Only</option>
+              </select>
+              <select id="sortOrder">
+                <option value="newest">Newest First</option>
+                <option value="oldest">Oldest First</option>
+                <option value="name">By Name</option>
+              </select>
+            </div>
+          </div>
+
+          <div id="photosContainer">
+            <div class="photos-loading">
+              <div class="spinner"></div>
+              <p>Loading photos...</p>
+            </div>
           </div>
         </div>
-      </div>
 
-      <!-- Upload Tab -->
-      <div class="tab-panel" id="upload-panel">
-        <div id="photo-uploader"></div>
+        <!-- Upload Tab -->
+        <div class="tab-panel" id="upload-panel">
+          <div id="photo-uploader"></div>
+        </div>
       </div>
     </div>
   </div>
@@ -654,7 +656,7 @@
     // Load photos from API
     async function loadPhotos() {
       const container = document.getElementById('photosContainer');
-      const sessionToken = localStorage.getItem('isrs_session_token');
+      const sessionToken = localStorage.getItem('isrs_session');
 
       if (!sessionToken) {
         container.innerHTML = `
@@ -886,7 +888,7 @@
     document.getElementById('toggleVisibilityBtn').addEventListener('click', async () => {
       if (!currentPhoto) return;
 
-      const sessionToken = localStorage.getItem('isrs_session_token');
+      const sessionToken = localStorage.getItem('isrs_session');
       if (!sessionToken) return;
 
       try {
@@ -924,7 +926,7 @@
         return;
       }
 
-      const sessionToken = localStorage.getItem('isrs_session_token');
+      const sessionToken = localStorage.getItem('isrs_session');
       if (!sessionToken) return;
 
       try {
