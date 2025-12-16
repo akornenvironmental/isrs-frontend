@@ -10,6 +10,8 @@ const translations = {
     home: 'Home',
     about: 'About',
     icsr: 'ICSR',
+    gallery: 'Gallery',
+    support: 'Support',
     donate: 'DONATE',
     skipToMain: 'Skip to main content',
 
@@ -121,6 +123,19 @@ const translations = {
     adminPortal: 'Admin Portal',
     copyright: '© 2025 International Shellfish Restoration Society. All rights reserved.',
     taxId: 'Tax ID (EIN): 39-2829151',
+
+    // Footer
+    footerTagline: 'Building community and advancing innovation in global shellfish restoration',
+    footerLegal: 'Legal',
+    footerPrivacyPolicy: 'Privacy Policy',
+    footerTermsOfService: 'Terms of Service',
+    footerCodeOfConduct: 'Code of Conduct',
+    footerAccessibility: 'Accessibility',
+    footerSitemap: 'Sitemap',
+    footerPhotoGallery: 'Photo Gallery',
+    footerSupportISRS: 'Support ISRS',
+    footerPressKit: 'Press Kit',
+    footerTaxDisclaimer: 'ISRS is a 501(c)(3) nonprofit organization (pending IRS approval). Donations are tax-deductible to the extent allowed by law.',
 
     // Member Portal - Login
     memberLogin: 'Member Login',
@@ -507,13 +522,429 @@ const translations = {
 
     // Success Messages
     registrationCreatedSuccess: 'Registration created successfully! Redirecting to payment...',
-    registrationCreatedInstructions: 'Registration created successfully! Redirecting to payment instructions...'
+    registrationCreatedInstructions: 'Registration created successfully! Redirecting to payment instructions...',
+
+    // ========== ABOUT PAGE ==========
+    // About - Hero
+    aboutHeroHeading: 'About ISRS',
+    aboutHeroSubtitle: 'The International Shellfish Restoration Society supports the global shellfish restoration community through collaboration, innovation, and knowledge exchange.',
+
+    // About - Who We Are
+    aboutWhoWeAre: 'Who We Are',
+    aboutWhoWeAreText: 'The International Shellfish Restoration Society (ISRS) is a 501(c)(3) nonprofit organization (pending IRS approval) established in 2024 to support the global shellfish restoration community. We emerged from the International Conference on Shellfish Restoration (ICSR), which has convened the restoration community since its founding in 1996.',
+
+    // About - Mission & Vision
+    aboutMission: 'Mission',
+    aboutMissionText: 'To build community, facilitate communication, and promote innovation within the shellfish restoration community worldwide.',
+    aboutVision: 'Vision',
+    aboutVisionText: 'A future where healthy shellfish ecosystems support resilient coasts, thriving marine life, and sustainable communities across the globe.',
+
+    // About - Core Values
+    aboutCoreValuesHeading: 'Our Core Values',
+    aboutCoreValuesIntro: 'ISRS operates guided by six foundational principles that shape our work and community:',
+    aboutValueScience: 'Science-Based Approach',
+    aboutValueScienceDesc: 'We apply rigorous research to inform restoration practices and decision-making.',
+    aboutValueCollaborative: 'Collaborative Partnerships',
+    aboutValueCollaborativeDesc: 'We believe in the power of working together across sectors, disciplines, and borders.',
+    aboutValueInclusive: 'Inclusive Participation',
+    aboutValueInclusiveDesc: 'We welcome diverse perspectives from scientists, practitioners, Indigenous communities, policymakers, and industry.',
+    aboutValueInnovation: 'Innovation',
+    aboutValueInnovationDesc: 'We promote creative problem-solving and new restoration techniques and technologies.',
+    aboutValueImpact: 'Impact-Driven',
+    aboutValueImpactDesc: 'We focus on measurable outcomes that benefit shellfish populations, ecosystems, and communities.',
+    aboutValueSustainability: 'Sustainability',
+    aboutValueSustainabilityDesc: 'We champion restoration approaches that support long-term ecological health and resilience.',
+
+    // About - What We Do
+    aboutWhatWeDo: 'What We Do',
+    aboutHostICR: 'Host ICSR Conference',
+    aboutHostICRDesc: 'We organize the biennial International Conference on Shellfish Restoration, bringing together 300+ participants from 20+ countries to share research, best practices, and new innovations.',
+    aboutFacilitateNetworking: 'Facilitate Networking',
+    aboutFacilitateNetworkingDesc: 'We connect restoration practitioners worldwide through year-round communication channels, working groups, and knowledge-sharing.',
+    aboutSupportRegional: 'Support Regional Networks',
+    aboutSupportRegionalDesc: 'We collaborate with regional restoration networks across North America, Europe, Asia, Australia, and beyond to advance local restoration initiatives.',
+    aboutPromoteKnowledge: 'Promote Knowledge Exchange',
+    aboutPromoteKnowledgeDesc: 'We facilitate the sharing of restoration techniques, research findings, and lessons learned across the global community.',
+    aboutEngageDiverse: 'Engage Diverse Stakeholders',
+    aboutEngageDiverseDesc: 'We bring together researchers, managers, conservationists, Indigenous groups, industry partners, and policymakers for collaborative dialogue.',
+    aboutAdvanceInnovation: 'Advance Innovation',
+    aboutAdvanceInnovationDesc: 'We support the development and dissemination of new restoration approaches, technologies, and strategies.',
+
+    // About - Our Community
+    aboutCommunityHeading: 'Our Community',
+    aboutCommunityIntro: 'ISRS brings together a diverse global community dedicated to shellfish restoration:',
+    aboutCommunityScientists: 'Research Scientists',
+    aboutCommunityScientistsDesc: 'Advancing restoration science and monitoring',
+    aboutCommunityPractitioners: 'Restoration Practitioners',
+    aboutCommunityPractitionersDesc: 'Implementing on-the-ground projects',
+    aboutCommunityManagers: 'Resource Managers',
+    aboutCommunityManagersDesc: 'Managing shellfish populations and habitats',
+    aboutCommunityOrgs: 'Conservation Organizations',
+    aboutCommunityOrgsDesc: 'Protecting coastal ecosystems',
+    aboutCommunityIndigenous: 'Indigenous Communities',
+    aboutCommunityIndigenousDesc: 'Stewarding traditional shellfish resources',
+    aboutCommunityIndustry: 'Industry Partners',
+    aboutCommunityIndustryDesc: 'Promoting sustainable aquaculture',
+    aboutCommunityPolicy: 'Policymakers',
+    aboutCommunityPolicyDesc: 'Developing restoration-friendly policies',
+    aboutCommunityStudents: 'Students & Educators',
+    aboutCommunityStudentsDesc: 'Training the next generation',
+
+    // About - Strategic Partnerships
+    aboutPartnershipsHeading: 'Strategic Partnerships',
+    aboutPartnershipsIntro: 'ISRS collaborates with leading organizations to amplify our impact:',
+    aboutPartnerNORA: 'Native Oyster Restoration Alliance (NORA)',
+    aboutPartnerNORADesc: 'Partnership focused on advancing oyster restoration across North America through shared resources, knowledge exchange, and coordinated initiatives.',
+    aboutPartnerAustralasia: 'Australasian Coastal Restoration Network',
+    aboutPartnerAustralasiaDesc: 'Collaboration to connect restoration practitioners across Australia, New Zealand, and the Pacific region, sharing innovations in shellfish and coastal restoration.',
+
+    // ========== ICSR PAGE ==========
+    // ICSR - Hero
+    icsrHeroHeading: 'International Conference on Shellfish Restoration',
+    icsrHeroSubtitle: 'The premier global gathering for shellfish restoration science and practice since 1996',
+    icsrCTA2026: 'ICSR2026 - Puget Sound',
+
+    // ICSR - About
+    icsrAboutHeading: 'About ICSR',
+    icsrAboutText1: 'Since 1996, the International Conference on Shellfish Restoration has convened the global restoration community every two years. ICSR brings together 300+ participants from 20+ countries, creating unparalleled opportunities for knowledge exchange, collaboration, and innovation.',
+    icsrAboutText2: 'The conference features cutting-edge research presentations, interactive workshops, field visits, panel discussions, and networking events that advance the science and practice of shellfish restoration worldwide.',
+
+    // ICSR - Who Attends
+    icsrWhoAttendsHeading: 'Who Attends ICSR',
+    icsrAttendeeScientists: 'Research Scientists',
+    icsrAttendeeScientistsDesc: 'Leading researchers presenting the latest findings in shellfish ecology, restoration techniques, and ecosystem services.',
+    icsrAttendeePractitioners: 'Restoration Practitioners',
+    icsrAttendeePractitionersDesc: 'On-the-ground experts sharing lessons learned and innovative approaches from real-world projects.',
+    icsrAttendeeManagers: 'Resource Managers',
+    icsrAttendeeManagersDesc: 'Government officials and natural resource managers developing restoration policies and programs.',
+    icsrAttendeeOrgs: 'Conservation Organizations',
+    icsrAttendeeOrgsDesc: 'NGOs and nonprofits leading restoration initiatives across coastal ecosystems.',
+    icsrAttendeeIndigenous: 'Indigenous Groups',
+    icsrAttendeeIndigenousDesc: 'Traditional knowledge holders and stewards of shellfish resources and coastal habitats.',
+    icsrAttendeeStudents: 'Students',
+    icsrAttendeeStudentsDesc: 'Graduate students and early-career researchers building the next generation of restoration expertise.',
+
+    // ICSR - Conference Activities
+    icsrActivitiesHeading: 'Conference Activities',
+    icsrActivityResearch: 'Research Presentations',
+    icsrActivityResearchDesc: 'Oral presentations and lightning talks showcasing the latest research on oyster population dynamics, habitat assessment, urban restoration, species interactions, and restoration monitoring.',
+    icsrActivityWorkshops: 'Interactive Workshops',
+    icsrActivityWorkshopsDesc: 'Hands-on sessions covering restoration techniques, monitoring protocols, data analysis, stakeholder engagement, and project planning.',
+    icsrActivityFieldTrips: 'Field Trips',
+    icsrActivityFieldTripsDesc: 'Site visits to active restoration projects, providing firsthand experience with local restoration approaches and challenges.',
+    icsrActivityPanels: 'Panel Discussions',
+    icsrActivityPanelsDesc: 'Expert panels addressing policy, funding, partnerships, climate adaptation, and emerging restoration challenges.',
+    icsrActivityPosters: 'Poster Sessions',
+    icsrActivityPostersDesc: 'Evening poster presentations allowing in-depth discussions of research and restoration projects.',
+    icsrActivityNetworking: 'Networking Events',
+    icsrActivityNetworkingDesc: 'Welcome receptions, banquets, and social activities fostering connections across the global community.',
+
+    // ICSR - Conference History
+    icsrHistoryHeading: 'Conference History',
+    icsrHistoryIntro: 'ICSR has convened biannually since 1996, spanning four continents and bringing together thousands of restoration professionals over nearly three decades.',
+    icsr2020s: '2020s',
+    icsr2010s: '2010s',
+    icsr2000s: '2000s',
+    icsr1990s: '1990s',
+
+    // ICSR - Code of Conduct
+    icsrCodeOfConduct: 'Code of Conduct',
+    icsrCodeIntro: 'ICSR is committed to providing a respectful, inclusive, and welcoming environment for all participants. We maintain a zero-tolerance policy for harassment and inappropriate behavior.',
+    icsrCodeExpectations: 'Our Expectations',
+    icsrCodeReporting: '<strong>Reporting:</strong> Participants who experience or witness harassment should contact conference organizers at <a href="mailto:info@shellfish-society.org" style="color: var(--primary-blue);">info@shellfish-society.org</a>',
+
+    // ========== ICSR2026 PAGE ==========
+    // ICSR2026 - Hero
+    icsr2026HeroHeading: 'ICSR2026',
+    icsr2026HostedBy: 'Hosted by Puget Sound Restoration Foundation',
+    icsr2026Location: 'Puget Sound, Washington State',
+    icsr2026Dates: 'October 4-8, 2026',
+
+    // ICSR2026 - Overview
+    icsr2026OverviewHeading: 'Join Us in the Pacific Northwest',
+    icsr2026OverviewText1: 'The 2026 International Conference on Shellfish Restoration will bring together the global restoration community for four days of cutting-edge research, practical workshops, and invaluable networking with restoration practitioners from around the world.',
+    icsr2026OverviewText2: 'Set in the spectacular Puget Sound region, ICSR2026 will explore the intersection of traditional ecological knowledge, modern restoration science, and community-based conservation.',
+    icsr2026MailingListCTA: 'Join Mailing List for Updates',
+
+    // ICSR2026 - Important Dates
+    icsr2026DatesHeading: 'Important Dates',
+    icsr2026ConferenceDates: 'Conference Dates',
+    icsr2026DownloadICS: 'Download .ics',
+    icsr2026GoogleCalendar: 'Google Calendar',
+    icsr2026Outlook: 'Outlook',
+    icsr2026AbstractDeadline: 'Abstract Deadline',
+    icsr2026ComingSoon: 'Coming Soon',
+    icsr2026EarlyBird: 'Early Bird Registration',
+    icsr2026Early2026: 'Early 2026',
+    icsr2026HotelBooking: 'Hotel Booking',
+    icsr2026InfoTBA: 'Information TBA',
+
+    // ICSR2026 - What to Expect
+    icsr2026ExpectHeading: 'What to Expect',
+    icsr2026ExpectResearch: 'Cutting-Edge Research',
+    icsr2026ExpectResearchDesc: 'Oral presentations and lightning talks on oyster dynamics, habitat monitoring, urban restoration, species interactions, reef structures, and climate adaptation',
+    icsr2026ExpectWorkshops: 'Hands-On Workshops',
+    icsr2026ExpectWorkshopsDesc: 'Interactive sessions on restoration planning, monitoring protocols, community engagement, traditional knowledge, funding, and data analysis',
+    icsr2026ExpectFieldTrips: 'Field Trips',
+    icsr2026ExpectFieldTripsDesc: 'Site visits to Tribal restoration sites, Puget Sound oyster reefs, urban shoreline projects, Olympia oyster recovery, and geoduck restoration',
+    icsr2026ExpectNetworking: 'Networking',
+    icsr2026ExpectNetworkingDesc: 'Welcome reception, poster sessions, conference banquet, regional network meetings, and informal gatherings throughout the week',
+
+    // ICSR2026 - Venue
+    icsr2026VenueHeading: 'Conference Venue at Squaxin Island Tribe Territory',
+    icsr2026VenueText1: 'ICSR2026 will be held at the Little Creek Resort and Conference Center, operated by the Squaxin Island Tribe in Shelton, Washington. The Squaxin Island people\'s ancestral territory includes much of southern Puget Sound, and they have been stewards of shellfish resources for thousands of years, maintaining deep cultural and spiritual connections to clams, oysters, and other shellfish.',
+    icsr2026VenueText2: 'Today, the Tribe continues this tradition through active shellfish management, restoration programs, and aquaculture operations, integrating traditional ecological knowledge with modern conservation science. ICSR2026 will provide unique opportunities to learn from Tribal restoration practitioners and experience Indigenous approaches to shellfish stewardship.',
+
+    // ICSR2026 - Why Puget Sound
+    icsr2026WhyHeading: 'Why Puget Sound?',
+    icsr2026WhyIntro: 'Puget Sound is a global hotspot for shellfish restoration innovation with deep cultural connections to shellfish:',
+    icsr2026WhySpecies: 'Diverse Species',
+    icsr2026WhySpeciesDesc: 'Home to native Olympia oysters, Pacific oysters, geoduck clams, Manila clams, and numerous other shellfish species.',
+    icsr2026WhyResearch: 'Research Excellence',
+    icsr2026WhyResearchDesc: 'Leading universities and research institutions advancing shellfish science and restoration techniques.',
+    icsr2026WhyTribal: 'Tribal Leadership',
+    icsr2026WhyTribalDesc: 'Coast Salish Tribes leading innovative restoration programs rooted in traditional knowledge.',
+    icsr2026WhyRestoration: 'Active Restoration',
+    icsr2026WhyRestorationDesc: 'Dozens of ongoing restoration projects addressing water quality, habitat loss, and climate change.',
+    icsr2026WhyPolicy: 'Policy Innovation',
+    icsr2026WhyPolicyDesc: 'Progressive shellfish management and restoration policies serving as models for other regions.',
+    icsr2026WhyEcosystem: 'Ecosystem Focus',
+    icsr2026WhyEcosystemDesc: 'Holistic approaches integrating shellfish restoration with broader coastal ecosystem recovery.',
+
+    // ICSR2026 - Expected Attendance
+    icsr2026AttendanceHeading: 'Expected Attendance',
+    icsr2026Participants: 'Participants',
+    icsr2026Countries: 'Countries',
+    icsr2026Presentations: 'Presentations',
+
+    // ICSR2026 - Registration & Sponsorship
+    icsr2026RegistrationHeading: 'Registration',
+    icsr2026RegistrationText: 'Registration will open in early 2026. Sign up for updates to be notified when registration becomes available.',
+    icsr2026RequestUpdates: 'Request Updates',
+    icsr2026SponsorshipHeading: 'Sponsorship Opportunities',
+    icsr2026SponsorshipText: 'Support ICSR2026 and connect with the global shellfish restoration community. Sponsorship opportunities include event support (field trips, reception, banquet) and student travel grants.',
+    icsr2026InquireSponsorship: 'Inquire About Sponsorship',
+
+    // ICSR2026 - Sponsors
+    icsr2026SponsorsHeading: 'Conference Sponsors',
+    icsr2026SponsorsIntro: 'We gratefully acknowledge our sponsors who make ICSR2026 possible through their generous support.',
+
+    // ICSR2026 - Code of Conduct
+    icsr2026CodeHeading: 'Code of Conduct',
+    icsr2026CodeText: 'ICSR2026 is committed to providing a respectful, inclusive, and welcoming environment for all participants. We maintain a zero-tolerance policy for harassment and inappropriate behavior. All attendees are expected to treat each other with respect, welcome diverse perspectives, and refrain from unauthorized photography or recording.',
+
+    // ICSR2026 - Mailing List Modal
+    icsr2026ModalCloseAriaLabel: 'Close mailing list modal',
+    icsr2026ModalTitle: 'Join Our Mailing List',
+    icsr2026ModalSubtitle: 'Stay updated on ICSR2026 registration, abstract submissions, and conference details.',
+    icsr2026ModalErrorMessage: 'There was an error submitting your information. Please try again or contact us directly at info@shellfish-society.org',
+
+    // ========== GALLERY PAGE ==========
+    // Gallery - Header
+    galleryHeading: 'Photo Gallery',
+    gallerySubtitle: 'Explore photos from shellfish restoration projects, research, and events from ISRS and the global restoration community',
+    galleryDescription: 'Explore photos from shellfish restoration projects, research, and events from ISRS and the global restoration community',
+
+    // Gallery - Search & Filters
+    gallerySearchFilterHeading: '🔍 Search & Filter',
+    gallerySearchLabel: 'Text Search',
+    gallerySearchPlaceholder: 'Caption, tags, location...',
+    galleryAISearchLabel: 'AI Visual Search',
+    galleryAISearchPlaceholder: 'Describe the scene...',
+    galleryConferenceLabel: 'Conference/Event',
+    galleryAllEvents: 'All Events',
+    galleryPhotoTypeLabel: 'Photo Type',
+    galleryAllTypes: 'All Types',
+    galleryTypeConference: 'Conference Photos',
+    galleryTypeHistoric: 'Historic Photos',
+    galleryTypeHeadshots: 'Headshots/People',
+    galleryTypeLogos: 'Logos',
+    galleryTypeBackgrounds: 'Backgrounds',
+    galleryLocationLabel: 'Location',
+    galleryAllLocations: 'All Locations',
+    galleryYearLabel: 'Year',
+    galleryAllYears: 'All Years',
+    gallerySortByLabel: 'Sort By',
+    gallerySortDateNewest: 'Date (Newest First)',
+    gallerySortDateOldest: 'Date (Oldest First)',
+    gallerySortAlphaAZ: 'Alphabetical (A-Z)',
+    gallerySortAlphaZA: 'Alphabetical (Z-A)',
+    gallerySortCategory: 'Category',
+    gallerySortPhotographer: 'Photographer',
+    gallerySearchButton: 'Search',
+    galleryClearButton: 'Clear',
+    galleryShowingAll: 'Showing all photos',
+    galleryDownloadButton: '📥 Download Filtered Photos',
+    galleryDownloadDesc: 'Download all visible photos as ZIP',
+    galleryUploadButton: '📤 Upload Photos',
+    galleryUploadHeading: 'Share Your Photos',
+    galleryUploadDescription: 'Upload photos from your restoration projects, field work, or events. Our AI will help analyze and tag your images.',
+    galleryFeaturedHeading: '⭐ Featured',
+    galleryFeaturedICSR2024: 'ICSR 2024',
+    galleryFeaturedICSR2024Desc: 'Jekyll Island • 92 photos',
+    galleryLegalHeading: '📄 Legal',
+    galleryLegalNotice: '<strong>Copyright Notice:</strong> Photos copyright ISRS, akorn environmental, and contributors. All rights reserved.',
+    galleryLegalViewTerms: 'View full terms',
+    galleryKeyboardShortcuts: '⌨️ Keyboard Shortcuts',
+    galleryLoading: 'Loading gallery...',
+
+    // Gallery - Legal Notice
+    galleryLegalHeading: 'Copyright Notice',
+    galleryLegalText: 'Photos are copyright their respective owners (ISRS, akorn environmental, and individual contributors). All rights reserved. Unauthorized use, reproduction, or distribution is prohibited.',
+    galleryViewTerms: 'View full terms',
+
+    // Gallery - Lightbox
+    galleryDownload: 'Download',
+    galleryFavorite: 'Favorite',
+    galleryShare: 'Share',
+    galleryPhotoDetails: 'Photo Details',
+    galleryRelatedPhotos: 'Related Photos',
+    galleryComments: 'Comments',
+    galleryAddComment: 'Add a comment...',
+    galleryPostComment: 'Post Comment',
+    galleryNoComments: 'No comments yet. Be the first!',
+
+    // Gallery - Metadata Labels
+    galleryFilename: 'Filename',
+    galleryDateTaken: 'Date Taken',
+    galleryCamera: 'Camera',
+    galleryLens: 'Lens',
+    galleryFocalLength: 'Focal Length',
+    galleryAperture: 'Aperture',
+    galleryShutterSpeed: 'Shutter Speed',
+    galleryISO: 'ISO',
+    galleryViews: 'Views',
+
+    // Gallery - Messages
+    galleryFavoriteSuccess: 'Added to your favorites!',
+    galleryCommentSuccess: 'Comment posted!',
+    galleryLoginRequired: 'Please log in to comment',
+    galleryLoginFavorite: 'Please log in to save favorites',
+    galleryLinkCopied: 'Link copied to clipboard!',
+    galleryDownloadConfirm: 'Download {count} photos as ZIP file?',
+    galleryDownloadStarted: 'Download started!',
+    galleryDownloadFailed: 'Download failed. Please try again or contact support.',
+    galleryNoPhotos: 'No photos to download',
+    galleryLoadingMore: 'Loading more photos...',
+    galleryNoMore: 'You\'ve reached the end!',
+
+    // Gallery - Keyboard Shortcuts
+    galleryShortcutsHeading: 'Keyboard Shortcuts',
+    galleryShortcutHelp: 'Show/hide this help',
+    galleryShortcutNext: 'Next photo',
+    galleryShortcutPrev: 'Previous photo',
+    galleryShortcutClose: 'Close lightbox',
+    galleryShortcutZoomIn: 'Zoom in',
+    galleryShortcutZoomOut: 'Zoom out',
+    galleryShortcutZoomReset: 'Reset zoom',
+    galleryShortcutFullscreen: 'Toggle fullscreen',
+    galleryShortcutSearch: 'Focus search',
+
+    // Gallery - Empty States
+    galleryNoPhotosFound: 'No Photos Found',
+    galleryNoPhotosMessage: 'No photos match your current filters. Try adjusting your search criteria.',
+    galleryComingSoonHeading: 'Gallery Coming Soon',
+    galleryComingSoonMessage: 'Check back later for photos from our restoration projects and events.',
+
+    // ========== SUPPORT PAGE ==========
+    // Support - Hero
+    supportHeroHeading: 'Support ISRS',
+    supportHeroSubtitle: 'Building Global Resilience Through Marine Ecosystem Restoration',
+
+    // Support - Opportunity
+    supportOpportunityHeading: 'The Critical Opportunity',
+    supportOpportunityText: 'Molluscan shellfish ecosystems provide some of nature\'s most powerful solutions to our most pressing challenges. A single oyster filters 50 gallons of water daily. Shellfish reefs protect coastlines from storm surge and sea level rise. These ecosystems support biodiversity, sequester carbon, and sustain coastal communities—yet we\'ve lost up to 85% of them globally.',
+    supportOpportunityBox: 'ISRS exists to reverse this trend',
+    supportOpportunityBoxText: 'By unifying the global restoration community, advancing scientific understanding, and scaling successful restoration approaches worldwide. Our flagship initiative is the biennial International Conference on Shellfish Restoration (ICSR)—the world\'s premier gathering for molluscan shellfish restoration since 1996.',
+
+    // Support - Stats
+    support50Gallons: 'Gallons filtered daily per oyster',
+    support85Loss: 'Global shellfish loss',
+    support300Plus: 'ICSR practitioners',
+    support20Countries: 'Countries represented',
+
+    // Support - Urgent Need
+    supportUrgentHeading: 'Urgent Need: Federal Funding Crisis',
+    supportUrgentText: 'Recent federal budget changes have created unprecedented challenges for molluscan shellfish restoration:',
+    supportUrgentConclusion: 'The molluscan shellfish restoration community has responded with remarkable resilience. ISRS strengthens this community, connecting practitioners with diverse funding sources and ensuring restoration momentum continues despite federal challenges.',
+
+    // Support - Partnership Opportunities
+    supportPartnerHeading: 'Partnership Opportunities',
+    supportPartnerIntro: 'ISRS welcomes partners at all levels who share our commitment to healthy marine ecosystems.',
+
+    supportFoundations: 'For Foundations',
+    supportFoundationsDesc: 'Strategic investment in proven nature-based climate solutions with global impact potential.',
+    supportFoundationsImpact: 'Your Impact',
+    supportFoundationsLevels: 'Investment Levels:',
+
+    supportCorporations: 'For Corporations',
+    supportCorporationsDesc: 'Demonstrate environmental leadership while delivering concrete ESG benefits.',
+    supportCorporationsImpact: 'Your Impact',
+    supportCorporationsLevels: 'Partnership Levels:',
+
+    supportGovernment: 'For Government',
+    supportGovernmentDesc: 'Multilateral collaboration for coastal resilience and sustainable resource management.',
+    supportGovernmentImpact: 'Your Impact',
+    supportGovernmentLevels: 'Partnership Levels:',
+
+    supportAcademia: 'For Academia',
+    supportAcademiaDesc: 'Advance scientific understanding through global collaboration.',
+    supportAcademiaImpact: 'Your Impact',
+    supportAcademiaLevels: 'Partnership Levels:',
+
+    supportIndustry: 'For Industry',
+    supportIndustryDesc: 'Protect the marine resources your business depends on.',
+    supportIndustryImpact: 'Your Impact',
+    supportIndustryLevels: 'Partnership Levels:',
+
+    supportIndividual: 'For Individual Donors',
+    supportIndividualDesc: 'Join the global restoration movement at any level.',
+    supportIndividualLevels: 'Membership Levels',
+
+    // Support - Programs
+    supportProgramsHeading: 'Programs Delivering Global Impact',
+    supportProgramICR: 'Biennial ICSR Conference',
+    supportProgramICRDesc: 'The world\'s premier gathering for molluscan shellfish restoration, bringing together 300+ practitioners from 20+ countries to share breakthrough science and successful restoration approaches. ICSR2026 will be held October 4-8, 2026, at the Little Creek Resort and Conference Center, operated by the Squaxin Island Tribe in Shelton, Washington.',
+    supportProgramNetwork: 'Global Professional Network',
+    supportProgramNetworkDesc: 'Year-round engagement connecting restoration practitioners worldwide through forums, webinars, and collaborative initiatives addressing shared challenges.',
+    supportProgramResearch: 'Research & Innovation Support',
+    supportProgramResearchDesc: 'Facilitating collaborative research, documenting best practices, and supporting student engagement in restoration science.',
+    supportProgramPolicy: 'Policy & Advocacy',
+    supportProgramPolicyDesc: 'Advancing science-based restoration policies and connecting practitioners with funding opportunities and regulatory support.',
+
+    // Support - Feedback
+    supportFeedbackHeading: 'Share Your Feedback',
+    supportFeedbackIntro: 'Have suggestions or questions about our partnership opportunities? We\'d love to hear from you.',
+    supportFirstName: 'First Name',
+    supportLastName: 'Last Name',
+    supportEmail: 'Email',
+    supportOrganization: 'Organization',
+    supportInquiryType: 'Inquiry Type',
+    supportMessage: 'Message',
+    supportSend: 'Send Message',
+
+    // Support - Inquiry Types
+    supportGeneral: 'General Inquiry',
+    supportFoundationPartner: 'Foundation Partnership',
+    supportCorporatePartner: 'Corporate Partnership',
+    supportGovernmentPartner: 'Government Partnership',
+    supportAcademicPartner: 'Academic Partnership',
+    supportIndividualDonation: 'Individual Donation',
+    supportOther: 'Other',
+
+    // Support - CTA
+    supportCTAHeading: 'Join Us',
+    supportCTAText: 'Together, we can build resilient coasts and healthy oceans for future generations through the power of molluscan shellfish restoration.',
+    supportContactPartnership: 'Contact Us About Partnership',
+    supportViewPressKit: 'View Press Kit'
   },
   es: {
     // Navegación
     home: 'Inicio',
     about: 'Acerca de',
     icsr: 'ICSR',
+    gallery: 'Galería',
+    support: 'Apoyo',
     donate: 'DONAR',
     skipToMain: 'Saltar al contenido principal',
 
@@ -625,6 +1056,19 @@ const translations = {
     adminPortal: 'Portal Administrativo',
     copyright: '© 2025 Sociedad Internacional para la Restauración de Moluscos. Todos los derechos reservados.',
     taxId: 'Identificación Fiscal (EIN): 39-2829151',
+
+    // Pie de página
+    footerTagline: 'Construyendo comunidad e innovación avanzada en la restauración global de moluscos',
+    footerLegal: 'Legal',
+    footerPrivacyPolicy: 'Política de Privacidad',
+    footerTermsOfService: 'Términos de Servicio',
+    footerCodeOfConduct: 'Código de Conducta',
+    footerAccessibility: 'Accesibilidad',
+    footerSitemap: 'Mapa del Sitio',
+    footerPhotoGallery: 'Galería de Fotos',
+    footerSupportISRS: 'Apoye a ISRS',
+    footerPressKit: 'Kit de Prensa',
+    footerTaxDisclaimer: 'ISRS es una organización sin fines de lucro 501(c)(3) (pendiente de aprobación del IRS). Las donaciones son deducibles de impuestos en la medida permitida por la ley.',
 
     // Portal de Miembros - Inicio de Sesión
     memberLogin: 'Inicio de Sesión de Miembro',
@@ -1008,13 +1452,433 @@ const translations = {
 
     // Mensajes de Éxito
     registrationCreatedSuccess: '¡Registro creado exitosamente! Redirigiendo al pago...',
-    registrationCreatedInstructions: '¡Registro creado exitosamente! Redirigiendo a instrucciones de pago...'
+    registrationCreatedInstructions: '¡Registro creado exitosamente! Redirigiendo a instrucciones de pago...',
+
+    // ========== PÁGINA ACERCA DE ==========
+    // Acerca de - Hero
+    aboutHeroHeading: 'Acerca de ISRS',
+    aboutHeroSubtitle: 'La Sociedad Internacional para la Restauración de Moluscos apoya a la comunidad global de restauración de moluscos a través de la colaboración, la innovación y el intercambio de conocimientos.',
+
+    // Acerca de - Quiénes Somos
+    aboutWhoWeAre: 'Quiénes Somos',
+    aboutWhoWeAreText: 'La Sociedad Internacional para la Restauración de Moluscos (ISRS) es una organización sin fines de lucro 501(c)(3) (pendiente de aprobación del IRS) establecida en 2024 para apoyar a la comunidad global de restauración de moluscos. Surgimos de la Conferencia Internacional sobre Restauración de Moluscos (ICSR), que ha convocado a la comunidad de restauración desde su fundación en 1996.',
+
+    // Acerca de - Misión y Visión
+    aboutMission: 'Misión',
+    aboutMissionText: 'Construir comunidad, facilitar la comunicación y promover la innovación dentro de la comunidad de restauración de moluscos en todo el mundo.',
+    aboutVision: 'Visión',
+    aboutVisionText: 'Un futuro donde los ecosistemas de moluscos saludables apoyen costas resilientes, vida marina próspera y comunidades sostenibles en todo el mundo.',
+
+    // Acerca de - Valores Fundamentales
+    aboutCoreValuesHeading: 'Nuestros Valores Fundamentales',
+    aboutCoreValuesIntro: 'ISRS opera guiada por seis principios fundamentales que dan forma a nuestro trabajo y comunidad:',
+    aboutValueScience: 'Enfoque Basado en la Ciencia',
+    aboutValueScienceDesc: 'Aplicamos investigación rigurosa para informar las prácticas de restauración y la toma de decisiones.',
+    aboutValueCollaborative: 'Asociaciones Colaborativas',
+    aboutValueCollaborativeDesc: 'Creemos en el poder de trabajar juntos a través de sectores, disciplinas y fronteras.',
+    aboutValueInclusive: 'Participación Inclusiva',
+    aboutValueInclusiveDesc: 'Damos la bienvenida a perspectivas diversas de científicos, profesionales, comunidades indígenas, formuladores de políticas e industria.',
+    aboutValueInnovation: 'Innovación',
+    aboutValueInnovationDesc: 'Promovemos la resolución creativa de problemas y nuevas técnicas y tecnologías de restauración.',
+    aboutValueImpact: 'Impulsado por el Impacto',
+    aboutValueImpactDesc: 'Nos enfocamos en resultados medibles que benefician a las poblaciones de moluscos, los ecosistemas y las comunidades.',
+    aboutValueSustainability: 'Sostenibilidad',
+    aboutValueSustainabilityDesc: 'Defendemos enfoques de restauración que apoyan la salud ecológica y la resiliencia a largo plazo.',
+
+    // Acerca de - Lo Que Hacemos
+    aboutWhatWeDo: 'Lo Que Hacemos',
+    aboutHostICR: 'Organizar la Conferencia ICSR',
+    aboutHostICRDesc: 'Organizamos la Conferencia Internacional sobre Restauración de Moluscos bienal, reuniendo a más de 300 participantes de más de 20 países para compartir investigaciones, mejores prácticas y nuevas innovaciones.',
+    aboutFacilitateNetworking: 'Facilitar el Networking',
+    aboutFacilitateNetworkingDesc: 'Conectamos a profesionales de restauración en todo el mundo a través de canales de comunicación durante todo el año, grupos de trabajo e intercambio de conocimientos.',
+    aboutSupportRegional: 'Apoyar Redes Regionales',
+    aboutSupportRegionalDesc: 'Colaboramos con redes regionales de restauración en América del Norte, Europa, Asia, Australia y más allá para avanzar en iniciativas de restauración locales.',
+    aboutPromoteKnowledge: 'Promover el Intercambio de Conocimientos',
+    aboutPromoteKnowledgeDesc: 'Facilitamos el intercambio de técnicas de restauración, hallazgos de investigación y lecciones aprendidas en toda la comunidad global.',
+    aboutEngageDiverse: 'Involucrar a Diversos Interesados',
+    aboutEngageDiverseDesc: 'Reunimos a investigadores, administradores, conservacionistas, grupos indígenas, socios de la industria y formuladores de políticas para un diálogo colaborativo.',
+    aboutAdvanceInnovation: 'Avanzar en la Innovación',
+    aboutAdvanceInnovationDesc: 'Apoyamos el desarrollo y la difusión de nuevos enfoques, tecnologías y estrategias de restauración.',
+
+    // Acerca de - Nuestra Comunidad
+    aboutCommunityHeading: 'Nuestra Comunidad',
+    aboutCommunityIntro: 'ISRS reúne a una comunidad global diversa dedicada a la restauración de moluscos:',
+    aboutCommunityScientists: 'Científicos Investigadores',
+    aboutCommunityScientistsDesc: 'Avanzando la ciencia y el monitoreo de restauración',
+    aboutCommunityPractitioners: 'Profesionales de Restauración',
+    aboutCommunityPractitionersDesc: 'Implementando proyectos sobre el terreno',
+    aboutCommunityManagers: 'Administradores de Recursos',
+    aboutCommunityManagersDesc: 'Gestionando poblaciones y hábitats de moluscos',
+    aboutCommunityOrgs: 'Organizaciones de Conservación',
+    aboutCommunityOrgsDesc: 'Protegiendo ecosistemas costeros',
+    aboutCommunityIndigenous: 'Comunidades Indígenas',
+    aboutCommunityIndigenousDesc: 'Cuidando recursos tradicionales de moluscos',
+    aboutCommunityIndustry: 'Socios de la Industria',
+    aboutCommunityIndustryDesc: 'Promoviendo la acuicultura sostenible',
+    aboutCommunityPolicy: 'Formuladores de Políticas',
+    aboutCommunityPolicyDesc: 'Desarrollando políticas favorables a la restauración',
+    aboutCommunityStudents: 'Estudiantes y Educadores',
+    aboutCommunityStudentsDesc: 'Formando la próxima generación',
+
+    // Acerca de - Asociaciones Estratégicas
+    aboutPartnershipsHeading: 'Asociaciones Estratégicas',
+    aboutPartnershipsIntro: 'ISRS colabora con organizaciones líderes para amplificar nuestro impacto:',
+    aboutPartnerNORA: 'Alianza para la Restauración de Ostras Nativas (NORA)',
+    aboutPartnerNORADesc: 'Asociación enfocada en avanzar la restauración de ostras en América del Norte a través de recursos compartidos, intercambio de conocimientos e iniciativas coordinadas.',
+    aboutPartnerAustralasia: 'Red de Restauración Costera de Australasia',
+    aboutPartnerAustralasiaDesc: 'Colaboración para conectar a profesionales de restauración en Australia, Nueva Zelanda y la región del Pacífico, compartiendo innovaciones en restauración de moluscos y costera.',
+
+    // ========== PÁGINA ICSR ==========
+    // ICSR - Hero
+    icsrHeroHeading: 'Conferencia Internacional sobre Restauración de Moluscos',
+    icsrHeroSubtitle: 'La reunión global premier para la ciencia y práctica de restauración de moluscos desde 1996',
+    icsrCTA2026: 'ICSR2026 - Puget Sound',
+
+    // ICSR - Acerca de
+    icsrAboutHeading: 'Acerca de ICSR',
+    icsrAboutText1: 'Desde 1996, la Conferencia Internacional sobre Restauración de Moluscos ha convocado a la comunidad global de restauración cada dos años. ICSR reúne a más de 300 participantes de más de 20 países, creando oportunidades sin precedentes para el intercambio de conocimientos, colaboración e innovación.',
+    icsrAboutText2: 'La conferencia presenta presentaciones de investigación de vanguardia, talleres interactivos, visitas de campo, paneles de discusión y eventos de networking que avanzan la ciencia y la práctica de la restauración de moluscos en todo el mundo.',
+
+    // ICSR - Quién Asiste
+    icsrWhoAttendsHeading: 'Quién Asiste a ICSR',
+    icsrAttendeeScientists: 'Científicos Investigadores',
+    icsrAttendeeScientistsDesc: 'Investigadores líderes presentando los últimos hallazgos en ecología de moluscos, técnicas de restauración y servicios ecosistémicos.',
+    icsrAttendeePractitioners: 'Profesionales de Restauración',
+    icsrAttendeePractitionersDesc: 'Expertos sobre el terreno compartiendo lecciones aprendidas y enfoques innovadores de proyectos del mundo real.',
+    icsrAttendeeManagers: 'Administradores de Recursos',
+    icsrAttendeeManagersDesc: 'Funcionarios gubernamentales y administradores de recursos naturales desarrollando políticas y programas de restauración.',
+    icsrAttendeeOrgs: 'Organizaciones de Conservación',
+    icsrAttendeeOrgsDesc: 'ONGs y organizaciones sin fines de lucro liderando iniciativas de restauración en ecosistemas costeros.',
+    icsrAttendeeIndigenous: 'Grupos Indígenas',
+    icsrAttendeeIndigenousDesc: 'Portadores de conocimiento tradicional y custodios de recursos de moluscos y hábitats costeros.',
+    icsrAttendeeStudents: 'Estudiantes',
+    icsrAttendeeStudentsDesc: 'Estudiantes de posgrado e investigadores en etapa temprana construyendo la próxima generación de experiencia en restauración.',
+
+    // ICSR - Actividades de la Conferencia
+    icsrActivitiesHeading: 'Actividades de la Conferencia',
+    icsrActivityResearch: 'Presentaciones de Investigación',
+    icsrActivityResearchDesc: 'Presentaciones orales y charlas relámpago mostrando las últimas investigaciones sobre dinámica de poblaciones de ostras, evaluación de hábitat, restauración urbana, interacciones de especies y monitoreo de restauración.',
+    icsrActivityWorkshops: 'Talleres Interactivos',
+    icsrActivityWorkshopsDesc: 'Sesiones prácticas que cubren técnicas de restauración, protocolos de monitoreo, análisis de datos, participación de interesados y planificación de proyectos.',
+    icsrActivityFieldTrips: 'Viajes de Campo',
+    icsrActivityFieldTripsDesc: 'Visitas a proyectos de restauración activos, proporcionando experiencia de primera mano con enfoques y desafíos de restauración local.',
+    icsrActivityPanels: 'Paneles de Discusión',
+    icsrActivityPanelsDesc: 'Paneles de expertos abordando política, financiación, asociaciones, adaptación climática y desafíos emergentes de restauración.',
+    icsrActivityPosters: 'Sesiones de Pósteres',
+    icsrActivityPostersDesc: 'Presentaciones de pósteres vespertinas permitiendo discusiones en profundidad de investigaciones y proyectos de restauración.',
+    icsrActivityNetworking: 'Eventos de Networking',
+    icsrActivityNetworkingDesc: 'Recepciones de bienvenida, banquetes y actividades sociales fomentando conexiones en toda la comunidad global.',
+
+    // ICSR - Historia de la Conferencia
+    icsrHistoryHeading: 'Historia de la Conferencia',
+    icsrHistoryIntro: 'ICSR se ha convocado bianualmente desde 1996, abarcando cuatro continentes y reuniendo a miles de profesionales de restauración durante casi tres décadas.',
+    icsr2020s: 'Década de 2020',
+    icsr2010s: 'Década de 2010',
+    icsr2000s: 'Década de 2000',
+    icsr1990s: 'Década de 1990',
+
+    // ICSR - Código de Conducta
+    icsrCodeOfConduct: 'Código de Conducta',
+    icsrCodeIntro: 'ICSR se compromete a proporcionar un entorno respetuoso, inclusivo y acogedor para todos los participantes. Mantenemos una política de tolerancia cero para el acoso y el comportamiento inapropiado.',
+    icsrCodeExpectations: 'Nuestras Expectativas',
+    icsrCodeReporting: '<strong>Reportes:</strong> Los participantes que experimenten o presencien acoso deben contactar a los organizadores de la conferencia en <a href="mailto:info@shellfish-society.org" style="color: var(--primary-blue);">info@shellfish-society.org</a>',
+
+    // ========== PÁGINA ICSR2026 ==========
+    // ICSR2026 - Hero
+    icsr2026HeroHeading: 'ICSR2026',
+    icsr2026HostedBy: 'Organizado por la Fundación de Restauración de Puget Sound',
+    icsr2026Location: 'Puget Sound, Estado de Washington',
+    icsr2026Dates: '4-8 de Octubre de 2026',
+
+    // ICSR2026 - Descripción General
+    icsr2026OverviewHeading: 'Únase a Nosotros en el Noroeste del Pacífico',
+    icsr2026OverviewText1: 'La Conferencia Internacional sobre Restauración de Moluscos 2026 reunirá a la comunidad global de restauración durante cuatro días de investigación de vanguardia, talleres prácticos y networking invaluable con profesionales de restauración de todo el mundo.',
+    icsr2026OverviewText2: 'Situada en la espectacular región de Puget Sound, ICSR2026 explorará la intersección del conocimiento ecológico tradicional, la ciencia moderna de restauración y la conservación basada en la comunidad.',
+    icsr2026MailingListCTA: 'Únase a la Lista de Correo para Actualizaciones',
+
+    // ICSR2026 - Fechas Importantes
+    icsr2026DatesHeading: 'Fechas Importantes',
+    icsr2026ConferenceDates: 'Fechas de la Conferencia',
+    icsr2026DownloadICS: 'Descargar .ics',
+    icsr2026GoogleCalendar: 'Google Calendar',
+    icsr2026Outlook: 'Outlook',
+    icsr2026AbstractDeadline: 'Fecha Límite de Resúmenes',
+    icsr2026ComingSoon: 'Próximamente',
+    icsr2026EarlyBird: 'Registro Anticipado',
+    icsr2026Early2026: 'Principios de 2026',
+    icsr2026HotelBooking: 'Reserva de Hotel',
+    icsr2026InfoTBA: 'Información Por Anunciar',
+
+    // ICSR2026 - Qué Esperar
+    icsr2026ExpectHeading: 'Qué Esperar',
+    icsr2026ExpectResearch: 'Investigación de Vanguardia',
+    icsr2026ExpectResearchDesc: 'Presentaciones orales y charlas relámpago sobre dinámica de ostras, monitoreo de hábitat, restauración urbana, interacciones de especies, estructuras de arrecifes y adaptación climática',
+    icsr2026ExpectWorkshops: 'Talleres Prácticos',
+    icsr2026ExpectWorkshopsDesc: 'Sesiones interactivas sobre planificación de restauración, protocolos de monitoreo, participación comunitaria, conocimiento tradicional, financiación y análisis de datos',
+    icsr2026ExpectFieldTrips: 'Viajes de Campo',
+    icsr2026ExpectFieldTripsDesc: 'Visitas a sitios de restauración tribales, arrecifes de ostras de Puget Sound, proyectos de costas urbanas, recuperación de ostras Olympia y restauración de almejas geoduck',
+    icsr2026ExpectNetworking: 'Networking',
+    icsr2026ExpectNetworkingDesc: 'Recepción de bienvenida, sesiones de pósteres, banquete de conferencia, reuniones de redes regionales y reuniones informales durante toda la semana',
+
+    // ICSR2026 - Lugar
+    icsr2026VenueHeading: 'Lugar de la Conferencia en el Territorio de la Tribu Squaxin Island',
+    icsr2026VenueText1: 'ICSR2026 se llevará a cabo en el Little Creek Resort and Conference Center, operado por la Tribu Squaxin Island en Shelton, Washington. El territorio ancestral del pueblo Squaxin Island incluye gran parte del sur de Puget Sound, y han sido administradores de recursos de moluscos durante miles de años, manteniendo profundas conexiones culturales y espirituales con almejas, ostras y otros moluscos.',
+    icsr2026VenueText2: 'Hoy, la Tribu continúa esta tradición a través de la gestión activa de moluscos, programas de restauración y operaciones de acuicultura, integrando el conocimiento ecológico tradicional con la ciencia de conservación moderna. ICSR2026 brindará oportunidades únicas para aprender de los profesionales de restauración tribales y experimentar enfoques indígenas para la administración de moluscos.',
+
+    // ICSR2026 - Por Qué Puget Sound
+    icsr2026WhyHeading: '¿Por Qué Puget Sound?',
+    icsr2026WhyIntro: 'Puget Sound es un punto caliente global para la innovación en restauración de moluscos con profundas conexiones culturales con los moluscos:',
+    icsr2026WhySpecies: 'Especies Diversas',
+    icsr2026WhySpeciesDesc: 'Hogar de ostras Olympia nativas, ostras del Pacífico, almejas geoduck, almejas Manila y numerosas otras especies de moluscos.',
+    icsr2026WhyResearch: 'Excelencia en Investigación',
+    icsr2026WhyResearchDesc: 'Universidades e instituciones de investigación líderes que avanzan la ciencia de moluscos y las técnicas de restauración.',
+    icsr2026WhyTribal: 'Liderazgo Tribal',
+    icsr2026WhyTribalDesc: 'Tribus Coast Salish liderando programas innovadores de restauración basados en el conocimiento tradicional.',
+    icsr2026WhyRestoration: 'Restauración Activa',
+    icsr2026WhyRestorationDesc: 'Docenas de proyectos de restauración en curso que abordan la calidad del agua, la pérdida de hábitat y el cambio climático.',
+    icsr2026WhyPolicy: 'Innovación en Políticas',
+    icsr2026WhyPolicyDesc: 'Políticas progresivas de gestión y restauración de moluscos que sirven como modelos para otras regiones.',
+    icsr2026WhyEcosystem: 'Enfoque Ecosistémico',
+    icsr2026WhyEcosystemDesc: 'Enfoques holísticos que integran la restauración de moluscos con la recuperación más amplia del ecosistema costero.',
+
+    // ICSR2026 - Asistencia Esperada
+    icsr2026AttendanceHeading: 'Asistencia Esperada',
+    icsr2026Participants: 'Participantes',
+    icsr2026Countries: 'Países',
+    icsr2026Presentations: 'Presentaciones',
+
+    // ICSR2026 - Registro y Patrocinio
+    icsr2026RegistrationHeading: 'Registro',
+    icsr2026RegistrationText: 'El registro se abrirá a principios de 2026. Regístrese para recibir actualizaciones y ser notificado cuando el registro esté disponible.',
+    icsr2026RequestUpdates: 'Solicitar Actualizaciones',
+    icsr2026SponsorshipHeading: 'Oportunidades de Patrocinio',
+    icsr2026SponsorshipText: 'Apoye ICSR2026 y conéctese con la comunidad global de restauración de moluscos. Las oportunidades de patrocinio incluyen apoyo a eventos (viajes de campo, recepción, banquete) y becas de viaje para estudiantes.',
+    icsr2026InquireSponsorship: 'Consultar sobre Patrocinio',
+
+    // ICSR2026 - Patrocinadores
+    icsr2026SponsorsHeading: 'Patrocinadores de la Conferencia',
+    icsr2026SponsorsIntro: 'Agradecemos a nuestros patrocinadores que hacen posible ICSR2026 con su generoso apoyo.',
+
+    // ICSR2026 - Código de Conducta
+    icsr2026CodeHeading: 'Código de Conducta',
+    icsr2026CodeText: 'ICSR2026 se compromete a proporcionar un entorno respetuoso, inclusivo y acogedor para todos los participantes. Mantenemos una política de tolerancia cero para el acoso y el comportamiento inapropiado. Se espera que todos los asistentes se traten con respeto, den la bienvenida a diversas perspectivas y se abstengan de fotografía o grabación no autorizadas.',
+
+    // ICSR2026 - Modal de Lista de Correo
+    icsr2026ModalCloseAriaLabel: 'Cerrar modal de lista de correo',
+    icsr2026ModalTitle: 'Únase a Nuestra Lista de Correo',
+    icsr2026ModalSubtitle: 'Manténgase actualizado sobre el registro de ICSR2026, envío de resúmenes y detalles de la conferencia.',
+    icsr2026ModalErrorMessage: 'Hubo un error al enviar su información. Por favor intente nuevamente o contáctenos directamente en info@shellfish-society.org',
+
+    // ========== PÁGINA GALERÍA ==========
+    // Galería - Encabezado
+    galleryHeading: 'Galería de Fotos',
+    gallerySubtitle: 'Explore fotos de proyectos de restauración de moluscos, investigación y eventos de ISRS y la comunidad global de restauración',
+    galleryDescription: 'Explore fotos de proyectos de restauración de moluscos, investigación y eventos de ISRS y la comunidad global de restauración',
+
+    // Galería - Búsqueda y Filtros
+    gallerySearchFilterHeading: '🔍 Buscar y Filtrar',
+    gallerySearchLabel: 'Búsqueda de Texto',
+    gallerySearchPlaceholder: 'Descripción, etiquetas, ubicación...',
+    galleryAISearchLabel: 'Búsqueda Visual con IA',
+    galleryAISearchPlaceholder: 'Describa la escena...',
+    galleryConferenceLabel: 'Conferencia/Evento',
+    galleryAllEvents: 'Todos los Eventos',
+    galleryPhotoTypeLabel: 'Tipo de Foto',
+    galleryAllTypes: 'Todos los Tipos',
+    galleryTypeConference: 'Fotos de Conferencia',
+    galleryTypeHistoric: 'Fotos Históricas',
+    galleryTypeHeadshots: 'Retratos/Personas',
+    galleryTypeLogos: 'Logotipos',
+    galleryTypeBackgrounds: 'Fondos',
+    galleryLocationLabel: 'Ubicación',
+    galleryAllLocations: 'Todas las Ubicaciones',
+    galleryYearLabel: 'Año',
+    galleryAllYears: 'Todos los Años',
+    gallerySortByLabel: 'Ordenar Por',
+    gallerySortLabel: 'Ordenar Por',
+    gallerySortDateNewest: 'Fecha (Más Reciente Primero)',
+    gallerySortDateOldest: 'Fecha (Más Antigua Primero)',
+    gallerySortNewest: 'Fecha (Más Reciente Primero)',
+    gallerySortOldest: 'Fecha (Más Antigua Primero)',
+    gallerySortAlphaAZ: 'Alfabético (A-Z)',
+    gallerySortAlphaZA: 'Alfabético (Z-A)',
+    gallerySortCategory: 'Categoría',
+    gallerySortPhotographer: 'Fotógrafo',
+    gallerySearchButton: 'Buscar',
+    galleryApplyButton: 'Buscar',
+    galleryClearButton: 'Limpiar',
+    galleryShowingAll: 'Mostrando todas las fotos',
+    galleryDownloadButton: 'Descargar Seleccionadas',
+    galleryDownloadDesc: 'Descargar fotos seleccionadas',
+    galleryDownloadFiltered: 'Descargar Fotos Filtradas',
+    galleryUploadButton: 'Subir Fotos',
+    galleryUploadHeading: 'Subir Fotos',
+    galleryUploadDescription: 'Comparta fotos de sus proyectos de restauración, investigación o eventos. Archivos aceptados: JPG, PNG (máx. 10MB cada uno)',
+    galleryFeaturedHeading: 'Galerías Destacadas',
+    galleryFeaturedICSR2024: 'ICSR 2024 - Charleston',
+    galleryFeaturedICSR2024Desc: 'Explora momentos destacados de nuestra 11ª Conferencia Internacional sobre Restauración de Moluscos en Charleston, Carolina del Sur',
+    galleryLegalNotice: 'Todas las fotos son propiedad de sus respectivos dueños. Todos los derechos reservados.',
+    galleryLegalViewTerms: 'Ver términos completos',
+    galleryKeyboardShortcuts: 'Atajos de Teclado',
+    galleryLoading: 'Cargando fotos...',
+
+    // Galería - Aviso Legal
+    galleryLegalHeading: 'Aviso de Derechos de Autor',
+    galleryLegalText: 'Las fotos son propiedad de sus respectivos dueños (ISRS, akorn environmental y contribuyentes individuales). Todos los derechos reservados. El uso, reproducción o distribución no autorizados están prohibidos.',
+    galleryViewTerms: 'Ver términos completos',
+
+    // Galería - Lightbox
+    galleryDownload: 'Descargar',
+    galleryFavorite: 'Favorito',
+    galleryShare: 'Compartir',
+    galleryPhotoDetails: 'Detalles de la Foto',
+    galleryRelatedPhotos: 'Fotos Relacionadas',
+    galleryComments: 'Comentarios',
+    galleryAddComment: 'Agregar un comentario...',
+    galleryPostComment: 'Publicar Comentario',
+    galleryNoComments: '¡No hay comentarios aún. Sea el primero!',
+
+    // Galería - Etiquetas de Metadatos
+    galleryFilename: 'Nombre de Archivo',
+    galleryDateTaken: 'Fecha de Captura',
+    galleryCamera: 'Cámara',
+    galleryLens: 'Lente',
+    galleryFocalLength: 'Distancia Focal',
+    galleryAperture: 'Apertura',
+    galleryShutterSpeed: 'Velocidad de Obturación',
+    galleryISO: 'ISO',
+    galleryViews: 'Vistas',
+
+    // Galería - Mensajes
+    galleryFavoriteSuccess: '¡Agregado a tus favoritos!',
+    galleryCommentSuccess: '¡Comentario publicado!',
+    galleryLoginRequired: 'Por favor inicie sesión para comentar',
+    galleryLoginFavorite: 'Por favor inicie sesión para guardar favoritos',
+    galleryLinkCopied: '¡Enlace copiado al portapapeles!',
+    galleryDownloadConfirm: '¿Descargar {count} fotos como archivo ZIP?',
+    galleryDownloadStarted: '¡Descarga iniciada!',
+    galleryDownloadFailed: 'Descarga fallida. Por favor intente nuevamente o contacte a soporte.',
+    galleryNoPhotos: 'No hay fotos para descargar',
+    galleryLoadingMore: 'Cargando más fotos...',
+    galleryNoMore: '¡Ha llegado al final!',
+
+    // Galería - Atajos de Teclado
+    galleryShortcutsHeading: 'Atajos de Teclado',
+    galleryShortcutHelp: 'Mostrar/ocultar esta ayuda',
+    galleryShortcutNext: 'Siguiente foto',
+    galleryShortcutPrev: 'Foto anterior',
+    galleryShortcutClose: 'Cerrar lightbox',
+    galleryShortcutZoomIn: 'Acercar',
+    galleryShortcutZoomOut: 'Alejar',
+    galleryShortcutZoomReset: 'Restablecer zoom',
+    galleryShortcutFullscreen: 'Alternar pantalla completa',
+    galleryShortcutSearch: 'Enfocar búsqueda',
+
+    // Galería - Estados Vacíos
+    galleryNoPhotosFound: 'No se Encontraron Fotos',
+    galleryNoPhotosMessage: 'Ninguna foto coincide con sus filtros actuales. Intente ajustar sus criterios de búsqueda.',
+    galleryComingSoonHeading: 'Galería Próximamente',
+    galleryComingSoonMessage: 'Vuelva más tarde para ver fotos de nuestros proyectos de restauración y eventos.',
+
+    // ========== PÁGINA APOYO ==========
+    // Apoyo - Hero
+    supportHeroHeading: 'Apoye a ISRS',
+    supportHeroSubtitle: 'Construyendo Resiliencia Global a Través de la Restauración de Ecosistemas Marinos',
+
+    // Apoyo - Oportunidad
+    supportOpportunityHeading: 'La Oportunidad Crítica',
+    supportOpportunityText: 'Los ecosistemas de moluscos proporcionan algunas de las soluciones más poderosas de la naturaleza a nuestros desafíos más apremiantes. Una sola ostra filtra 50 galones de agua diariamente. Los arrecifes de moluscos protegen las costas de marejadas ciclónicas y aumento del nivel del mar. Estos ecosistemas apoyan la biodiversidad, secuestran carbono y sostienen comunidades costeras, sin embargo, hemos perdido hasta el 85% de ellos a nivel mundial.',
+    supportOpportunityBox: 'ISRS existe para revertir esta tendencia',
+    supportOpportunityBoxText: 'Al unificar la comunidad global de restauración, avanzar el entendimiento científico y escalar enfoques exitosos de restauración en todo el mundo. Nuestra iniciativa insignia es la Conferencia Internacional sobre Restauración de Moluscos (ICSR) bienal, la reunión premier mundial para la restauración de moluscos desde 1996.',
+
+    // Apoyo - Estadísticas
+    support50Gallons: 'Galones filtrados diariamente por ostra',
+    support85Loss: 'Pérdida global de moluscos',
+    support300Plus: 'Profesionales de ICSR',
+    support20Countries: 'Países representados',
+
+    // Apoyo - Necesidad Urgente
+    supportUrgentHeading: 'Necesidad Urgente: Crisis de Financiamiento Federal',
+    supportUrgentText: 'Cambios recientes en el presupuesto federal han creado desafíos sin precedentes para la restauración de moluscos:',
+    supportUrgentConclusion: 'La comunidad de restauración de moluscos ha respondido con notable resiliencia. ISRS fortalece esta comunidad, conectando a profesionales con diversas fuentes de financiamiento y asegurando que el impulso de restauración continúe a pesar de los desafíos federales.',
+
+    // Apoyo - Oportunidades de Asociación
+    supportPartnerHeading: 'Oportunidades de Asociación',
+    supportPartnerIntro: 'ISRS da la bienvenida a socios de todos los niveles que comparten nuestro compromiso con ecosistemas marinos saludables.',
+
+    supportFoundations: 'Para Fundaciones',
+    supportFoundationsDesc: 'Inversión estratégica en soluciones climáticas basadas en la naturaleza con potencial de impacto global.',
+    supportFoundationsImpact: 'Su Impacto',
+    supportFoundationsLevels: 'Niveles de Inversión:',
+
+    supportCorporations: 'Para Corporaciones',
+    supportCorporationsDesc: 'Demuestre liderazgo ambiental mientras entrega beneficios ESG concretos.',
+    supportCorporationsImpact: 'Su Impacto',
+    supportCorporationsLevels: 'Niveles de Asociación:',
+
+    supportGovernment: 'Para Gobierno',
+    supportGovernmentDesc: 'Colaboración multilateral para la resiliencia costera y la gestión sostenible de recursos.',
+    supportGovernmentImpact: 'Su Impacto',
+    supportGovernmentLevels: 'Niveles de Asociación:',
+
+    supportAcademia: 'Para Academia',
+    supportAcademiaDesc: 'Avance el entendimiento científico a través de la colaboración global.',
+    supportAcademiaImpact: 'Su Impacto',
+    supportAcademiaLevels: 'Niveles de Asociación:',
+
+    supportIndustry: 'Para Industria',
+    supportIndustryDesc: 'Proteja los recursos marinos de los que depende su negocio.',
+    supportIndustryImpact: 'Su Impacto',
+    supportIndustryLevels: 'Niveles de Asociación:',
+
+    supportIndividual: 'Para Donantes Individuales',
+    supportIndividualDesc: 'Únase al movimiento global de restauración en cualquier nivel.',
+    supportIndividualLevels: 'Niveles de Membresía',
+
+    // Apoyo - Programas
+    supportProgramsHeading: 'Programas que Entregan Impacto Global',
+    supportProgramICR: 'Conferencia ICSR Bienal',
+    supportProgramICRDesc: 'La reunión premier mundial para la restauración de moluscos, reuniendo a más de 300 profesionales de más de 20 países para compartir ciencia innovadora y enfoques exitosos de restauración. ICSR2026 se llevará a cabo del 4 al 8 de octubre de 2026, en el Little Creek Resort and Conference Center, operado por la Tribu Squaxin Island en Shelton, Washington.',
+    supportProgramNetwork: 'Red Profesional Global',
+    supportProgramNetworkDesc: 'Compromiso durante todo el año conectando a profesionales de restauración en todo el mundo a través de foros, seminarios web e iniciativas colaborativas que abordan desafíos compartidos.',
+    supportProgramResearch: 'Apoyo a Investigación e Innovación',
+    supportProgramResearchDesc: 'Facilitando investigación colaborativa, documentando mejores prácticas y apoyando la participación estudiantil en la ciencia de restauración.',
+    supportProgramPolicy: 'Política y Defensa',
+    supportProgramPolicyDesc: 'Avanzando políticas de restauración basadas en la ciencia y conectando a profesionales con oportunidades de financiamiento y apoyo regulatorio.',
+
+    // Apoyo - Retroalimentación
+    supportFeedbackHeading: 'Comparta su Retroalimentación',
+    supportFeedbackIntro: '¿Tiene sugerencias o preguntas sobre nuestras oportunidades de asociación? Nos encantaría escuchar de usted.',
+    supportFirstName: 'Nombre',
+    supportLastName: 'Apellido',
+    supportEmail: 'Correo Electrónico',
+    supportOrganization: 'Organización',
+    supportInquiryType: 'Tipo de Consulta',
+    supportMessage: 'Mensaje',
+    supportSend: 'Enviar Mensaje',
+
+    // Apoyo - Tipos de Consulta
+    supportGeneral: 'Consulta General',
+    supportFoundationPartner: 'Asociación de Fundación',
+    supportCorporatePartner: 'Asociación Corporativa',
+    supportGovernmentPartner: 'Asociación Gubernamental',
+    supportAcademicPartner: 'Asociación Académica',
+    supportIndividualDonation: 'Donación Individual',
+    supportOther: 'Otro',
+
+    // Apoyo - CTA
+    supportCTAHeading: 'Únase a Nosotros',
+    supportCTAText: 'Juntos, podemos construir costas resilientes y océanos saludables para las generaciones futuras a través del poder de la restauración de moluscos.',
+    supportContactPartnership: 'Contáctenos sobre Asociación',
+    supportViewPressKit: 'Ver Kit de Prensa'
   },
   fr: {
     // Navigation
     home: 'Accueil',
     about: 'À Propos',
     icsr: 'ICSR',
+    gallery: 'Galerie',
+    support: 'Soutien',
     donate: 'FAIRE UN DON',
     skipToMain: 'Passer au contenu principal',
 
@@ -1126,6 +1990,19 @@ const translations = {
     adminPortal: 'Portail Admin',
     copyright: '© 2025 Société Internationale pour la Restauration des Mollusques. Tous droits réservés.',
     taxId: 'Numéro fiscal (EIN): 39-2829151',
+
+    // Pied de page
+    footerTagline: 'Construire une communauté et faire progresser l\'innovation dans la restauration mondiale des mollusques',
+    footerLegal: 'Légal',
+    footerPrivacyPolicy: 'Politique de Confidentialité',
+    footerTermsOfService: 'Conditions de Service',
+    footerCodeOfConduct: 'Code de Conduite',
+    footerAccessibility: 'Accessibilité',
+    footerSitemap: 'Plan du Site',
+    footerPhotoGallery: 'Galerie de Photos',
+    footerSupportISRS: 'Soutenir ISRS',
+    footerPressKit: 'Kit de Presse',
+    footerTaxDisclaimer: 'ISRS est une organisation à but non lucratif 501(c)(3) (en attente d\'approbation de l\'IRS). Les dons sont déductibles d\'impôts dans la mesure autorisée par la loi.',
 
     // Portail des Membres - Connexion
     memberLogin: 'Connexion Membre',
@@ -1509,12 +2386,441 @@ const translations = {
 
     // Messages de Succès
     registrationCreatedSuccess: 'Inscription créée avec succès! Redirection vers le paiement...',
-    registrationCreatedInstructions: 'Inscription créée avec succès! Redirection vers les instructions de paiement...'
+    registrationCreatedInstructions: 'Inscription créée avec succès! Redirection vers les instructions de paiement...',
+
+    // ========== PAGE À PROPOS ==========
+    // À Propos - Hero
+    aboutHeroHeading: 'À Propos d\'ISRS',
+    aboutHeroSubtitle: 'La Société Internationale pour la Restauration des Mollusques soutient la communauté mondiale de restauration des mollusques par la collaboration, l\'innovation et le partage des connaissances.',
+
+    // À Propos - Qui Nous Sommes
+    aboutWhoWeAre: 'Qui Nous Sommes',
+    aboutWhoWeAreText: 'La Société Internationale pour la Restauration des Mollusques (ISRS) est une organisation à but non lucratif 501(c)(3) (en attente d\'approbation de l\'IRS) établie en 2024 pour soutenir la communauté mondiale de restauration des mollusques. Nous sommes issus de la Conférence Internationale sur la Restauration des Mollusques (ICSR), qui réunit la communauté de restauration depuis sa fondation en 1996.',
+
+    // À Propos - Mission et Vision
+    aboutMission: 'Mission',
+    aboutMissionText: 'Construire une communauté, faciliter la communication et promouvoir l\'innovation au sein de la communauté mondiale de restauration des mollusques.',
+    aboutVision: 'Vision',
+    aboutVisionText: 'Un avenir où des écosystèmes de mollusques sains soutiennent des côtes résilientes, une vie marine florissante et des communautés durables à travers le monde.',
+
+    // À Propos - Valeurs Fondamentales
+    aboutCoreValuesHeading: 'Nos Valeurs Fondamentales',
+    aboutCoreValuesIntro: 'ISRS opère guidée par six principes fondamentaux qui façonnent notre travail et notre communauté:',
+    aboutValueScience: 'Approche Scientifique',
+    aboutValueScienceDesc: 'Nous appliquons une recherche rigoureuse pour éclairer les pratiques de restauration et la prise de décision.',
+    aboutValueCollaborative: 'Partenariats Collaboratifs',
+    aboutValueCollaborativeDesc: 'Nous croyons au pouvoir de travailler ensemble à travers les secteurs, les disciplines et les frontières.',
+    aboutValueInclusive: 'Participation Inclusive',
+    aboutValueInclusiveDesc: 'Nous accueillons diverses perspectives de scientifiques, praticiens, communautés autochtones, décideurs politiques et industrie.',
+    aboutValueInnovation: 'Innovation',
+    aboutValueInnovationDesc: 'Nous promouvons la résolution créative de problèmes et de nouvelles techniques et technologies de restauration.',
+    aboutValueImpact: 'Axé sur l\'Impact',
+    aboutValueImpactDesc: 'Nous nous concentrons sur des résultats mesurables qui profitent aux populations de mollusques, aux écosystèmes et aux communautés.',
+    aboutValueSustainability: 'Durabilité',
+    aboutValueSustainabilityDesc: 'Nous défendons des approches de restauration qui soutiennent la santé écologique et la résilience à long terme.',
+
+    // À Propos - Ce Que Nous Faisons
+    aboutWhatWeDo: 'Ce Que Nous Faisons',
+    aboutHostICR: 'Organiser la Conférence ICSR',
+    aboutHostICRDesc: 'Nous organisons la Conférence Internationale sur la Restauration des Mollusques bisannuelle, réunissant plus de 300 participants de plus de 20 pays pour partager recherches, meilleures pratiques et nouvelles innovations.',
+    aboutFacilitateNetworking: 'Faciliter le Réseautage',
+    aboutFacilitateNetworkingDesc: 'Nous connectons les praticiens de la restauration dans le monde entier par des canaux de communication tout au long de l\'année, des groupes de travail et le partage des connaissances.',
+    aboutSupportRegional: 'Soutenir les Réseaux Régionaux',
+    aboutSupportRegionalDesc: 'Nous collaborons avec les réseaux régionaux de restauration en Amérique du Nord, en Europe, en Asie, en Australie et au-delà pour faire progresser les initiatives de restauration locales.',
+    aboutPromoteKnowledge: 'Promouvoir l\'Échange de Connaissances',
+    aboutPromoteKnowledgeDesc: 'Nous facilitons le partage des techniques de restauration, des résultats de recherche et des leçons apprises à travers la communauté mondiale.',
+    aboutEngageDiverse: 'Engager Divers Intervenants',
+    aboutEngageDiverseDesc: 'Nous réunissons chercheurs, gestionnaires, conservationnistes, groupes autochtones, partenaires industriels et décideurs politiques pour un dialogue collaboratif.',
+    aboutAdvanceInnovation: 'Faire Progresser l\'Innovation',
+    aboutAdvanceInnovationDesc: 'Nous soutenons le développement et la diffusion de nouvelles approches, technologies et stratégies de restauration.',
+
+    // À Propos - Notre Communauté
+    aboutCommunityHeading: 'Notre Communauté',
+    aboutCommunityIntro: 'ISRS réunit une communauté mondiale diversifiée dédiée à la restauration des mollusques:',
+    aboutCommunityScientists: 'Scientifiques Chercheurs',
+    aboutCommunityScientistsDesc: 'Faire progresser la science et le suivi de la restauration',
+    aboutCommunityPractitioners: 'Praticiens de la Restauration',
+    aboutCommunityPractitionersDesc: 'Mise en œuvre de projets sur le terrain',
+    aboutCommunityManagers: 'Gestionnaires de Ressources',
+    aboutCommunityManagersDesc: 'Gestion des populations et habitats de mollusques',
+    aboutCommunityOrgs: 'Organisations de Conservation',
+    aboutCommunityOrgsDesc: 'Protection des écosystèmes côtiers',
+    aboutCommunityIndigenous: 'Communautés Autochtones',
+    aboutCommunityIndigenousDesc: 'Gérance des ressources traditionnelles de mollusques',
+    aboutCommunityIndustry: 'Partenaires Industriels',
+    aboutCommunityIndustryDesc: 'Promotion de l\'aquaculture durable',
+    aboutCommunityPolicy: 'Décideurs Politiques',
+    aboutCommunityPolicyDesc: 'Développement de politiques favorables à la restauration',
+    aboutCommunityStudents: 'Étudiants et Éducateurs',
+    aboutCommunityStudentsDesc: 'Former la prochaine génération',
+
+    // À Propos - Partenariats Stratégiques
+    aboutPartnershipsHeading: 'Partenariats Stratégiques',
+    aboutPartnershipsIntro: 'ISRS collabore avec des organisations de premier plan pour amplifier notre impact:',
+    aboutPartnerNORA: 'Alliance pour la Restauration des Huîtres Indigènes (NORA)',
+    aboutPartnerNORADesc: 'Partenariat axé sur l\'avancement de la restauration des huîtres en Amérique du Nord par le partage des ressources, l\'échange de connaissances et les initiatives coordonnées.',
+    aboutPartnerAustralasia: 'Réseau de Restauration Côtière d\'Australasie',
+    aboutPartnerAustralasiaDesc: 'Collaboration pour connecter les praticiens de la restauration en Australie, Nouvelle-Zélande et la région du Pacifique, partageant les innovations en restauration des mollusques et côtière.',
+
+    // ========== PAGE ICSR ==========
+    // ICSR - Hero
+    icsrHeroHeading: 'Conférence Internationale sur la Restauration des Mollusques',
+    icsrHeroSubtitle: 'Le rassemblement mondial premier pour la science et la pratique de restauration des mollusques depuis 1996',
+    icsrCTA2026: 'ICSR2026 - Puget Sound',
+
+    // ICSR - À Propos
+    icsrAboutHeading: 'À Propos de ICSR',
+    icsrAboutText1: 'Depuis 1996, la Conférence Internationale sur la Restauration des Mollusques réunit la communauté mondiale de restauration tous les deux ans. ICSR rassemble plus de 300 participants de plus de 20 pays, créant des opportunités sans précédent pour l\'échange de connaissances, la collaboration et l\'innovation.',
+    icsrAboutText2: 'La conférence présente des présentations de recherche de pointe, des ateliers interactifs, des visites sur le terrain, des tables rondes et des événements de réseautage qui font progresser la science et la pratique de la restauration des mollusques dans le monde entier.',
+
+    // ICSR - Qui Participe
+    icsrWhoAttendsHeading: 'Qui Participe à ICSR',
+    icsrAttendeeScientists: 'Scientifiques Chercheurs',
+    icsrAttendeeScientistsDesc: 'Chercheurs de premier plan présentant les dernières découvertes en écologie des mollusques, techniques de restauration et services écosystémiques.',
+    icsrAttendeePractitioners: 'Praticiens de la Restauration',
+    icsrAttendeePractitionersDesc: 'Experts de terrain partageant les leçons apprises et les approches innovantes de projets réels.',
+    icsrAttendeeManagers: 'Gestionnaires de Ressources',
+    icsrAttendeeManagersDesc: 'Fonctionnaires gouvernementaux et gestionnaires de ressources naturelles développant des politiques et programmes de restauration.',
+    icsrAttendeeOrgs: 'Organisations de Conservation',
+    icsrAttendeeOrgsDesc: 'ONG et organisations à but non lucratif dirigeant des initiatives de restauration dans les écosystèmes côtiers.',
+    icsrAttendeeIndigenous: 'Groupes Autochtones',
+    icsrAttendeeIndigenousDesc: 'Détenteurs de connaissances traditionnelles et gardiens des ressources de mollusques et des habitats côtiers.',
+    icsrAttendeeStudents: 'Étudiants',
+    icsrAttendeeStudentsDesc: 'Étudiants diplômés et chercheurs en début de carrière construisant la prochaine génération d\'expertise en restauration.',
+
+    // ICSR - Activités de la Conférence
+    icsrActivitiesHeading: 'Activités de la Conférence',
+    icsrActivityResearch: 'Présentations de Recherche',
+    icsrActivityResearchDesc: 'Présentations orales et conférences éclair présentant les dernières recherches sur la dynamique des populations d\'huîtres, l\'évaluation des habitats, la restauration urbaine, les interactions des espèces et le suivi de la restauration.',
+    icsrActivityWorkshops: 'Ateliers Interactifs',
+    icsrActivityWorkshopsDesc: 'Sessions pratiques couvrant les techniques de restauration, les protocoles de suivi, l\'analyse de données, l\'engagement des parties prenantes et la planification de projets.',
+    icsrActivityFieldTrips: 'Visites sur le Terrain',
+    icsrActivityFieldTripsDesc: 'Visites de sites de projets de restauration actifs, offrant une expérience directe des approches et défis de restauration locaux.',
+    icsrActivityPanels: 'Tables Rondes',
+    icsrActivityPanelsDesc: 'Panels d\'experts abordant la politique, le financement, les partenariats, l\'adaptation au climat et les défis émergents de restauration.',
+    icsrActivityPosters: 'Sessions de Posters',
+    icsrActivityPostersDesc: 'Présentations de posters en soirée permettant des discussions approfondies sur les recherches et projets de restauration.',
+    icsrActivityNetworking: 'Événements de Réseautage',
+    icsrActivityNetworkingDesc: 'Réceptions de bienvenue, banquets et activités sociales favorisant les connexions à travers la communauté mondiale.',
+
+    // ICSR - Histoire de la Conférence
+    icsrHistoryHeading: 'Histoire de la Conférence',
+    icsrHistoryIntro: 'ICSR se réunit tous les deux ans depuis 1996, couvrant quatre continents et rassemblant des milliers de professionnels de la restauration pendant près de trois décennies.',
+    icsr2020s: 'Années 2020',
+    icsr2010s: 'Années 2010',
+    icsr2000s: 'Années 2000',
+    icsr1990s: 'Années 1990',
+
+    // ICSR - Code de Conduite
+    icsrCodeOfConduct: 'Code de Conduite',
+    icsrCodeIntro: 'ICSR s\'engage à fournir un environnement respectueux, inclusif et accueillant pour tous les participants. Nous maintenons une politique de tolérance zéro pour le harcèlement et les comportements inappropriés.',
+    icsrCodeExpectations: 'Nos Attentes',
+    icsrCodeReporting: '<strong>Signalement:</strong> Les participants qui subissent ou sont témoins de harcèlement doivent contacter les organisateurs de la conférence à <a href="mailto:info@shellfish-society.org" style="color: var(--primary-blue);">info@shellfish-society.org</a>',
+
+    // ========== PAGE ICSR2026 ==========
+    // ICSR2026 - Hero
+    icsr2026HeroHeading: 'ICSR2026',
+    icsr2026HostedBy: 'Organisé par la Fondation de Restauration de Puget Sound',
+    icsr2026Location: 'Puget Sound, État de Washington',
+    icsr2026Dates: '4-8 Octobre 2026',
+
+    // ICSR2026 - Aperçu
+    icsr2026OverviewHeading: 'Rejoignez-Nous dans le Nord-Ouest du Pacifique',
+    icsr2026OverviewText1: 'La Conférence Internationale sur la Restauration des Mollusques 2026 réunira la communauté mondiale de restauration pendant quatre jours de recherche de pointe, d\'ateliers pratiques et de réseautage inestimable avec des praticiens de la restauration du monde entier.',
+    icsr2026OverviewText2: 'Située dans la spectaculaire région de Puget Sound, ICSR2026 explorera l\'intersection du savoir écologique traditionnel, de la science moderne de restauration et de la conservation communautaire.',
+    icsr2026MailingListCTA: 'Rejoindre la Liste de Diffusion pour les Mises à Jour',
+
+    // ICSR2026 - Dates Importantes
+    icsr2026DatesHeading: 'Dates Importantes',
+    icsr2026ConferenceDates: 'Dates de la Conférence',
+    icsr2026DownloadICS: 'Télécharger .ics',
+    icsr2026GoogleCalendar: 'Google Agenda',
+    icsr2026Outlook: 'Outlook',
+    icsr2026AbstractDeadline: 'Date Limite des Résumés',
+    icsr2026ComingSoon: 'Prochainement',
+    icsr2026EarlyBird: 'Inscription Anticipée',
+    icsr2026Early2026: 'Début 2026',
+    icsr2026HotelBooking: 'Réservation d\'Hôtel',
+    icsr2026InfoTBA: 'Informations à Venir',
+
+    // ICSR2026 - À Quoi S\'Attendre
+    icsr2026ExpectHeading: 'À Quoi S\'Attendre',
+    icsr2026ExpectResearch: 'Recherche de Pointe',
+    icsr2026ExpectResearchDesc: 'Présentations orales et conférences éclair sur la dynamique des huîtres, le suivi des habitats, la restauration urbaine, les interactions des espèces, les structures récifales et l\'adaptation au climat',
+    icsr2026ExpectWorkshops: 'Ateliers Pratiques',
+    icsr2026ExpectWorkshopsDesc: 'Sessions interactives sur la planification de restauration, les protocoles de suivi, l\'engagement communautaire, le savoir traditionnel, le financement et l\'analyse de données',
+    icsr2026ExpectFieldTrips: 'Visites sur le Terrain',
+    icsr2026ExpectFieldTripsDesc: 'Visites de sites de restauration tribaux, récifs d\'huîtres de Puget Sound, projets de rivages urbains, récupération d\'huîtres Olympia et restauration de palourdes géoduck',
+    icsr2026ExpectNetworking: 'Réseautage',
+    icsr2026ExpectNetworkingDesc: 'Réception de bienvenue, sessions de posters, banquet de conférence, réunions de réseaux régionaux et rassemblements informels tout au long de la semaine',
+
+    // ICSR2026 - Lieu
+    icsr2026VenueHeading: 'Lieu de Conférence sur le Territoire de la Tribu Squaxin Island',
+    icsr2026VenueText1: 'ICSR2026 se tiendra au Little Creek Resort and Conference Center, exploité par la Tribu Squaxin Island à Shelton, Washington. Le territoire ancestral du peuple Squaxin Island comprend une grande partie du sud de Puget Sound, et ils ont été gestionnaires des ressources de mollusques pendant des milliers d\'années, maintenant de profondes connexions culturelles et spirituelles avec les palourdes, les huîtres et autres mollusques.',
+    icsr2026VenueText2: 'Aujourd\'hui, la Tribu continue cette tradition par la gestion active des mollusques, les programmes de restauration et les opérations d\'aquaculture, intégrant le savoir écologique traditionnel avec la science de conservation moderne. ICSR2026 offrira des opportunités uniques d\'apprendre des praticiens de la restauration tribaux et de découvrir les approches autochtones de la gérance des mollusques.',
+
+    // ICSR2026 - Pourquoi Puget Sound
+    icsr2026WhyHeading: 'Pourquoi Puget Sound?',
+    icsr2026WhyIntro: 'Puget Sound est un point chaud mondial pour l\'innovation en restauration des mollusques avec de profondes connexions culturelles aux mollusques:',
+    icsr2026WhySpecies: 'Espèces Diverses',
+    icsr2026WhySpeciesDesc: 'Habitat des huîtres Olympia indigènes, huîtres du Pacifique, palourdes géoduck, palourdes Manila et de nombreuses autres espèces de mollusques.',
+    icsr2026WhyResearch: 'Excellence en Recherche',
+    icsr2026WhyResearchDesc: 'Universités et institutions de recherche de premier plan faisant progresser la science des mollusques et les techniques de restauration.',
+    icsr2026WhyTribal: 'Leadership Tribal',
+    icsr2026WhyTribalDesc: 'Tribus Coast Salish dirigeant des programmes innovants de restauration ancrés dans le savoir traditionnel.',
+    icsr2026WhyRestoration: 'Restauration Active',
+    icsr2026WhyRestorationDesc: 'Des dizaines de projets de restauration en cours abordant la qualité de l\'eau, la perte d\'habitat et le changement climatique.',
+    icsr2026WhyPolicy: 'Innovation Politique',
+    icsr2026WhyPolicyDesc: 'Politiques progressistes de gestion et de restauration des mollusques servant de modèles pour d\'autres régions.',
+    icsr2026WhyEcosystem: 'Focus Écosystémique',
+    icsr2026WhyEcosystemDesc: 'Approches holistiques intégrant la restauration des mollusques avec la récupération plus large de l\'écosystème côtier.',
+
+    // ICSR2026 - Participation Attendue
+    icsr2026AttendanceHeading: 'Participation Attendue',
+    icsr2026Participants: 'Participants',
+    icsr2026Countries: 'Pays',
+    icsr2026Presentations: 'Présentations',
+
+    // ICSR2026 - Inscription et Parrainage
+    icsr2026RegistrationHeading: 'Inscription',
+    icsr2026RegistrationText: 'L\'inscription ouvrira début 2026. Inscrivez-vous pour recevoir des mises à jour et être informé lorsque l\'inscription sera disponible.',
+    icsr2026RequestUpdates: 'Demander des Mises à Jour',
+    icsr2026SponsorshipHeading: 'Opportunités de Parrainage',
+    icsr2026SponsorshipText: 'Soutenez ICSR2026 et connectez-vous avec la communauté mondiale de restauration des mollusques. Les opportunités de parrainage incluent le soutien d\'événements (visites sur le terrain, réception, banquet) et bourses de voyage pour étudiants.',
+    icsr2026InquireSponsorship: 'Se Renseigner sur le Parrainage',
+
+    // ICSR2026 - Sponsors
+    icsr2026SponsorsHeading: 'Sponsors de la Conférence',
+    icsr2026SponsorsIntro: 'Nous remercions chaleureusement nos sponsors qui rendent ICSR2026 possible par leur généreux soutien.',
+
+    // ICSR2026 - Code de Conduite
+    icsr2026CodeHeading: 'Code de Conduite',
+    icsr2026CodeText: 'ICSR2026 s\'engage à fournir un environnement respectueux, inclusif et accueillant pour tous les participants. Nous maintenons une politique de tolérance zéro pour le harcèlement et les comportements inappropriés. Tous les participants sont tenus de se traiter avec respect, d\'accueillir diverses perspectives et de s\'abstenir de photographie ou enregistrement non autorisés.',
+
+    // ICSR2026 - Modal Liste de Diffusion
+    icsr2026ModalCloseAriaLabel: 'Fermer modal liste de diffusion',
+    icsr2026ModalTitle: 'Rejoignez Notre Liste de Diffusion',
+    icsr2026ModalSubtitle: 'Restez informé sur l\'inscription à ICSR2026, les soumissions de résumés et les détails de la conférence.',
+    icsr2026ModalErrorMessage: 'Une erreur s\'est produite lors de la soumission de vos informations. Veuillez réessayer ou nous contacter directement à info@shellfish-society.org',
+
+    // ========== PAGE GALERIE ==========
+    // Galerie - En-tête
+    galleryHeading: 'Galerie de Photos',
+    gallerySubtitle: 'Explorez les photos de projets de restauration des mollusques, recherches et événements d\'ISRS et de la communauté mondiale de restauration',
+    galleryDescription: 'Explorez les photos de projets de restauration des mollusques, recherches et événements d\'ISRS et de la communauté mondiale de restauration',
+
+    // Galerie - Recherche et Filtres
+    gallerySearchFilterHeading: '🔍 Rechercher et Filtrer',
+    gallerySearchLabel: 'Recherche Textuelle',
+    gallerySearchPlaceholder: 'Légende, étiquettes, localisation...',
+    galleryAISearchLabel: 'Recherche Visuelle par IA',
+    galleryAISearchPlaceholder: 'Décrivez la scène...',
+    galleryConferenceLabel: 'Conférence/Événement',
+    galleryAllEvents: 'Tous les Événements',
+    galleryPhotoTypeLabel: 'Type de Photo',
+    galleryAllTypes: 'Tous les Types',
+    galleryTypeConference: 'Photos de Conférence',
+    galleryTypeHistoric: 'Photos Historiques',
+    galleryTypeHeadshots: 'Portraits/Personnes',
+    galleryTypeLogos: 'Logos',
+    galleryTypeBackgrounds: 'Arrière-plans',
+    galleryLocationLabel: 'Localisation',
+    galleryAllLocations: 'Toutes les Localisations',
+    galleryYearLabel: 'Année',
+    galleryAllYears: 'Toutes les Années',
+    gallerySortByLabel: 'Trier Par',
+    gallerySortLabel: 'Trier Par',
+    gallerySortDateNewest: 'Date (Plus Récente en Premier)',
+    gallerySortDateOldest: 'Date (Plus Ancienne en Premier)',
+    gallerySortNewest: 'Date (Plus Récente en Premier)',
+    gallerySortOldest: 'Date (Plus Ancienne en Premier)',
+    gallerySortAlphaAZ: 'Alphabétique (A-Z)',
+    gallerySortAlphaZA: 'Alphabétique (Z-A)',
+    gallerySortCategory: 'Catégorie',
+    gallerySortPhotographer: 'Photographe',
+    gallerySearchButton: 'Rechercher',
+    galleryApplyButton: 'Rechercher',
+    galleryClearButton: 'Effacer',
+    galleryShowingAll: 'Affichage de toutes les photos',
+    galleryDownloadButton: 'Télécharger Sélectionnées',
+    galleryDownloadDesc: 'Télécharger les photos sélectionnées',
+    galleryDownloadFiltered: 'Télécharger Photos Filtrées',
+    galleryUploadButton: 'Téléverser Photos',
+    galleryUploadHeading: 'Téléverser des Photos',
+    galleryUploadDescription: 'Partagez des photos de vos projets de restauration, recherches ou événements. Formats acceptés: JPG, PNG (max. 10MB chacun)',
+    galleryFeaturedHeading: 'Galeries en Vedette',
+    galleryFeaturedICSR2024: 'ICSR 2024 - Charleston',
+    galleryFeaturedICSR2024Desc: 'Découvrez les moments forts de notre 11e Conférence Internationale sur la Restauration des Mollusques à Charleston, Caroline du Sud',
+    galleryLegalNotice: 'Toutes les photos sont la propriété de leurs propriétaires respectifs. Tous droits réservés.',
+    galleryLegalViewTerms: 'Voir les conditions complètes',
+    galleryKeyboardShortcuts: 'Raccourcis Clavier',
+    galleryLoading: 'Chargement des photos...',
+
+    // Galerie - Avis Légal
+    galleryLegalHeading: 'Avis de Droits d\'Auteur',
+    galleryLegalText: 'Les photos sont la propriété de leurs propriétaires respectifs (ISRS, akorn environmental et contributeurs individuels). Tous droits réservés. L\'utilisation, la reproduction ou la distribution non autorisées sont interdites.',
+    galleryViewTerms: 'Voir les conditions complètes',
+
+    // Galerie - Lightbox
+    galleryDownload: 'Télécharger',
+    galleryFavorite: 'Favori',
+    galleryShare: 'Partager',
+    galleryPhotoDetails: 'Détails de la Photo',
+    galleryRelatedPhotos: 'Photos Associées',
+    galleryComments: 'Commentaires',
+    galleryAddComment: 'Ajouter un commentaire...',
+    galleryPostComment: 'Publier Commentaire',
+    galleryNoComments: 'Pas encore de commentaires. Soyez le premier!',
+
+    // Galerie - Étiquettes de Métadonnées
+    galleryFilename: 'Nom de Fichier',
+    galleryDateTaken: 'Date de Prise',
+    galleryCamera: 'Appareil Photo',
+    galleryLens: 'Objectif',
+    galleryFocalLength: 'Longueur Focale',
+    galleryAperture: 'Ouverture',
+    galleryShutterSpeed: 'Vitesse d\'Obturation',
+    galleryISO: 'ISO',
+    galleryViews: 'Vues',
+
+    // Galerie - Messages
+    galleryFavoriteSuccess: 'Ajouté à vos favoris!',
+    galleryCommentSuccess: 'Commentaire publié!',
+    galleryLoginRequired: 'Veuillez vous connecter pour commenter',
+    galleryLoginFavorite: 'Veuillez vous connecter pour enregistrer des favoris',
+    galleryLinkCopied: 'Lien copié dans le presse-papiers!',
+    galleryDownloadConfirm: 'Télécharger {count} photos en fichier ZIP?',
+    galleryDownloadStarted: 'Téléchargement commencé!',
+    galleryDownloadFailed: 'Téléchargement échoué. Veuillez réessayer ou contacter le support.',
+    galleryNoPhotos: 'Aucune photo à télécharger',
+    galleryLoadingMore: 'Chargement de plus de photos...',
+    galleryNoMore: 'Vous avez atteint la fin!',
+
+    // Galerie - Raccourcis Clavier
+    galleryShortcutsHeading: 'Raccourcis Clavier',
+    galleryShortcutHelp: 'Afficher/masquer cette aide',
+    galleryShortcutNext: 'Photo suivante',
+    galleryShortcutPrev: 'Photo précédente',
+    galleryShortcutClose: 'Fermer la lightbox',
+    galleryShortcutZoomIn: 'Zoomer',
+    galleryShortcutZoomOut: 'Dézoomer',
+    galleryShortcutZoomReset: 'Réinitialiser le zoom',
+    galleryShortcutFullscreen: 'Basculer plein écran',
+    galleryShortcutSearch: 'Focaliser la recherche',
+
+    // Galerie - États Vides
+    galleryNoPhotosFound: 'Aucune Photo Trouvée',
+    galleryNoPhotosMessage: 'Aucune photo ne correspond à vos filtres actuels. Essayez d\'ajuster vos critères de recherche.',
+    galleryComingSoonHeading: 'Galerie Bientôt Disponible',
+    galleryComingSoonMessage: 'Revenez plus tard pour des photos de nos projets de restauration et événements.',
+
+    // ========== PAGE SOUTIEN ==========
+    // Soutien - Hero
+    supportHeroHeading: 'Soutenir ISRS',
+    supportHeroSubtitle: 'Construire la Résilience Mondiale par la Restauration des Écosystèmes Marins',
+
+    // Soutien - Opportunité
+    supportOpportunityHeading: 'L\'Opportunité Critique',
+    supportOpportunityText: 'Les écosystèmes de mollusques fournissent certaines des solutions les plus puissantes de la nature à nos défis les plus urgents. Une seule huître filtre 50 gallons d\'eau quotidiennement. Les récifs de mollusques protègent les côtes des ondes de tempête et de l\'élévation du niveau de la mer. Ces écosystèmes soutiennent la biodiversité, séquestrent le carbone et soutiennent les communautés côtières—pourtant nous en avons perdu jusqu\'à 85% à l\'échelle mondiale.',
+    supportOpportunityBox: 'ISRS existe pour inverser cette tendance',
+    supportOpportunityBoxText: 'En unifiant la communauté mondiale de restauration, en faisant progresser la compréhension scientifique et en élargissant les approches de restauration réussies dans le monde entier. Notre initiative phare est la Conférence Internationale sur la Restauration des Mollusques (ICSR) bisannuelle—le rassemblement mondial premier pour la restauration des mollusques depuis 1996.',
+
+    // Soutien - Statistiques
+    support50Gallons: 'Gallons filtrés quotidiennement par huître',
+    support85Loss: 'Perte mondiale de mollusques',
+    support300Plus: 'Praticiens ICSR',
+    support20Countries: 'Pays représentés',
+
+    // Soutien - Besoin Urgent
+    supportUrgentHeading: 'Besoin Urgent: Crise de Financement Fédéral',
+    supportUrgentText: 'Les changements budgétaires fédéraux récents ont créé des défis sans précédent pour la restauration des mollusques:',
+    supportUrgentConclusion: 'La communauté de restauration des mollusques a répondu avec une résilience remarquable. ISRS renforce cette communauté, connectant les praticiens avec diverses sources de financement et assurant que l\'élan de restauration continue malgré les défis fédéraux.',
+
+    // Soutien - Opportunités de Partenariat
+    supportPartnerHeading: 'Opportunités de Partenariat',
+    supportPartnerIntro: 'ISRS accueille des partenaires à tous les niveaux qui partagent notre engagement envers des écosystèmes marins sains.',
+
+    supportFoundations: 'Pour les Fondations',
+    supportFoundationsDesc: 'Investissement stratégique dans des solutions climatiques basées sur la nature avec un potentiel d\'impact mondial.',
+    supportFoundationsImpact: 'Votre Impact',
+    supportFoundationsLevels: 'Niveaux d\'Investissement:',
+
+    supportCorporations: 'Pour les Entreprises',
+    supportCorporationsDesc: 'Démontrez un leadership environnemental tout en offrant des avantages ESG concrets.',
+    supportCorporationsImpact: 'Votre Impact',
+    supportCorporationsLevels: 'Niveaux de Partenariat:',
+
+    supportGovernment: 'Pour le Gouvernement',
+    supportGovernmentDesc: 'Collaboration multilatérale pour la résilience côtière et la gestion durable des ressources.',
+    supportGovernmentImpact: 'Votre Impact',
+    supportGovernmentLevels: 'Niveaux de Partenariat:',
+
+    supportAcademia: 'Pour le Milieu Académique',
+    supportAcademiaDesc: 'Faire progresser la compréhension scientifique par la collaboration mondiale.',
+    supportAcademiaImpact: 'Votre Impact',
+    supportAcademiaLevels: 'Niveaux de Partenariat:',
+
+    supportIndustry: 'Pour l\'Industrie',
+    supportIndustryDesc: 'Protégez les ressources marines dont votre entreprise dépend.',
+    supportIndustryImpact: 'Votre Impact',
+    supportIndustryLevels: 'Niveaux de Partenariat:',
+
+    supportIndividual: 'Pour les Donateurs Individuels',
+    supportIndividualDesc: 'Rejoignez le mouvement mondial de restauration à tout niveau.',
+    supportIndividualLevels: 'Niveaux d\'Adhésion',
+
+    // Soutien - Programmes
+    supportProgramsHeading: 'Programmes Offrant un Impact Mondial',
+    supportProgramICR: 'Conférence ICSR Bisannuelle',
+    supportProgramICRDesc: 'Le rassemblement mondial premier pour la restauration des mollusques, réunissant plus de 300 praticiens de plus de 20 pays pour partager des sciences révolutionnaires et des approches de restauration réussies. ICSR2026 se tiendra du 4 au 8 octobre 2026, au Little Creek Resort and Conference Center, exploité par la Tribu Squaxin Island à Shelton, Washington.',
+    supportProgramNetwork: 'Réseau Professionnel Mondial',
+    supportProgramNetworkDesc: 'Engagement tout au long de l\'année connectant les praticiens de la restauration dans le monde entier par des forums, webinaires et initiatives collaboratives abordant des défis partagés.',
+    supportProgramResearch: 'Soutien à la Recherche et à l\'Innovation',
+    supportProgramResearchDesc: 'Faciliter la recherche collaborative, documenter les meilleures pratiques et soutenir l\'engagement étudiant dans la science de restauration.',
+    supportProgramPolicy: 'Politique et Plaidoyer',
+    supportProgramPolicyDesc: 'Faire progresser les politiques de restauration basées sur la science et connecter les praticiens avec des opportunités de financement et un soutien réglementaire.',
+
+    // Soutien - Retours
+    supportFeedbackHeading: 'Partagez Vos Retours',
+    supportFeedbackIntro: 'Avez-vous des suggestions ou des questions sur nos opportunités de partenariat? Nous aimerions vous entendre.',
+    supportFirstName: 'Prénom',
+    supportLastName: 'Nom de Famille',
+    supportEmail: 'Email',
+    supportOrganization: 'Organisation',
+    supportInquiryType: 'Type de Demande',
+    supportMessage: 'Message',
+    supportSend: 'Envoyer Message',
+
+    // Soutien - Types de Demande
+    supportGeneral: 'Demande Générale',
+    supportFoundationPartner: 'Partenariat de Fondation',
+    supportCorporatePartner: 'Partenariat d\'Entreprise',
+    supportGovernmentPartner: 'Partenariat Gouvernemental',
+    supportAcademicPartner: 'Partenariat Académique',
+    supportIndividualDonation: 'Don Individuel',
+    supportOther: 'Autre',
+
+    // Soutien - CTA
+    supportCTAHeading: 'Rejoignez-Nous',
+    supportCTAText: 'Ensemble, nous pouvons construire des côtes résilientes et des océans sains pour les générations futures par le pouvoir de la restauration des mollusques.',
+    supportContactPartnership: 'Contactez-Nous pour un Partenariat',
+    supportViewPressKit: 'Voir le Kit de Presse'
   }
 };
 
-// Get current language from localStorage or default to English
-let currentLang = localStorage.getItem('isrs_language') || 'en';
+// Get current language from localStorage, browser, or default to English
+function detectBrowserLanguage() {
+  const browserLang = navigator.language || navigator.userLanguage;
+  const lang = browserLang.toLowerCase().split('-')[0]; // Get just the language code (e.g., 'en' from 'en-US')
+
+  // Check if we support this language
+  if (['en', 'es', 'fr'].includes(lang)) {
+    return lang;
+  }
+  return 'en'; // Default to English
+}
+
+let currentLang = localStorage.getItem('isrs_language') || detectBrowserLanguage();
 
 // Translate function
 function t(key) {
@@ -1541,6 +2847,7 @@ function changeLanguage(lang) {
 
 // Translate all elements with data-i18n attributes
 function translatePage() {
+  // Translate text content
   document.querySelectorAll('[data-i18n]').forEach(element => {
     const key = element.getAttribute('data-i18n');
     const translation = t(key);
@@ -1553,14 +2860,110 @@ function translatePage() {
         element.value = translation;
       }
     } else {
-      element.textContent = translation;
+      element.innerHTML = translation; // Use innerHTML to preserve HTML tags like <strong>, <br>
     }
+  });
+
+  // Translate placeholders separately (for elements with data-i18n-placeholder)
+  document.querySelectorAll('[data-i18n-placeholder]').forEach(element => {
+    const key = element.getAttribute('data-i18n-placeholder');
+    const translation = t(key);
+    element.placeholder = translation;
+  });
+
+  // Translate aria-label attributes
+  document.querySelectorAll('[data-i18n-aria-label]').forEach(element => {
+    const key = element.getAttribute('data-i18n-aria-label');
+    const translation = t(key);
+    element.setAttribute('aria-label', translation);
   });
 }
 
+// Toggle language dropdown menu
+function toggleLanguageDropdown(event) {
+  event?.stopPropagation();
+  const menu = document.getElementById('language-dropdown-menu');
+  const btn = document.getElementById('language-dropdown-btn');
+  const isVisible = menu.style.display === 'block';
+
+  menu.style.display = isVisible ? 'none' : 'block';
+
+  // Update aria-expanded
+  if (btn) {
+    btn.setAttribute('aria-expanded', !isVisible);
+  }
+
+  // Focus first option when opening
+  if (!isVisible) {
+    setTimeout(() => {
+      const firstOption = menu.querySelector('.lang-option');
+      firstOption?.focus();
+    }, 10);
+  }
+}
+
+// Select language from dropdown
+function selectLanguage(lang) {
+  changeLanguage(lang);
+  const menu = document.getElementById('language-dropdown-menu');
+  const btn = document.getElementById('language-dropdown-btn');
+  if (menu) menu.style.display = 'none';
+  if (btn) {
+    btn.setAttribute('aria-expanded', 'false');
+    btn.focus(); // Return focus to button
+  }
+}
+
+// Close dropdown when clicking outside
+document.addEventListener('click', function(event) {
+  const dropdown = document.querySelector('.language-dropdown');
+  const menu = document.getElementById('language-dropdown-menu');
+  const btn = document.getElementById('language-dropdown-btn');
+
+  if (dropdown && menu && !dropdown.contains(event.target)) {
+    menu.style.display = 'none';
+    if (btn) btn.setAttribute('aria-expanded', 'false');
+  }
+});
+
+// Keyboard navigation for dropdown
+document.addEventListener('keydown', function(event) {
+  const menu = document.getElementById('language-dropdown-menu');
+  if (!menu || menu.style.display !== 'block') return;
+
+  const options = Array.from(menu.querySelectorAll('.lang-option'));
+  const currentIndex = options.indexOf(document.activeElement);
+
+  switch(event.key) {
+    case 'ArrowDown':
+      event.preventDefault();
+      const nextIndex = (currentIndex + 1) % options.length;
+      options[nextIndex]?.focus();
+      break;
+    case 'ArrowUp':
+      event.preventDefault();
+      const prevIndex = currentIndex <= 0 ? options.length - 1 : currentIndex - 1;
+      options[prevIndex]?.focus();
+      break;
+    case 'Escape':
+      event.preventDefault();
+      menu.style.display = 'none';
+      document.getElementById('language-dropdown-btn')?.focus();
+      document.getElementById('language-dropdown-btn')?.setAttribute('aria-expanded', 'false');
+      break;
+    case 'Enter':
+    case ' ':
+      if (document.activeElement.classList.contains('lang-option')) {
+        event.preventDefault();
+        document.activeElement.click();
+      }
+      break;
+  }
+});
+
 // Update language selector UI
 function updateLanguageSelector() {
-  const buttons = document.querySelectorAll('.lang-btn');
+  const buttons = document.querySelectorAll('.lang-btn, .lang-option');
   buttons.forEach(btn => {
     if (btn.dataset.lang === currentLang) {
       btn.classList.add('active');
@@ -1587,21 +2990,20 @@ function loadHeader() {
         <span aria-hidden="true">☰</span>
       </button>
       <ul class="nav-links" id="navLinks">
-        <li><a href="/">${t('home')}</a></li>
-        <li><a href="/about.html">${t('about')}</a></li>
+        <li><a href="/" class="nav-link" data-page="home">${t('home')}</a></li>
+        <li><a href="/about.html" class="nav-link" data-page="about">${t('about')}</a></li>
         <li class="dropdown">
-          <a href="/icsr.html" aria-haspopup="true" aria-expanded="false">${t('icsr')}</a>
+          <a href="/icsr.html" class="nav-link" data-page="icsr" aria-haspopup="true" aria-expanded="false">${t('icsr')}</a>
           <ul class="dropdown-menu" role="menu">
-            <li role="none"><a href="/icsr.html" role="menuitem">${t('icsr')}</a></li>
-            <li role="none"><a href="/icsr2026.html" role="menuitem">ICSR2026</a></li>
+            <li role="none"><a href="/icsr.html" class="nav-link" data-page="icsr" role="menuitem">${t('icsr')}</a></li>
+            <li role="none"><a href="/icsr2026.html" class="nav-link" data-page="icsr2026" role="menuitem">ICSR2026</a></li>
           </ul>
         </li>
-        <li><a href="/gallery.html">Gallery</a></li>
-        <li><a href="/support.html">Support</a></li>
+        <li><a href="/gallery.html" class="nav-link" data-page="gallery">${t('gallery')}</a></li>
+        <li><a href="/support.html" class="nav-link" data-page="support">${t('support')}</a></li>
         <li><a href="https://www.zeffy.com/en-US/donation-form/isrs-building-tomorrows-ocean-leaders" target="_blank" rel="noopener noreferrer" class="btn-donate">${t('donate')}</a></li>
       </ul>
       <div class="header-controls">
-        <div class="control-divider"></div>
         <button id="text-size-toggle" class="control-btn" onclick="cycleTextSize()" aria-label="Change text size" title="Change text size">
           <span aria-hidden="true">A</span>
         </button>
@@ -1609,10 +3011,21 @@ function loadHeader() {
           <span class="theme-icon" aria-hidden="true">🌙</span>
         </button>
         <div class="control-divider"></div>
-        <div class="language-switcher" role="group" aria-label="Language selection">
-          <button class="lang-btn ${currentLang === 'en' ? 'active' : ''}" data-lang="en" onclick="changeLanguage('en')" aria-label="English" ${currentLang === 'en' ? 'aria-current="true"' : ''}>EN</button>
-          <button class="lang-btn ${currentLang === 'es' ? 'active' : ''}" data-lang="es" onclick="changeLanguage('es')" aria-label="Español" ${currentLang === 'es' ? 'aria-current="true"' : ''}>ES</button>
-          <button class="lang-btn ${currentLang === 'fr' ? 'active' : ''}" data-lang="fr" onclick="changeLanguage('fr')" aria-label="Français" ${currentLang === 'fr' ? 'aria-current="true"' : ''}>FR</button>
+        <div class="language-dropdown" style="position: relative;">
+          <button class="control-btn" id="language-dropdown-btn" onclick="toggleLanguageDropdown(event)" aria-label="Select language" aria-expanded="false" aria-haspopup="true" title="Language / Idioma / Langue">
+            <span aria-hidden="true">🌐</span>
+          </button>
+          <div id="language-dropdown-menu" class="language-dropdown-menu" role="menu" aria-label="Language options" style="display: none;">
+            <button class="lang-option ${currentLang === 'en' ? 'active' : ''}" data-lang="en" onclick="selectLanguage('en')" role="menuitem" ${currentLang === 'en' ? 'aria-current="true"' : ''}>
+              <span class="flag" aria-hidden="true">🇺🇸</span> English
+            </button>
+            <button class="lang-option ${currentLang === 'es' ? 'active' : ''}" data-lang="es" onclick="selectLanguage('es')" role="menuitem" ${currentLang === 'es' ? 'aria-current="true"' : ''}>
+              <span class="flag" aria-hidden="true">🇪🇸</span> Español
+            </button>
+            <button class="lang-option ${currentLang === 'fr' ? 'active' : ''}" data-lang="fr" onclick="selectLanguage('fr')" role="menuitem" ${currentLang === 'fr' ? 'aria-current="true"' : ''}>
+              <span class="flag" aria-hidden="true">🇫🇷</span> Français
+            </button>
+          </div>
         </div>
         <div class="control-divider"></div>
         <a href="/login.html" class="control-btn user-profile-btn" id="user-profile-btn" aria-label="Login / Member Portal" title="Login / Member Portal">
@@ -1621,6 +3034,38 @@ function loadHeader() {
       </div>
     </nav>
   `;
+
+  // Highlight active nav link based on current page
+  highlightActiveNavLink();
+}
+
+// Function to highlight the active navigation link
+function highlightActiveNavLink() {
+  const path = window.location.pathname;
+
+  // Determine current page
+  let currentPage = 'home';
+  if (path === '/' || path === '/index.html') {
+    currentPage = 'home';
+  } else if (path.includes('about')) {
+    currentPage = 'about';
+  } else if (path.includes('icsr2026')) {
+    currentPage = 'icsr2026';
+  } else if (path.includes('icsr')) {
+    currentPage = 'icsr';
+  } else if (path.includes('gallery')) {
+    currentPage = 'gallery';
+  } else if (path.includes('support')) {
+    currentPage = 'support';
+  }
+
+  // Add 'active' class to matching nav links
+  const navLinks = document.querySelectorAll('.nav-link');
+  navLinks.forEach(link => {
+    if (link.dataset.page === currentPage) {
+      link.classList.add('active');
+    }
+  });
 }
 
 // Stay Connected component
@@ -1678,7 +3123,7 @@ function loadFooter() {
         <div class="footer-section footer-logo-section">
           <img src="/images/logo-wide-white.svg" alt="ISRS Logo" class="footer-logo" />
           <p>International Shellfish Restoration Society</p>
-          <p>Building community and advancing innovation in global shellfish restoration</p>
+          <p>${t('footerTagline')}</p>
           <p class="footer-ein">${t('taxId')}</p>
         </div>
         <div class="footer-section">
@@ -1691,29 +3136,29 @@ function loadFooter() {
           </ul>
         </div>
         <div class="footer-section">
-          <h4>Legal</h4>
+          <h4>${t('footerLegal')}</h4>
           <ul>
-            <li><a href="/legal/privacy.html">Privacy Policy</a></li>
-            <li><a href="/legal/terms.html">Terms of Service</a></li>
-            <li><a href="/legal/code-of-conduct.html">Code of Conduct</a></li>
-            <li><a href="/legal/accessibility.html">Accessibility</a></li>
-            <li><a href="/sitemap.xml">Sitemap</a></li>
+            <li><a href="/legal/privacy.html">${t('footerPrivacyPolicy')}</a></li>
+            <li><a href="/legal/terms.html">${t('footerTermsOfService')}</a></li>
+            <li><a href="/legal/code-of-conduct.html">${t('footerCodeOfConduct')}</a></li>
+            <li><a href="/legal/accessibility.html">${t('footerAccessibility')}</a></li>
+            <li><a href="/sitemap.xml">${t('footerSitemap')}</a></li>
           </ul>
         </div>
         <div class="footer-section">
           <h4>${t('connect')}</h4>
           <ul>
-            <li><a href="/gallery.html">Photo Gallery</a></li>
-            <li><a href="/support.html">Support ISRS</a></li>
+            <li><a href="/gallery.html">${t('footerPhotoGallery')}</a></li>
+            <li><a href="/support.html">${t('footerSupportISRS')}</a></li>
             <li><a href="https://www.zeffy.com/en-US/donation-form/isrs-building-tomorrows-ocean-leaders" target="_blank" rel="noopener noreferrer">${t('donate')}</a></li>
-            <li><a href="/press-kit.html">Press Kit</a></li>
+            <li><a href="/press-kit.html">${t('footerPressKit')}</a></li>
             <li><a href="/admin/" target="_blank" rel="noopener noreferrer">${t('adminPortal')}</a></li>
           </ul>
         </div>
       </div>
       <div class="footer-bottom">
         <p>${t('copyright')}</p>
-        <p class="footer-legal-note">ISRS is a 501(c)(3) nonprofit organization. Donations are tax-deductible to the extent allowed by law.</p>
+        <p class="footer-legal-note">${t('footerTaxDisclaimer')}</p>
       </div>
     </div>
   `;

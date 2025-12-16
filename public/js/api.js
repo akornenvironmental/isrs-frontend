@@ -131,7 +131,12 @@ function showLoading(elementId) {
 function showError(elementId, message) {
   const element = document.getElementById(elementId);
   if (element) {
-    element.innerHTML = `<div class="error">${message}</div>`;
+    // Use textContent to prevent XSS attacks from malicious error messages
+    const errorDiv = document.createElement('div');
+    errorDiv.className = 'error';
+    errorDiv.textContent = message;
+    element.innerHTML = ''; // Clear existing content
+    element.appendChild(errorDiv);
   }
 }
 
