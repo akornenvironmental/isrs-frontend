@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Member Portal - ISRS</title>
+  <link rel="icon" type="image/png" href="/images/favicon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Marcellus&family=PT+Serif:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/styles.css">
+  <style>
+    .welcome-banner {
+      background: linear-gradient(135deg, var(--primary-blue), var(--secondary-blue));
+      color: white;
+      padding: 2rem;
+      border-radius: 12px;
+      margin-bottom: 2rem;
+      text-align: center;
+    }
+
+    .welcome-banner h1 {
+      margin: 0 0 0.5rem 0;
+      font-size: 2rem;
+    }
+
+    .member-actions {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1.5rem;
+      margin: 2rem 0;
+    }
+
+    .action-card {
+      background: white;
+      border-radius: 12px;
+      padding: 2rem;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      transition: all 0.3s;
+      cursor: pointer;
+    }
+
+    .action-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+    }
+
+    .action-icon {
+      font-size: 3rem;
+      margin-bottom: 1rem;
+    }
+
+    .action-title {
+      font-size: 1.25rem;
+      font-weight: 600;
+      color: var(--primary-blue);
+      margin-bottom: 0.5rem;
+    }
+
+    .action-description {
+      color: var(--text-light);
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header id="site-header"></header>
+
+  <main id="main-content" class="container" style="max-width: 1200px; padding: 2rem;">
+    
+    <div id="loadingState">
+      <p>Loading your portal...</p>
+    </div>
+
+    <div id="memberContent" style="display: none;">
+      
+      <div class="welcome-banner">
+        <h1>Welcome, <span id="memberName">Member</span>!</h1>
+        <p>Your ISRS Member Portal</p>
+      </div>
+
+      <div class="member-actions">
+        
+        <div class="action-card" onclick="location.href='/profile/dashboard.html'">
+          <div class="action-icon">👤</div>
+          <div class="action-title">My Profile</div>
+          <div class="action-description">
+            View and edit your profile, manage privacy settings
+          </div>
+        </div>
+
+        <div class="action-card" onclick="location.href='/conference/register.html'">
+          <div class="action-icon">📅</div>
+          <div class="action-title">Conferences</div>
+          <div class="action-description">
+            Register for conferences, view your registrations
+          </div>
+        </div>
+
+        <div class="action-card" onclick="location.href='/abstracts/submit.html'">
+          <div class="action-icon">📝</div>
+          <div class="action-title">Abstracts</div>
+          <div class="action-description">
+            Submit and manage your abstract submissions
+          </div>
+        </div>
+
+        <div class="action-card" onclick="location.href='/member/directory.html'">
+          <div class="action-icon">📇</div>
+          <div class="action-title">Member Directory</div>
+          <div class="action-description">
+            Browse the member directory and connect with colleagues
+          </div>
+        </div>
+
+        <div class="action-card" onclick="location.href='/membership/manage.html'">
+          <div class="action-icon">💳</div>
+          <div class="action-title">Membership</div>
+          <div class="action-description">
+            Manage your membership and payment information
+          </div>
+        </div>
+
+        <div class="action-card" onclick="location.href='/gallery.html'">
+          <div class="action-icon">📸</div>
+          <div class="action-title">Photo Gallery</div>
+          <div class="action-description">
+            Browse conference photos and memories
+          </div>
+        </div>
+
+      </div>
+
+      <div style="text-align: center; margin: 3rem 0;">
+        <button class="btn btn-danger" onclick="handleLogout()">
+          Logout
+        </button>
+      </div>
+
+    </div>
+
+  </main>
+
+  <footer id="site-footer"></footer>
+
+  <script src="/js/header.js"></script>
+  <script src="/js/footer.js"></script>
+  <script>
+    const API_BASE_URL = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+      ? 'http://localhost:3000'
+      : 'https://isrs-database-backend.onrender.com';
+
+    async function checkAuth() {
+      try {
+        const response = await fetch(`${API_BASE_URL}/api/auth/session`, {
+          credentials: 'include'
+        });
+
+        const data = await response.json();
+
+        if (!response.ok || !data.success) {
+          window.location.href = '/login.html';
+          return;
+        }
+
+        console.log('✅ Authenticated:', data.data.user.fullName);
+        console.log('Role:', data.data.primaryRole.displayName);
+
+        document.getElementById('memberName').textContent = data.data.user.firstName;
+        document.getElementById('loadingState').style.display = 'none';
+        document.getElementById('memberContent').style.display = 'block';
+
+      } catch (error) {
+        console.error('Authentication error:', error);
+        window.location.href = '/login.html';
+      }
+    }
+
+    async function handleLogout() {
+      try {
+        await fetch(`${API_BASE_URL}/api/auth/logout`, {
+          method: 'POST',
+          credentials: 'include'
+        });
+        window.location.href = '/login.html';
+      } catch (error) {
+        window.location.href = '/login.html';
+      }
+    }
+
+    window.addEventListener('DOMContentLoaded', checkAuth);
+  </script>
+</body>
+</html>

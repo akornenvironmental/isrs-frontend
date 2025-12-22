@@ -5,3 +5,12 @@ node_modules/
 dist/
 build/
 .vercel
+
+# Google Drive Import Security
+scripts/google-credentials.json
+temp-downloads/
+
+# Sensitive tokens and keys
+*.pem
+*.key
+credentials.json

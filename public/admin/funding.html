@@ -45,6 +45,23 @@
       width: auto;
       margin-right: var(--admin-space-md);
     }
+
+    /* Inline editing styles */
+    .editable-cell { cursor: pointer; position: relative; }
+    .editable-cell:hover { background: var(--admin-primary-light); }
+    .editable-cell input, .editable-cell select, .editable-cell textarea {
+      width: 100%;
+      padding: 0.25rem 0.5rem;
+      border: 2px solid var(--admin-primary);
+      border-radius: var(--admin-radius-sm);
+      font-size: inherit;
+      background: var(--admin-surface);
+      color: var(--admin-text);
+    }
+    .editable-cell input:focus, .editable-cell select:focus, .editable-cell textarea:focus {
+      outline: none;
+      box-shadow: 0 0 0 2px var(--admin-primary-light);
+    }
   </style>
 </head>
 <body class="admin-page">
@@ -341,14 +358,14 @@
 
               return `
               <tr>
-                <td>${prospect.organization_name || '-'}</td>
-                <td>${prospect.contact_person || '-'}</td>
-                <td><span class="amount">${prospect.amount ? '$' + parseFloat(prospect.amount).toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 }) : '-'}</span></td>
-                <td><span class="admin-badge ${statusClass}">${statusDisplay}</span></td>
-                <td>${prospect.date_contacted ? new Date(prospect.date_contacted).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' }) : '-'}</td>
+                <td class="editable-cell" onclick="editFundingCell(this, '${prospect.id}', 'organization_name')" title="Click to edit">${prospect.organization_name || '-'}</td>
+                <td class="editable-cell" onclick="editFundingCell(this, '${prospect.id}', 'contact_person')" title="Click to edit">${prospect.contact_person || '-'}</td>
+                <td class="editable-cell" onclick="editFundingCell(this, '${prospect.id}', 'amount')" title="Click to edit"><span class="amount">${prospect.amount ? '$' + parseFloat(prospect.amount).toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 }) : '-'}</span></td>
+                <td class="editable-cell" onclick="editFundingCell(this, '${prospect.id}', 'status')" title="Click to edit"><span class="admin-badge ${statusClass}">${statusDisplay}</span></td>
+                <td class="editable-cell" onclick="editFundingCell(this, '${prospect.id}', 'date_contacted')" title="Click to edit">${prospect.date_contacted ? new Date(prospect.date_contacted).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' }) : '-'}</td>
                 <td>${icsrDisplay}</td>
                 <td style="max-width: 200px;">${leadsDisplay}</td>
-                <td class="admin-truncate" style="max-width: 250px;" title="${prospect.notes || ''}">${prospect.notes || '-'}</td>
+                <td class="editable-cell admin-truncate" onclick="editFundingCell(this, '${prospect.id}', 'notes')" style="max-width: 250px;" title="Click to edit: ${prospect.notes || ''}">${prospect.notes || '-'}</td>
                 <td>
                   <div class="actions">
                     <button class="admin-btn admin-btn-secondary admin-btn-xs" onclick='editProspect(${JSON.stringify(prospect).replace(/'/g, "&#39;")})'>Edit</button>
@@ -717,6 +734,158 @@
         closeModal();
       }
     });
+
+    // Inline cell editing for funding prospects
+    function editFundingCell(cell, prospectId, field) {
+      // Prevent double editing
+      if (cell.querySelector('input, select, textarea')) return;
+
+      // Extract text from badge or amount span if present
+      const badge = cell.querySelector('.admin-badge');
+      const amount = cell.querySelector('.amount');
+      let currentValue;
+
+      if (badge) {
+        currentValue = badge.textContent.trim().toLowerCase();
+      } else if (amount) {
+        const text = amount.textContent.trim();
+        currentValue = text.replace(/[$,]/g, ''); // Remove $ and commas
+      } else {
+        currentValue = cell.textContent.trim() === '-' ? '' : cell.textContent.trim();
+      }
+
+      // Handle date field
+      if (field === 'date_contacted' && currentValue && currentValue !== '-') {
+        const dateObj = new Date(currentValue);
+        if (!isNaN(dateObj.getTime())) {
+          currentValue = dateObj.toISOString().split('T')[0]; // Convert to YYYY-MM-DD
+        }
+      }
+
+      const prospect = allProspects.find(p => p.id === prospectId);
+      if (!prospect) return;
+
+      // Store original value
+      cell.setAttribute('data-original', currentValue);
+      cell.setAttribute('data-original-html', cell.innerHTML);
+
+      // Create input element (use textarea for notes, select for status, input for others)
+      let inputElement;
+
+      if (field === 'notes') {
+        inputElement = document.createElement('textarea');
+        inputElement.rows = 3;
+        inputElement.style.resize = 'vertical';
+        inputElement.value = currentValue;
+      } else if (field === 'status') {
+        inputElement = document.createElement('select');
+        inputElement.innerHTML = `
+          <option value="pending" ${currentValue === 'pending' ? 'selected' : ''}>Pending</option>
+          <option value="contacted" ${currentValue === 'contacted' ? 'selected' : ''}>Contacted</option>
+          <option value="proposal_sent" ${currentValue === 'proposal_sent' ? 'selected' : ''}>Proposal Sent</option>
+          <option value="negotiating" ${currentValue === 'negotiating' ? 'selected' : ''}>Negotiating</option>
+          <option value="awarded" ${currentValue === 'awarded' ? 'selected' : ''}>Awarded</option>
+          <option value="rejected" ${currentValue === 'rejected' ? 'selected' : ''}>Rejected</option>
+          <option value="inactive" ${currentValue === 'inactive' ? 'selected' : ''}>Inactive</option>
+        `;
+      } else if (field === 'date_contacted') {
+        inputElement = document.createElement('input');
+        inputElement.type = 'date';
+        inputElement.value = currentValue;
+      } else if (field === 'amount') {
+        inputElement = document.createElement('input');
+        inputElement.type = 'number';
+        inputElement.step = '1';
+        inputElement.min = '0';
+        inputElement.value = currentValue;
+      } else {
+        inputElement = document.createElement('input');
+        inputElement.type = 'text';
+        inputElement.value = currentValue;
+      }
+
+      inputElement.style.width = '100%';
+      inputElement.style.padding = '4px 8px';
+      inputElement.style.border = '2px solid var(--admin-primary)';
+      inputElement.style.borderRadius = '4px';
+      inputElement.style.fontSize = 'inherit';
+      inputElement.style.background = 'var(--admin-surface)';
+      inputElement.style.color = 'var(--admin-text)';
+
+      // Clear cell and add input
+      cell.textContent = '';
+      cell.appendChild(inputElement);
+      inputElement.focus();
+      if (inputElement.select) inputElement.select();
+
+      // Handle save on blur or enter
+      const saveEdit = async () => {
+        const newValue = (inputElement.value || '').trim();
+        const originalValue = cell.getAttribute('data-original');
+
+        // If no change, restore original
+        if (newValue === originalValue || (!newValue && !originalValue)) {
+          cell.innerHTML = cell.getAttribute('data-original-html');
+          return;
+        }
+
+        // Show saving state
+        cell.innerHTML = '<span style="color: var(--admin-primary);">Saving...</span>';
+
+        try {
+          const sessionToken = localStorage.getItem('isrs_session');
+          const response = await fetch(`${API_BASE_URL}/api/admin/funding/${prospect.id}`, {
+            method: 'PUT',
+            headers: {
+              'Authorization': `Bearer ${sessionToken}`,
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ [field]: newValue || null })
+          });
+
+          const data = await response.json();
+
+          if (response.ok && data.success) {
+            // Update local data
+            prospect[field] = newValue;
+
+            // Display updated value with appropriate formatting
+            if (field === 'amount') {
+              const formatted = newValue ? '$' + parseFloat(newValue).toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 }) : '-';
+              cell.innerHTML = `<span class="amount">${formatted}</span>`;
+            } else if (field === 'status') {
+              const statusDisplay = newValue.charAt(0).toUpperCase() + newValue.slice(1);
+              const statusClass = getStatusBadgeClass(newValue);
+              cell.innerHTML = `<span class="admin-badge ${statusClass}">${statusDisplay}</span>`;
+            } else if (field === 'date_contacted') {
+              const formatted = newValue ? new Date(newValue).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' }) : '-';
+              cell.textContent = formatted;
+            } else {
+              cell.textContent = newValue || '-';
+            }
+
+            showMessage('Field updated successfully', 'success');
+          } else {
+            cell.innerHTML = cell.getAttribute('data-original-html');
+            showMessage('Failed to update: ' + (data.error || 'Unknown error'), 'error');
+          }
+        } catch (error) {
+          cell.innerHTML = cell.getAttribute('data-original-html');
+          showMessage('Error updating field: ' + error.message, 'error');
+        }
+      };
+
+      inputElement.addEventListener('blur', saveEdit);
+      inputElement.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' && field !== 'notes') {
+          e.preventDefault();
+          inputElement.blur();
+        }
+        if (e.key === 'Escape') {
+          cell.innerHTML = cell.getAttribute('data-original-html');
+        }
+      });
+    }
   </script>
 
   <!-- Email Utils -->

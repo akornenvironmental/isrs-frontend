@@ -161,6 +161,33 @@
         grid-template-columns: 1fr;
       }
     }
+
+    /* Inline editing styles */
+    .editable-field {
+      cursor: pointer;
+      position: relative;
+      display: inline-block;
+    }
+    .editable-field:hover {
+      background: var(--admin-primary-light);
+      padding: 2px 4px;
+      border-radius: 4px;
+    }
+    .editable-field input, .editable-field select {
+      padding: 0.25rem 0.5rem;
+      border: 2px solid var(--admin-primary);
+      border-radius: var(--admin-radius-sm);
+      font-size: inherit;
+      background: var(--admin-surface);
+      color: var(--admin-text);
+    }
+    .editable-field input:focus, .editable-field select:focus {
+      outline: none;
+      box-shadow: 0 0 0 2px var(--admin-primary-light);
+    }
+    .document-title.editable-field:hover {
+      background: var(--admin-primary-light);
+    }
   </style>
 </head>
 <body class="admin-page">
@@ -531,15 +558,15 @@
       });
 
       return `
-        <div class="document-card ${doc.approval_status}" onclick="viewDocument('${doc.id}')">
-          <div class="document-icon">${icon}</div>
-          <div class="document-title">${escapeHtml(doc.title)}</div>
+        <div class="document-card ${doc.approval_status}">
+          <div class="document-icon" onclick="viewDocument('${doc.id}')" style="cursor: pointer;">${icon}</div>
+          <div class="document-title editable-field" onclick="editDocField(event, '${doc.id}', 'title')" title="Click to edit title">${escapeHtml(doc.title)}</div>
           <div class="document-badges">
-            <span class="admin-badge admin-badge-${doc.status === 'final' ? 'success' : 'secondary'}">${doc.status}</span>
+            <span class="admin-badge admin-badge-${doc.status === 'final' ? 'success' : 'secondary'} editable-field" onclick="editDocField(event, '${doc.id}', 'status')" title="Click to edit status">${doc.status}</span>
             <span class="admin-badge admin-badge-${doc.approval_status === 'approved' ? 'success' : doc.approval_status === 'pending' ? 'warning' : 'danger'}">${doc.approval_status}</span>
-            <span class="admin-badge admin-badge-info">${doc.category}</span>
+            <span class="admin-badge admin-badge-info editable-field" onclick="editDocField(event, '${doc.id}', 'category')" title="Click to edit category">${doc.category}</span>
           </div>
-          <div class="document-meta">
+          <div class="document-meta" onclick="viewDocument('${doc.id}')" style="cursor: pointer;">
             <div>📅 ${date}</div>
             <div>👤 ${doc.uploaded_by_first_name || 'Unknown'} ${doc.uploaded_by_last_name || ''}</div>
             ${doc.file_size ? `<div>📊 ${formatFileSize(doc.file_size)}</div>` : ''}
@@ -791,6 +818,125 @@
       const div = document.createElement('div');
       div.textContent = text;
       return div.innerHTML;
+    }
+
+    // Inline field editing for board documents
+    function editDocField(event, docId, field) {
+      // Prevent card click event from firing
+      event.stopPropagation();
+
+      const element = event.currentTarget;
+
+      // Prevent double editing
+      if (element.querySelector('input, select')) return;
+
+      // Get current value
+      const currentValue = element.textContent.trim();
+      const doc = allDocuments.find(d => d.id === docId);
+      if (!doc) return;
+
+      // Store original value and HTML
+      element.setAttribute('data-original', currentValue);
+      element.setAttribute('data-original-html', element.innerHTML);
+
+      // Create input element
+      let inputElement;
+
+      if (field === 'status') {
+        inputElement = document.createElement('select');
+        inputElement.innerHTML = `
+          <option value="draft" ${currentValue === 'draft' ? 'selected' : ''}>Draft</option>
+          <option value="final" ${currentValue === 'final' ? 'selected' : ''}>Final</option>
+          <option value="archived" ${currentValue === 'archived' ? 'selected' : ''}>Archived</option>
+        `;
+      } else if (field === 'category') {
+        inputElement = document.createElement('select');
+        inputElement.innerHTML = `
+          <option value="Meeting Minutes" ${currentValue === 'Meeting Minutes' ? 'selected' : ''}>Meeting Minutes</option>
+          <option value="Bylaws" ${currentValue === 'Bylaws' ? 'selected' : ''}>Bylaws</option>
+          <option value="Financial Reports" ${currentValue === 'Financial Reports' ? 'selected' : ''}>Financial Reports</option>
+          <option value="Policies" ${currentValue === 'Policies' ? 'selected' : ''}>Policies</option>
+          <option value="Other" ${currentValue === 'Other' ? 'selected' : ''}>Other</option>
+        `;
+      } else {
+        inputElement = document.createElement('input');
+        inputElement.type = 'text';
+        inputElement.value = currentValue;
+        inputElement.style.minWidth = '200px';
+      }
+
+      inputElement.style.padding = '4px 8px';
+      inputElement.style.border = '2px solid var(--admin-primary)';
+      inputElement.style.borderRadius = '4px';
+      inputElement.style.fontSize = 'inherit';
+      inputElement.style.background = 'var(--admin-surface)';
+      inputElement.style.color = 'var(--admin-text)';
+
+      // Replace content with input
+      element.textContent = '';
+      element.appendChild(inputElement);
+      inputElement.focus();
+      if (inputElement.select) inputElement.select();
+
+      // Handle save on blur or enter
+      const saveEdit = async () => {
+        const newValue = (inputElement.value || '').trim();
+        const originalValue = element.getAttribute('data-original');
+
+        // If no change, restore original
+        if (newValue === originalValue) {
+          element.innerHTML = element.getAttribute('data-original-html');
+          return;
+        }
+
+        // Show saving state
+        element.innerHTML = '<span style="color: var(--admin-primary); font-size: 0.875rem;">Saving...</span>';
+
+        try {
+          const sessionToken = localStorage.getItem('isrs_session');
+          const response = await fetch(`${API_BASE_URL}/api/admin/board-documents/${doc.id}`, {
+            method: 'PUT',
+            headers: {
+              'Authorization': `Bearer ${sessionToken}`,
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ [field]: newValue })
+          });
+
+          const data = await response.json();
+
+          if (response.ok && data.success) {
+            // Update local data
+            doc[field] = newValue;
+
+            // Refresh the display
+            await loadDocuments();
+            showToast('Document updated successfully', 'success');
+          } else {
+            element.innerHTML = element.getAttribute('data-original-html');
+            showToast('Failed to update: ' + (data.error || 'Unknown error'), 'error');
+          }
+        } catch (error) {
+          element.innerHTML = element.getAttribute('data-original-html');
+          showToast('Error updating document: ' + error.message, 'error');
+        }
+      };
+
+      inputElement.addEventListener('blur', saveEdit);
+      inputElement.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') {
+          e.preventDefault();
+          inputElement.blur();
+        }
+        if (e.key === 'Escape') {
+          element.innerHTML = element.getAttribute('data-original-html');
+        }
+      });
+
+      // Prevent clicks on the input from triggering card click
+      inputElement.addEventListener('click', (e) => {
+        e.stopPropagation();
+      });
     }
   </script>
   <style>

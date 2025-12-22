@@ -235,6 +235,55 @@
       font-size: var(--admin-text-md);
       line-height: 1.6;
     }
+
+    /* Inline editing styles */
+    .editable-cell { cursor: pointer; position: relative; }
+    .editable-cell:hover { background: var(--admin-primary-light); }
+    .editable-cell input, .editable-cell select {
+      width: 100%;
+      padding: 0.25rem 0.5rem;
+      border: 2px solid var(--admin-primary);
+      border-radius: var(--admin-radius-sm);
+      font-size: inherit;
+      background: var(--admin-surface);
+      color: var(--admin-text);
+    }
+    .editable-cell input:focus, .editable-cell select:focus {
+      outline: none;
+      box-shadow: 0 0 0 2px var(--admin-primary-light);
+    }
+
+    /* AI Enhancement styles */
+    .row-actions { display: flex; gap: 0.25rem; justify-content: center; }
+    .row-action-btn {
+      padding: 0.25rem 0.5rem;
+      font-size: var(--admin-text-xs);
+      border: none;
+      border-radius: var(--admin-radius-sm);
+      cursor: pointer;
+      background: var(--admin-gray-100);
+      color: var(--admin-text-secondary);
+      transition: all 0.15s;
+    }
+    .row-action-btn:hover { transform: translateY(-1px); box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+    .row-action-btn.ai-btn { background: linear-gradient(135deg, #9333ea 0%, #7e22ce 100%); color: white; opacity: 0.9; }
+    .row-action-btn.ai-btn:hover { transform: scale(1.05); opacity: 1; }
+
+    /* AI button style for bulk actions */
+    .admin-btn-ai {
+      background: linear-gradient(135deg, #9333ea 0%, #7e22ce 100%) !important;
+      color: white !important;
+      border: none !important;
+    }
+    .admin-btn-ai:hover {
+      background: linear-gradient(135deg, #7e22ce 0%, #6b21a8 100%) !important;
+      box-shadow: 0 2px 4px rgba(147, 51, 234, 0.3);
+    }
+
+    @keyframes spin {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
   </style>
 </head>
 <body class="admin-page">
@@ -297,6 +346,18 @@
           </div>
         </div>
         <button class="admin-btn admin-btn-secondary" onclick="resetFilters()">Reset</button>
+      </div>
+
+      <!-- Bulk Actions Bar -->
+      <div id="bulkActionsBar" style="display: none; padding: var(--admin-space-md) var(--admin-space-lg); background: var(--admin-gray-50); border: 1px solid var(--admin-gray-200); border-radius: var(--admin-radius-md); margin-bottom: var(--admin-space-lg);">
+        <div style="display: flex; align-items: center; justify-content: space-between;">
+          <div style="display: flex; align-items: center; gap: var(--admin-space-md);">
+            <span style="font-weight: 500; color: var(--admin-text-secondary);"><span id="selectedCount">0</span> selected</span>
+            <button class="admin-btn admin-btn-secondary admin-btn-sm" onclick="selectAllFiltered()">Select All Visible</button>
+            <button class="admin-btn admin-btn-sm admin-btn-ai" onclick="bulkEnhanceSelected()">✨ AI Enhance Selected</button>
+            <button class="admin-btn admin-btn-secondary admin-btn-sm" onclick="clearSelection()">Clear</button>
+          </div>
+        </div>
       </div>
 
       <div class="admin-table-wrapper">
@@ -735,6 +796,7 @@
               ${isColumnVisible('website') ? `<th>Website</th>` : ''}
               ${isColumnVisible('quality') ? `<th title="Data completeness score">Quality</th>` : ''}
               ${isColumnVisible('notes') ? `<th>Notes</th>` : ''}
+              <th style="width: 80px; text-align: center;">Actions</th>
             </tr>
           </thead>
           <tbody>
@@ -748,17 +810,22 @@
                          ${selectedOrganizations.has(org.id) ? 'checked' : ''}
                          onchange="toggleOrganization('${safeId}')">
                 </td>
-                ${isColumnVisible('name') ? `<td>${org.website ? `<a href="${org.website}" target="_blank" rel="noopener noreferrer">${org.name}</a>` : (org.name || '-')}</td>` : ''}
-                ${isColumnVisible('type') ? `<td>${org.type || '-'}</td>` : ''}
-                ${isColumnVisible('country') ? `<td>${org.country || '-'}</td>` : ''}
-                ${isColumnVisible('website') ? `<td>${org.website ? `<a href="${org.website}" target="_blank">Link</a>` : '-'}</td>` : ''}
+                ${isColumnVisible('name') ? `<td class="editable-cell" onclick="editOrgCell(this, ${org.id}, 'name')" title="Click to edit">${org.name || '-'}</td>` : ''}
+                ${isColumnVisible('type') ? `<td class="editable-cell" onclick="editOrgCell(this, ${org.id}, 'type')" title="Click to edit">${org.type || '-'}</td>` : ''}
+                ${isColumnVisible('country') ? `<td class="editable-cell" onclick="editOrgCell(this, ${org.id}, 'country')" title="Click to edit">${org.country || '-'}</td>` : ''}
+                ${isColumnVisible('website') ? `<td class="editable-cell" onclick="editOrgCell(this, ${org.id}, 'website')" title="Click to edit">${org.website || '-'}</td>` : ''}
                 ${isColumnVisible('quality') ? `<td>
                   <div class="quality-score quality-${quality.level}" title="${quality.score}/${quality.maxScore} fields complete">
                     <div class="quality-bar"><div class="quality-fill" style="width: ${quality.percentage}%"></div></div>
                     <span>${quality.percentage}%</span>
                   </div>
                 </td>` : ''}
-                ${isColumnVisible('notes') ? `<td class="notes-cell" title="${(org.notes || '').replace(/"/g, '&quot;')}">${org.notes || '-'}</td>` : ''}
+                ${isColumnVisible('notes') ? `<td class="editable-cell notes-cell" onclick="editOrgCell(this, ${org.id}, 'notes')" title="Click to edit">${org.notes || '-'}</td>` : ''}
+                <td style="text-align: center;">
+                  <div class="row-actions">
+                    <button class="row-action-btn ai-btn" onclick="enhanceSingleOrganization(${org.id})" title="AI Enhance">✨</button>
+                  </div>
+                </td>
               </tr>
             `}).join('')}
           </tbody>
@@ -1068,20 +1135,316 @@
     }
 
     function updateBulkActionsBar() {
-      // For now, just log selection count
+      const bulkActionsBar = document.getElementById('bulkActionsBar');
+      const selectedCount = document.getElementById('selectedCount');
+
       if (selectedOrganizations.size > 0) {
-        console.log(`${selectedOrganizations.size} organizations selected`);
+        bulkActionsBar.style.display = 'block';
+        selectedCount.textContent = selectedOrganizations.size;
+      } else {
+        bulkActionsBar.style.display = 'none';
       }
     }
 
     function clearSelection() {
       selectedOrganizations.clear();
       displayOrganizations(filteredOrganizations.length ? filteredOrganizations : allOrganizations);
+      updateBulkActionsBar();
+    }
+
+    function selectAllFiltered() {
+      const orgsToDisplay = filteredOrganizations.length ? filteredOrganizations : allOrganizations;
+      orgsToDisplay.forEach(org => {
+        if (org.id) selectedOrganizations.add(org.id);
+      });
+      displayOrganizations(orgsToDisplay);
+      updateBulkActionsBar();
+    }
+
+    // AI Enhancement Functions
+    async function enhanceSingleOrganization(orgId) {
+      const org = allOrganizations.find(o => o.id === orgId);
+      if (!org) {
+        showMessage('Organization not found', 'error');
+        return;
+      }
+
+      // Find the button and show loading state
+      const btn = document.querySelector(`button[onclick="enhanceSingleOrganization(${orgId})"]`);
+      const originalBtn = btn?.innerHTML;
+      if (btn) {
+        btn.innerHTML = '<span style="animation: spin 1s linear infinite; display: inline-block;">✨</span>';
+        btn.disabled = true;
+      }
+
+      showMessage(`Enhancing ${org.name} with AI...`, 'info');
+
+      try {
+        const sessionToken = localStorage.getItem('isrs_session');
+        const response = await fetch(`${API_BASE_URL}/api/claude/enhance-organization`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${sessionToken}`
+          },
+          body: JSON.stringify({ organization_id: org.id, useWebSearch: true })
+        });
+
+        const data = await response.json();
+        console.log('AI enhance response for org', org.name, ':', data);
+
+        if (!response.ok || !data.success) {
+          throw new Error(data.error || 'Failed to enhance organization');
+        }
+
+        // Show preview modal with suggestions
+        if (data.enhancement && data.enhancement.suggestions) {
+          showEnhancementPreview([{
+            id: org.id,
+            name: org.name,
+            type: 'organization',
+            current: org,
+            suggestions: data.enhancement.suggestions
+          }]);
+        } else {
+          showMessage('No enhancement suggestions available', 'info');
+        }
+
+        // Restore button
+        if (btn) {
+          btn.innerHTML = originalBtn;
+          btn.disabled = false;
+        }
+
+      } catch (error) {
+        console.error('Enhancement error:', error);
+        showMessage('Error: ' + error.message, 'error');
+        if (btn) {
+          btn.innerHTML = originalBtn;
+          btn.disabled = false;
+        }
+      }
+    }
+
+    async function bulkEnhanceSelected() {
+      if (selectedOrganizations.size === 0) {
+        showMessage('Please select organizations first', 'error');
+        return;
+      }
+
+      const count = selectedOrganizations.size;
+      if (count > 20) {
+        if (!confirm(`You are about to AI enhance ${count} organizations. This may take several minutes. Continue?`)) {
+          return;
+        }
+      }
+
+      // Get selected organizations
+      const orgsToEnhance = allOrganizations.filter(o => selectedOrganizations.has(o.id));
+      let processed = 0;
+      let enhanced = 0;
+      let failed = 0;
+
+      // Create progress modal
+      const progressModal = document.createElement('div');
+      progressModal.id = 'aiProgressModal';
+      progressModal.innerHTML = `
+        <div style="position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); z-index: 3000; display: flex; align-items: center; justify-content: center;">
+          <div style="background: var(--admin-surface, white); padding: 2rem; border-radius: 12px; max-width: 400px; width: 90%; text-align: center; box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1);">
+            <div style="font-size: 2rem; margin-bottom: 1rem;">✨</div>
+            <h3 style="margin: 0 0 1rem 0; color: var(--admin-text, #333);">AI Enhancement in Progress</h3>
+            <p id="aiProgressText" style="color: var(--admin-text-muted, #666); margin-bottom: 1rem;">Enhancing organization 0/${count}...</p>
+            <div style="background: var(--admin-gray-200, #e5e7eb); border-radius: 9999px; height: 8px; overflow: hidden;">
+              <div id="aiProgressBar" style="background: linear-gradient(135deg, #9333ea 0%, #7e22ce 100%); height: 100%; width: 0%; transition: width 0.3s;"></div>
+            </div>
+            <p id="aiProgressStatus" style="font-size: 0.875rem; color: var(--admin-text-muted, #666); margin-top: 0.5rem;">Starting...</p>
+          </div>
+        </div>
+      `;
+      document.body.appendChild(progressModal);
+
+      const updateProgress = (current, total, status) => {
+        const pct = Math.round((current / total) * 100);
+        document.getElementById('aiProgressText').textContent = `Enhancing organization ${current}/${total}...`;
+        document.getElementById('aiProgressBar').style.width = `${pct}%`;
+        document.getElementById('aiProgressStatus').textContent = status || `${enhanced} enhanced, ${failed} failed`;
+      };
+
+      const allSuggestions = [];
+
+      // Process in batches of 3
+      const batchSize = 3;
+      for (let i = 0; i < orgsToEnhance.length; i += batchSize) {
+        const batch = orgsToEnhance.slice(i, i + batchSize);
+
+        const results = await Promise.allSettled(
+          batch.map(async (org) => {
+            try {
+              const sessionToken = localStorage.getItem('isrs_session');
+              const response = await fetch(`${API_BASE_URL}/api/claude/enhance-organization`, {
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/json',
+                  'Authorization': `Bearer ${sessionToken}`
+                },
+                body: JSON.stringify({ organization_id: org.id, useWebSearch: true })
+              });
+
+              const data = await response.json();
+              console.log('AI enhance response for org', org.name, ':', data);
+
+              if (response.ok && data.success && data.enhancement) {
+                const suggestions = data.enhancement.suggestions || {};
+                return { success: true, org, suggestions };
+              }
+              return { success: false, org, error: data.error || 'No enhancement suggestions returned' };
+            } catch (e) {
+              return { success: false, org, error: e.message };
+            }
+          })
+        );
+
+        results.forEach((result) => {
+          processed++;
+          updateProgress(processed, count);
+
+          if (result.status === 'fulfilled' && result.value.success) {
+            enhanced++;
+            allSuggestions.push({
+              id: result.value.org.id,
+              name: result.value.org.name,
+              type: 'organization',
+              current: result.value.org,
+              suggestions: result.value.suggestions
+            });
+          } else {
+            failed++;
+          }
+        });
+      }
+
+      // Remove progress modal
+      progressModal.remove();
+
+      // Show preview modal with all suggestions
+      if (allSuggestions.length > 0) {
+        showEnhancementPreview(allSuggestions);
+      } else {
+        showMessage(`Enhancement complete. ${failed} organizations had no suggestions.`, 'info');
+      }
+    }
+
+    // Inline cell editing for organizations
+    function editOrgCell(cell, orgId, field) {
+      // Prevent double editing
+      if (cell.querySelector('input, select, textarea')) return;
+
+      const currentValue = cell.textContent.trim() === '-' ? '' : cell.textContent.trim();
+      const org = allOrganizations.find(o => o.id === orgId);
+      if (!org) return;
+
+      // Store original value
+      cell.setAttribute('data-original', currentValue);
+
+      // Create input element (use textarea for notes, select for type, input for others)
+      let inputElement;
+
+      if (field === 'notes') {
+        inputElement = document.createElement('textarea');
+        inputElement.rows = 3;
+        inputElement.style.resize = 'vertical';
+      } else if (field === 'type') {
+        inputElement = document.createElement('select');
+        inputElement.innerHTML = `
+          <option value="">Select type...</option>
+          <option value="university" ${currentValue === 'university' ? 'selected' : ''}>University</option>
+          <option value="government" ${currentValue === 'government' ? 'selected' : ''}>Government</option>
+          <option value="ngo" ${currentValue === 'ngo' ? 'selected' : ''}>NGO/Non-profit</option>
+          <option value="company" ${currentValue === 'company' ? 'selected' : ''}>Company</option>
+          <option value="foundation" ${currentValue === 'foundation' ? 'selected' : ''}>Foundation</option>
+          <option value="research" ${currentValue === 'research' ? 'selected' : ''}>Research Institute</option>
+          <option value="other" ${currentValue === 'other' ? 'selected' : ''}>Other</option>
+        `;
+      } else {
+        inputElement = document.createElement('input');
+        inputElement.type = field === 'website' ? 'url' : 'text';
+        inputElement.value = currentValue;
+      }
+
+      inputElement.style.width = '100%';
+      inputElement.style.padding = '4px 8px';
+      inputElement.style.border = '2px solid var(--admin-primary)';
+      inputElement.style.borderRadius = '4px';
+      inputElement.style.fontSize = 'inherit';
+      inputElement.style.background = 'var(--admin-surface)';
+      inputElement.style.color = 'var(--admin-text)';
+
+      // Clear cell and add input
+      cell.textContent = '';
+      cell.appendChild(inputElement);
+      inputElement.focus();
+      if (inputElement.select) inputElement.select();
+
+      // Handle save on blur or enter
+      const saveEdit = async () => {
+        const newValue = (inputElement.value || '').trim();
+        const originalValue = cell.getAttribute('data-original');
+
+        // If no change, restore original
+        if (newValue === originalValue) {
+          cell.textContent = originalValue || '-';
+          return;
+        }
+
+        // Show saving state
+        cell.innerHTML = '<span style="color: var(--admin-primary);">Saving...</span>';
+
+        try {
+          const sessionToken = localStorage.getItem('isrs_session');
+          const response = await fetch(`${API_BASE_URL}/api/admin/organizations/${org.id}`, {
+            method: 'PUT',
+            headers: {
+              'Authorization': `Bearer ${sessionToken}`,
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ [field]: newValue })
+          });
+
+          const data = await response.json();
+
+          if (response.ok && data.success) {
+            // Update local data
+            org[field] = newValue;
+            cell.textContent = newValue || '-';
+            showMessage('Field updated successfully', 'success');
+          } else {
+            cell.textContent = originalValue || '-';
+            showMessage('Failed to update: ' + (data.error || 'Unknown error'), 'error');
+          }
+        } catch (error) {
+          cell.textContent = originalValue || '-';
+          showMessage('Error updating field: ' + error.message, 'error');
+        }
+      };
+
+      inputElement.addEventListener('blur', saveEdit);
+      inputElement.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' && field !== 'notes') {
+          e.preventDefault();
+          inputElement.blur();
+        }
+        if (e.key === 'Escape') {
+          cell.textContent = cell.getAttribute('data-original') || '-';
+        }
+      });
     }
   </script>
 
   <!-- Email Utils -->
   <script src="/js/email-utils.js"></script>
+
+  <!-- AI Enhancement Preview Modal -->
+  <script src="/js/ai-enhancement-preview.js"></script>
 
   <!-- Admin Layout -->
   <script src="/js/admin-layout.js"></script>

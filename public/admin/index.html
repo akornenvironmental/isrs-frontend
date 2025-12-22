@@ -3,312 +3,86 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Admin Login - ISRS</title>
+  <title>Redirecting to Secure Login - ISRS</title>
   <link rel="icon" type="image/png" href="/images/favicon.png">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Marcellus&family=PT+Serif:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
+  <meta http-equiv="refresh" content="3;url=/login.html">
   <style>
-    :root {
-      --primary-blue: #2e5a8a;
-      --secondary-blue: #4a7ab5;
-      --dark-gray: #2c3e50;
-      --light-gray: #f8f9fa;
-      --white: #ffffff;
-      --text-dark: #333333;
-      --text-light: #666666;
-      --border-color: #e1e1e1;
-      --error-red: #dc3545;
-      --success-green: #28a745;
-    }
-
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-
     body {
-      font-family: 'PT Serif', Georgia, serif;
-      background: linear-gradient(135deg, var(--light-gray) 0%, #e9ecef 100%);
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: linear-gradient(135deg, #2e5a8a 0%, #4a7ab5 100%);
       min-height: 100vh;
       display: flex;
       align-items: center;
       justify-content: center;
-      color: var(--text-dark);
-    }
-
-    .login-container {
-      background: var(--white);
-      border-radius: 12px;
-      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
-      padding: 3rem;
-      max-width: 450px;
-      width: 90%;
-    }
-
-    .logo {
+      color: white;
+      padding: 2rem;
       text-align: center;
-      margin-bottom: 2rem;
     }
-
-    .logo img {
-      height: 60px;
-      width: auto;
+    .redirect-container {
+      max-width: 600px;
     }
-
+    .icon {
+      font-size: 4rem;
+      margin-bottom: 1rem;
+    }
     h1 {
-      font-family: 'Marcellus', Georgia, serif;
       font-size: 2rem;
-      font-weight: 400;
-      text-align: center;
-      margin-bottom: 0.5rem;
-      color: var(--primary-blue);
+      margin-bottom: 1rem;
     }
-
-    .subtitle {
-      text-align: center;
-      color: var(--text-light);
-      margin-bottom: 2rem;
-      font-size: 0.95rem;
-    }
-
-    .form-group {
-      margin-bottom: 1.5rem;
-    }
-
-    .form-group label {
-      display: block;
-      margin-bottom: 0.5rem;
-      font-weight: 600;
-      color: var(--text-dark);
-    }
-
-    .form-group input {
-      width: 100%;
-      padding: 0.875rem;
-      border: 1px solid var(--border-color);
-      border-radius: 6px;
-      font-family: inherit;
-      font-size: 1rem;
-      transition: all 0.3s;
-    }
-
-    .form-group input:focus {
-      outline: none;
-      border-color: var(--primary-blue);
-      box-shadow: 0 0 0 3px rgba(46, 90, 138, 0.1);
-    }
-
-    .btn-login {
-      width: 100%;
-      background: var(--primary-blue);
-      color: var(--white);
-      padding: 1rem;
-      border: none;
-      border-radius: 6px;
+    p {
       font-size: 1.1rem;
-      font-weight: 600;
-      cursor: pointer;
-      transition: all 0.3s;
-      font-family: inherit;
-    }
-
-    .btn-login:hover:not(:disabled) {
-      background: var(--secondary-blue);
-      transform: translateY(-2px);
-      box-shadow: 0 4px 12px rgba(46, 90, 138, 0.3);
-    }
-
-    .btn-login:disabled {
-      opacity: 0.6;
-      cursor: not-allowed;
-    }
-
-    .alert {
-      padding: 1rem;
-      border-radius: 6px;
       margin-bottom: 1.5rem;
-      display: none;
+      opacity: 0.9;
     }
-
-    .alert.show {
-      display: block;
-    }
-
-    .alert-error {
-      background: #f8d7da;
-      color: #721c24;
-      border: 1px solid #f5c6cb;
-    }
-
-    .alert-success {
-      background: #d4edda;
-      color: #155724;
-      border: 1px solid #c3e6cb;
-    }
-
-    .back-link {
-      text-align: center;
-      margin-top: 1.5rem;
-    }
-
-    .back-link a {
-      color: var(--primary-blue);
-      text-decoration: none;
-      font-size: 0.95rem;
-      transition: color 0.3s;
-    }
-
-    .back-link a:hover {
-      color: var(--secondary-blue);
-      text-decoration: underline;
-    }
-
-    .loading-spinner {
+    .btn {
       display: inline-block;
-      width: 16px;
-      height: 16px;
-      border: 2px solid rgba(255, 255, 255, 0.3);
-      border-radius: 50%;
-      border-top-color: white;
-      animation: spin 0.6s linear infinite;
-      margin-left: 0.5rem;
+      background: white;
+      color: #2e5a8a;
+      padding: 1rem 2rem;
+      border-radius: 6px;
+      text-decoration: none;
+      font-weight: 600;
+      transition: transform 0.2s;
     }
-
-    @keyframes spin {
-      to { transform: rotate(360deg); }
+    .btn:hover {
+      transform: translateY(-2px);
+    }
+    .security-notice {
+      background: rgba(255,255,255,0.1);
+      padding: 1rem;
+      border-radius: 8px;
+      margin-top: 2rem;
+      font-size: 0.9rem;
     }
   </style>
 </head>
 <body>
-  <div class="login-container">
-    <div class="logo">
-      <img src="/images/logo-wide-blue.png" alt="ISRS Logo">
-    </div>
+  <div class="redirect-container">
+    <div class="icon">🔒</div>
+    <h1>Legacy Admin Portal Deprecated</h1>
+    <p>
+      This admin login has been replaced with a new secure authentication system
+      using magic link email verification and role-based access control.
+    </p>
+    <p>
+      <strong>Redirecting to the new secure login in 3 seconds...</strong>
+    </p>
+    <a href="/login.html" class="btn">Go to Secure Login Now</a>
 
-    <h1>Admin Login</h1>
-    <p class="subtitle">Enter your email to access the admin dashboard</p>
-
-    <div id="alertMessage" class="alert"></div>
-
-    <form id="loginForm">
-      <div class="form-group">
-        <label for="email">Email Address</label>
-        <input
-          type="email"
-          id="email"
-          name="email"
-          required
-          autofocus
-          placeholder="your.email@example.com"
-        />
-      </div>
-
-      <button type="submit" class="btn-login" id="loginBtn">
-        <span id="btnText">Sign In</span>
-      </button>
-    </form>
-
-    <div class="back-link">
-      <a href="/">&larr; Back to Home</a>
+    <div class="security-notice">
+      <strong>🛡️ Security Improvements</strong><br>
+      ✓ Passwordless magic link authentication<br>
+      ✓ HTTP-only secure cookies<br>
+      ✓ Role-based access control<br>
+      ✓ 24-hour session expiry
     </div>
   </div>
 
   <script>
-    const API_BASE_URL = 'https://isrs-database-backend.onrender.com';
-
-    const form = document.getElementById('loginForm');
-    const emailInput = document.getElementById('email');
-    const loginBtn = document.getElementById('loginBtn');
-    const btnText = document.getElementById('btnText');
-    const alertMessage = document.getElementById('alertMessage');
-
-    function showAlert(message, type = 'error') {
-      alertMessage.textContent = message;
-      alertMessage.className = `alert alert-${type} show`;
-      setTimeout(() => {
-        alertMessage.classList.remove('show');
-      }, 5000);
-    }
-
-    function setLoading(loading) {
-      loginBtn.disabled = loading;
-      if (loading) {
-        btnText.innerHTML = 'Signing In<span class="loading-spinner"></span>';
-      } else {
-        btnText.textContent = 'Sign In';
-      }
-    }
-
-    form.addEventListener('submit', async (e) => {
-      e.preventDefault();
-
-      const email = emailInput.value.trim();
-
-      if (!email) {
-        showAlert('Please enter your email address');
-        return;
-      }
-
-      setLoading(true);
-
-      try {
-        const response = await fetch(`${API_BASE_URL}/api/auth/login`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({ email })
-        });
-
-        const data = await response.json();
-
-        if (response.ok && data.success) {
-          // Store session token
-          localStorage.setItem('isrs_session', data.data.sessionToken);
-          localStorage.setItem('isrs_user_email', data.data.email);
-          localStorage.setItem('isrs_user_role', data.data.role);
-
-          showAlert('Login successful! Redirecting...', 'success');
-
-          // Redirect to dashboard after 1 second
-          setTimeout(() => {
-            window.location.href = '/admin/dashboard.html';
-          }, 1000);
-        } else {
-          showAlert(data.error || 'Login failed. Please check your credentials.');
-        }
-      } catch (error) {
-        console.error('Login error:', error);
-        showAlert('Unable to connect to the server. Please try again later.');
-      } finally {
-        setLoading(false);
-      }
-    });
-
-    // Check if already logged in
-    window.addEventListener('DOMContentLoaded', () => {
-      const sessionToken = localStorage.getItem('isrs_session');
-      if (sessionToken) {
-        // Verify session is still valid
-        fetch(`${API_BASE_URL}/api/auth/session`, {
-          headers: {
-            'Authorization': `Bearer ${sessionToken}`
-          }
-        })
-        .then(res => res.json())
-        .then(data => {
-          if (data.success) {
-            window.location.href = '/admin/dashboard.html';
-          }
-        })
-        .catch(() => {
-          // Invalid session, stay on login page
-          localStorage.removeItem('isrs_session');
-        });
-      }
-    });
+    // Redirect immediately if JavaScript is enabled
+    setTimeout(() => {
+      window.location.href = '/login.html';
+    }, 3000);
   </script>
 </body>
 </html>

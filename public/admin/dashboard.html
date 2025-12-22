@@ -3,1293 +3,148 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Admin Dashboard - ISRS</title>
+  <title>Redirecting to New Portal - ISRS</title>
   <link rel="icon" type="image/png" href="/images/favicon.png">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Marcellus&family=PT+Serif:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/css/styles.css">
-  <link rel="stylesheet" href="/css/admin-layout.css">
-  <link rel="stylesheet" href="/css/admin-unified.css">
+  <meta http-equiv="refresh" content="3;url=/login.html">
   <style>
-    /* Dashboard-specific styles - minimal additions to unified CSS */
-
-    /* Top bar header */
-    .dashboard-top-bar {
-      background: var(--admin-surface);
-      border-bottom: 1px solid var(--admin-border);
-      padding: var(--admin-space-xl) var(--admin-space-2xl);
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: var(--admin-space-2xl);
-    }
-
-    .dashboard-top-bar h1 {
-      font-size: var(--admin-text-2xl);
-      margin-bottom: var(--admin-space-xs);
-    }
-
-    .dashboard-top-bar p {
-      color: var(--admin-text-muted);
-      font-size: var(--admin-text-md);
-      margin: 0;
-    }
-
-    /* System Status Indicator */
-    .system-status {
-      display: flex;
-      flex-direction: column;
-      align-items: flex-end;
-      gap: var(--admin-space-sm);
-    }
-
-    .status-label {
-      font-size: var(--admin-text-xs);
-      font-weight: 600;
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-      color: var(--admin-gray-400);
-    }
-
-    .status-indicator {
-      display: flex;
-      align-items: center;
-      gap: var(--admin-space-sm);
-      padding: var(--admin-space-sm) var(--admin-space-lg);
-      background: var(--admin-success-bg);
-      border-radius: var(--admin-radius-md);
-      border: 1px solid var(--admin-success);
-    }
-
-    .status-dot {
-      width: 8px;
-      height: 8px;
-      border-radius: 50%;
-      background: var(--admin-success);
-      animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
-    }
-
-    @keyframes pulse {
-      0%, 100% { opacity: 1; }
-      50% { opacity: 0.5; }
-    }
-
-    .status-text {
-      font-size: var(--admin-text-sm);
-      font-weight: 600;
-      color: var(--admin-success-text);
-    }
-
-    /* Content Wrapper */
-    .dashboard-content {
-      padding: var(--admin-space-2xl);
-      max-width: 1400px;
-    }
-
-    /* Alert Banner */
-    .alert-banner {
-      background: linear-gradient(135deg, var(--admin-accent) 0%, #2e8b9e 100%);
-      color: white;
-      padding: var(--admin-space-2xl);
-      border-radius: var(--admin-radius-lg);
-      margin-bottom: var(--admin-space-2xl);
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: var(--admin-space-2xl);
-      box-shadow: var(--admin-shadow-md);
-    }
-
-    .alert-content h2 {
-      font-size: var(--admin-text-xl);
-      margin-bottom: var(--admin-space-sm);
-      color: white;
-    }
-
-    .alert-content p {
-      font-size: var(--admin-text-md);
-      opacity: 0.95;
-      margin: 0;
-      color: white;
-    }
-
-    .alert-actions {
-      display: flex;
-      gap: var(--admin-space-lg);
-      flex-shrink: 0;
-    }
-
-    .alert-btn-primary {
-      background: white;
-      color: var(--admin-primary);
-      padding: var(--admin-space-lg) var(--admin-space-2xl);
-      border-radius: var(--admin-radius-lg);
-      font-weight: 600;
-      font-size: var(--admin-text-md);
-      text-decoration: none;
-      box-shadow: var(--admin-shadow-sm);
-      transition: all var(--admin-transition);
-    }
-
-    .alert-btn-primary:hover {
-      transform: translateY(-2px);
-      box-shadow: var(--admin-shadow-md);
-      text-decoration: none;
-    }
-
-    .alert-btn-secondary {
-      background: rgba(255, 255, 255, 0.2);
-      color: white;
-      padding: var(--admin-space-lg) var(--admin-space-2xl);
-      border-radius: var(--admin-radius-lg);
-      font-weight: 600;
-      font-size: var(--admin-text-md);
-      text-decoration: none;
-      border: 1px solid rgba(255, 255, 255, 0.3);
-      transition: all var(--admin-transition);
-    }
-
-    .alert-btn-secondary:hover {
-      background: rgba(255, 255, 255, 0.3);
-      text-decoration: none;
-      color: white;
-    }
-
-    /* Extended stat card styles */
-    .admin-stat-card .stat-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin-bottom: var(--admin-space-lg);
-    }
-
-    .admin-stat-card .stat-icon {
-      width: 48px;
-      height: 48px;
-      border-radius: var(--admin-radius-md);
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: linear-gradient(135deg, #2e5a8a 0%, #4a7ab5 100%);
+      min-height: 100vh;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 1.5rem;
-    }
-
-    .admin-stat-card .stat-icon-blue {
-      background: linear-gradient(135deg, #3b82f6, #2563eb);
       color: white;
-    }
-
-    .admin-stat-card .stat-icon-purple {
-      background: linear-gradient(135deg, #8b5cf6, #7c3aed);
-      color: white;
-    }
-
-    .admin-stat-card .stat-icon-amber {
-      background: linear-gradient(135deg, #f59e0b, #d97706);
-      color: white;
-    }
-
-    .admin-stat-card .stat-description {
-      font-size: var(--admin-text-sm);
-      color: var(--admin-gray-500);
-      margin-top: var(--admin-space-sm);
-    }
-
-    /* Section styles */
-    .dashboard-section {
-      margin-bottom: var(--admin-space-2xl);
-    }
-
-    .section-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin-bottom: var(--admin-space-xl);
-    }
-
-    .section-title {
-      font-size: var(--admin-text-xl);
-      color: var(--admin-text);
-      display: flex;
-      align-items: center;
-      gap: var(--admin-space-lg);
-    }
-
-    .section-icon {
-      font-size: 1.75rem;
-    }
-
-    /* Action Cards Grid */
-    .actions-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-      gap: var(--admin-space-xl);
-    }
-
-    .action-card {
-      background: var(--admin-surface);
-      padding: var(--admin-space-2xl);
-      border-radius: var(--admin-radius-lg);
-      border: 2px solid var(--admin-border);
-      text-decoration: none;
-      transition: all 0.3s;
-      display: flex;
-      flex-direction: column;
-      align-items: flex-start;
-      gap: var(--admin-space-lg);
-    }
-
-    .action-card:hover {
-      border-color: var(--admin-primary);
-      box-shadow: var(--admin-shadow-lg);
-      transform: translateY(-4px);
-      text-decoration: none;
-    }
-
-    .action-card-icon {
-      width: 56px;
-      height: 56px;
-      border-radius: var(--admin-radius-lg);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 1.75rem;
-    }
-
-    .action-card-title {
-      font-size: var(--admin-text-lg);
-      font-weight: 700;
-      color: var(--admin-text);
-    }
-
-    .action-card-description {
-      font-size: var(--admin-text-sm);
-      color: var(--admin-text-muted);
-      line-height: 1.5;
-    }
-
-    /* Collapsible Section */
-    .collapsible-section {
-      background: var(--admin-surface);
-      border: 1px solid var(--admin-border);
-      border-radius: var(--admin-radius-lg);
-      margin-bottom: var(--admin-space-2xl);
-      overflow: hidden;
-    }
-
-    .collapsible-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: var(--admin-space-2xl);
-      cursor: pointer;
-      transition: background var(--admin-transition);
-    }
-
-    .collapsible-header:hover {
-      background: var(--admin-surface-hover);
-    }
-
-    .collapsible-title {
-      display: flex;
-      align-items: center;
-      gap: var(--admin-space-lg);
-      font-size: var(--admin-text-lg);
-      font-weight: 700;
-      color: var(--admin-text);
-    }
-
-    .collapsible-toggle {
-      font-size: 1.5rem;
-      color: var(--admin-text-muted);
-      transition: transform 0.3s;
-    }
-
-    .collapsible-toggle.open {
-      transform: rotate(180deg);
-    }
-
-    .collapsible-content {
-      max-height: 0;
-      overflow: hidden;
-      transition: max-height 0.3s ease-out;
-    }
-
-    .collapsible-content.open {
-      max-height: 2000px;
-    }
-
-    .collapsible-inner {
-      padding: 0 var(--admin-space-2xl) var(--admin-space-2xl);
-    }
-
-    /* Financial Grid */
-    .financial-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-      gap: var(--admin-space-xl);
-    }
-
-    .financial-item {
-      background: var(--admin-surface-hover);
-      padding: var(--admin-space-xl);
-      border-radius: var(--admin-radius-md);
-      border: 1px solid var(--admin-border);
-    }
-
-    .financial-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-start;
-      margin-bottom: var(--admin-space-lg);
-    }
-
-    .financial-label {
-      font-size: var(--admin-text-sm);
-      font-weight: 600;
-      color: var(--admin-text-secondary);
-    }
-
-    .financial-account {
-      font-size: var(--admin-text-xs);
-      color: var(--admin-text-muted);
-    }
-
-    .financial-amount {
-      font-size: var(--admin-text-2xl);
-      font-weight: 700;
-      color: var(--admin-text);
-      margin-bottom: var(--admin-space-sm);
-    }
-
-    .financial-note {
-      font-size: var(--admin-text-xs);
-      color: var(--admin-text-muted);
-      line-height: 1.5;
-    }
-
-    .financial-tip {
-      margin-top: var(--admin-space-md);
-      background: var(--admin-warning-bg);
-      padding: var(--admin-space-md);
-      border-radius: var(--admin-radius-sm);
-      font-size: var(--admin-text-xs);
-    }
-
-    /* Link List */
-    .link-list {
-      display: flex;
-      flex-wrap: wrap;
-      gap: var(--admin-space-lg);
-      margin-top: var(--admin-space-xl);
-    }
-
-    .link-item {
-      display: flex;
-      align-items: center;
-      gap: var(--admin-space-lg);
-      padding: var(--admin-space-xl) var(--admin-space-2xl);
-      background: var(--admin-surface-hover);
-      border: 1px solid var(--admin-border);
-      border-radius: var(--admin-radius-md);
-      text-decoration: none;
-      color: var(--admin-primary);
-      font-size: var(--admin-text-md);
-      font-weight: 600;
-      transition: all var(--admin-transition);
-      flex: 1;
-      min-width: 200px;
-    }
-
-    .link-item span {
-      font-size: 1.5rem;
-    }
-
-    .link-item:hover {
-      background: var(--admin-primary-light);
-      border-color: var(--admin-primary);
-      transform: translateY(-2px);
-      box-shadow: var(--admin-shadow-md);
-      text-decoration: none;
-    }
-
-    /* System Status Card */
-    .system-status-card {
-      background: var(--admin-surface);
-      padding: var(--admin-space-2xl);
-      border-radius: var(--admin-radius-lg);
-      border: 1px solid var(--admin-border);
-    }
-
-    .system-status-card .card-content {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-    }
-
-    .system-status-card .card-info {
-      display: flex;
-      align-items: center;
-      gap: var(--admin-space-lg);
-    }
-
-    .system-status-card .card-icon {
-      font-size: 1.5rem;
-    }
-
-    .system-status-card .card-title {
-      font-size: var(--admin-text-lg);
-      font-weight: 700;
-      color: var(--admin-text);
-      margin-bottom: var(--admin-space-xs);
-    }
-
-    .system-status-card .card-subtitle {
-      font-size: var(--admin-text-sm);
-      color: var(--admin-text-muted);
-    }
-
-    /* Loading animation */
-    .loading-dots {
-      animation: blink 1.4s infinite;
-    }
-
-    @keyframes blink {
-      0%, 100% { opacity: 0.3; }
-      50% { opacity: 1; }
-    }
-
-    /* AI Assistant Slide-out Panel */
-    .ai-assistant-container {
-      position: fixed;
-      top: 0;
-      right: 0;
-      bottom: 0;
-      z-index: 1000;
-    }
-
-    .ai-panel {
-      background: var(--admin-surface);
-      border-left: 2px solid var(--admin-primary);
-      box-shadow: -4px 0 20px rgba(0, 0, 0, 0.15);
-      height: 100%;
-      width: 450px;
-      display: flex;
-      flex-direction: column;
-    }
-
-    .ai-panel-content {
-      display: flex;
-      flex-direction: column;
-      height: 100%;
-    }
-
-    .ai-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: var(--admin-space-2xl);
-      border-bottom: 1px solid var(--admin-gray-200);
-    }
-
-    .ai-header-left {
-      display: flex;
-      align-items: center;
-      gap: var(--admin-space-lg);
-    }
-
-    .ai-icon {
-      width: 40px;
-      height: 40px;
-      background: linear-gradient(135deg, var(--admin-primary) 0%, #8b5cf6 100%);
-      border-radius: var(--admin-radius-md);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 1.25rem;
-    }
-
-    .ai-header h3 {
-      font-size: var(--admin-text-lg);
-      font-weight: bold;
-      color: var(--admin-gray-900);
-      margin: 0;
-    }
-
-    .ai-subtitle {
-      font-size: var(--admin-text-xs);
-      color: var(--admin-gray-500);
-      margin: 0;
-    }
-
-    .ai-close-btn {
-      color: var(--admin-gray-400);
-      font-size: 2rem;
-      line-height: 1;
-      background: none;
-      border: none;
-      cursor: pointer;
-      padding: 0;
-      transition: color var(--admin-transition);
-    }
-
-    .ai-close-btn:hover {
-      color: var(--admin-gray-600);
-    }
-
-    .ai-content {
-      flex: 1;
-      overflow-y: auto;
-      padding: var(--admin-space-2xl);
-    }
-
-    .ai-prompt-text {
-      font-size: var(--admin-text-sm);
-      color: var(--admin-gray-600);
-      margin-bottom: var(--admin-space-lg);
-    }
-
-    .ai-examples-list {
-      display: flex;
-      flex-direction: column;
-      gap: var(--admin-space-md);
-    }
-
-    .ai-example-btn {
-      width: 100%;
-      text-align: left;
-      padding: var(--admin-space-lg) var(--admin-space-xl);
-      background: var(--admin-surface-hover);
-      border: 1px solid var(--admin-border);
-      border-radius: var(--admin-radius-md);
-      font-size: var(--admin-text-sm);
-      color: var(--admin-text-secondary);
-      cursor: pointer;
-      transition: all var(--admin-transition);
-      font-family: var(--admin-font-body);
-    }
-
-    .ai-example-btn:hover {
-      background: var(--admin-primary-light);
-      border-color: var(--admin-primary);
-      color: var(--admin-primary);
-    }
-
-    .ai-example-btn span {
-      color: var(--admin-primary);
-      margin-right: var(--admin-space-md);
-    }
-
-    .ai-loading-state {
+      padding: 2rem;
       text-align: center;
-      padding: var(--admin-space-2xl) 0;
     }
-
-    .ai-loading-state .admin-spinner {
-      width: 48px;
-      height: 48px;
-      border-width: 3px;
-      margin: 0 auto var(--admin-space-lg);
+    .redirect-container {
+      max-width: 700px;
     }
-
-    .ai-loading-state p {
-      color: var(--admin-text-muted);
+    .icon {
+      font-size: 4rem;
+      margin-bottom: 1rem;
+      animation: bounce 2s infinite;
     }
-
-    .ai-input-area {
-      border-top: 1px solid var(--admin-border);
-      padding: var(--admin-space-lg);
+    @keyframes bounce {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-10px); }
     }
-
-    .ai-input-area form {
-      display: flex;
-      gap: var(--admin-space-md);
+    h1 {
+      font-size: 2.5rem;
+      margin-bottom: 1rem;
     }
-
-    .ai-input {
-      flex: 1;
-      padding: var(--admin-space-lg) var(--admin-space-xl);
-      border: 1px solid var(--admin-gray-300);
-      border-radius: var(--admin-radius-md);
-      font-size: var(--admin-text-sm);
-      font-family: var(--admin-font-body);
-      transition: border-color var(--admin-transition);
+    .subtitle {
+      font-size: 1.3rem;
+      margin-bottom: 2rem;
+      opacity: 0.95;
     }
-
-    .ai-input:focus {
-      outline: none;
-      border-color: var(--admin-primary);
-      box-shadow: 0 0 0 3px rgba(46, 90, 138, 0.1);
+    p {
+      font-size: 1.1rem;
+      margin-bottom: 1.5rem;
+      opacity: 0.9;
+      line-height: 1.6;
     }
-
-    .ai-submit-btn {
-      padding: var(--admin-space-lg) var(--admin-space-2xl);
-      background: var(--admin-primary);
-      color: white;
-      border: none;
-      border-radius: var(--admin-radius-md);
-      font-family: var(--admin-font-body);
-      font-size: var(--admin-text-sm);
+    .btn {
+      display: inline-block;
+      background: white;
+      color: #2e5a8a;
+      padding: 1rem 2.5rem;
+      border-radius: 8px;
+      text-decoration: none;
+      font-weight: 700;
+      font-size: 1.1rem;
+      transition: transform 0.2s;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    }
+    .btn:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 6px 16px rgba(0,0,0,0.3);
+    }
+    .features {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1.5rem;
+      margin: 3rem 0;
+    }
+    .feature {
+      background: rgba(255,255,255,0.1);
+      padding: 1.5rem;
+      border-radius: 12px;
+      backdrop-filter: blur(10px);
+    }
+    .feature-icon {
+      font-size: 2rem;
+      margin-bottom: 0.5rem;
+    }
+    .feature-title {
       font-weight: 600;
-      cursor: pointer;
-      transition: background var(--admin-transition);
+      margin-bottom: 0.5rem;
     }
-
-    .ai-submit-btn:hover {
-      background: var(--admin-primary-hover);
+    .feature-desc {
+      font-size: 0.9rem;
+      opacity: 0.85;
     }
-
-    .ai-submit-btn:disabled {
-      background: var(--admin-gray-300);
-      cursor: not-allowed;
+    .countdown {
+      font-size: 1.2rem;
+      font-weight: 700;
+      margin-top: 2rem;
     }
-
-    .ai-tab {
-      position: absolute;
-      top: 50%;
-      right: 0;
-      transform: translateY(-50%);
-      background: linear-gradient(to bottom, var(--admin-primary), #8b5cf6);
-      color: white;
-      border: none;
-      padding: 20px 12px;
-      border-top-left-radius: var(--admin-radius-md);
-      border-bottom-left-radius: var(--admin-radius-md);
-      cursor: pointer;
-      box-shadow: var(--admin-shadow-lg);
-      writing-mode: vertical-rl;
-      text-orientation: mixed;
-      display: flex;
-      align-items: center;
-      gap: var(--admin-space-md);
-      transition: all 0.3s;
-    }
-
-    .ai-tab:hover {
-      background: linear-gradient(to bottom, var(--admin-primary-hover), #7c3aed);
-      box-shadow: -4px 4px 12px rgba(0, 0, 0, 0.3);
-    }
-
-    .ai-tab-icon {
-      font-size: 1.25rem;
-    }
-
-    .ai-tab-text {
-      font-family: var(--admin-font-body);
-      font-weight: 500;
-      white-space: nowrap;
-    }
-
-    /* AI Response Styles */
-    .ai-response-content .ai-response-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: var(--admin-space-lg);
-    }
-
-    .ai-response-content h4 {
-      font-family: var(--admin-font-display);
-      color: var(--admin-gray-900);
-      margin: 0;
-    }
-
-    /* Mobile Responsive */
-    @media (max-width: 1024px) {
-      .dashboard-top-bar {
-        flex-direction: column;
-        text-align: center;
-        gap: var(--admin-space-lg);
-      }
-
-      .system-status {
-        align-items: center;
-      }
-
-      .alert-banner {
-        flex-direction: column;
-        text-align: center;
-      }
-
-      .alert-actions {
-        flex-direction: column;
-        width: 100%;
-      }
-
-      .alert-btn-primary,
-      .alert-btn-secondary {
-        width: 100%;
-        text-align: center;
-      }
-
-      .admin-stats-grid,
-      .actions-grid {
-        grid-template-columns: 1fr;
-      }
-
-      .ai-panel {
-        width: 100%;
-      }
-    }
-
-    @media (max-width: 768px) {
-      .dashboard-content {
-        padding: var(--admin-space-lg);
-      }
-
-      .dashboard-top-bar {
-        padding: var(--admin-space-lg);
-      }
-
-      .link-list {
-        flex-direction: column;
-      }
-
-      .link-item {
-        flex: none;
-      }
-    }
-
-    /* Dark mode is now handled automatically via CSS variables in admin-unified.css */
   </style>
 </head>
-<body class="admin-page">
-  <!-- Main Content -->
-  <div class="admin-content-padded">
-    <!-- Top Bar -->
-    <div class="dashboard-top-bar">
-      <div>
-        <h1>Dashboard</h1>
-        <p>Welcome back! Here's what's happening with ISRS today.</p>
+<body>
+  <div class="redirect-container">
+    <div class="icon">🚀</div>
+    <h1>Welcome to the New Portal!</h1>
+    <p class="subtitle">We've upgraded to a more secure authentication system</p>
+
+    <p>
+      The legacy admin dashboard has been replaced with a modern, role-based portal
+      featuring passwordless authentication and enhanced security.
+    </p>
+
+    <div class="features">
+      <div class="feature">
+        <div class="feature-icon">🔐</div>
+        <div class="feature-title">Magic Link Login</div>
+        <div class="feature-desc">No passwords to remember - secure email verification</div>
       </div>
-      <div class="system-status">
-        <div class="status-label">System Status</div>
-        <div class="status-indicator">
-          <span class="status-dot"></span>
-          <span class="status-text">All systems operational</span>
-        </div>
+      <div class="feature">
+        <div class="feature-icon">🍪</div>
+        <div class="feature-title">Secure Cookies</div>
+        <div class="feature-desc">HTTP-only, SameSite protection against attacks</div>
+      </div>
+      <div class="feature">
+        <div class="feature-icon">👥</div>
+        <div class="feature-title">Role-Based Access</div>
+        <div class="feature-desc">Granular permissions for different user types</div>
+      </div>
+      <div class="feature">
+        <div class="feature-icon">⏱️</div>
+        <div class="feature-title">24-Hour Sessions</div>
+        <div class="feature-desc">Improved security with shorter session lifetimes</div>
       </div>
     </div>
 
-    <!-- Content -->
-    <div class="dashboard-content">
-      <!-- Conference Alert Banner -->
-      <div class="alert-banner">
-        <div class="alert-content">
-          <h2>ICSR2026 Registration Opens Early 2026</h2>
-          <p>October 4-8, 2026 | Registration opens early 2026</p>
-        </div>
-        <div class="alert-actions">
-          <a href="/conference/register.html" target="_blank" class="alert-btn-primary">Public Portal</a>
-          <a href="/admin/conferences.html" class="alert-btn-secondary">Manage</a>
-        </div>
-      </div>
+    <a href="/login.html" class="btn">Go to Secure Login →</a>
 
-      <!-- Key Metrics -->
-      <div class="admin-stats-grid admin-mb-lg">
-        <div class="admin-stat-card">
-          <div class="stat-header">
-            <div class="admin-stat-label">Total Contacts</div>
-            <div class="stat-icon stat-icon-blue">👥</div>
-          </div>
-          <div class="admin-stat-value" id="metricContacts"><span class="loading-dots">...</span></div>
-          <div class="stat-description">Network members worldwide</div>
-        </div>
-
-        <div class="admin-stat-card">
-          <div class="stat-header">
-            <div class="admin-stat-label">Organizations</div>
-            <div class="stat-icon stat-icon-purple">🏢</div>
-          </div>
-          <div class="admin-stat-value" id="metricOrgs"><span class="loading-dots">...</span></div>
-          <div class="stat-description">Partner institutions</div>
-        </div>
-
-        <div class="admin-stat-card">
-          <div class="stat-header">
-            <div class="admin-stat-label">ICSR2026 Registrations</div>
-            <div class="stat-icon stat-icon-amber">📅</div>
-          </div>
-          <div class="admin-stat-value" id="metricRegistrations"><span class="loading-dots">...</span></div>
-          <div class="stat-description">Opens December 2025</div>
-        </div>
-      </div>
-
-      <!-- Quick Actions -->
-      <section class="dashboard-section">
-        <div class="section-header">
-          <h2 class="section-title">
-            <span class="section-icon">⚡</span>
-            Quick Actions
-          </h2>
-        </div>
-        <div class="actions-grid">
-          <a href="/admin/contacts.html" class="action-card">
-            <div class="action-card-icon" style="background: var(--admin-primary-light); color: #3b82f6;">👥</div>
-            <div class="action-card-title">Manage Contacts</div>
-            <div class="action-card-description">View and edit network members, add new contacts</div>
-          </a>
-
-          <a href="/admin/organizations.html" class="action-card">
-            <div class="action-card-icon" style="background: #f5f3ff; color: #8b5cf6;">🏢</div>
-            <div class="action-card-title">View Organizations</div>
-            <div class="action-card-description">Browse partner institutions and affiliates</div>
-          </a>
-
-          <a href="/admin/conferences.html" class="action-card">
-            <div class="action-card-icon" style="background: var(--admin-warning-bg); color: var(--admin-warning);">📅</div>
-            <div class="action-card-title">Conference Manager</div>
-            <div class="action-card-description">Manage ICSR2026 registrations and details</div>
-          </a>
-
-          <a href="/admin/votes.html" class="action-card">
-            <div class="action-card-icon" style="background: var(--admin-info-bg); color: #0284c7;">🗳️</div>
-            <div class="action-card-title">Board Voting</div>
-            <div class="action-card-description">Review votes and governance decisions</div>
-          </a>
-
-          <a href="/admin/funding-prospects.html" class="action-card">
-            <div class="action-card-icon" style="background: var(--admin-success-bg); color: var(--admin-success);">💰</div>
-            <div class="action-card-title">Funding Prospects</div>
-            <div class="action-card-description">Track grant opportunities and donations</div>
-          </a>
-
-          <a href="/admin/email-campaigns.html" class="action-card">
-            <div class="action-card-icon" style="background: #fef3c7; color: #f59e0b;">📧</div>
-            <div class="action-card-title">Email Campaigns</div>
-            <div class="action-card-description">Create and send newsletters</div>
-          </a>
-        </div>
-      </section>
-
-      <!-- Financial Details (Collapsible) -->
-      <div class="collapsible-section">
-        <div class="collapsible-header" onclick="toggleCollapsible('financials')">
-          <div class="collapsible-title">
-            <span>💰</span>
-            Financial Overview & Accounts
-          </div>
-          <span class="collapsible-toggle" id="financials-toggle">▼</span>
-        </div>
-        <div class="collapsible-content" id="financials-content">
-          <div class="collapsible-inner">
-            <div class="financial-grid">
-              <div class="financial-item">
-                <div class="financial-header">
-                  <div class="financial-label">💳 Business Credit</div>
-                  <div class="financial-account">...5704</div>
-                </div>
-                <div class="financial-amount">$8,000.00</div>
-                <div class="financial-note">Available Credit</div>
-                <div class="financial-tip">
-                  💡 Earn 90,000 bonus points with $8,000 spend by Nov 12, 2025
-                </div>
-              </div>
-
-              <div class="financial-item">
-                <div class="financial-header">
-                  <div class="financial-label">🏦 Checking Account</div>
-                  <div class="financial-account">...7718</div>
-                </div>
-                <div class="financial-amount" id="checkingBalance"><span class="loading-dots">...</span></div>
-                <div class="financial-note">Current balance</div>
-              </div>
-
-              <div class="financial-item">
-                <div class="financial-header">
-                  <div class="financial-label">💵 Savings Account</div>
-                  <div class="financial-account">...0717</div>
-                </div>
-                <div class="financial-amount" id="savingsBalance"><span class="loading-dots">...</span></div>
-                <div class="financial-note">Current balance</div>
-              </div>
-            </div>
-
-            <div class="admin-mt-lg" style="padding-top: var(--admin-space-2xl); border-top: 1px solid var(--admin-gray-200);">
-              <h4 style="font-size: var(--admin-text-md); font-weight: 700; color: var(--admin-gray-800); margin-bottom: var(--admin-space-lg);">Zeffy Fundraising Links</h4>
-              <div class="link-list">
-                <a href="https://www.zeffy.com/en-US/ticketing/icsr2026-international-conference-on-shellfish-restoration" target="_blank" class="link-item">
-                  <span>🎟️</span>
-                  ICSR2026 Tickets
-                </a>
-                <a href="https://www.zeffy.com/en-US/donation-form/icsr2026-science-without-barriers" target="_blank" class="link-item">
-                  <span>🎓</span>
-                  Science Without Barriers Fund
-                </a>
-                <a href="https://www.zeffy.com/en-US/donation-form/isrs-building-tomorrows-ocean-leaders" target="_blank" class="link-item">
-                  <span>🌊</span>
-                  Building Tomorrow's Leaders Fund
-                </a>
-              </div>
-            </div>
-
-            <div class="admin-mt-lg admin-text-right">
-              <a href="/admin/funding.html" style="color: var(--admin-primary); font-weight: 600; text-decoration: none; font-size: var(--admin-text-md);">View Full Funding Details →</a>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- System Status -->
-      <div class="system-status-card">
-        <div class="card-content">
-          <div class="card-info">
-            <span class="card-icon">🔒</span>
-            <div>
-              <h3 class="card-title">System Status</h3>
-              <p class="card-subtitle">All systems operational</p>
-            </div>
-          </div>
-          <span class="admin-badge admin-badge-success">
-            <span class="status-dot"></span>
-            Connected
-          </span>
-        </div>
-      </div>
+    <div class="countdown">
+      Redirecting automatically in <span id="countdown">3</span> seconds...
     </div>
   </div>
 
-  <!-- Admin Layout Script (handles sidebar navigation) -->
-  <script src="/js/admin-layout.js"></script>
-
   <script>
-    const API_BASE_URL = 'https://isrs-database-backend.onrender.com';
+    let seconds = 3;
+    const countdownEl = document.getElementById('countdown');
 
-    // Initialize admin layout with current page indicator
-    document.addEventListener('DOMContentLoaded', () => {
-      loadAdminLayout('dashboard');
-    });
-
-    // Format number with commas
-    function formatNumber(num) {
-      return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-    }
-
-    // Format currency
-    function formatCurrency(amount) {
-      return new Intl.NumberFormat('en-US', {
-        style: 'currency',
-        currency: 'USD',
-        minimumFractionDigits: 0,
-        maximumFractionDigits: 0
-      }).format(amount);
-    }
-
-    // Toggle collapsible sections
-    function toggleCollapsible(id) {
-      const content = document.getElementById(`${id}-content`);
-      const toggle = document.getElementById(`${id}-toggle`);
-
-      if (content.classList.contains('open')) {
-        content.classList.remove('open');
-        toggle.classList.remove('open');
-      } else {
-        content.classList.add('open');
-        toggle.classList.add('open');
+    const interval = setInterval(() => {
+      seconds--;
+      countdownEl.textContent = seconds;
+      if (seconds <= 0) {
+        clearInterval(interval);
+        window.location.href = '/login.html';
       }
-    }
-
-    // Load dashboard metrics
-    async function loadDashboardMetrics() {
-      const sessionToken = localStorage.getItem('isrs_session');
-
-      try {
-        // Fetch total contacts
-        const contactsRes = await fetch(`${API_BASE_URL}/api/admin/contacts`, {
-          headers: { 'Authorization': `Bearer ${sessionToken}` }
-        });
-        const contactsData = await contactsRes.json();
-        if (contactsData.success) {
-          document.getElementById('metricContacts').textContent = formatNumber(contactsData.data.length);
-        }
-
-        // Fetch total organizations
-        const orgsRes = await fetch(`${API_BASE_URL}/api/admin/organizations`, {
-          headers: { 'Authorization': `Bearer ${sessionToken}` }
-        });
-        const orgsData = await orgsRes.json();
-        if (orgsData.success) {
-          document.getElementById('metricOrgs').textContent = formatNumber(orgsData.data.length);
-        }
-
-        // Fetch conference registrations (for ICSR2026)
-        const regsRes = await fetch(`${API_BASE_URL}/api/admin/conferences`, {
-          headers: { 'Authorization': `Bearer ${sessionToken}` }
-        });
-        const regsData = await regsRes.json();
-        if (regsData.success) {
-          // Find ICSR2026 conference and count registrations
-          const icsr2026 = regsData.data.find(conf => conf.year === 2026);
-          const regCount = icsr2026 && icsr2026.registrations ? icsr2026.registrations.length : 0;
-          document.getElementById('metricRegistrations').textContent = regCount > 0 ? formatNumber(regCount) : '0';
-        }
-
-        // Bank account balances - TODO: integrate with actual API
-        document.getElementById('checkingBalance').textContent = 'Contact bank';
-        document.getElementById('savingsBalance').textContent = 'Contact bank';
-
-      } catch (error) {
-        console.error('Error loading dashboard metrics:', error);
-        // Show error state
-        document.querySelectorAll('.loading-dots').forEach(el => {
-          el.textContent = 'Error';
-        });
-      }
-    }
-
-    // Check authentication on page load
-    window.addEventListener('DOMContentLoaded', () => {
-      const sessionToken = localStorage.getItem('isrs_session');
-      const userEmail = localStorage.getItem('isrs_user_email');
-      const userRole = localStorage.getItem('isrs_user_role');
-
-      if (!sessionToken) {
-        window.location.href = '/admin/';
-        return;
-      }
-
-      // Verify session is still valid
-      fetch(`${API_BASE_URL}/api/auth/session`, {
-        headers: {
-          'Authorization': `Bearer ${sessionToken}`
-        }
-      })
-      .then(res => res.json())
-      .then(data => {
-        if (!data.success) {
-          localStorage.clear();
-          window.location.href = '/admin/';
-        } else {
-          // Store user data for admin-layout.js
-          localStorage.setItem('isrs_user_data', JSON.stringify({
-            email: data.data?.email || userEmail || 'User',
-            role: data.data?.role || userRole || 'Admin'
-          }));
-
-          // Load dashboard metrics
-          loadDashboardMetrics();
-        }
-      })
-      .catch(() => {
-        localStorage.clear();
-        window.location.href = '/admin/';
-      });
-    });
-  </script>
-
-  <!-- AI Assistant Sidebar -->
-  <div id="aiAssistant" class="ai-assistant-container">
-    <!-- Expanded Panel -->
-    <div id="aiPanel" class="ai-panel" style="display: none;">
-      <div class="ai-panel-content">
-        <!-- Header -->
-        <div class="ai-header">
-          <div class="ai-header-left">
-            <div class="ai-icon">🤖</div>
-            <div>
-              <h3>AI Query Assistant</h3>
-              <p class="ai-subtitle">Ask questions about your ISRS and ICSR data</p>
-            </div>
-          </div>
-          <button class="ai-close-btn" onclick="toggleAIPanel()">&times;</button>
-        </div>
-
-        <!-- Content Area -->
-        <div class="ai-content" id="aiContent">
-          <div id="aiExamples">
-            <p class="ai-prompt-text">Try asking questions like:</p>
-            <div class="ai-examples-list">
-              <button class="ai-example-btn" onclick="setAIQuery(this.textContent)">
-                <span>→</span> How many board members do we have?
-              </button>
-              <button class="ai-example-btn" onclick="setAIQuery(this.textContent)">
-                <span>→</span> Show me all contacts from universities
-              </button>
-              <button class="ai-example-btn" onclick="setAIQuery(this.textContent)">
-                <span>→</span> List upcoming conferences
-              </button>
-              <button class="ai-example-btn" onclick="setAIQuery(this.textContent)">
-                <span>→</span> What funding prospects are in the pipeline?
-              </button>
-              <button class="ai-example-btn" onclick="setAIQuery(this.textContent)">
-                <span>→</span> Show organizations by country
-              </button>
-              <button class="ai-example-btn" onclick="setAIQuery(this.textContent)">
-                <span>→</span> Recent board votes and their outcomes
-              </button>
-            </div>
-          </div>
-
-          <div id="aiLoading" class="ai-loading-state" style="display: none;">
-            <div class="admin-spinner"></div>
-            <p>Analyzing your data...</p>
-          </div>
-
-          <div id="aiResponse" class="ai-response-area" style="display: none;">
-            <!-- Response content will be inserted here -->
-          </div>
-        </div>
-
-        <!-- Input Area -->
-        <div class="ai-input-area">
-          <form onsubmit="handleAISubmit(event)">
-            <input
-              type="text"
-              id="aiQueryInput"
-              placeholder="Ask a question about your contacts, votes, conferences, or funding..."
-              class="ai-input"
-            />
-            <button type="submit" id="aiSubmitBtn" class="ai-submit-btn">Ask</button>
-          </form>
-        </div>
-      </div>
-    </div>
-
-    <!-- Collapsed Tab -->
-    <button id="aiTab" class="ai-tab" onclick="toggleAIPanel()">
-      <span class="ai-tab-icon">🤖</span>
-      <span class="ai-tab-text">AI Assistant</span>
-    </button>
-  </div>
-
-  <script>
-    function toggleAIPanel() {
-      const panel = document.getElementById('aiPanel');
-      const tab = document.getElementById('aiTab');
-
-      if (panel.style.display === 'none') {
-        panel.style.display = 'flex';
-        tab.style.display = 'none';
-        document.getElementById('aiQueryInput').focus();
-      } else {
-        panel.style.display = 'none';
-        tab.style.display = 'flex';
-      }
-    }
-
-    function setAIQuery(text) {
-      document.getElementById('aiQueryInput').value = text;
-      document.getElementById('aiQueryInput').focus();
-    }
-
-    async function handleAISubmit(event) {
-      event.preventDefault();
-      const input = document.getElementById('aiQueryInput');
-      const query = input.value.trim();
-
-      if (!query) return;
-
-      const submitBtn = document.getElementById('aiSubmitBtn');
-      const examples = document.getElementById('aiExamples');
-      const loading = document.getElementById('aiLoading');
-      const response = document.getElementById('aiResponse');
-
-      // Hide examples, show loading
-      examples.style.display = 'none';
-      loading.style.display = 'block';
-      response.style.display = 'none';
-      submitBtn.disabled = true;
-      submitBtn.textContent = 'Analyzing...';
-
-      try {
-        const sessionToken = localStorage.getItem('isrs_session');
-        const res = await fetch('https://isrs-database-backend.onrender.com/api/admin/ai-query', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${sessionToken}`
-          },
-          body: JSON.stringify({ question: query, includeInsights: true })
-        });
-
-        const data = await res.json();
-
-        loading.style.display = 'none';
-
-        if (data.success) {
-          // Display response
-          response.innerHTML = `
-            <div class="ai-response-content">
-              <div class="ai-response-header">
-                <h4>Results</h4>
-                <button onclick="clearAIResponse()" class="admin-btn admin-btn-ghost admin-btn-sm">New Query</button>
-              </div>
-
-              ${data.insights ? `
-                <div class="admin-alert admin-alert-info admin-mb-lg">
-                  <p style="margin: 0;">${data.insights}</p>
-                </div>
-              ` : ''}
-
-              <div style="background: #1a202c; color: #e2e8f0; padding: var(--admin-space-lg); border-radius: var(--admin-radius-md); font-family: var(--admin-font-mono); font-size: var(--admin-text-sm); overflow-x: auto; margin-bottom: var(--admin-space-lg);">
-                ${data.sql}
-              </div>
-
-              <p class="admin-text-muted admin-mb-md"><strong>Results (${data.rowCount} rows):</strong></p>
-
-              ${data.rows && data.rows.length > 0 ? `
-                <div class="admin-table-wrapper">
-                  <table class="admin-table">
-                    <thead>
-                      <tr>
-                        ${Object.keys(data.rows[0]).map(col => `
-                          <th>${col}</th>
-                        `).join('')}
-                      </tr>
-                    </thead>
-                    <tbody>
-                      ${data.rows.map(row => `
-                        <tr>
-                          ${Object.values(row).map(val => `
-                            <td>${val !== null && val !== undefined ? val : '-'}</td>
-                          `).join('')}
-                        </tr>
-                      `).join('')}
-                    </tbody>
-                  </table>
-                </div>
-              ` : '<p class="admin-text-center admin-text-muted" style="padding: var(--admin-space-2xl);">No results found</p>'}
-            </div>
-          `;
-          response.style.display = 'block';
-        } else {
-          response.innerHTML = `
-            <div class="admin-alert admin-alert-danger">
-              <p style="margin: 0;">${data.error || 'Query failed'}</p>
-            </div>
-          `;
-          response.style.display = 'block';
-        }
-      } catch (error) {
-        loading.style.display = 'none';
-        response.innerHTML = `
-          <div class="admin-alert admin-alert-danger">
-            <p style="margin: 0;">Error: ${error.message}</p>
-          </div>
-        `;
-        response.style.display = 'block';
-      } finally {
-        submitBtn.disabled = false;
-        submitBtn.textContent = 'Ask';
-      }
-    }
-
-    function clearAIResponse() {
-      document.getElementById('aiResponse').style.display = 'none';
-      document.getElementById('aiExamples').style.display = 'block';
-      document.getElementById('aiQueryInput').value = '';
-      document.getElementById('aiQueryInput').focus();
-    }
-
-    // ESC key to close AI panel
-    document.addEventListener('keydown', function(event) {
-      if (event.key === 'Escape' || event.key === 'Esc') {
-        const panel = document.getElementById('aiPanel');
-        if (panel.style.display !== 'none') {
-          toggleAIPanel();
-        }
-      }
-    });
+    }, 1000);
   </script>
 </body>
 </html>

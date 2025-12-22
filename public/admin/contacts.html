@@ -1620,17 +1620,111 @@
     }
 
     // Bulk edit modal functions
-    function showBulkEditModal() {
+    async function showBulkEditModal() {
       if (selectedContacts.size === 0) {
         showToast('Please select contacts first', 'error');
         return;
       }
       document.getElementById('bulkEditCount').textContent = selectedContacts.size;
+
+      // Load organizations for the dropdown
+      await loadOrganizationsForBulkEdit();
+
       document.getElementById('bulkEditModal').classList.add('active');
     }
 
     function closeBulkEditModal() {
       document.getElementById('bulkEditModal').classList.remove('active');
+      // Clear form
+      document.getElementById('bulkEditForm').reset();
+    }
+
+    async function loadOrganizationsForBulkEdit() {
+      try {
+        const sessionToken = localStorage.getItem('isrs_session');
+        const response = await fetch(`${API_BASE_URL}/api/admin/organizations?limit=1000`, {
+          headers: { 'Authorization': `Bearer ${sessionToken}` }
+        });
+        const data = await response.json();
+
+        if (data.success) {
+          const select = document.getElementById('bulkOrganization');
+          select.innerHTML = '<option value="">Leave unchanged</option>';
+          data.data.forEach(org => {
+            const option = document.createElement('option');
+            option.value = org.id;
+            option.textContent = org.name;
+            select.appendChild(option);
+          });
+        }
+      } catch (error) {
+        console.error('Error loading organizations:', error);
+      }
+    }
+
+    async function executeBulkEdit(event) {
+      event.preventDefault();
+
+      if (selectedContacts.size === 0) {
+        showToast('No contacts selected', 'error');
+        return;
+      }
+
+      // Get form values
+      const country = document.getElementById('bulkCountry').value.trim();
+      const memberType = document.getElementById('bulkMemberType').value;
+      const organizationId = document.getElementById('bulkOrganization').value;
+
+      // Build update object with only filled fields
+      const updates = {};
+      if (country) updates.country = country;
+      if (memberType) updates.member_type = memberType;
+      if (organizationId) updates.organization_id = parseInt(organizationId);
+
+      // Check if any updates were provided
+      if (Object.keys(updates).length === 0) {
+        showToast('Please specify at least one field to update', 'error');
+        return;
+      }
+
+      // Get contact IDs
+      const contactIds = allContacts
+        .filter(c => selectedContacts.has(c.email))
+        .map(c => c.id);
+
+      if (contactIds.length === 0) {
+        showToast('No valid contacts found', 'error');
+        return;
+      }
+
+      try {
+        const sessionToken = localStorage.getItem('isrs_session');
+        const response = await fetch(`${API_BASE_URL}/api/admin/contacts/bulk-edit`, {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${sessionToken}`,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            contactIds: contactIds,
+            updates: updates
+          })
+        });
+
+        const data = await response.json();
+
+        if (response.ok && data.success) {
+          showToast(`Successfully updated ${contactIds.length} contact(s)`, 'success');
+          closeBulkEditModal();
+          // Reload contacts to show updated data
+          await loadContacts();
+        } else {
+          showToast('Failed to update contacts: ' + (data.error || 'Unknown error'), 'error');
+        }
+      } catch (error) {
+        console.error('Bulk edit error:', error);
+        showToast('Error updating contacts: ' + error.message, 'error');
+      }
     }
 
     // Merge modal functions
@@ -1758,54 +1852,17 @@
           throw new Error(data.error || 'Failed to enhance contact');
         }
 
-        // Apply suggestions from enhancement to contact
-        let changesCount = 0;
-        const updates = {};
+        // Show preview modal with suggestions
         if (data.enhancement && data.enhancement.suggestions) {
-          for (const [field, suggestion] of Object.entries(data.enhancement.suggestions)) {
-            if (suggestion.value && suggestion.confidence !== 'low') {
-              updates[field] = suggestion.value;
-              changesCount++;
-            }
-          }
-        }
-
-        // Save changes to database if any (use bulk-update endpoint which accepts dynamic fields)
-        if (changesCount > 0) {
-          try {
-            const saveResponse = await fetch(`${API_BASE_URL}/api/admin/contacts/bulk-update`, {
-              method: 'POST',
-              headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${sessionToken}`
-              },
-              body: JSON.stringify({
-                contactIds: [contact.id],
-                updates: updates
-              })
-            });
-            const saveData = await saveResponse.json();
-            if (saveResponse.ok && saveData.success) {
-              // Update local contact with saved data
-              Object.assign(contact, updates);
-            } else {
-              console.error('Failed to save enhancement:', saveData.error);
-            }
-          } catch (saveErr) {
-            console.error('Error saving enhancement:', saveErr);
-          }
-        }
-
-        // Refresh display
-        displayContacts();
-
-        // Show success with summary of what was found
-        if (changesCount > 0) {
-          showToast(`Enhanced ${contact.full_name || email}: ${changesCount} fields updated`, 'success');
+          showEnhancementPreview([{
+            id: contact.id,
+            name: contact.full_name || contact.email,
+            type: 'contact',
+            current: contact,
+            suggestions: data.enhancement.suggestions
+          }]);
         } else {
-          // Show info from enhancement even if no fields updated
-          const info = data.enhancement?.web_findings?.person_info || data.enhancement?.search_summary || 'No additional data found';
-          showToast(`${contact.full_name || email}: ${info.substring(0, 100)}`, 'info');
+          showToast('No enhancement suggestions available', 'info');
         }
 
       } catch (error) {
@@ -1846,6 +1903,7 @@
       let enhanced = 0;
       let failed = 0;
       let errors = [];
+      const allSuggestions = [];
 
       // Create progress modal
       const progressModal = document.createElement('div');
@@ -1895,43 +1953,11 @@
               console.log('AI enhance response for', contact.email, ':', data);
 
               if (response.ok && data.success && data.enhancement) {
-                // Apply suggestions from enhancement to contact
+                // Collect suggestions instead of auto-applying
                 const suggestions = data.enhancement.suggestions || {};
-                const updates = {};
-                let fieldsUpdated = 0;
-                for (const [field, suggestion] of Object.entries(suggestions)) {
-                  if (suggestion.value && suggestion.confidence !== 'low') {
-                    updates[field] = suggestion.value;
-                    fieldsUpdated++;
-                  }
-                }
-
-                // Save to database if we have updates (use bulk-update endpoint which accepts dynamic fields)
-                if (fieldsUpdated > 0) {
-                  try {
-                    const saveResponse = await fetch(`${API_BASE_URL}/api/admin/contacts/bulk-update`, {
-                      method: 'POST',
-                      headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${sessionToken}`
-                      },
-                      body: JSON.stringify({
-                        contactIds: [contact.id],
-                        updates: updates
-                      })
-                    });
-                    const saveData = await saveResponse.json();
-                    if (saveResponse.ok && saveData.success) {
-                      Object.assign(contact, updates);
-                      return { success: true, contact, fieldsUpdated };
-                    }
-                  } catch (saveErr) {
-                    console.error('Error saving enhancement for', contact.email, ':', saveErr);
-                  }
-                }
-                return { success: fieldsUpdated > 0, contact, fieldsUpdated };
+                return { success: true, contact, suggestions };
               }
-              return { success: false, error: data.error || 'No enhancement suggestions returned' };
+              return { success: false, contact, error: data.error || 'No enhancement suggestions returned' };
             } catch (e) {
               console.error('AI enhance error for', contact.email, ':', e);
               return { success: false, error: e.message };
@@ -1941,17 +1967,23 @@
 
         results.forEach(r => {
           processed++;
+          updateProgress(processed, count);
+
           if (r.status === 'fulfilled' && r.value.success) {
             enhanced++;
+            allSuggestions.push({
+              id: r.value.contact.id,
+              name: r.value.contact.full_name || r.value.contact.email,
+              type: 'contact',
+              current: r.value.contact,
+              suggestions: r.value.suggestions
+            });
           } else {
             failed++;
             const err = r.status === 'fulfilled' ? r.value.error : r.reason;
             if (err && errors.length < 5) errors.push(err);
           }
         });
-
-        // Update progress modal
-        updateProgress(processed, count);
 
         // Small delay between batches
         if (i + batchSize < contactsToEnhance.length) {
@@ -1962,14 +1994,12 @@
       // Remove progress modal
       progressModal.remove();
 
-      // Refresh display
-      displayContacts();
-
-      // Final summary with error details
-      if (errors.length > 0) {
-        console.log('AI enhancement errors:', errors);
+      // Show preview modal with all suggestions
+      if (allSuggestions.length > 0) {
+        showEnhancementPreview(allSuggestions);
+      } else {
+        showToast(`Enhancement complete. ${failed} contacts had no suggestions.`, 'info');
       }
-      showToast(`AI enhancement complete: ${enhanced} enhanced, ${failed} failed${errors.length > 0 ? ' - check console for errors' : ''}`, enhanced > 0 ? 'success' : 'error');
     }
 
     // Quick search with keyboard shortcut
@@ -2108,6 +2138,9 @@
 
   <!-- Email Utils -->
   <script src="/js/email-utils.js"></script>
+
+  <!-- AI Enhancement Preview Modal -->
+  <script src="/js/ai-enhancement-preview.js"></script>
 
   <!-- Admin Layout -->
   <script src="/js/admin-layout.js"></script>

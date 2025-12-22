@@ -11,6 +11,24 @@
   <link rel="stylesheet" href="/css/styles.css">
   <link rel="stylesheet" href="/css/admin-layout.css">
   <link rel="stylesheet" href="/css/admin-unified.css">
+  <style>
+    /* Inline editing styles */
+    .editable-cell { cursor: pointer; position: relative; }
+    .editable-cell:hover { background: var(--admin-primary-light); }
+    .editable-cell input, .editable-cell select {
+      width: 100%;
+      padding: 0.25rem 0.5rem;
+      border: 2px solid var(--admin-primary);
+      border-radius: var(--admin-radius-sm);
+      font-size: inherit;
+      background: var(--admin-surface);
+      color: var(--admin-text);
+    }
+    .editable-cell input:focus, .editable-cell select:focus {
+      outline: none;
+      box-shadow: 0 0 0 2px var(--admin-primary-light);
+    }
+  </style>
 </head>
 <body class="admin-page">
   <div class="admin-content-padded">
@@ -180,12 +198,12 @@
                 <td>${r.registration_number}</td>
                 <td>${r.first_name} ${r.last_name}</td>
                 <td>${r.user_email}</td>
-                <td>${r.organization_name || '-'}</td>
-                <td>${r.country || '-'}</td>
-                <td>${r.registration_type}</td>
+                <td class="editable-cell" onclick="editRegCell(this, ${r.id}, 'organization_name')" title="Click to edit">${r.organization_name || '-'}</td>
+                <td class="editable-cell" onclick="editRegCell(this, ${r.id}, 'country')" title="Click to edit">${r.country || '-'}</td>
+                <td class="editable-cell" onclick="editRegCell(this, ${r.id}, 'registration_type')" title="Click to edit">${r.registration_type}</td>
                 <td>$${r.registration_fee}</td>
-                <td><span class="admin-badge admin-badge-${r.payment_status === 'paid' ? 'success' : 'warning'}">${r.payment_status}</span></td>
-                <td><span class="admin-badge admin-badge-${r.status === 'confirmed' ? 'success' : 'warning'}">${r.status}</span></td>
+                <td class="editable-cell" onclick="editRegCell(this, ${r.id}, 'payment_status')" title="Click to edit"><span class="admin-badge admin-badge-${r.payment_status === 'paid' ? 'success' : 'warning'}">${r.payment_status}</span></td>
+                <td class="editable-cell" onclick="editRegCell(this, ${r.id}, 'status')" title="Click to edit"><span class="admin-badge admin-badge-${r.status === 'confirmed' ? 'success' : 'warning'}">${r.status}</span></td>
               </tr>
             `).join('')}
           </tbody>
@@ -292,6 +310,154 @@
     function logout() {
       localStorage.clear();
       window.location.href = '/admin/';
+    }
+
+    // Inline cell editing for conference registrations
+    function editRegCell(cell, regId, field) {
+      // Prevent double editing
+      if (cell.querySelector('input, select')) return;
+
+      // Extract text from badge if present
+      const badge = cell.querySelector('.admin-badge');
+      const currentValue = badge ? badge.textContent.trim() : (cell.textContent.trim() === '-' ? '' : cell.textContent.trim());
+
+      const registration = allRegistrations.find(r => r.id === regId);
+      if (!registration) return;
+
+      // Store original value
+      cell.setAttribute('data-original', currentValue);
+      cell.setAttribute('data-original-html', cell.innerHTML);
+
+      // Create input element (use select for specific fields)
+      let inputElement;
+
+      if (field === 'registration_type') {
+        inputElement = document.createElement('select');
+        inputElement.innerHTML = `
+          <option value="member" ${currentValue === 'member' ? 'selected' : ''}>Member</option>
+          <option value="non-member" ${currentValue === 'non-member' ? 'selected' : ''}>Non-member</option>
+          <option value="student" ${currentValue === 'student' ? 'selected' : ''}>Student</option>
+          <option value="speaker" ${currentValue === 'speaker' ? 'selected' : ''}>Speaker</option>
+          <option value="exhibitor" ${currentValue === 'exhibitor' ? 'selected' : ''}>Exhibitor</option>
+        `;
+      } else if (field === 'payment_status') {
+        inputElement = document.createElement('select');
+        inputElement.innerHTML = `
+          <option value="pending" ${currentValue === 'pending' ? 'selected' : ''}>Pending</option>
+          <option value="paid" ${currentValue === 'paid' ? 'selected' : ''}>Paid</option>
+          <option value="refunded" ${currentValue === 'refunded' ? 'selected' : ''}>Refunded</option>
+          <option value="cancelled" ${currentValue === 'cancelled' ? 'selected' : ''}>Cancelled</option>
+        `;
+      } else if (field === 'status') {
+        inputElement = document.createElement('select');
+        inputElement.innerHTML = `
+          <option value="pending" ${currentValue === 'pending' ? 'selected' : ''}>Pending</option>
+          <option value="confirmed" ${currentValue === 'confirmed' ? 'selected' : ''}>Confirmed</option>
+          <option value="cancelled" ${currentValue === 'cancelled' ? 'selected' : ''}>Cancelled</option>
+          <option value="waitlist" ${currentValue === 'waitlist' ? 'selected' : ''}>Waitlist</option>
+        `;
+      } else {
+        inputElement = document.createElement('input');
+        inputElement.type = 'text';
+        inputElement.value = currentValue;
+      }
+
+      inputElement.style.width = '100%';
+      inputElement.style.padding = '4px 8px';
+      inputElement.style.border = '2px solid var(--admin-primary)';
+      inputElement.style.borderRadius = '4px';
+      inputElement.style.fontSize = 'inherit';
+      inputElement.style.background = 'var(--admin-surface)';
+      inputElement.style.color = 'var(--admin-text)';
+
+      // Clear cell and add input
+      cell.textContent = '';
+      cell.appendChild(inputElement);
+      inputElement.focus();
+      if (inputElement.select) inputElement.select();
+
+      // Handle save on blur or enter
+      const saveEdit = async () => {
+        const newValue = (inputElement.value || '').trim();
+        const originalValue = cell.getAttribute('data-original');
+
+        // If no change, restore original
+        if (newValue === originalValue) {
+          cell.innerHTML = cell.getAttribute('data-original-html');
+          return;
+        }
+
+        // Show saving state
+        cell.innerHTML = '<span style="color: var(--admin-primary);">Saving...</span>';
+
+        try {
+          const sessionToken = localStorage.getItem('isrs_session');
+          const response = await fetch(`${API_BASE_URL}/api/admin/conference/registrations/${registration.id}`, {
+            method: 'PUT',
+            headers: {
+              'Authorization': `Bearer ${sessionToken}`,
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ [field]: newValue })
+          });
+
+          const data = await response.json();
+
+          if (response.ok && data.success) {
+            // Update local data
+            registration[field] = newValue;
+
+            // Display updated value with appropriate badge if needed
+            if (field === 'payment_status') {
+              const badgeClass = newValue === 'paid' ? 'success' : 'warning';
+              cell.innerHTML = `<span class="admin-badge admin-badge-${badgeClass}">${newValue}</span>`;
+            } else if (field === 'status') {
+              const badgeClass = newValue === 'confirmed' ? 'success' : 'warning';
+              cell.innerHTML = `<span class="admin-badge admin-badge-${badgeClass}">${newValue}</span>`;
+            } else {
+              cell.textContent = newValue || '-';
+            }
+
+            showToast('Field updated successfully', 'success');
+          } else {
+            cell.innerHTML = cell.getAttribute('data-original-html');
+            showToast('Failed to update: ' + (data.error || 'Unknown error'), 'error');
+          }
+        } catch (error) {
+          cell.innerHTML = cell.getAttribute('data-original-html');
+          showToast('Error updating field: ' + error.message, 'error');
+        }
+      };
+
+      inputElement.addEventListener('blur', saveEdit);
+      inputElement.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') {
+          e.preventDefault();
+          inputElement.blur();
+        }
+        if (e.key === 'Escape') {
+          cell.innerHTML = cell.getAttribute('data-original-html');
+        }
+      });
+    }
+
+    function showToast(message, type) {
+      const toast = document.createElement('div');
+      toast.style.cssText = `
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        padding: 12px 24px;
+        background: ${type === 'success' ? 'var(--admin-success)' : 'var(--admin-danger)'};
+        color: white;
+        border-radius: 6px;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        z-index: 10000;
+        font-size: 14px;
+      `;
+      toast.textContent = message;
+      document.body.appendChild(toast);
+      setTimeout(() => toast.remove(), 3000);
     }
   </script>
 

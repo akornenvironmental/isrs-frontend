@@ -6,7 +6,16 @@
     "start": "npx serve public -l 8080",
     "dev": "npx serve . -l 8080"
   },
-  "keywords": ["isrs", "shellfish", "restoration"],
+  "keywords": [
+    "isrs",
+    "shellfish",
+    "restoration"
+  ],
   "author": "ISRS",
-  "license": "MIT"
+  "license": "MIT",
+  "dependencies": {
+    "axios": "^1.13.2",
+    "form-data": "^4.0.5",
+    "googleapis": "^168.0.0"
+  }
 }
