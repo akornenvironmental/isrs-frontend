@@ -8,6 +8,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Marcellus&family=PT+Serif:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/styles.css">
   <style>
     :root {
       --primary-blue: #2e5a8a;
@@ -238,29 +239,128 @@
       color: var(--success-green);
       font-weight: bold;
     }
+
+    /* Language Switcher */
+    .language-switcher {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      z-index: 1000;
+    }
+
+    .language-dropdown {
+      position: relative;
+    }
+
+    .control-btn {
+      background: var(--white);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 0.5rem 0.75rem;
+      cursor: pointer;
+      font-size: 1.2rem;
+      transition: all 0.3s;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .control-btn:hover {
+      background: var(--light-gray);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    }
+
+    .language-dropdown-menu {
+      position: absolute;
+      top: calc(100% + 0.5rem);
+      right: 0;
+      background: var(--white);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+      min-width: 150px;
+      overflow: hidden;
+    }
+
+    .lang-option {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      width: 100%;
+      padding: 0.75rem 1rem;
+      border: none;
+      background: transparent;
+      text-align: left;
+      cursor: pointer;
+      transition: background 0.2s;
+      font-family: inherit;
+      font-size: 0.95rem;
+      color: var(--text-dark);
+    }
+
+    .lang-option:hover,
+    .lang-option:focus {
+      background: var(--light-gray);
+      outline: none;
+    }
+
+    .lang-option.active {
+      background: #e8f4f8;
+      font-weight: 600;
+      color: var(--primary-blue);
+    }
+
+    .lang-option .flag {
+      font-size: 1.2rem;
+    }
+
+    @media (max-width: 768px) {
+      .language-switcher {
+        top: 10px;
+        right: 10px;
+      }
+    }
   </style>
 </head>
 <body>
+  <!-- Language Switcher -->
+  <div class="language-switcher">
+    <div class="language-dropdown">
+      <button class="control-btn" id="language-dropdown-btn" onclick="toggleLanguageDropdown(event)" aria-label="Select language" aria-expanded="false" aria-haspopup="true" title="Language / Idioma / Langue">
+        <span aria-hidden="true">🌐</span>
+      </button>
+      <div id="language-dropdown-menu" class="language-dropdown-menu" role="menu" aria-label="Language options" style="display: none;">
+        <button class="lang-option" data-lang="en" onclick="selectLanguage('en')" role="menuitem">
+          <span class="flag" aria-hidden="true">🇺🇸</span> English
+        </button>
+        <button class="lang-option" data-lang="es" onclick="selectLanguage('es')" role="menuitem">
+          <span class="flag" aria-hidden="true">🇪🇸</span> Español
+        </button>
+        <button class="lang-option" data-lang="fr" onclick="selectLanguage('fr')" role="menuitem">
+          <span class="flag" aria-hidden="true">🇫🇷</span> Français
+        </button>
+      </div>
+    </div>
+  </div>
+
   <div class="login-container">
     <div class="logo">
       <img src="/images/logo-wide-blue.png" alt="ISRS Logo">
     </div>
 
-    <h1>Portal Login</h1>
-    <p class="subtitle">
+    <h1 data-i18n="memberLogin">Portal Login</h1>
+    <p class="subtitle" data-i18n="loginSubtitle">
       Welcome to the ISRS member portal. Enter your email to receive a secure magic link for passwordless login.
     </p>
 
     <div class="security-badge">
-      <strong>🔐 Secure Passwordless Authentication</strong>
-      No passwords to remember. We'll send a one-time magic link to your email that expires in 15 minutes.
+      <strong>🔐 <span data-i18n="securePasswordlessAuth">Secure Passwordless Authentication</span></strong>
+      <span data-i18n="securePasswordlessDesc">No passwords to remember. We'll send a one-time magic link to your email that expires in 15 minutes.</span>
     </div>
 
     <div id="alertMessage" class="alert"></div>
 
     <form id="loginForm">
       <div class="form-group">
-        <label for="email">Email Address</label>
+        <label for="email" data-i18n="emailAddress">Email Address</label>
         <input
           type="email"
           id="email"
@@ -272,29 +372,30 @@
       </div>
 
       <button type="submit" class="btn-login" id="loginBtn">
-        <span id="btnText">Send Magic Link</span>
+        <span id="btnText" data-i18n="sendMagicLink">Send Magic Link</span>
       </button>
     </form>
 
     <div class="features">
-      <h3>What can you do with your portal account?</h3>
+      <h3 data-i18n="portalAccountFeatures">What can you do with your portal account?</h3>
       <ul>
-        <li>Register for conferences and events</li>
-        <li>Submit and manage abstracts</li>
-        <li>Access member directory</li>
-        <li>Manage your profile and privacy settings</li>
-        <li>View conference history and presentations</li>
-        <li>Board members: Access governance documents and voting</li>
+        <li data-i18n="portalFeature1">Register for conferences and events</li>
+        <li data-i18n="portalFeature2">Submit and manage abstracts</li>
+        <li data-i18n="portalFeature3">Access member directory</li>
+        <li data-i18n="portalFeature4">Manage your profile and privacy settings</li>
+        <li data-i18n="portalFeature5">View conference history and presentations</li>
+        <li data-i18n="portalFeature6">Board members: Access governance documents and voting</li>
       </ul>
     </div>
 
     <div class="help-text">
-      <a href="/">← Back to Home</a>
+      <a href="/">← <span data-i18n="backToHome">Back to Home</span></a>
       <br><br>
-      Need help? Contact us at <a href="mailto:info@shellfish-society.org">info@shellfish-society.org</a>
+      <span data-i18n="needHelp">Need help? Contact us at</span> <a href="mailto:info@shellfish-society.org">info@shellfish-society.org</a>
     </div>
   </div>
 
+  <script src="/js/components.js"></script>
   <script>
     // Auto-detect environment
     const API_BASE_URL = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
@@ -302,6 +403,12 @@
       : 'https://isrs-database-backend.onrender.com';
 
     console.log('🔐 Portal Login - API Backend:', API_BASE_URL);
+
+    // Initialize language selector on page load
+    document.addEventListener('DOMContentLoaded', () => {
+      updateLanguageSelector();
+      translatePage();
+    });
 
     const form = document.getElementById('loginForm');
     const emailInput = document.getElementById('email');
