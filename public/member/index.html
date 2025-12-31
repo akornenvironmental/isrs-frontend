@@ -150,22 +150,52 @@
       ? 'http://localhost:3000'
       : 'https://isrs-database-backend.onrender.com';
 
+    // Persistent logging that survives redirects
+    const debugLog = [];
+    function log(message, data = null) {
+      const entry = `[${new Date().toISOString()}] ${message}`;
+      console.log(entry, data || '');
+      debugLog.push(data ? `${entry} ${JSON.stringify(data)}` : entry);
+
+      // Save to localStorage so we can see it even after redirects
+      try {
+        const existingLogs = JSON.parse(localStorage.getItem('isrs_debug_log') || '[]');
+        existingLogs.push(data ? `${entry} ${JSON.stringify(data)}` : entry);
+        // Keep only last 50 entries
+        if (existingLogs.length > 50) existingLogs.shift();
+        localStorage.setItem('isrs_debug_log', JSON.stringify(existingLogs));
+      } catch (e) {
+        console.error('Failed to save debug log:', e);
+      }
+    }
+
+    // Show debug log on page load
+    window.addEventListener('DOMContentLoaded', () => {
+      const savedLogs = localStorage.getItem('isrs_debug_log');
+      if (savedLogs) {
+        console.log('📜 PREVIOUS DEBUG LOGS:');
+        console.log('='.repeat(80));
+        JSON.parse(savedLogs).forEach(log => console.log(log));
+        console.log('='.repeat(80));
+      }
+    });
+
     async function checkAuth() {
-      console.log('🚀 checkAuth() started');
-      console.log('📍 Current URL:', window.location.href);
+      log('🚀 checkAuth() started');
+      log('📍 Current URL:', window.location.href);
 
       try {
         // Check for exchange token in URL (from magic link redirect)
         const urlParams = new URLSearchParams(window.location.search);
         const exchangeToken = urlParams.get('auth');
-        console.log('🔍 Auth token in URL:', exchangeToken ? exchangeToken.substring(0, 20) + '...' : 'NONE');
+        log('🔍 Auth token in URL:', exchangeToken ? exchangeToken.substring(0, 20) + '...' : 'NONE');
 
         if (exchangeToken) {
-          console.log('🔄 Exchange token found, swapping for session...');
-          console.log('🌐 API_BASE_URL:', API_BASE_URL);
+          log('🔄 Exchange token found, swapping for session...');
+          log('🌐 API_BASE_URL:', API_BASE_URL);
 
           // Exchange token for session - try cookie first, fall back to response body
-          console.log('📤 Sending POST to /api/auth/exchange...');
+          log('📤 Sending POST to /api/auth/exchange...');
           const exchangeResponse = await fetch(`${API_BASE_URL}/api/auth/exchange`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -173,20 +203,26 @@
             body: JSON.stringify({ token: exchangeToken })
           });
 
-          console.log('📥 Exchange response status:', exchangeResponse.status);
+          log('📥 Exchange response status:', exchangeResponse.status);
           const exchangeData = await exchangeResponse.json();
-          console.log('📥 Exchange response data:', exchangeData);
+          log('📥 Exchange response data:', exchangeData);
 
           // Clean URL (remove auth parameter)
           window.history.replaceState({}, '', window.location.pathname);
-          console.log('🧹 URL cleaned, auth param removed');
+          log('🧹 URL cleaned, auth param removed');
 
           if (!exchangeResponse.ok || !exchangeData.success) {
-            console.error('❌ Token exchange failed');
-            console.error('❌ Response status:', exchangeResponse.status);
-            console.error('❌ Error message:', exchangeData.error);
-            console.error('❌ Full response:', exchangeData);
-            alert('Login failed: ' + (exchangeData.error || 'Token exchange failed'));
+            log('❌ Token exchange failed');
+            log('❌ Response status:', exchangeResponse.status);
+            log('❌ Error message:', exchangeData.error);
+            log('❌ Full response:', exchangeData);
+
+            // Show ALL debug logs in alert before redirect
+            const allLogs = JSON.parse(localStorage.getItem('isrs_debug_log') || '[]');
+            alert('LOGIN FAILED\n\n' +
+                  'Error: ' + (exchangeData.error || 'Token exchange failed') + '\n\n' +
+                  'DEBUG LOG:\n' + allLogs.slice(-10).join('\n'));
+
             window.location.href = '/login.html';
             return;
           }
@@ -194,21 +230,21 @@
           // Store session token in localStorage for cross-origin compatibility
           if (exchangeData.data && exchangeData.data.sessionToken) {
             localStorage.setItem('isrs_session_token', exchangeData.data.sessionToken);
-            console.log('✅ Session token stored in localStorage');
-            console.log('🔑 Token preview:', exchangeData.data.sessionToken.substring(0, 20) + '...');
+            log('✅ Session token stored in localStorage');
+            log('🔑 Token preview:', exchangeData.data.sessionToken.substring(0, 20) + '...');
           } else {
-            console.warn('⚠️ No sessionToken in exchange response!');
-            console.warn('⚠️ Exchange data:', exchangeData);
+            log('⚠️ No sessionToken in exchange response!');
+            log('⚠️ Exchange data:', exchangeData);
           }
 
-          console.log('✅ Token exchanged successfully');
+          log('✅ Token exchanged successfully');
         } else {
-          console.log('ℹ️ No auth token in URL, checking for existing session...');
+          log('ℹ️ No auth token in URL, checking for existing session...');
         }
 
         // Get session token from localStorage
         const sessionToken = localStorage.getItem('isrs_session_token');
-        console.log('🔑 Session token from localStorage:', sessionToken ? sessionToken.substring(0, 20) + '...' : 'NONE');
+        log('🔑 Session token from localStorage:', sessionToken ? sessionToken.substring(0, 20) + '...' : 'NONE');
 
         // Now check session (try cookie-based first, fall back to token-based)
         let response;
@@ -217,53 +253,65 @@
         if (sessionToken) {
           // Use token from localStorage (for cross-origin compatibility)
           sessionUrl = `${API_BASE_URL}/api/auth/session?sessionToken=${sessionToken}`;
-          console.log('📤 Checking session with token from localStorage');
-          console.log('📤 Session check URL:', sessionUrl);
+          log('📤 Checking session with token from localStorage');
+          log('📤 Session check URL:', sessionUrl);
           response = await fetch(sessionUrl, {
             credentials: 'include'
           });
         } else {
           // Try cookie-based auth (for same-origin deployments)
           sessionUrl = `${API_BASE_URL}/api/auth/session`;
-          console.log('📤 Checking session with cookies only');
-          console.log('📤 Session check URL:', sessionUrl);
+          log('📤 Checking session with cookies only');
+          log('📤 Session check URL:', sessionUrl);
           response = await fetch(sessionUrl, {
             credentials: 'include'
           });
         }
 
-        console.log('📥 Session check response status:', response.status);
+        log('📥 Session check response status:', response.status);
         const data = await response.json();
-        console.log('📥 Session check response data:', data);
+        log('📥 Session check response data:', data);
 
         if (!response.ok || !data.success) {
-          console.error('❌ Session check failed');
-          console.error('❌ Response status:', response.status);
-          console.error('❌ Response data:', data);
+          log('❌ Session check failed');
+          log('❌ Response status:', response.status);
+          log('❌ Response data:', data);
+
           // Clear invalid session
           localStorage.removeItem('isrs_session_token');
-          console.log('🧹 Cleared localStorage');
-          alert('Session validation failed. Please log in again.\nError: ' + (data.error || 'Unknown error'));
+          log('🧹 Cleared localStorage');
+
+          // Show ALL debug logs in alert before redirect
+          const allLogs = JSON.parse(localStorage.getItem('isrs_debug_log') || '[]');
+          alert('SESSION VALIDATION FAILED\n\n' +
+                'Error: ' + (data.error || 'Unknown error') + '\n\n' +
+                'DEBUG LOG:\n' + allLogs.slice(-10).join('\n'));
+
           window.location.href = '/login.html';
           return;
         }
 
-        console.log('✅ Authenticated:', data.data.user.fullName);
-        console.log('✅ Role:', data.data.primaryRole.displayName);
-        console.log('✅ User data:', data.data);
+        log('✅ Authenticated:', data.data.user.fullName);
+        log('✅ Role:', data.data.primaryRole.displayName);
+        log('✅ User data:', data.data);
 
         document.getElementById('memberName').textContent = data.data.user.firstName;
         document.getElementById('loadingState').style.display = 'none';
         document.getElementById('memberContent').style.display = 'block';
-        console.log('✅ UI updated, member content displayed');
+        log('✅ UI updated, member content displayed');
 
       } catch (error) {
-        console.error('💥 EXCEPTION in checkAuth():', error);
-        console.error('💥 Error name:', error.name);
-        console.error('💥 Error message:', error.message);
-        console.error('💥 Error stack:', error.stack);
+        log('💥 EXCEPTION in checkAuth():', error.message);
+        log('💥 Error stack:', error.stack);
+
         localStorage.removeItem('isrs_session_token');
-        alert('Authentication error: ' + error.message + '\n\nCheck console for details.');
+
+        // Show ALL debug logs in alert before redirect
+        const allLogs = JSON.parse(localStorage.getItem('isrs_debug_log') || '[]');
+        alert('AUTHENTICATION ERROR\n\n' +
+              error.message + '\n\n' +
+              'DEBUG LOG:\n' + allLogs.slice(-10).join('\n'));
+
         window.location.href = '/login.html';
       }
     }
