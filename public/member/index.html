@@ -152,6 +152,34 @@
 
     async function checkAuth() {
       try {
+        // Check for exchange token in URL (from magic link redirect)
+        const urlParams = new URLSearchParams(window.location.search);
+        const exchangeToken = urlParams.get('auth');
+
+        if (exchangeToken) {
+          console.log('🔄 Exchange token found, swapping for session cookie...');
+
+          // Exchange token for session cookie
+          const exchangeResponse = await fetch(`${API_BASE_URL}/api/auth/exchange`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            credentials: 'include',
+            body: JSON.stringify({ token: exchangeToken })
+          });
+
+          // Clean URL (remove auth parameter)
+          window.history.replaceState({}, '', window.location.pathname);
+
+          if (!exchangeResponse.ok) {
+            console.error('❌ Token exchange failed');
+            window.location.href = '/login.html';
+            return;
+          }
+
+          console.log('✅ Token exchanged successfully');
+        }
+
+        // Now check session (either from exchange or existing cookie)
         const response = await fetch(`${API_BASE_URL}/api/auth/session`, {
           credentials: 'include'
         });
