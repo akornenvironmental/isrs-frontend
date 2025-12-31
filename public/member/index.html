@@ -151,15 +151,21 @@
       : 'https://isrs-database-backend.onrender.com';
 
     async function checkAuth() {
+      console.log('🚀 checkAuth() started');
+      console.log('📍 Current URL:', window.location.href);
+
       try {
         // Check for exchange token in URL (from magic link redirect)
         const urlParams = new URLSearchParams(window.location.search);
         const exchangeToken = urlParams.get('auth');
+        console.log('🔍 Auth token in URL:', exchangeToken ? exchangeToken.substring(0, 20) + '...' : 'NONE');
 
         if (exchangeToken) {
           console.log('🔄 Exchange token found, swapping for session...');
+          console.log('🌐 API_BASE_URL:', API_BASE_URL);
 
           // Exchange token for session - try cookie first, fall back to response body
+          console.log('📤 Sending POST to /api/auth/exchange...');
           const exchangeResponse = await fetch(`${API_BASE_URL}/api/auth/exchange`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -167,13 +173,20 @@
             body: JSON.stringify({ token: exchangeToken })
           });
 
+          console.log('📥 Exchange response status:', exchangeResponse.status);
           const exchangeData = await exchangeResponse.json();
+          console.log('📥 Exchange response data:', exchangeData);
 
           // Clean URL (remove auth parameter)
           window.history.replaceState({}, '', window.location.pathname);
+          console.log('🧹 URL cleaned, auth param removed');
 
           if (!exchangeResponse.ok || !exchangeData.success) {
-            console.error('❌ Token exchange failed:', exchangeData.error);
+            console.error('❌ Token exchange failed');
+            console.error('❌ Response status:', exchangeResponse.status);
+            console.error('❌ Error message:', exchangeData.error);
+            console.error('❌ Full response:', exchangeData);
+            alert('Login failed: ' + (exchangeData.error || 'Token exchange failed'));
             window.location.href = '/login.html';
             return;
           }
@@ -182,49 +195,75 @@
           if (exchangeData.data && exchangeData.data.sessionToken) {
             localStorage.setItem('isrs_session_token', exchangeData.data.sessionToken);
             console.log('✅ Session token stored in localStorage');
+            console.log('🔑 Token preview:', exchangeData.data.sessionToken.substring(0, 20) + '...');
+          } else {
+            console.warn('⚠️ No sessionToken in exchange response!');
+            console.warn('⚠️ Exchange data:', exchangeData);
           }
 
           console.log('✅ Token exchanged successfully');
+        } else {
+          console.log('ℹ️ No auth token in URL, checking for existing session...');
         }
 
         // Get session token from localStorage
         const sessionToken = localStorage.getItem('isrs_session_token');
+        console.log('🔑 Session token from localStorage:', sessionToken ? sessionToken.substring(0, 20) + '...' : 'NONE');
 
         // Now check session (try cookie-based first, fall back to token-based)
         let response;
-        let headers = {};
+        let sessionUrl;
 
         if (sessionToken) {
           // Use token from localStorage (for cross-origin compatibility)
-          response = await fetch(`${API_BASE_URL}/api/auth/session?sessionToken=${sessionToken}`, {
+          sessionUrl = `${API_BASE_URL}/api/auth/session?sessionToken=${sessionToken}`;
+          console.log('📤 Checking session with token from localStorage');
+          console.log('📤 Session check URL:', sessionUrl);
+          response = await fetch(sessionUrl, {
             credentials: 'include'
           });
         } else {
           // Try cookie-based auth (for same-origin deployments)
-          response = await fetch(`${API_BASE_URL}/api/auth/session`, {
+          sessionUrl = `${API_BASE_URL}/api/auth/session`;
+          console.log('📤 Checking session with cookies only');
+          console.log('📤 Session check URL:', sessionUrl);
+          response = await fetch(sessionUrl, {
             credentials: 'include'
           });
         }
 
+        console.log('📥 Session check response status:', response.status);
         const data = await response.json();
+        console.log('📥 Session check response data:', data);
 
         if (!response.ok || !data.success) {
+          console.error('❌ Session check failed');
+          console.error('❌ Response status:', response.status);
+          console.error('❌ Response data:', data);
           // Clear invalid session
           localStorage.removeItem('isrs_session_token');
+          console.log('🧹 Cleared localStorage');
+          alert('Session validation failed. Please log in again.\nError: ' + (data.error || 'Unknown error'));
           window.location.href = '/login.html';
           return;
         }
 
         console.log('✅ Authenticated:', data.data.user.fullName);
-        console.log('Role:', data.data.primaryRole.displayName);
+        console.log('✅ Role:', data.data.primaryRole.displayName);
+        console.log('✅ User data:', data.data);
 
         document.getElementById('memberName').textContent = data.data.user.firstName;
         document.getElementById('loadingState').style.display = 'none';
         document.getElementById('memberContent').style.display = 'block';
+        console.log('✅ UI updated, member content displayed');
 
       } catch (error) {
-        console.error('Authentication error:', error);
+        console.error('💥 EXCEPTION in checkAuth():', error);
+        console.error('💥 Error name:', error.name);
+        console.error('💥 Error message:', error.message);
+        console.error('💥 Error stack:', error.stack);
         localStorage.removeItem('isrs_session_token');
+        alert('Authentication error: ' + error.message + '\n\nCheck console for details.');
         window.location.href = '/login.html';
       }
     }
