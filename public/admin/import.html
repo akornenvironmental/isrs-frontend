@@ -320,7 +320,7 @@
     async function importData(type, file) {
       if (!file) return;
 
-      const sessionToken = localStorage.getItem('isrs_session');
+      const sessionToken = localStorage.getItem('isrs_session_token');
       const btn = importButtons[type];
       const progress = document.getElementById(`${type}-progress`);
       const progressFill = document.getElementById(`${type}-progress-fill`);
@@ -454,7 +454,7 @@
 
     // Load import history
     async function loadImportHistory() {
-      const sessionToken = localStorage.getItem('isrs_session');
+      const sessionToken = localStorage.getItem('isrs_session_token');
       try {
         const response = await fetch(`${API_BASE}/import/logs?limit=10`, {
           headers: {
@@ -510,7 +510,7 @@
   <script src="/js/admin-layout.js"></script>
   <script>
     window.addEventListener('DOMContentLoaded', () => {
-      const sessionToken = localStorage.getItem('isrs_session');
+      const sessionToken = localStorage.getItem('isrs_session_token');
       if (!sessionToken) {
         window.location.href = '/admin/';
         return;

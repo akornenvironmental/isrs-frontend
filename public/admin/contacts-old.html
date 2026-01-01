@@ -164,7 +164,7 @@
 
     // Check auth
     window.addEventListener('DOMContentLoaded', () => {
-      const sessionToken = localStorage.getItem('isrs_session');
+      const sessionToken = localStorage.getItem('isrs_session_token');
       if (!sessionToken) {
         window.location.href = '/admin/';
         return;
@@ -173,7 +173,7 @@
     });
 
     async function loadContacts() {
-      const sessionToken = localStorage.getItem('isrs_session');
+      const sessionToken = localStorage.getItem('isrs_session_token');
 
       try {
         const response = await fetch(`${API_BASE_URL}/api/admin/contacts`, {

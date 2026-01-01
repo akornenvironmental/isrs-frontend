@@ -492,7 +492,7 @@
 
   <script>
     const API_BASE_URL = 'https://isrs-database-backend.onrender.com';
-    const sessionToken = localStorage.getItem('isrs_session');
+    const sessionToken = localStorage.getItem('isrs_session_token');
     
     let allProspects = [];
     let filteredProspects = [];
@@ -1134,7 +1134,7 @@
     }
 
     function logout() {
-      localStorage.removeItem('isrs_session');
+      localStorage.removeItem('isrs_session_token');
       window.location.href = '/admin/';
     }
 

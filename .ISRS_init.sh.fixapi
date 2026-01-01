@@ -1,0 +1,14 @@
+#!/bin/bash
+echo -ne "\033]0;ISRS\007"
+echo -ne "\033]1;ISRS\007"
+cd ~/Desktop/ISRS
+echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+echo "  📊 ISRS Development Environment"
+echo "  📍 Location: $(pwd)"
+echo "  🤖 Starting Claude Code (Sonnet 4.5)..."
+echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+echo ""
+# Unset API keys so Claude Code uses your claude.ai login instead
+export ANTHROPIC_API_KEY=""
+unset CLAUDE_API_KEY
+claude --model sonnet

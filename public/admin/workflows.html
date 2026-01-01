@@ -1008,7 +1008,7 @@
   <script src="/js/admin-layout.js"></script>
   <script>
     window.addEventListener('DOMContentLoaded', () => {
-      const sessionToken = localStorage.getItem('isrs_session');
+      const sessionToken = localStorage.getItem('isrs_session_token');
       if (!sessionToken) {
         window.location.href = '/admin/';
         return;

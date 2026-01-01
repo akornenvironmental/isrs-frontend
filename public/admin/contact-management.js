@@ -57,7 +57,7 @@ async function handleFileUpload(event) {
   `;
 
   try {
-    const sessionToken = localStorage.getItem('isrs_session');
+    const sessionToken = localStorage.getItem('isrs_session_token');
     const formData = new FormData();
     formData.append('file', file);
 
@@ -191,7 +191,7 @@ async function executeImport() {
   const sourceDescription = document.getElementById('sourceDescription')?.value || null;
 
   try {
-    const sessionToken = localStorage.getItem('isrs_session');
+    const sessionToken = localStorage.getItem('isrs_session_token');
 
     // Use new /api/import/save endpoint
     const response = await fetch(`${API_BASE_URL}/api/import/save`, {
@@ -262,7 +262,7 @@ async function executeImport() {
 
 async function exportAllToCSV() {
   try {
-    const sessionToken = localStorage.getItem('isrs_session');
+    const sessionToken = localStorage.getItem('isrs_session_token');
     const response = await fetch(`${API_BASE_URL}/api/admin/contacts/export`, {
       headers: {
         'Authorization': `Bearer ${sessionToken}`
@@ -354,7 +354,7 @@ async function detectDuplicates() {
   content.style.display = 'none';
 
   try {
-    const sessionToken = localStorage.getItem('isrs_session');
+    const sessionToken = localStorage.getItem('isrs_session_token');
 
     // Use new Claude AI duplicate detection endpoint
     const response = await fetch(`${API_BASE_URL}/api/claude/find-duplicates`, {
@@ -462,7 +462,7 @@ async function showAIMergeModal(contactIds) {
   content.innerHTML = '<div class="loading">🤖 AI is analyzing contacts and suggesting merge strategy...</div>';
 
   try {
-    const sessionToken = localStorage.getItem('isrs_session');
+    const sessionToken = localStorage.getItem('isrs_session_token');
 
     // Use Claude AI to suggest merge
     const response = await fetch(`${API_BASE_URL}/api/claude/suggest-merge`, {
@@ -561,7 +561,7 @@ async function executeMerge() {
   }
 
   try {
-    const sessionToken = localStorage.getItem('isrs_session');
+    const sessionToken = localStorage.getItem('isrs_session_token');
 
     // Use Claude AI execute merge endpoint
     const response = await fetch(`${API_BASE_URL}/api/claude/execute-merge`, {
@@ -611,7 +611,7 @@ async function enhanceSelectedContact() {
   showToast('🤖 AI is analyzing contact and generating suggestions...', 'info');
 
   try {
-    const sessionToken = localStorage.getItem('isrs_session');
+    const sessionToken = localStorage.getItem('isrs_session_token');
 
     const response = await fetch(`${API_BASE_URL}/api/claude/enhance-contact`, {
       method: 'POST',
@@ -692,7 +692,7 @@ async function reviewDataQuality() {
   showToast('🤖 AI is reviewing your contact database quality...', 'info');
 
   try {
-    const sessionToken = localStorage.getItem('isrs_session');
+    const sessionToken = localStorage.getItem('isrs_session_token');
 
     const response = await fetch(`${API_BASE_URL}/api/claude/review-contacts`, {
       method: 'POST',
@@ -819,7 +819,7 @@ async function executeBulkEdit(event) {
   }
 
   try {
-    const sessionToken = localStorage.getItem('isrs_session');
+    const sessionToken = localStorage.getItem('isrs_session_token');
     const response = await fetch(`${API_BASE_URL}/api/admin/contacts/bulk-update`, {
       method: 'POST',
       headers: {
@@ -860,7 +860,7 @@ async function bulkDeleteSelected() {
   }
 
   try {
-    const sessionToken = localStorage.getItem('isrs_session');
+    const sessionToken = localStorage.getItem('isrs_session_token');
     const response = await fetch(`${API_BASE_URL}/api/admin/contacts/bulk-delete`, {
       method: 'POST',
       headers: {

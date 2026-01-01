@@ -4,8 +4,9 @@
   "description": "International Shellfish Restoration Society - Frontend",
   "scripts": {
     "start": "npx serve public -l 8080",
-    "dev": "npx serve . -l 8080"
+    "dev": "npx serve public -l 8080"
   },
+  "_comment_port": "ISRS Frontend Port: 8080 - DO NOT CHANGE (locked for multi-project development)",
   "keywords": [
     "isrs",
     "shellfish",

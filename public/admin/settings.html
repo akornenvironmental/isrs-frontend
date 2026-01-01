@@ -140,7 +140,7 @@
   <script>
     window.addEventListener('DOMContentLoaded', () => {
       // Check auth
-      const sessionToken = localStorage.getItem('isrs_session');
+      const sessionToken = localStorage.getItem('isrs_session_token');
       if (!sessionToken) {
         window.location.href = '/admin/';
         return;

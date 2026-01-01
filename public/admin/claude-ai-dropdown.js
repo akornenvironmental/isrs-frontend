@@ -229,7 +229,7 @@ class ClaudeAIDropdown {
     this.showLoading();
 
     try {
-      const sessionToken = localStorage.getItem('isrs_session');
+      const sessionToken = localStorage.getItem('isrs_session_token');
       const contact_ids = this.getSelectedContactIds();
 
       const response = await fetch(`${API_BASE_URL}/api/claude/find-duplicates`, {
@@ -259,7 +259,7 @@ class ClaudeAIDropdown {
     this.showLoading();
 
     try {
-      const sessionToken = localStorage.getItem('isrs_session');
+      const sessionToken = localStorage.getItem('isrs_session_token');
       const contact_ids = this.getSelectedContactIds();
 
       const response = await fetch(`${API_BASE_URL}/api/claude/review-contacts`, {
@@ -308,7 +308,7 @@ class ClaudeAIDropdown {
       this.showLoading('Searching the web and analyzing...', 'Finding information about this contact');
 
       try {
-        const sessionToken = localStorage.getItem('isrs_session');
+        const sessionToken = localStorage.getItem('isrs_session_token');
         const response = await fetch(`${API_BASE_URL}/api/claude/enhance-contact`, {
           method: 'POST',
           headers: {
@@ -341,7 +341,7 @@ class ClaudeAIDropdown {
 
     const results = [];
     const errors = [];
-    const sessionToken = localStorage.getItem('isrs_session');
+    const sessionToken = localStorage.getItem('isrs_session_token');
 
     for (let i = 0; i < contact_ids.length; i++) {
       try {
@@ -749,7 +749,7 @@ class ClaudeAIDropdown {
     this.showLoading();
 
     try {
-      const sessionToken = localStorage.getItem('isrs_session');
+      const sessionToken = localStorage.getItem('isrs_session_token');
       // First get merge suggestion
       const suggestionRes = await fetch(`${API_BASE_URL}/api/claude/suggest-merge`, {
         method: 'POST',
@@ -836,7 +836,7 @@ class ClaudeAIDropdown {
       };
 
       // Update via API
-      const sessionToken = localStorage.getItem('isrs_session');
+      const sessionToken = localStorage.getItem('isrs_session_token');
       const response = await fetch(`${API_BASE_URL}/api/contacts/${contactId}`, {
         method: 'PUT',
         headers: {

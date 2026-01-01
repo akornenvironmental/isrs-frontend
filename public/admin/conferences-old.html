@@ -149,7 +149,7 @@
     let sortDirection = 'desc';
 
     window.addEventListener('DOMContentLoaded', () => {
-      const sessionToken = localStorage.getItem('isrs_session');
+      const sessionToken = localStorage.getItem('isrs_session_token');
       if (!sessionToken) {
         window.location.href = '/admin/';
         return;
@@ -158,7 +158,7 @@
     });
 
     async function loadConferences() {
-      const sessionToken = localStorage.getItem('isrs_session');
+      const sessionToken = localStorage.getItem('isrs_session_token');
       try {
         const response = await fetch(`${API_BASE_URL}/api/admin/conferences`, {
           headers: { 'Authorization': `Bearer ${sessionToken}` }
@@ -293,7 +293,7 @@
 
     async function handleSubmit(event) {
       event.preventDefault();
-      const sessionToken = localStorage.getItem('isrs_session');
+      const sessionToken = localStorage.getItem('isrs_session_token');
       const submitBtn = document.getElementById('submitBtn');
       submitBtn.disabled = true;
       submitBtn.textContent = 'Saving...';
@@ -343,7 +343,7 @@
     async function deleteConference(id) {
       if (!confirm('Are you sure you want to delete this conference?')) return;
 
-      const sessionToken = localStorage.getItem('isrs_session');
+      const sessionToken = localStorage.getItem('isrs_session_token');
       try {
         const response = await fetch(`${API_BASE_URL}/api/admin/conferences/${id}`, {
           method: 'DELETE',

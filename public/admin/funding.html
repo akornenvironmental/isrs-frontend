@@ -217,7 +217,7 @@
     let sortDirection = 'desc';
 
     window.addEventListener('DOMContentLoaded', () => {
-      const sessionToken = localStorage.getItem('isrs_session');
+      const sessionToken = localStorage.getItem('isrs_session_token');
       if (!sessionToken) {
         window.location.href = '/admin/';
         return;
@@ -229,7 +229,7 @@
     });
 
     async function loadOrganizations() {
-      const sessionToken = localStorage.getItem('isrs_session');
+      const sessionToken = localStorage.getItem('isrs_session_token');
       try {
         const response = await fetch(`${API_BASE_URL}/api/admin/organizations`, {
           headers: { 'Authorization': `Bearer ${sessionToken}` }
@@ -244,7 +244,7 @@
     }
 
     async function loadAvailableLeads() {
-      const sessionToken = localStorage.getItem('isrs_session');
+      const sessionToken = localStorage.getItem('isrs_session_token');
       try {
         const response = await fetch(`${API_BASE_URL}/api/admin/funding/available-leads`, {
           headers: { 'Authorization': `Bearer ${sessionToken}` }
@@ -267,7 +267,7 @@
     }
 
     async function loadFunding() {
-      const sessionToken = localStorage.getItem('isrs_session');
+      const sessionToken = localStorage.getItem('isrs_session_token');
       try {
         const response = await fetch(`${API_BASE_URL}/api/admin/funding`, {
           headers: { 'Authorization': `Bearer ${sessionToken}` }
@@ -560,7 +560,7 @@
 
     async function handleSubmit(event) {
       event.preventDefault();
-      const sessionToken = localStorage.getItem('isrs_session');
+      const sessionToken = localStorage.getItem('isrs_session_token');
       const submitBtn = document.getElementById('submitBtn');
       submitBtn.disabled = true;
       submitBtn.textContent = 'Saving...';
@@ -648,7 +648,7 @@
     async function deleteProspect(id) {
       if (!confirm('Are you sure you want to delete this funding prospect?')) return;
 
-      const sessionToken = localStorage.getItem('isrs_session');
+      const sessionToken = localStorage.getItem('isrs_session_token');
       try {
         const response = await fetch(`${API_BASE_URL}/api/admin/funding/${id}`, {
           method: 'DELETE',
@@ -680,7 +680,7 @@
       notifyBtn.disabled = true;
       notifyBtn.textContent = 'Sending...';
 
-      const sessionToken = localStorage.getItem('isrs_session');
+      const sessionToken = localStorage.getItem('isrs_session_token');
       try {
         const response = await fetch(`${API_BASE_URL}/api/admin/funding/${currentProspectId}/notify-leads`, {
           method: 'POST',
@@ -833,7 +833,7 @@
         cell.innerHTML = '<span style="color: var(--admin-primary);">Saving...</span>';
 
         try {
-          const sessionToken = localStorage.getItem('isrs_session');
+          const sessionToken = localStorage.getItem('isrs_session_token');
           const response = await fetch(`${API_BASE_URL}/api/admin/funding/${prospect.id}`, {
             method: 'PUT',
             headers: {

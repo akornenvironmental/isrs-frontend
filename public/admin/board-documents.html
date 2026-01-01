@@ -428,7 +428,7 @@
     });
 
     function checkAuth() {
-      const sessionToken = localStorage.getItem('isrs_session');
+      const sessionToken = localStorage.getItem('isrs_session_token');
       const userRole = localStorage.getItem('isrs_user_role');
 
       if (!sessionToken) {
@@ -447,7 +447,7 @@
     }
 
     async function loadDocuments() {
-      const sessionToken = localStorage.getItem('isrs_session');
+      const sessionToken = localStorage.getItem('isrs_session_token');
       const category = document.getElementById('categoryFilter').value;
       const status = document.getElementById('statusFilter').value;
       const approvalStatus = document.getElementById('approvalFilter').value;
@@ -632,7 +632,7 @@
     async function uploadDocument(e) {
       e.preventDefault();
 
-      const sessionToken = localStorage.getItem('isrs_session');
+      const sessionToken = localStorage.getItem('isrs_session_token');
       const fileInput = document.getElementById('fileInput');
       const file = fileInput.files[0];
 
@@ -689,7 +689,7 @@
     }
 
     async function viewDocument(id) {
-      const sessionToken = localStorage.getItem('isrs_session');
+      const sessionToken = localStorage.getItem('isrs_session_token');
 
       try {
         const response = await fetch(`${API_BASE_URL}/api/admin/board-documents/${id}`, {
@@ -762,7 +762,7 @@
     }
 
     async function downloadDocument(id) {
-      const sessionToken = localStorage.getItem('isrs_session');
+      const sessionToken = localStorage.getItem('isrs_session_token');
       window.open(`${API_BASE_URL}/api/admin/board-documents/${id}/download?token=${sessionToken}`, '_blank');
     }
 
@@ -775,7 +775,7 @@
     }
 
     async function updateApproval(id, status) {
-      const sessionToken = localStorage.getItem('isrs_session');
+      const sessionToken = localStorage.getItem('isrs_session_token');
 
       try {
         const response = await fetch(`${API_BASE_URL}/api/admin/board-documents/${id}/approval`, {
@@ -893,7 +893,7 @@
         element.innerHTML = '<span style="color: var(--admin-primary); font-size: 0.875rem;">Saving...</span>';
 
         try {
-          const sessionToken = localStorage.getItem('isrs_session');
+          const sessionToken = localStorage.getItem('isrs_session_token');
           const response = await fetch(`${API_BASE_URL}/api/admin/board-documents/${doc.id}`, {
             method: 'PUT',
             headers: {

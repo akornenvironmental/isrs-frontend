@@ -559,7 +559,7 @@
       progressContainer.style.display = 'block';
 
       // Get session token
-      const sessionToken = localStorage.getItem('isrs_session');
+      const sessionToken = localStorage.getItem('isrs_session_token');
       if (!sessionToken) {
         alert('Please log in to upload photos');
         this.reset();

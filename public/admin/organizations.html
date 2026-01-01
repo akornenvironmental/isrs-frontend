@@ -571,7 +571,7 @@
 
     // Check auth
     window.addEventListener('DOMContentLoaded', async () => {
-      const sessionToken = localStorage.getItem('isrs_session');
+      const sessionToken = localStorage.getItem('isrs_session_token');
       if (!sessionToken) {
         window.location.href = '/admin/';
         return;
@@ -597,7 +597,7 @@
     });
 
     async function loadUserPermissions() {
-      const sessionToken = localStorage.getItem('isrs_session');
+      const sessionToken = localStorage.getItem('isrs_session_token');
       try {
         const response = await fetch(`${API_BASE_URL}/api/auth/session`, {
           headers: { 'Authorization': `Bearer ${sessionToken}` }
@@ -614,7 +614,7 @@
     }
 
     async function loadOrganizations() {
-      const sessionToken = localStorage.getItem('isrs_session');
+      const sessionToken = localStorage.getItem('isrs_session_token');
 
       try {
         const response = await fetch(`${API_BASE_URL}/api/admin/organizations`, {
@@ -931,7 +931,7 @@
       results.style.display = 'none';
 
       try {
-        const sessionToken = localStorage.getItem('isrs_session');
+        const sessionToken = localStorage.getItem('isrs_session_token');
         const response = await fetch(`${API_BASE_URL}/api/admin/ai-query`, {
           method: 'POST',
           headers: {
@@ -1054,7 +1054,7 @@
       };
 
       try {
-        const sessionToken = localStorage.getItem('isrs_session');
+        const sessionToken = localStorage.getItem('isrs_session_token');
         const response = await fetch(`${API_BASE_URL}/api/admin/organizations`, {
           method: 'POST',
           headers: {
@@ -1180,7 +1180,7 @@
       showMessage(`Enhancing ${org.name} with AI...`, 'info');
 
       try {
-        const sessionToken = localStorage.getItem('isrs_session');
+        const sessionToken = localStorage.getItem('isrs_session_token');
         const response = await fetch(`${API_BASE_URL}/api/claude/enhance-organization`, {
           method: 'POST',
           headers: {
@@ -1280,7 +1280,7 @@
         const results = await Promise.allSettled(
           batch.map(async (org) => {
             try {
-              const sessionToken = localStorage.getItem('isrs_session');
+              const sessionToken = localStorage.getItem('isrs_session_token');
               const response = await fetch(`${API_BASE_URL}/api/claude/enhance-organization`, {
                 method: 'POST',
                 headers: {
@@ -1400,7 +1400,7 @@
         cell.innerHTML = '<span style="color: var(--admin-primary);">Saving...</span>';
 
         try {
-          const sessionToken = localStorage.getItem('isrs_session');
+          const sessionToken = localStorage.getItem('isrs_session_token');
           const response = await fetch(`${API_BASE_URL}/api/admin/organizations/${org.id}`, {
             method: 'PUT',
             headers: {

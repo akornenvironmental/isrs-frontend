@@ -594,7 +594,7 @@
     const API_BASE_URL = 'https://isrs-database-backend.onrender.com';
     let coAuthors = [];
     let keywords = [];
-    let sessionToken = localStorage.getItem('isrs_session');
+    let sessionToken = localStorage.getItem('isrs_session_token');
     let userData = null;
     let activeConference = null;
 
@@ -613,7 +613,7 @@
 
         if (!profileData.success) {
           if (profileResponse.status === 401) {
-            localStorage.removeItem('isrs_session');
+            localStorage.removeItem('isrs_session_token');
             alert('Your session has expired. Please log in again.');
             window.location.href = '/profile/login.html';
             return;

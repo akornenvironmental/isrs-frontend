@@ -684,7 +684,7 @@
       const uploadBtn = document.getElementById('uploadFromUrlBtn');
       const uploadText = document.getElementById('urlUploadText');
       const uploadSpinner = document.getElementById('urlUploadSpinner');
-      const sessionToken = localStorage.getItem('isrs_session');
+      const sessionToken = localStorage.getItem('isrs_session_token');
 
       if (!sessionToken) {
         alert('Please log in to upload photos');
@@ -738,7 +738,7 @@
     // Load photos from API
     async function loadPhotos() {
       const container = document.getElementById('photosContainer');
-      const sessionToken = localStorage.getItem('isrs_session');
+      const sessionToken = localStorage.getItem('isrs_session_token');
 
       if (!sessionToken) {
         container.innerHTML = `
@@ -970,7 +970,7 @@
     document.getElementById('toggleVisibilityBtn').addEventListener('click', async () => {
       if (!currentPhoto) return;
 
-      const sessionToken = localStorage.getItem('isrs_session');
+      const sessionToken = localStorage.getItem('isrs_session_token');
       if (!sessionToken) return;
 
       try {
@@ -1008,7 +1008,7 @@
         return;
       }
 
-      const sessionToken = localStorage.getItem('isrs_session');
+      const sessionToken = localStorage.getItem('isrs_session_token');
       if (!sessionToken) return;
 
       try {

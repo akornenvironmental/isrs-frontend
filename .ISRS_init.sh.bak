@@ -1,0 +1,11 @@
+#!/bin/bash
+echo -ne "\033]0;ISRS\007"
+echo -ne "\033]1;ISRS\007"
+cd ~/Desktop/ISRS
+echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+echo "  📊 ISRS Development Environment"
+echo "  📍 Location: $(pwd)"
+echo "  🤖 Starting Claude Code (Sonnet 4.5)..."
+echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+echo ""
+claude --model sonnet

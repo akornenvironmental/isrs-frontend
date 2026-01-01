@@ -756,7 +756,7 @@
 
     // Initialize
     window.addEventListener('DOMContentLoaded', async () => {
-      const sessionToken = localStorage.getItem('isrs_session');
+      const sessionToken = localStorage.getItem('isrs_session_token');
       if (!sessionToken) {
         window.location.href = '/admin/';
         return;
@@ -769,7 +769,7 @@
     });
 
     async function loadUserPermissions() {
-      const sessionToken = localStorage.getItem('isrs_session');
+      const sessionToken = localStorage.getItem('isrs_session_token');
       try {
         const response = await fetch(`${API_BASE_URL}/api/auth/session`, {
           headers: { 'Authorization': `Bearer ${sessionToken}` }
@@ -805,7 +805,7 @@
     }
 
     async function loadContacts() {
-      const sessionToken = localStorage.getItem('isrs_session');
+      const sessionToken = localStorage.getItem('isrs_session_token');
       try {
         const response = await fetch(`${API_BASE_URL}/api/admin/contacts`, {
           headers: { 'Authorization': `Bearer ${sessionToken}` }
@@ -1369,7 +1369,7 @@
       }
 
       try {
-        const sessionToken = localStorage.getItem('isrs_session');
+        const sessionToken = localStorage.getItem('isrs_session_token');
         const response = await fetch(`${API_BASE_URL}/api/admin/contacts/bulk-delete`, {
           method: 'POST',
           headers: {
@@ -1448,7 +1448,7 @@
       btn.textContent = 'Sending...';
 
       try {
-        const sessionToken = localStorage.getItem('isrs_session');
+        const sessionToken = localStorage.getItem('isrs_session_token');
         const response = await fetch(`${API_BASE_URL}/api/admin/send-email`, {
           method: 'POST',
           headers: {
@@ -1524,7 +1524,7 @@
       results.style.display = 'none';
 
       try {
-        const sessionToken = localStorage.getItem('isrs_session');
+        const sessionToken = localStorage.getItem('isrs_session_token');
         const response = await fetch(`${API_BASE_URL}/api/admin/ai-query`, {
           method: 'POST',
           headers: {
@@ -1641,7 +1641,7 @@
 
     async function loadOrganizationsForBulkEdit() {
       try {
-        const sessionToken = localStorage.getItem('isrs_session');
+        const sessionToken = localStorage.getItem('isrs_session_token');
         const response = await fetch(`${API_BASE_URL}/api/admin/organizations?limit=1000`, {
           headers: { 'Authorization': `Bearer ${sessionToken}` }
         });
@@ -1698,7 +1698,7 @@
       }
 
       try {
-        const sessionToken = localStorage.getItem('isrs_session');
+        const sessionToken = localStorage.getItem('isrs_session_token');
         const response = await fetch(`${API_BASE_URL}/api/admin/contacts/bulk-edit`, {
           method: 'POST',
           headers: {
@@ -1775,7 +1775,7 @@
         cell.innerHTML = '<span style="color: var(--admin-primary);">Saving...</span>';
 
         try {
-          const sessionToken = localStorage.getItem('isrs_session');
+          const sessionToken = localStorage.getItem('isrs_session_token');
           const response = await fetch(`${API_BASE_URL}/api/admin/contacts/${contact.id}`, {
             method: 'PUT',
             headers: {
@@ -1835,7 +1835,7 @@
       showToast(`Enhancing ${contact.full_name || email} with AI...`, 'info');
 
       try {
-        const sessionToken = localStorage.getItem('isrs_session');
+        const sessionToken = localStorage.getItem('isrs_session_token');
         const response = await fetch(`${API_BASE_URL}/api/claude/enhance-contact`, {
           method: 'POST',
           headers: {
@@ -1939,7 +1939,7 @@
         const results = await Promise.allSettled(
           batch.map(async (contact) => {
             try {
-              const sessionToken = localStorage.getItem('isrs_session');
+              const sessionToken = localStorage.getItem('isrs_session_token');
               const response = await fetch(`${API_BASE_URL}/api/claude/enhance-contact`, {
                 method: 'POST',
                 headers: {
@@ -2080,7 +2080,7 @@
       };
 
       try {
-        const sessionToken = localStorage.getItem('isrs_session');
+        const sessionToken = localStorage.getItem('isrs_session_token');
         const response = await fetch(`${API_BASE_URL}/api/admin/contacts`, {
           method: 'POST',
           headers: {

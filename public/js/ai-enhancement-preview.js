@@ -274,7 +274,7 @@ async function applySelectedEnhancements() {
   for (const [key, item] of Object.entries(changesByItem)) {
     try {
       const API_BASE_URL = 'https://isrs-database-backend.onrender.com';
-      const sessionToken = localStorage.getItem('isrs_session');
+      const sessionToken = localStorage.getItem('isrs_session_token');
 
       const endpoint = item.type === 'contact'
         ? `${API_BASE_URL}/api/admin/contacts/${item.id}`
