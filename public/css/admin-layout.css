@@ -125,7 +125,7 @@
 }
 
 .sidebar-header {
-  padding: 0.75rem 1rem;
+  padding: 0.625rem 0.75rem;
   border-bottom: 1px solid var(--admin-border, #e5e7eb);
 }
 
@@ -143,7 +143,7 @@
 
 .sidebar-logo {
   font-family: 'Marcellus', Georgia, serif;
-  font-size: 1.25rem;
+  font-size: 1.125rem;
   font-weight: 700;
   color: var(--primary-blue, #2E5A8A);
   text-decoration: none;
@@ -152,7 +152,7 @@
 }
 
 .sidebar-subtitle {
-  font-size: 0.75rem;
+  font-size: 0.6875rem;
   font-weight: 600;
   color: var(--admin-text-muted, #6b7280);
   margin-top: 0.125rem;
@@ -197,12 +197,12 @@
 
 .sidebar-nav {
   flex: 1;
-  padding: 0.5rem 0;
+  padding: 0.375rem 0;
   overflow-y: auto;
 }
 
 .nav-section {
-  margin-bottom: 0.25rem;
+  margin-bottom: 0.125rem;
 }
 
 .nav-section-title {
@@ -211,7 +211,7 @@
   text-transform: uppercase;
   letter-spacing: 0.05em;
   color: var(--admin-text-muted, #9ca3af);
-  padding: 0.5rem 0.75rem 0.25rem 0.75rem;
+  padding: 0.375rem 0.75rem 0.125rem 0.75rem;
   margin-bottom: 0;
 }
 
@@ -225,7 +225,7 @@
   display: flex;
   align-items: center;
   gap: 0.375rem;
-  padding: 0.5rem 0.75rem;
+  padding: 0.4rem 0.75rem;
   padding-right: 2rem; /* Space for hide button */
   color: var(--admin-text-secondary, #4b5563);
   text-decoration: none;
@@ -290,15 +290,15 @@
 /* Hidden Items section */
 .nav-section.hidden-items-section {
   border-top: 1px solid var(--admin-border, #e5e7eb);
-  padding-top: 0.5rem;
-  margin-top: 0.5rem;
+  padding-top: 0.375rem;
+  margin-top: 0.375rem;
 }
 
 .hidden-items-toggle {
   display: flex;
   align-items: center;
   gap: 0.375rem;
-  padding: 0.5rem 0.75rem;
+  padding: 0.4rem 0.75rem;
   color: var(--admin-text-muted, #6b7280);
   text-decoration: none;
   transition: all 0.2s;
@@ -340,7 +340,7 @@
   display: flex;
   align-items: center;
   gap: 0.375rem;
-  padding: 0.5rem 0.75rem;
+  padding: 0.4rem 0.75rem;
   padding-right: 2rem;
   color: var(--admin-text-muted, #9ca3af);
   text-decoration: none;
@@ -387,16 +387,16 @@
 }
 
 .hidden-items-empty {
-  padding: 0.5rem 0.75rem;
+  padding: 0.375rem 0.75rem;
   color: var(--admin-text-muted, #9ca3af);
-  font-size: 0.75rem;
+  font-size: 0.6875rem;
   font-style: italic;
   text-align: center;
 }
 
 /* Sidebar Footer */
 .sidebar-footer {
-  padding: 0.75rem 1rem;
+  padding: 0.625rem 0.75rem;
   border-top: 1px solid var(--admin-border, #e5e7eb);
   background: var(--admin-surface-hover, #f9fafb);
 }
@@ -405,18 +405,18 @@
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  margin-bottom: 0.5rem;
+  margin-bottom: 0.375rem;
   /* Always have padding to prevent jump on hover */
-  padding: 0.35rem;
-  margin-left: -0.35rem;
-  margin-right: -0.35rem;
+  padding: 0.25rem;
+  margin-left: -0.25rem;
+  margin-right: -0.25rem;
   border-radius: 6px;
   transition: background-color 0.15s ease;
 }
 
 .user-avatar {
-  width: 2rem;
-  height: 2rem;
+  width: 1.75rem;
+  height: 1.75rem;
   border-radius: 50%;
   background: linear-gradient(135deg, var(--primary-blue, #2E5A8A), var(--accent-teal, #5BC0BE));
   color: white;
@@ -424,7 +424,7 @@
   align-items: center;
   justify-content: center;
   font-weight: 700;
-  font-size: 1rem;
+  font-size: 0.875rem;
 }
 
 .user-details {
@@ -433,7 +433,7 @@
 }
 
 .user-email {
-  font-size: 0.875rem;
+  font-size: 0.8125rem;
   font-weight: 600;
   color: var(--admin-text, #1f2937);
   white-space: nowrap;
@@ -442,7 +442,7 @@
 }
 
 .user-role {
-  font-size: 0.75rem;
+  font-size: 0.6875rem;
   color: var(--admin-text-muted, #6b7280);
   text-transform: uppercase;
   letter-spacing: 0.05em;
