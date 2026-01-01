@@ -115,6 +115,13 @@
       font-weight: 600;
     }
 
+    .user-badges {
+      display: flex;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+      margin-bottom: 0.25rem;
+    }
+
     .user-role-badge {
       display: inline-block;
       background: rgba(255,255,255,0.2);
@@ -123,6 +130,35 @@
       font-size: 0.8125rem;
       font-weight: 500;
       backdrop-filter: blur(10px);
+    }
+
+    .access-level-badge {
+      display: inline-block;
+      background: rgba(255,255,255,0.15);
+      padding: 0.25rem 0.75rem;
+      border-radius: 20px;
+      font-size: 0.75rem;
+      font-weight: 500;
+      border: 1px solid rgba(255,255,255,0.3);
+    }
+
+    .user-metadata {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+      font-size: 0.8125rem;
+      opacity: 0.9;
+      margin-top: 0.25rem;
+    }
+
+    .metadata-item {
+      display: flex;
+      align-items: center;
+      gap: 0.375rem;
+    }
+
+    .metadata-icon {
+      font-size: 0.875rem;
     }
 
     .permission-info {
@@ -141,6 +177,20 @@
       opacity: 0.9;
       text-transform: uppercase;
       letter-spacing: 0.05em;
+    }
+
+    .admin-capabilities {
+      margin-top: 0.375rem;
+      font-size: 0.75rem;
+      opacity: 0.85;
+      line-height: 1.4;
+    }
+
+    .capability-item {
+      display: flex;
+      align-items: center;
+      gap: 0.375rem;
+      margin-top: 0.25rem;
     }
 
     .section-header {
@@ -204,11 +254,16 @@
     <div class="user-info-banner">
       <div class="user-details">
         <h1>Welcome, <span id="userName">Admin</span>!</h1>
-        <span class="user-role-badge" id="userRole">Loading...</span>
+        <div class="user-badges">
+          <span class="user-role-badge" id="userRole">Loading...</span>
+          <span class="access-level-badge" id="accessLevel" style="display: none;"></span>
+        </div>
+        <div class="user-metadata" id="userMetadata" style="display: none;"></div>
       </div>
-      <div class="permission-info">
+      <div class="permission-info" id="permissionInfo">
         <div class="permission-label">Permission Level</div>
         <div class="permission-level-large" id="permissionLevel">—</div>
+        <div class="admin-capabilities" id="adminCapabilities" style="display: none;"></div>
       </div>
     </div>
 
@@ -328,12 +383,17 @@
         }
 
         // Display user info
-        document.getElementById('userName').textContent = data.data.user.fullName || data.data.user.firstName || 'User';
+        const userName = data.data.user.fullName || data.data.user.firstName || 'User';
+        const userEmail = data.data.user.email || data.data.user.user_email;
+        document.getElementById('userName').textContent = userName;
         document.getElementById('userRole').textContent = data.data.primaryRole.displayName || 'Member';
         document.getElementById('permissionLevel').textContent = userPermissionLevel;
 
+        // Build comprehensive user info based on permission level
+        buildUserInfoBanner(data.data, userPermissionLevel);
+
         // Load sidebar with current page marker
-        loadAdminLayout('dashboard');
+        loadAdminLayout('dashboard', userPermissionLevel);
 
         // Populate dashboard content based on permissions
         populateQuickActions();
@@ -446,6 +506,148 @@
           <p class="card-description">${action.description}</p>
         </div>
       `).join('');
+    }
+
+    function buildUserInfoBanner(userData, permissionLevel) {
+      const user = userData.user;
+      const primaryRole = userData.primaryRole;
+      const roles = userData.roles || [];
+
+      // Determine access level name based on permission level
+      let accessLevelName = '';
+      if (permissionLevel >= 90) accessLevelName = 'Full System Access';
+      else if (permissionLevel >= 80) accessLevelName = 'Board Member Access';
+      else if (permissionLevel >= 70) accessLevelName = 'Administrative Access';
+      else if (permissionLevel >= 60) accessLevelName = 'Content Manager Access';
+      else if (permissionLevel >= 50) accessLevelName = 'Member Access';
+      else accessLevelName = 'Guest Access';
+
+      // For regular members (level < 70), show membership info instead of permission level
+      if (permissionLevel < 70) {
+        // Hide numeric permission level for regular members
+        document.querySelector('.permission-info').style.display = 'none';
+
+        // Show access level badge
+        const accessBadge = document.getElementById('accessLevel');
+        accessBadge.textContent = accessLevelName;
+        accessBadge.style.display = 'inline-block';
+
+        // Build metadata section for members
+        const metadataEl = document.getElementById('userMetadata');
+        let metadataHTML = '';
+
+        // 1. Membership status - check if user has created_at or joined date
+        if (user.created_at) {
+          const joinYear = new Date(user.created_at).getFullYear();
+          metadataHTML += `
+            <div class="metadata-item">
+              <span class="metadata-icon">👤</span>
+              <span>Member Since ${joinYear}</span>
+            </div>
+          `;
+        } else {
+          metadataHTML += `
+            <div class="metadata-item">
+              <span class="metadata-icon">✓</span>
+              <span>Active Membership</span>
+            </div>
+          `;
+        }
+
+        // 2. Conference attendance - check for conference role
+        const conferenceRole = roles.find(r =>
+          r.name && (r.name.includes('conference') || r.name.includes('attendee') || r.name.includes('presenter'))
+        );
+        if (conferenceRole) {
+          metadataHTML += `
+            <div class="metadata-item">
+              <span class="metadata-icon">📅</span>
+              <span>ICSR 2026 Attendee</span>
+            </div>
+          `;
+        }
+
+        // 3. Show total roles count if more than 1
+        if (roles.length > 1) {
+          metadataHTML += `
+            <div class="metadata-item">
+              <span class="metadata-icon">🎭</span>
+              <span>${roles.length} Roles</span>
+            </div>
+          `;
+        }
+
+        metadataEl.innerHTML = metadataHTML;
+        metadataEl.style.display = 'flex';
+      }
+      // For admins/board (level >= 70), show ALL the info!
+      else {
+        // Keep permission info visible
+        document.querySelector('.permission-info').style.display = 'block';
+
+        // Add access badge below role
+        const accessBadge = document.getElementById('accessLevel');
+        accessBadge.textContent = accessLevelName;
+        accessBadge.style.display = 'inline-block';
+
+        // Build admin capabilities section
+        const capabilitiesEl = document.getElementById('adminCapabilities');
+        let capHTML = '';
+
+        // Count available features based on permission level
+        let featureCount = 0;
+        if (permissionLevel >= 50) featureCount += 3; // Data Management
+        if (permissionLevel >= 60) featureCount += 2; // Content
+        if (permissionLevel >= 70) featureCount += 3; // Governance
+        if (permissionLevel >= 80) featureCount += 3; // System
+        featureCount += 1; // Help
+
+        capHTML += `
+          <div class="capability-item">
+            <span>✓</span>
+            <span>${featureCount} Admin Sections</span>
+          </div>
+        `;
+
+        // Show role count
+        if (roles.length > 1) {
+          capHTML += `
+            <div class="capability-item">
+              <span>🎭</span>
+              <span>${roles.length} Active Roles</span>
+            </div>
+          `;
+        }
+
+        capabilitiesEl.innerHTML = capHTML;
+        capabilitiesEl.style.display = 'block';
+
+        // Add metadata for admins too
+        const metadataEl = document.getElementById('userMetadata');
+        let metadataHTML = '';
+
+        // Member since
+        if (user.created_at) {
+          const joinYear = new Date(user.created_at).getFullYear();
+          metadataHTML += `
+            <div class="metadata-item">
+              <span class="metadata-icon">👤</span>
+              <span>Member Since ${joinYear}</span>
+            </div>
+          `;
+        }
+
+        // Last login (would need to come from session data)
+        metadataHTML += `
+          <div class="metadata-item">
+            <span class="metadata-icon">🕐</span>
+            <span>Active Session</span>
+          </div>
+        `;
+
+        metadataEl.innerHTML = metadataHTML;
+        metadataEl.style.display = 'flex';
+      }
     }
 
     async function loadStats() {
