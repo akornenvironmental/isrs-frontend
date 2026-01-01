@@ -370,8 +370,7 @@
 
   <footer id="site-footer"></footer>
 
-  <script src="/js/header.js"></script>
-  <script src="/js/footer.js"></script>
+  <script src="/js/components.js"></script>
   <script>
     const API_BASE_URL = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
       ? 'http://localhost:3000'
@@ -381,14 +380,59 @@
 
     async function checkAuth() {
       try {
-        const response = await fetch(`${API_BASE_URL}/api/auth/session`, {
-          credentials: 'include'
-        });
+        // Check for exchange token in URL (from magic link redirect)
+        const urlParams = new URLSearchParams(window.location.search);
+        const exchangeToken = urlParams.get('auth');
+
+        if (exchangeToken) {
+          console.log('🔄 Exchange token found, swapping for session...');
+
+          // Exchange token for session
+          const exchangeResponse = await fetch(`${API_BASE_URL}/api/auth/exchange`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            credentials: 'include',
+            body: JSON.stringify({ token: exchangeToken })
+          });
+
+          const exchangeData = await exchangeResponse.json();
+
+          // Clean URL (remove auth parameter)
+          window.history.replaceState({}, '', window.location.pathname);
+
+          if (!exchangeResponse.ok || !exchangeData.success) {
+            console.error('Token exchange failed:', exchangeData.error);
+            window.location.href = '/login.html';
+            return;
+          }
+
+          // Store session token in localStorage for cross-origin compatibility
+          if (exchangeData.data && exchangeData.data.sessionToken) {
+            localStorage.setItem('isrs_session_token', exchangeData.data.sessionToken);
+            console.log('✅ Session token stored');
+          }
+        }
+
+        // Get session token from localStorage
+        const sessionToken = localStorage.getItem('isrs_session_token');
+
+        // Check session (try cookie-based first, fall back to token-based)
+        let response;
+        if (sessionToken) {
+          response = await fetch(`${API_BASE_URL}/api/auth/session?sessionToken=${sessionToken}`, {
+            credentials: 'include'
+          });
+        } else {
+          response = await fetch(`${API_BASE_URL}/api/auth/session`, {
+            credentials: 'include'
+          });
+        }
 
         const data = await response.json();
 
         if (!response.ok || !data.success) {
           console.log('No active session, redirecting to login...');
+          localStorage.removeItem('isrs_session_token');
           window.location.href = '/login.html';
           return;
         }
@@ -433,14 +477,25 @@
       if (!confirm('Are you sure you want to logout?')) return;
 
       try {
-        await fetch(`${API_BASE_URL}/api/auth/logout`, {
-          method: 'POST',
-          credentials: 'include'
-        });
+        const sessionToken = localStorage.getItem('isrs_session_token');
 
+        if (sessionToken) {
+          await fetch(`${API_BASE_URL}/api/auth/logout?sessionToken=${sessionToken}`, {
+            method: 'POST',
+            credentials: 'include'
+          });
+        } else {
+          await fetch(`${API_BASE_URL}/api/auth/logout`, {
+            method: 'POST',
+            credentials: 'include'
+          });
+        }
+
+        localStorage.removeItem('isrs_session_token');
         window.location.href = '/login.html';
       } catch (error) {
         console.error('Logout error:', error);
+        localStorage.removeItem('isrs_session_token');
         window.location.href = '/login.html';
       }
     }
