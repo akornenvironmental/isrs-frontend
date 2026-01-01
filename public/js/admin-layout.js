@@ -3,8 +3,73 @@
  * Provides consistent sidebar navigation and header across all admin pages
  */
 
+// Global variable to store hidden items
+let hiddenNavItems = [];
+
+// Load hidden items from localStorage
+function loadHiddenItems() {
+  try {
+    const stored = localStorage.getItem('isrs_hidden_nav_items');
+    hiddenNavItems = stored ? JSON.parse(stored) : [];
+  } catch (e) {
+    hiddenNavItems = [];
+  }
+}
+
+// Save hidden items to localStorage
+function saveHiddenItems() {
+  try {
+    localStorage.setItem('isrs_hidden_nav_items', JSON.stringify(hiddenNavItems));
+  } catch (e) {
+    console.error('Failed to save hidden items:', e);
+  }
+}
+
+// Hide a nav item
+function hideNavItem(itemId) {
+  if (!hiddenNavItems.includes(itemId)) {
+    hiddenNavItems.push(itemId);
+    saveHiddenItems();
+    // Reload sidebar to reflect changes
+    const sidebar = document.querySelector('.admin-sidebar');
+    if (sidebar) {
+      sidebar.remove();
+      loadAdminLayout(window.currentAdminPage || 'dashboard', window.currentUserPermissionLevel || 100);
+    }
+  }
+}
+
+// Restore a nav item
+function restoreNavItem(itemId) {
+  hiddenNavItems = hiddenNavItems.filter(id => id !== itemId);
+  saveHiddenItems();
+  // Reload sidebar to reflect changes
+  const sidebar = document.querySelector('.admin-sidebar');
+  if (sidebar) {
+    sidebar.remove();
+    loadAdminLayout(window.currentAdminPage || 'dashboard', window.currentUserPermissionLevel || 100);
+  }
+}
+
+// Toggle hidden items section
+function toggleHiddenItems() {
+  const toggle = document.querySelector('.hidden-items-toggle');
+  const list = document.querySelector('.hidden-items-list');
+  if (toggle && list) {
+    toggle.classList.toggle('expanded');
+    list.classList.toggle('expanded');
+  }
+}
+
 function loadAdminLayout(currentPage, userPermissionLevel = 100) {
   const body = document.body;
+
+  // Store current page and permission level globally
+  window.currentAdminPage = currentPage;
+  window.currentUserPermissionLevel = userPermissionLevel;
+
+  // Load hidden items from localStorage
+  loadHiddenItems();
 
   // Create wrapper structure
   const wrapper = document.createElement('div');
@@ -24,7 +89,40 @@ function loadAdminLayout(currentPage, userPermissionLevel = 100) {
     existingContent.appendChild(body.firstChild);
   }
 
-  // Build navigation sections based on permission level
+  // Define all navigation items
+  const allNavItems = [
+    { id: 'dashboard', section: 'Overview', icon: '📊', label: 'Dashboard', href: '/admin/index.html', page: 'dashboard', level: 50 },
+    { id: 'contacts', section: 'Data Management', icon: '👥', label: 'Contacts', href: '/admin/contacts.html', page: 'contacts', level: 50 },
+    { id: 'organizations', section: 'Data Management', icon: '🏢', label: 'Organizations', href: '/admin/organizations.html', page: 'organizations', level: 50 },
+    { id: 'conferences', section: 'Data Management', icon: '📅', label: 'Conferences', href: '/admin/conferences.html', page: 'conferences', level: 50 },
+    { id: 'photos', section: 'Content', icon: '📷', label: 'Photos', href: '/admin/photos.html', page: 'photos', level: 60 },
+    { id: 'press-kit', section: 'Content', icon: '📰', label: 'Press Kit', href: '/admin/press-kit.html', page: 'press-kit', level: 60 },
+    { id: 'board-documents', section: 'Governance', icon: '📁', label: 'Board Documents', href: '/admin/board-documents.html', page: 'board-documents', level: 70 },
+    { id: 'votes', section: 'Governance', icon: '🗳️', label: 'Board Votes', href: '/admin/votes.html', page: 'votes', level: 70 },
+    { id: 'funding', section: 'Governance', icon: '💰', label: 'Funding', href: '/admin/funding.html', page: 'funding', level: 70 },
+    { id: 'feedback', section: 'System', icon: '💬', label: 'User Feedback', href: '/admin/feedback.html', page: 'feedback', level: 80 },
+    { id: 'import', section: 'System', icon: '📥', label: 'Import Data', href: '/admin/import.html', page: 'import', level: 80 },
+    { id: 'settings', section: 'System', icon: '⚙️', label: 'Settings', href: '/admin/settings.html', page: 'settings', level: 80 },
+    { id: 'workflows', section: 'Help', icon: '📖', label: 'User Workflows', href: '/admin/workflows.html', page: 'workflows', level: 50 },
+  ];
+
+  // Filter items by permission level
+  const availableItems = allNavItems.filter(item => userPermissionLevel >= item.level);
+
+  // Separate visible and hidden items
+  const visibleItems = availableItems.filter(item => !hiddenNavItems.includes(item.id));
+  const hiddenItems = availableItems.filter(item => hiddenNavItems.includes(item.id));
+
+  // Group visible items by section
+  const sections = {};
+  visibleItems.forEach(item => {
+    if (!sections[item.section]) {
+      sections[item.section] = [];
+    }
+    sections[item.section].push(item);
+  });
+
+  // Build navigation sections HTML
   let navSectionsHTML = '';
 
   // Public website link (all users)
@@ -38,108 +136,55 @@ function loadAdminLayout(currentPage, userPermissionLevel = 100) {
     </div>
   `;
 
-  // Overview (all users level 50+)
-  if (userPermissionLevel >= 50) {
-    navSectionsHTML += `
-      <div class="nav-section">
-        <div class="nav-section-title">Overview</div>
-        <a href="/admin/index.html" class="nav-item ${currentPage === 'dashboard' ? 'active' : ''}">
-          <span class="nav-icon">📊</span>
-          <span>Dashboard</span>
-        </a>
-      </div>
-    `;
-  }
+  // Add each section with its items
+  Object.keys(sections).forEach(sectionName => {
+    navSectionsHTML += `<div class="nav-section">`;
+    navSectionsHTML += `<div class="nav-section-title">${sectionName}</div>`;
 
-  // Data Management (level 50+)
-  if (userPermissionLevel >= 50) {
-    navSectionsHTML += `
-      <div class="nav-section">
-        <div class="nav-section-title">Data Management</div>
-        <a href="/admin/contacts.html" class="nav-item ${currentPage === 'contacts' ? 'active' : ''}">
-          <span class="nav-icon">👥</span>
-          <span>Contacts</span>
-        </a>
-        <a href="/admin/organizations.html" class="nav-item ${currentPage === 'organizations' ? 'active' : ''}">
-          <span class="nav-icon">🏢</span>
-          <span>Organizations</span>
-        </a>
-        <a href="/admin/conferences.html" class="nav-item ${currentPage === 'conferences' ? 'active' : ''}">
-          <span class="nav-icon">📅</span>
-          <span>Conferences</span>
-        </a>
-      </div>
-    `;
-  }
+    sections[sectionName].forEach(item => {
+      const isActive = currentPage === item.page ? 'active' : '';
+      navSectionsHTML += `
+        <div class="nav-item-wrapper">
+          <a href="${item.href}" class="nav-item ${isActive}">
+            <span class="nav-icon">${item.icon}</span>
+            <span>${item.label}</span>
+          </a>
+          <button class="nav-item-hide-btn" onclick="hideNavItem('${item.id}')" title="Hide this item">−</button>
+        </div>
+      `;
+    });
 
-  // Content Management (level 60+)
-  if (userPermissionLevel >= 60) {
-    navSectionsHTML += `
-      <div class="nav-section">
-        <div class="nav-section-title">Content</div>
-        <a href="/admin/photos.html" class="nav-item ${currentPage === 'photos' ? 'active' : ''}">
-          <span class="nav-icon">📷</span>
-          <span>Photos</span>
-        </a>
-        <a href="/admin/press-kit.html" class="nav-item ${currentPage === 'press-kit' ? 'active' : ''}">
-          <span class="nav-icon">📰</span>
-          <span>Press Kit</span>
-        </a>
-      </div>
-    `;
-  }
+    navSectionsHTML += `</div>`;
+  });
 
-  // Governance (level 70+)
-  if (userPermissionLevel >= 70) {
+  // Add Hidden Items section if there are any hidden items
+  if (hiddenItems.length > 0 || userPermissionLevel >= 50) {
     navSectionsHTML += `
-      <div class="nav-section">
-        <div class="nav-section-title">Governance</div>
-        <a href="/admin/board-documents.html" class="nav-item ${currentPage === 'board-documents' ? 'active' : ''}">
-          <span class="nav-icon">📁</span>
-          <span>Board Documents</span>
-        </a>
-        <a href="/admin/votes.html" class="nav-item ${currentPage === 'votes' ? 'active' : ''}">
-          <span class="nav-icon">🗳️</span>
-          <span>Board Votes</span>
-        </a>
-        <a href="/admin/funding.html" class="nav-item ${currentPage === 'funding' ? 'active' : ''}">
-          <span class="nav-icon">💰</span>
-          <span>Funding</span>
-        </a>
-      </div>
+      <div class="nav-section hidden-items-section">
+        <button class="hidden-items-toggle" onclick="toggleHiddenItems()">
+          <span class="nav-icon">👁️</span>
+          <span>Hidden Items</span>
+          <span class="chevron">▸</span>
+        </button>
+        <div class="hidden-items-list">
     `;
-  }
 
-  // System Administration (level 80+)
-  if (userPermissionLevel >= 80) {
-    navSectionsHTML += `
-      <div class="nav-section">
-        <div class="nav-section-title">System</div>
-        <a href="/admin/feedback.html" class="nav-item ${currentPage === 'feedback' ? 'active' : ''}">
-          <span class="nav-icon">💬</span>
-          <span>User Feedback</span>
-        </a>
-        <a href="/admin/import.html" class="nav-item ${currentPage === 'import' ? 'active' : ''}">
-          <span class="nav-icon">📥</span>
-          <span>Import Data</span>
-        </a>
-        <a href="/admin/settings.html" class="nav-item ${currentPage === 'settings' ? 'active' : ''}">
-          <span class="nav-icon">⚙️</span>
-          <span>Settings</span>
-        </a>
-      </div>
-    `;
-  }
+    if (hiddenItems.length === 0) {
+      navSectionsHTML += `<div class="hidden-items-empty">No hidden items</div>`;
+    } else {
+      hiddenItems.forEach(item => {
+        navSectionsHTML += `
+          <div class="hidden-nav-item">
+            <span class="nav-icon">${item.icon}</span>
+            <span>${item.label}</span>
+            <button class="nav-item-restore-btn" onclick="restoreNavItem('${item.id}')" title="Restore this item">+</button>
+          </div>
+        `;
+      });
+    }
 
-  // Help (all users level 50+)
-  if (userPermissionLevel >= 50) {
     navSectionsHTML += `
-      <div class="nav-section">
-        <div class="nav-section-title">Help</div>
-        <a href="/admin/workflows.html" class="nav-item ${currentPage === 'workflows' ? 'active' : ''}">
-          <span class="nav-icon">📖</span>
-          <span>User Workflows</span>
-        </a>
+        </div>
       </div>
     `;
   }
