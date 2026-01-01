@@ -279,12 +279,12 @@
   <script>
     const API_BASE = 'https://isrs-database-backend.onrender.com/api';
 
-    let sessionToken = localStorage.getItem('isrs_session');
+    let sessionToken = localStorage.getItem('isrs_session_token');
     let userData = JSON.parse(localStorage.getItem('isrs_user') || '{}');
 
     // Check if logged in
     if (!sessionToken) {
-      window.location.href = '/profile/login.html';
+      window.location.href = '/login.html';
     }
 
     // Load profile data
@@ -296,9 +296,9 @@
         if (!data.success) {
           if (response.status === 401) {
             // Session expired
-            localStorage.removeItem('isrs_session');
+            localStorage.removeItem('isrs_session_token');
             localStorage.removeItem('isrs_user');
-            window.location.href = '/profile/login.html';
+            window.location.href = '/login.html';
             return;
           }
           throw new Error(data.error);
@@ -423,9 +423,9 @@
           },
           body: JSON.stringify({ sessionToken })
         }).finally(() => {
-          localStorage.removeItem('isrs_session');
+          localStorage.removeItem('isrs_session_token');
           localStorage.removeItem('isrs_user');
-          window.location.href = '/profile/login.html';
+          window.location.href = '/login.html';
         });
       }
     }
