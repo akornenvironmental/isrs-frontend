@@ -271,6 +271,16 @@ echo "━━━━━━━━━━━━━━━━━━━━━━━━�
 echo ""
 echo "  🤖 Starting Claude Code (Sonnet 4.5)..."
 echo ""
+echo "  💡 ISRS-Specific Claude Commands Available:"
+echo "     /start      - Project overview and context"
+echo "     /status     - Check deployment and system status"
+echo "     /deploy     - Deploy changes to production"
+echo "     /pr         - Create GitHub pull request"
+echo "     /fix-deploy - Troubleshoot deployment issues"
+echo "     /rollback   - Rollback to previous deployment"
+echo ""
+echo -e "  ${BLUE}💬 Type /start in Claude Code to see full project details${NC}"
+echo ""
 
 # ============================================
 # CLEANUP HANDLER
