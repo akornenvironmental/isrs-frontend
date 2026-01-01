@@ -3,7 +3,7 @@
  * Provides consistent sidebar navigation and header across all admin pages
  */
 
-function loadAdminLayout(currentPage) {
+function loadAdminLayout(currentPage, userPermissionLevel = 100) {
   const body = document.body;
 
   // Create wrapper structure
@@ -24,6 +24,126 @@ function loadAdminLayout(currentPage) {
     existingContent.appendChild(body.firstChild);
   }
 
+  // Build navigation sections based on permission level
+  let navSectionsHTML = '';
+
+  // Public website link (all users)
+  navSectionsHTML += `
+    <div class="nav-section">
+      <a href="/" target="_blank" class="nav-item nav-item-external" style="background: var(--admin-primary-light, #eff6ff); border-left-color: var(--accent-teal);">
+        <span class="nav-icon">🌐</span>
+        <span>View Main Website</span>
+        <span style="margin-left: auto; font-size: 0.875rem;">↗</span>
+      </a>
+    </div>
+  `;
+
+  // Overview (all users level 50+)
+  if (userPermissionLevel >= 50) {
+    navSectionsHTML += `
+      <div class="nav-section">
+        <div class="nav-section-title">Overview</div>
+        <a href="/admin/index.html" class="nav-item ${currentPage === 'dashboard' ? 'active' : ''}">
+          <span class="nav-icon">📊</span>
+          <span>Dashboard</span>
+        </a>
+      </div>
+    `;
+  }
+
+  // Data Management (level 50+)
+  if (userPermissionLevel >= 50) {
+    navSectionsHTML += `
+      <div class="nav-section">
+        <div class="nav-section-title">Data Management</div>
+        <a href="/admin/contacts.html" class="nav-item ${currentPage === 'contacts' ? 'active' : ''}">
+          <span class="nav-icon">👥</span>
+          <span>Contacts</span>
+        </a>
+        <a href="/admin/organizations.html" class="nav-item ${currentPage === 'organizations' ? 'active' : ''}">
+          <span class="nav-icon">🏢</span>
+          <span>Organizations</span>
+        </a>
+        <a href="/admin/conferences.html" class="nav-item ${currentPage === 'conferences' ? 'active' : ''}">
+          <span class="nav-icon">📅</span>
+          <span>Conferences</span>
+        </a>
+      </div>
+    `;
+  }
+
+  // Content Management (level 60+)
+  if (userPermissionLevel >= 60) {
+    navSectionsHTML += `
+      <div class="nav-section">
+        <div class="nav-section-title">Content</div>
+        <a href="/admin/photos.html" class="nav-item ${currentPage === 'photos' ? 'active' : ''}">
+          <span class="nav-icon">📷</span>
+          <span>Photos</span>
+        </a>
+        <a href="/admin/press-kit.html" class="nav-item ${currentPage === 'press-kit' ? 'active' : ''}">
+          <span class="nav-icon">📰</span>
+          <span>Press Kit</span>
+        </a>
+      </div>
+    `;
+  }
+
+  // Governance (level 70+)
+  if (userPermissionLevel >= 70) {
+    navSectionsHTML += `
+      <div class="nav-section">
+        <div class="nav-section-title">Governance</div>
+        <a href="/admin/board-documents.html" class="nav-item ${currentPage === 'board-documents' ? 'active' : ''}">
+          <span class="nav-icon">📁</span>
+          <span>Board Documents</span>
+        </a>
+        <a href="/admin/votes.html" class="nav-item ${currentPage === 'votes' ? 'active' : ''}">
+          <span class="nav-icon">🗳️</span>
+          <span>Board Votes</span>
+        </a>
+        <a href="/admin/funding.html" class="nav-item ${currentPage === 'funding' ? 'active' : ''}">
+          <span class="nav-icon">💰</span>
+          <span>Funding</span>
+        </a>
+      </div>
+    `;
+  }
+
+  // System Administration (level 80+)
+  if (userPermissionLevel >= 80) {
+    navSectionsHTML += `
+      <div class="nav-section">
+        <div class="nav-section-title">System</div>
+        <a href="/admin/feedback.html" class="nav-item ${currentPage === 'feedback' ? 'active' : ''}">
+          <span class="nav-icon">💬</span>
+          <span>User Feedback</span>
+        </a>
+        <a href="/admin/import.html" class="nav-item ${currentPage === 'import' ? 'active' : ''}">
+          <span class="nav-icon">📥</span>
+          <span>Import Data</span>
+        </a>
+        <a href="/admin/settings.html" class="nav-item ${currentPage === 'settings' ? 'active' : ''}">
+          <span class="nav-icon">⚙️</span>
+          <span>Settings</span>
+        </a>
+      </div>
+    `;
+  }
+
+  // Help (all users level 50+)
+  if (userPermissionLevel >= 50) {
+    navSectionsHTML += `
+      <div class="nav-section">
+        <div class="nav-section-title">Help</div>
+        <a href="/admin/workflows.html" class="nav-item ${currentPage === 'workflows' ? 'active' : ''}">
+          <span class="nav-icon">📖</span>
+          <span>User Workflows</span>
+        </a>
+      </div>
+    `;
+  }
+
   // Add sidebar
   wrapper.innerHTML = `
     <!-- Sidebar Navigation -->
@@ -38,7 +158,7 @@ function loadAdminLayout(currentPage) {
       <div class="sidebar-header">
         <div class="sidebar-header-row">
           <div class="sidebar-header-text">
-            <a href="/admin/dashboard.html" class="sidebar-logo">ISRS Admin</a>
+            <a href="/admin/index.html" class="sidebar-logo">ISRS Admin</a>
             <div class="sidebar-subtitle">Management Portal</div>
           </div>
           <button class="theme-toggle-btn" onclick="toggleAdminDarkMode()" title="Toggle dark mode">
@@ -61,89 +181,7 @@ function loadAdminLayout(currentPage) {
       </div>
 
       <nav class="sidebar-nav">
-        <div class="nav-section">
-          <a href="/" target="_blank" class="nav-item nav-item-external" style="background: var(--admin-primary-light, #eff6ff); border-left-color: var(--accent-teal);">
-            <span class="nav-icon">🌐</span>
-            <span>View Main Website</span>
-            <span style="margin-left: auto; font-size: 0.875rem;">↗</span>
-          </a>
-        </div>
-
-        <div class="nav-section">
-          <div class="nav-section-title">Overview</div>
-          <a href="/admin/dashboard.html" class="nav-item ${currentPage === 'dashboard' ? 'active' : ''}">
-            <span class="nav-icon">📊</span>
-            <span>Dashboard</span>
-          </a>
-        </div>
-
-        <div class="nav-section">
-          <div class="nav-section-title">Data Management</div>
-          <a href="/admin/contacts.html" class="nav-item ${currentPage === 'contacts' ? 'active' : ''}">
-            <span class="nav-icon">👥</span>
-            <span>Contacts</span>
-          </a>
-          <a href="/admin/organizations.html" class="nav-item ${currentPage === 'organizations' ? 'active' : ''}">
-            <span class="nav-icon">🏢</span>
-            <span>Organizations</span>
-          </a>
-          <a href="/admin/conferences.html" class="nav-item ${currentPage === 'conferences' ? 'active' : ''}">
-            <span class="nav-icon">📅</span>
-            <span>Conferences</span>
-          </a>
-        </div>
-
-        <div class="nav-section">
-          <div class="nav-section-title">Content</div>
-          <a href="/admin/photos.html" class="nav-item ${currentPage === 'photos' ? 'active' : ''}">
-            <span class="nav-icon">📷</span>
-            <span>Photos</span>
-          </a>
-          <a href="/admin/press-kit.html" class="nav-item ${currentPage === 'press-kit' ? 'active' : ''}">
-            <span class="nav-icon">📰</span>
-            <span>Press Kit</span>
-          </a>
-        </div>
-
-        <div class="nav-section">
-          <div class="nav-section-title">Governance</div>
-          <a href="/admin/board-documents.html" class="nav-item ${currentPage === 'board-documents' ? 'active' : ''}">
-            <span class="nav-icon">📁</span>
-            <span>Board Documents</span>
-          </a>
-          <a href="/admin/votes.html" class="nav-item ${currentPage === 'votes' ? 'active' : ''}">
-            <span class="nav-icon">🗳️</span>
-            <span>Board Votes</span>
-          </a>
-          <a href="/admin/funding.html" class="nav-item ${currentPage === 'funding' ? 'active' : ''}">
-            <span class="nav-icon">💰</span>
-            <span>Funding</span>
-          </a>
-        </div>
-
-        <div class="nav-section">
-          <div class="nav-section-title">System</div>
-          <a href="/admin/feedback.html" class="nav-item ${currentPage === 'feedback' ? 'active' : ''}">
-            <span class="nav-icon">💬</span>
-            <span>User Feedback</span>
-          </a>
-          <a href="/admin/import.html" class="nav-item ${currentPage === 'import' ? 'active' : ''}">
-            <span class="nav-icon">📥</span>
-            <span>Import Data</span>
-          </a>
-          <a href="/admin/settings.html" class="nav-item ${currentPage === 'settings' ? 'active' : ''}">
-            <span class="nav-icon">⚙️</span>
-            <span>Settings</span>
-          </a>
-        </div>
-
-        <div class="nav-section">
-          <div class="nav-section-title">Help</div>
-          <a href="/admin/workflows.html" class="nav-item ${currentPage === 'workflows' ? 'active' : ''}">
-            <span class="nav-icon">📖</span>
-            <span>User Workflows</span>
-          </a>
-        </div>
+        ${navSectionsHTML}
       </nav>
 
       <div class="sidebar-footer">
@@ -232,7 +270,7 @@ function loadAdminLayout(currentPage) {
         <div class="footer-column">
           <h3 class="footer-heading">Admin Portal</h3>
           <ul class="footer-links">
-            <li><a href="/admin/dashboard.html">Dashboard</a></li>
+            <li><a href="/admin/index.html">Dashboard</a></li>
             <li><a href="/admin/contacts.html">Contacts</a></li>
             <li><a href="/admin/organizations.html">Organizations</a></li>
             <li><a href="/admin/feedback.html">Feedback</a></li>
@@ -328,7 +366,8 @@ function loadAdminUserInfo() {
 function logout() {
   localStorage.removeItem('isrs_auth_token');
   localStorage.removeItem('isrs_user_data');
-  window.location.href = '/admin/';
+  localStorage.removeItem('isrs_session_token');
+  window.location.href = '/login.html';
 }
 
 // Dark Mode Functions
