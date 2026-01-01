@@ -389,6 +389,16 @@
         document.getElementById('userRole').textContent = data.data.primaryRole.displayName || 'Member';
         document.getElementById('permissionLevel').textContent = userPermissionLevel;
 
+        // Store user data in localStorage for sidebar to use
+        localStorage.setItem('isrs_user_data', JSON.stringify({
+          first_name: data.data.user.firstName || data.data.user.first_name,
+          last_name: data.data.user.lastName || data.data.user.last_name,
+          email: userEmail,
+          role: data.data.primaryRole.name,
+          displayRole: data.data.primaryRole.displayName,
+          permissionLevel: userPermissionLevel
+        }));
+
         // Build comprehensive user info based on permission level
         buildUserInfoBanner(data.data, userPermissionLevel);
 
