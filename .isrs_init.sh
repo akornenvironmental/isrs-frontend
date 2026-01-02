@@ -234,7 +234,25 @@ while [ $RETRY_COUNT -lt $MAX_RETRIES ]; do
 done
 
 # ============================================
-# 8. AUTO-LOGIN MAGIC LINK (for ISRS authentication)
+# 8. AUTO-OPEN CHROME WITH APPROVED URLS
+# ============================================
+echo ""
+echo "  🌐 Opening Chrome with ISRS URLs..."
+
+# Open Chrome with multiple tabs
+open -a "Google Chrome" \
+  "http://localhost:8080/public/" \
+  "http://localhost:8080/admin" \
+  "http://localhost:8080/member/login.html" \
+  "http://localhost:3001/health" \
+  "https://isrs-frontend.onrender.com/" \
+  "https://isrs-frontend.onrender.com/admin" \
+  "https://dashboard.render.com/project/prj-d41llo7gi27c739l7bbg"
+
+echo -e "  ${GREEN}✅ Chrome launched with ISRS tabs${NC}"
+
+# ============================================
+# 9. AUTO-LOGIN MAGIC LINK (for ISRS authentication)
 # ============================================
 echo ""
 echo "  🔑 Magic Link Info:"
@@ -242,7 +260,7 @@ echo -e "  ${BLUE}💡 ISRS uses magic link authentication${NC}"
 echo -e "  ${BLUE}📧 Request login link at: http://localhost:8080/member/login.html${NC}"
 
 # ============================================
-# 9. QUICK COMMANDS MENU
+# 10. QUICK COMMANDS MENU
 # ============================================
 echo ""
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
@@ -262,7 +280,7 @@ echo "  🎛️  Render:    https://dashboard.render.com/project/prj-d41llo7gi27
 echo ""
 
 # ============================================
-# 10. STARTUP TIME
+# 11. STARTUP TIME
 # ============================================
 STARTUP_END=$(date +%s)
 STARTUP_TIME=$((STARTUP_END - STARTUP_START))
